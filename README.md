@@ -1578,8 +1578,8 @@ cp -r ~/aris_repo/skills/* ~/.claude/skills/
 
 **Where ARIS uses the plugin:**
 
-| Skill | Command | What it does |
-|-------|---------|-------------|
+| Skill | Workflow | What it does |
+|-------|----------|-------------|
 | `/codex:review` | Workflow 1.5 | Review experiment code before GPU deployment |
 | `/codex:adversarial-review` | Workflow 1.5 | Adversarial code review (find edge cases, bugs) |
 | `/codex:rescue` | Workflow 1.5 + 3 | **Auto-debug rescue** — when experiment or LaTeX compilation fails after 2 attempts, Codex independently diagnoses the root cause before the next retry |
