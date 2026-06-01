@@ -151,7 +151,7 @@ cd claude-fleet && bash run.sh
 >
 > Claude Code 的优势是快速丝滑的执行，Codex（GPT-5.5 xhigh）虽然慢但审稿更严谨深入。两者**速度 × 严谨**的互补特性，比单模型自我对话效果更好。
 >
-> 🧿 **想要最强审稿者？** 任何 skill 加 `— reviewer: oracle-pro` 即可通过 [Oracle MCP](https://github.com/steipete/oracle) 调用 **GPT-5.4 Pro**。Pro 级推理能力适合证明验证、实验审计和最终 stress test。支持 API key 或免费浏览器模式。[设置 →](#-optional-gpt-54-pro-via-oracle)
+> 🧿 **想要最强审稿者？** 任何 skill 加 `— reviewer: oracle-pro` 即可通过 [Oracle MCP](https://github.com/steipete/oracle) 调用 **GPT-5.5 Pro**。Pro 级推理能力适合证明验证、实验审计和最终 stress test。支持 API key 或免费浏览器模式。[设置 →](#-optional-gpt-54-pro-via-oracle)
 
 <a id="contents"></a>
 
@@ -434,7 +434,7 @@ cd Auto-claude-code-research-in-sleep && ls skills/ | xargs -I{} rm -rf ~/.claud
 | `compact` | `false` | 生成精简摘要文件（`IDEA_CANDIDATES.md`、`findings.md`、`EXPERIMENT_LOG.md`），适合短 context 模型和 session 恢复 |
 | `ref paper` | `false` | 参考论文（PDF 路径或 arXiv URL）。先总结论文，再基于它找 idea。配合 `base repo` 实现"论文+代码"工作流 |
 | `effort` | `balanced` | 工作强度：`lite`(0.4x)、`balanced`(默认)、`max`(2.5x)、`beast`(5-8x)。Codex reasoning 永远 `xhigh` |
-| `reviewer` | `codex` | 审稿后端：`codex`（GPT-5.5 xhigh，默认）、`oracle-pro`（GPT-5.4 Pro via [Oracle](https://github.com/steipete/oracle)） |
+| `reviewer` | `codex` | 审稿后端：`codex`（GPT-5.5 xhigh，默认）、`oracle-pro`（GPT-5.5 Pro via [Oracle](https://github.com/steipete/oracle)） |
 | `difficulty` | `medium` | 审稿对抗强度：`medium`（默认）、`hard`（+ memory + 辩论）、`nightmare`（+ GPT 通过 `codex exec` 直读仓库） |
 
 ```
@@ -469,12 +469,17 @@ cd Auto-claude-code-research-in-sleep && ls skills/ | xargs -I{} rm -rf ~/.claud
 
 ## 4. ✨ 功能亮点
 
+ARIS 用 **77 个可组合 skill** 覆盖科研全生命周期——文献查新 → idea 发现 → GPU 实验 → 自动 review 循环 → 论文写作 → peer review——配合**跨模型对抗审**（Claude 执行 · GPT-5.5 xhigh 审 · 可选 **GPT-5.5 Pro** via Oracle）、DBLP/CrossRef 反幻觉引用、持久化 **Research Wiki**、灵活模型后端、human-in-the-loop 检查点，以及可选的飞书 / Zotero / Obsidian / GPU 集成。
+
+<details>
+<summary><b>完整功能清单</b></summary>
+
 - 📊 **77 个可组合 skill** — 自由混搭，或串联为完整流水线（`/idea-discovery`、`/auto-review-loop`、`/paper-writing`、`/research-pipeline`）。[完整目录 →](docs/SKILLS_CATALOG.md)
 - 🔍 **文献 & 查新** — 多源论文搜索（**[Zotero](docs/integrations/ZOTERO_CN.md)** + **[Obsidian](docs/integrations/OBSIDIAN_CN.md)** + **本地 PDF** + arXiv/Scholar）+ 跨模型查新验证
 - 💡 **Idea 发现** — 文献调研 → 头脑风暴 8-12 个 idea → 查新 → GPU pilot 实验 → 排名报告
 - 🔄 **自动 review 循环** — 4 轮自主审稿，一夜从 5/10 提升到 7.5/10，自动跑 20+ 组 GPU 实验
 - 📝 **论文写作** — 研究叙事 → 大纲 → 图表 → LaTeX → PDF → 自动审稿（4/10 → 8.5/10），一条命令。通过 [DBLP](https://dblp.org)/[CrossRef](https://www.crossref.org) 反幻觉引用
-- 🤖 **跨模型协作** — Claude Code 执行，GPT-5.5 xhigh 审稿。对抗式而非自我博弈。可选：`— reviewer: oracle-pro` → **GPT-5.4 Pro** via [Oracle](https://github.com/steipete/oracle)
+- 🤖 **跨模型协作** — Claude Code 执行，GPT-5.5 xhigh 审稿。对抗式而非自我博弈。可选：`— reviewer: oracle-pro` → **GPT-5.5 Pro** via [Oracle](https://github.com/steipete/oracle)
 - 📝 **Peer Review** — 以审稿人视角审阅他人论文，结构化打分 + meta-review
 - 🖥️ **审稿驱动实验** — GPT-5.5 说"跑个消融"，Claude 自动写脚本、rsync 到 GPU、`screen` 启动、收结果、写回论文。`CLAUDE.md` 里配服务器（[配置](#gpu-server-setup)），或用 `gpu: vast` 从 [Vast.ai](https://vast.ai) 按需租
 - 🔀 **灵活模型** — 默认 Claude × GPT-5.5，也支持 [GLM、MiniMax、Kimi、LongCat、DeepSeek 等](#alternative-model-combinations)——无需 Claude 或 OpenAI API
@@ -496,6 +501,8 @@ cd Auto-claude-code-research-in-sleep && ls skills/ | xargs -I{} rm -rf ~/.claud
 
 - 📚 **[Research Wiki](#-research-wiki--persistent-research-memory)** — 持久化知识库，跨论文/idea/实验/claim 累积记忆。失败的 idea 成为防重复记忆——ARIS 每跑一次都更聪明。灵感来自 [Karpathy 的 LLM Wiki](https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f)
 - 🧩 **可扩展** — 欢迎贡献领域专用 skill！添加一个 `SKILL.md` 即可提 PR。参见[社区 skills](#skills-catalog)，如 [`dse-loop`](skills/dse-loop/SKILL.md)（体系结构/EDA）
+
+</details>
 
 ---
 
@@ -1086,9 +1093,9 @@ claude   # hooks 立即生效
 
 <a id="-optional-gpt-54-pro-via-oracle"></a>
 
-### 🧿 可选：GPT-5.4 Pro via Oracle
+### 🧿 可选：GPT-5.5 Pro via Oracle
 
-给任意 reviewer-aware skill(`/proof-checker`、`/research-review`、`/experiment-audit`、`/rebuttal`…)加 `— reviewer: oracle-pro`,把审稿走 **GPT-5.4 Pro** —— 最强推理,适合深度证明 / 代码 / 实验设计审。默认永远 Codex xhigh;Oracle 未装 ⇒ 优雅降级 + 警告(零影响)。**📖 安装 + 各 skill 示例 → [`reviewer-routing.md`](skills/shared-references/reviewer-routing.md)**
+给任意 reviewer-aware skill(`/proof-checker`、`/research-review`、`/experiment-audit`、`/rebuttal`…)加 `— reviewer: oracle-pro`,把审稿走 **GPT-5.5 Pro** —— 最强推理,适合深度证明 / 代码 / 实验设计审。默认永远 Codex xhigh;Oracle 未装 ⇒ 优雅降级 + 警告(零影响)。**📖 安装 + 各 skill 示例 → [`reviewer-routing.md`](skills/shared-references/reviewer-routing.md)**
 
 ---
 

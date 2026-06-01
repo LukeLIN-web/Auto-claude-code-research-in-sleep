@@ -167,7 +167,7 @@ Custom [Claude Code](https://docs.anthropic.com/en/docs/claude-code) skills for 
 >
 > Claude Code's strength is fast, fluid execution; Codex (GPT-5.5 xhigh) is slower but more deliberate and rigorous in critique. These complementary styles — **speed × rigor** — produce better outcomes than either model talking to itself.
 >
-> 🧿 **Want the strongest possible reviewer?** Add `— reviewer: oracle-pro` to any skill to route reviews through **GPT-5.4 Pro** via [Oracle MCP](https://github.com/steipete/oracle). Pro-level reasoning for proof verification, experiment auditing, and final stress tests. Works with API key or free browser mode. [Setup →](#-optional-gpt-54-pro-via-oracle)
+> 🧿 **Want the strongest possible reviewer?** Add `— reviewer: oracle-pro` to any skill to route reviews through **GPT-5.5 Pro** via [Oracle MCP](https://github.com/steipete/oracle). Pro-level reasoning for proof verification, experiment auditing, and final stress tests. Works with API key or free browser mode. [Setup →](#-optional-gpt-54-pro-via-oracle)
 
 <a id="contents"></a>
 
@@ -466,7 +466,7 @@ All pipeline behaviors are configurable via inline overrides — append `— key
 | `compact` | `false` | Generate compact summary files (`IDEA_CANDIDATES.md`, `findings.md`, `EXPERIMENT_LOG.md`) for short-context models and session recovery |
 | `ref paper` | `false` | Reference paper to build on (PDF path or arXiv URL). Summarized first, then ideas extend/improve it. Combine with `base repo` for paper+code workflows |
 | `effort` | `balanced` | Work intensity: `lite` (0.4x tokens), `balanced` (default), `max` (2.5x), `beast` (5-8x). Controls breadth/depth/iterations. Codex reasoning always `xhigh`. See [Effort Levels](#-effort-levels) |
-| `reviewer` | `codex` | Reviewer backend: `codex` (GPT-5.5 xhigh, default), `oracle-pro` (GPT-5.4 Pro via [Oracle](https://github.com/steipete/oracle) — strongest reasoning). See [Setup →](#-optional-gpt-54-pro-via-oracle) |
+| `reviewer` | `codex` | Reviewer backend: `codex` (GPT-5.5 xhigh, default), `oracle-pro` (GPT-5.5 Pro via [Oracle](https://github.com/steipete/oracle) — strongest reasoning). See [Setup →](#-optional-gpt-54-pro-via-oracle) |
 | `difficulty` | `medium` | Reviewer adversarial level: `medium` (default), `hard` (+ memory + debate), `nightmare` (+ GPT reads repo via `codex exec`) |
 
 ```
@@ -478,7 +478,7 @@ All pipeline behaviors are configurable via inline overrides — append `— key
 /research-pipeline "your topic" — arxiv download: true                         # download top arXiv PDFs during literature survey
 /research-pipeline "your topic" — difficulty: nightmare                        # maximum adversarial review before submission
 /research-pipeline "your topic" — effort: beast                               # all knobs to maximum — top-venue sprint
-/research-pipeline "your topic" — effort: beast, reviewer: oracle-pro         # beast + GPT-5.4 Pro reviewer — ultimate mode
+/research-pipeline "your topic" — effort: beast, reviewer: oracle-pro         # beast + GPT-5.5 Pro reviewer — ultimate mode
 /research-pipeline "your topic" — effort: lite                                # quick exploration, save tokens
 /research-pipeline "your topic" — effort: max, review_rounds: 3               # max effort but cap review at 3 rounds
 /research-pipeline "your topic" — AUTO_PROCEED: false, human checkpoint: true  # combine options
@@ -517,12 +517,17 @@ See [full setup guide](#setup) for details and [alternative model combinations](
 
 ## 4. ✨ Features
 
+ARIS chains **77 composable skills** across the whole research lifecycle — literature & novelty → idea discovery → GPU experiments → autonomous review loop → paper writing → peer review — with **cross-model adversarial review** (Claude executes · GPT-5.5 xhigh reviews · optional **GPT-5.5 Pro** via Oracle), anti-hallucination DBLP/CrossRef citations, a persistent **Research Wiki**, flexible model backends, human-in-the-loop checkpoints, and optional Feishu / Zotero / Obsidian / GPU integrations.
+
+<details>
+<summary><b>Full feature list</b></summary>
+
 - 📊 **77 composable skills** — mix and match, or chain into full pipelines (`/idea-discovery`, `/auto-review-loop`, `/paper-writing`, `/research-pipeline`). See [full catalog →](docs/SKILLS_CATALOG.md)
 - 🔍 **Literature & novelty** — multi-source paper search (**[Zotero](docs/integrations/ZOTERO.md)** + **[Obsidian](docs/integrations/OBSIDIAN.md)** + **local PDFs** + arXiv/Scholar) + cross-model novelty verification
 - 💡 **Idea discovery** — literature survey → brainstorm 8-12 ideas → novelty check → GPU pilot experiments → ranked report
 - 🔄 **Auto review loop** — 4-round autonomous review, 5/10 → 7.5/10 overnight with 20+ GPU experiments
 - 📝 **Paper writing** — narrative → outline → figures → LaTeX → PDF → auto-review (4/10 → 8.5/10), one command. Anti-hallucination citations via [DBLP](https://dblp.org)/[CrossRef](https://www.crossref.org)
-- 🤖 **Cross-model collaboration** — Claude Code executes, GPT-5.5 xhigh reviews. Adversarial, not self-play. Optional: `— reviewer: oracle-pro` → **GPT-5.4 Pro** via [Oracle](https://github.com/steipete/oracle)
+- 🤖 **Cross-model collaboration** — Claude Code executes, GPT-5.5 xhigh reviews. Adversarial, not self-play. Optional: `— reviewer: oracle-pro` → **GPT-5.5 Pro** via [Oracle](https://github.com/steipete/oracle)
 - 📝 **Peer review** — review others' papers as a conference reviewer, with structured scoring and meta-review
 - 🖥️ **Review-driven experiments** — when GPT-5.5 says "run an ablation", Claude auto-writes the script, rsyncs to GPU, runs in `screen`, collects results, folds back into the paper. Configure server in `CLAUDE.md` ([setup](#gpu-server-setup)), or rent from [Vast.ai](https://vast.ai) with `gpu: vast`
 - 🔀 **Flexible models** — default Claude × GPT-5.5, also supports [GLM, MiniMax, Kimi, LongCat, DeepSeek, etc.](#alternative-model-combinations) — no Claude or OpenAI API required
@@ -544,6 +549,8 @@ See [full setup guide](#setup) for details and [alternative model combinations](
 
 - 📚 **[Research Wiki](#-research-wiki--persistent-research-memory)** — persistent knowledge base across papers/ideas/experiments/claims. Failed ideas become anti-repetition memory — ARIS gets smarter every run. Inspired by [Karpathy's LLM Wiki](https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f)
 - 🧩 **Extensible** — domain-specific skills welcome! Add a `SKILL.md` and open a PR. See [community skills](#awesome-community-skills) like [`dse-loop`](skills/dse-loop/SKILL.md) (architecture/EDA)
+
+</details>
 
 ---
 
@@ -1266,9 +1273,9 @@ A second axis, orthogonal to effort: **assurance** decides whether mandatory aud
 
 <a id="-optional-gpt-54-pro-via-oracle"></a>
 
-### 🧿 Optional: GPT-5.4 Pro via Oracle
+### 🧿 Optional: GPT-5.5 Pro via Oracle
 
-Add `— reviewer: oracle-pro` to any reviewer-aware skill (`/proof-checker`, `/research-review`, `/experiment-audit`, `/rebuttal`, …) to route review through **GPT-5.4 Pro** — strongest reasoning for deep proof / code / experiment-design critique. Default stays Codex xhigh; Oracle not installed ⇒ graceful fallback + warning (zero impact). **📖 Setup + per-skill examples → [`reviewer-routing.md`](skills/shared-references/reviewer-routing.md)**
+Add `— reviewer: oracle-pro` to any reviewer-aware skill (`/proof-checker`, `/research-review`, `/experiment-audit`, `/rebuttal`, …) to route review through **GPT-5.5 Pro** — strongest reasoning for deep proof / code / experiment-design critique. Default stays Codex xhigh; Oracle not installed ⇒ graceful fallback + warning (zero impact). **📖 Setup + per-skill examples → [`reviewer-routing.md`](skills/shared-references/reviewer-routing.md)**
 
 ---
 
