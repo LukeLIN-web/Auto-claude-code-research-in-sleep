@@ -224,7 +224,7 @@ Three safety gates — rebuttal will NOT finalize if any fails:
 - 🔒 **No overpromise** — every promise is user-approved
 - 🔒 **Full coverage** — every reviewer concern is tracked
 
-Two outputs: `PASTE_READY.txt` (exact char count, paste to venue) + `REBUTTAL_DRAFT_rich.md` (extended version for manual editing).
+One authored draft `REBUTTAL_DRAFT.md` (over-limit material marked `[OPTIONAL]`); `PASTE_READY.txt` (exact char count, paste to venue) is derived from it mechanically.
 
 <details>
 <summary><b>Show rebuttal parameters</b> — venue, character limit (required), quick mode, auto experiment, stress test rounds, followup rounds</summary>
@@ -1037,7 +1037,7 @@ Got reviews back? `/rebuttal` parses them, builds a strategy, and drafts a venue
 5. ✍️ **Draft** — global opener + numbered per-reviewer responses + closing for meta-reviewer
 6. 🛡️ **Safety check** — 6 lints: coverage, provenance, commitment, tone, consistency, limit
 7. 🔬 **GPT-5.5 stress test** — internal skeptical review of the draft
-8. 📄 **Finalize** — two outputs: `PASTE_READY.txt` (exact character count) + `REBUTTAL_DRAFT_rich.md` (extended version for manual editing)
+8. 📄 **Finalize** — the authored `REBUTTAL_DRAFT.md` is the deliverable; `PASTE_READY.txt` (exact character count) is regenerated from it
 9. 🔄 **Follow-up rounds** — delta replies for reviewer discussions, technically escalating
 
 <details>

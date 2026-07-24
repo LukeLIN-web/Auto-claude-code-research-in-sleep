@@ -48,7 +48,7 @@ Workflow 4:   rebuttal (post-submission external reviews)
 - **AUTO_EXPERIMENT = false** — When `true`, automatically invoke `/experiment-bridge` to run supplementary experiments when the strategy plan identifies reviewer concerns that require new empirical evidence. When `false` (default), pause and present the evidence gap to the user for manual handling.
 - **QUICK_MODE = false** — When `true`, only run Phase 0-3 (parse reviews, atomize concerns, build strategy). Outputs `ISSUE_BOARD.md` + `STRATEGY_PLAN.md` and stops — no drafting, no stress test. Useful for quickly understanding what reviewers want before deciding how to respond.
 - **REBUTTAL_DIR = `rebuttal/`**
-- **RENDER_HTML = true** — When `true` (default), auto-render `rebuttal/REBUTTAL_DRAFT_rich.md` to HTML after Phase 6 / Phase 8 finalization via `/render-html`. Uses **full review gate** (reviewer-facing pre-submission deliverable). The plain-text `PASTE_READY.txt` is NOT rendered (it's character-counted plain text by design). Set `false` to skip, or pass `— render html: false`. **Non-blocking**: failures don't invalidate the rebuttal.
+- **RENDER_HTML = true** — When `true` (default), Phase 9 renders the canonical `REBUTTAL_DRAFT.md` to HTML. Set `false`, or pass `— render html: false`, to skip.
 
 > Override: `/rebuttal "paper/" — venue: NeurIPS, character limit: 5000`
 
@@ -69,12 +69,28 @@ Three hard gates — if any fails, do NOT finalize:
 2. **Commitment gate** — every promise maps to: `already_done`, `approved_for_rebuttal`, or `future_work_only`. Not approved = blocked.
 3. **Coverage gate** — every reviewer concern ends in: `answered`, `deferred_intentionally`, or `needs_user_input`. No issue disappears.
 
+## Artifacts
+
+The response text is **authored in exactly one file**: `REBUTTAL_DRAFT.md`. Every other representation is a **derived view** — regenerated mechanically whenever the draft changes, never hand-edited. All edits (internal revise rounds, stress-test fixes, follow-ups) land in the draft. Do not create any response-bearing file outside this table.
+
+| File | Role |
+|---|---|
+| `REBUTTAL_STATE.md` | canonical — phase, venue rules, round, stress-test verdicts |
+| `REVIEWS_RAW.md`, `FOLLOWUP_LOG.md` | canonical — verbatim reviewer text |
+| `ISSUE_BOARD.md` | canonical — atomized concerns |
+| `STRATEGY_PLAN.md` | canonical — themes, response modes, budgets |
+| `REVISION_PLAN.md` | canonical — promised paper edits (checklist) |
+| `REBUTTAL_DRAFT.md` | **canonical response text** — the only authored copy; over-limit material inline, marked `[OPTIONAL — cut if over limit]` |
+| `PASTE_READY.txt` | derived — `REBUTTAL_DRAFT.md` minus `[OPTIONAL]` blocks, markdown stripped, exact character count |
+| `MCP_STRESS_TEST.md` | canonical — verbatim stress-test transcript (Phase 6) |
+| `REBUTTAL_DRAFT.html` (+ `.review.json` sidecar) | derived — Phase 9 render, if `RENDER_HTML` |
+
 ## Workflow
 
 ### Phase 0: Resume or Initialize
 
 1. If `rebuttal/REBUTTAL_STATE.md` exists → resume from recorded phase
-2. Otherwise → create `rebuttal/`, initialize all output documents
+2. Otherwise → create `rebuttal/`, initialize the canonical documents (Artifacts table)
 3. Load paper, reviews, venue rules, any user-confirmed evidence
 
 ### Phase 1: Validate Inputs and Normalize Reviews
@@ -139,12 +155,14 @@ If the strategy plan identifies issues that require new empirical evidence (tagg
 
 ### Phase 4: Draft Initial Rebuttal
 
-Create `rebuttal/REBUTTAL_DRAFT_v1.md`.
+Author the canonical `rebuttal/REBUTTAL_DRAFT.md`.
 
 Structure:
 1. **Short opener** — thank reviewers + 2-4 global resolutions
 2. **Per-reviewer numbered responses** — answer → evidence → implication
 3. **Short closing** — resolved / remaining / acceptance case
+
+Material worth keeping but over the strict limit stays inline, marked `[OPTIONAL — cut if over limit]`. There is no separate "rich"/"strict" pair of drafts — the strict paste text is derived.
 
 Default reply pattern per issue:
 - Sentence 1: direct answer
@@ -165,7 +183,7 @@ Hard rules:
 - NEVER promise what user hasn't approved
 - If no strong evidence exists, say less not more
 
-Also generate `rebuttal/PASTE_READY.txt` (plain text, exact character count).
+After authoring or changing the draft, regenerate `rebuttal/PASTE_READY.txt` per the Artifacts table.
 
 Also generate `rebuttal/REVISION_PLAN.md` — the **overall revision checklist**.
 
@@ -173,32 +191,25 @@ This document is the single source of truth for every paper revision promised (e
 
 Structure:
 
-1. **Header**
-   - Paper title, venue, character limit, rebuttal round
-   - Links back to `ISSUE_BOARD.md`, `STRATEGY_PLAN.md`, `REBUTTAL_DRAFT_v1.md`
+1. **Header** — paper title, venue, character limit, rebuttal round.
 
-2. **Overall checklist** — a single flat GitHub-style checklist covering **every** revision item, so the author can tick items off as they land in the camera-ready / revised PDF:
+2. **Overall checklist** — one flat GitHub-style checklist, one atomic paper edit per line, each carrying its `issue_id`, target section, commitment tag, and status:
 
    ```markdown
    ## Overall Checklist
 
-   - [ ] (R1-C2) Add assumption hierarchy table to Section 3.1 — commitment: `approved_for_rebuttal` — owner: author — status: pending
-   - [ ] (R2-C1) Clarify novelty delta vs. Smith'24 in Section 2 related work — commitment: `already_done` — status: verify wording
+   - [ ] (R1-C2) Add assumption hierarchy table to §3.1 — commitment: `approved_for_rebuttal` — status: pending
+   - [ ] (R2-C1) Clarify novelty delta vs. Smith'24 in §2 related work — commitment: `already_done` — status: verify wording
    - [ ] (R3-C4) Add runtime breakdown figure to Appendix B — commitment: `future_work_only` — status: deferred, note in camera-ready
-   - ...
    ```
 
-   Checklist items must be **atomic** (one paper edit per line) and each must reference its `issue_id` so it maps back to `ISSUE_BOARD.md`.
+3. **Commitment summary** — counts of `already_done` / `approved_for_rebuttal` / `future_work_only`, plus any blocking `needs_user_input` items.
 
-3. **Grouped view** — the same items regrouped by (a) paper section/location and (b) severity, so the author can plan the revision pass efficiently.
-
-4. **Commitment summary** — counts of `already_done` / `approved_for_rebuttal` / `future_work_only`, plus any `needs_user_input` items that are blocking.
-
-5. **Out-of-scope log** — reviewer concerns that will **not** trigger a paper revision (e.g. `deferred_intentionally`, `narrow_concession` with no edit), with a one-line reason each. This keeps the checklist honest: nothing silently disappears.
+4. **Out-of-scope log** — reviewer concerns that will **not** trigger a paper revision (e.g. `deferred_intentionally`, `narrow_concession` with no edit), with a one-line reason each. This keeps the checklist honest: nothing silently disappears.
 
 Rules for `REVISION_PLAN.md`:
 - Every checklist item must map to at least one `issue_id` from `ISSUE_BOARD.md`.
-- Every promise in `REBUTTAL_DRAFT_v1.md` that implies a paper edit must appear as a checklist item — if it is not in the plan, it is a commitment-gate violation.
+- Every promise in `REBUTTAL_DRAFT.md` that implies a paper edit must appear as a checklist item — if it is not in the plan, it is a commitment-gate violation.
 - Never add items that are not backed by the draft or by user-confirmed evidence.
 - On rerun / follow-up rounds, update checkbox state in place rather than regenerating from scratch.
 
@@ -210,7 +221,7 @@ Run all lints:
 3. **Commitment** — promises are approved AND every paper-edit promise in the draft appears as a checklist item in `REVISION_PLAN.md` (and vice versa — no orphan items in the plan)
 4. **Tone** — flag aggressive/submissive/evasive phrases
 5. **Consistency** — no contradictions across reviewer replies
-6. **Limit** — exact character count, compress if over (redundancy → friendly → opener → wording, never drop critical answers)
+6. **Limit** — exact character count on the freshly derived `PASTE_READY.txt`. Compress if over (redundancy → friendly → opener → wording, never drop critical answers)
 
 ### Phase 6: Codex Reviewer Stress Test
 
@@ -233,26 +244,15 @@ spawn_agent:
 
 Save full response to `rebuttal/MCP_STRESS_TEST.md`. If hard safety blocker → revise before finalizing.
 
-### Phase 7: Finalize — Two Versions
+### Phase 7: Finalize
 
-Produce **two outputs** for different purposes:
+The stress-tested `REBUTTAL_DRAFT.md` from Phases 4-6 IS the deliverable — do not produce any new copy of the response text here.
 
-1. **`rebuttal/PASTE_READY.txt`** — the strict version
-   - Plain text, exact character count, fits venue limit
-   - Ready to paste directly into OpenReview / CMT / HotCRP
-   - No markdown formatting, no extras
-
-2. **`rebuttal/REBUTTAL_DRAFT_rich.md`** — the extended version
-   - Same structure but with **more detail**: fuller explanations, additional evidence, optional paragraphs
-   - Marked with `[OPTIONAL — cut if over limit]` for sections that exceed the strict version
-   - Author can read this to understand the full reasoning, then manually decide what to keep/cut/rewrite
-   - Useful for follow-up rounds — the extra material is pre-written
-
-3. Update `rebuttal/REBUTTAL_STATE.md`
-4. Refresh `rebuttal/REVISION_PLAN.md` so the overall checklist matches the final draft (add items, mark `already_done` as checked, carry forward any `pending` items)
-5. Present to user:
+1. Regenerate `rebuttal/PASTE_READY.txt` from the final draft and verify its exact character count against the venue limit
+2. Update `rebuttal/REBUTTAL_STATE.md`
+3. Refresh `rebuttal/REVISION_PLAN.md` so the overall checklist matches the final draft (add items, mark `already_done` as checked, carry forward any `pending` items)
+4. Present to user:
    - `PASTE_READY.txt` character count vs venue limit
-   - `REBUTTAL_DRAFT_rich.md` for review and manual editing
    - `REVISION_PLAN.md` checklist — counts of pending / approved / deferred
    - Remaining risks + lines needing manual approval
 
@@ -270,15 +270,15 @@ When new reviewer comments arrive:
 
 ### Phase 9: Render HTML view (auto, when `RENDER_HTML = true`, default)
 
-After Phase 6 (initial rebuttal) or Phase 8 (follow-up rounds) finalize `rebuttal/REBUTTAL_DRAFT_rich.md`, invoke:
+After Phase 7 (initial rebuttal) or Phase 8 (follow-up rounds) finalizes the canonical draft, invoke:
 
 ```
-/render-html "rebuttal/REBUTTAL_DRAFT_rich.md"
+/render-html "rebuttal/REBUTTAL_DRAFT.md"
 ```
 
-Full review gate (reviewer-facing pre-submission deliverable). Do NOT render `rebuttal/PASTE_READY.txt` (it's exact-character-count plain text by design).
+Full review gate (reviewer-facing pre-submission deliverable). Output: `REBUTTAL_DRAFT.html` — a derived view, never edited directly. Do NOT render `rebuttal/PASTE_READY.txt` (it's exact-character-count plain text by design).
 
-**Non-blocking**: if `/render-html` fails, log the failure and treat the rebuttal phase as complete — the `PASTE_READY.txt` and `REBUTTAL_DRAFT_rich.md` are the canonical outputs.
+**Non-blocking**: if `/render-html` fails, log the failure and treat the rebuttal phase as complete — the canonical `REBUTTAL_DRAFT.md` is the deliverable.
 
 Skip if `RENDER_HTML = false`.
 
@@ -289,6 +289,7 @@ Skip if `RENDER_HTML = false`.
 - **Never overpromise.** Only promise what user explicitly approved.
 - **Full coverage.** Every reviewer concern tracked and accounted for.
 - **Preserve raw records.** Reviews and MCP outputs stored verbatim.
+- **One authored copy.** Response text is authored only in `REBUTTAL_DRAFT.md`; every other representation is regenerated mechanically from it, never hand-edited.
 - **Global + per-reviewer structure.** Shared concerns in opener.
 - **Answer friendly reviewers too.** Reinforce supportive framing.
 - **Meta-reviewer closing.** Summarize resolved/remaining/why accept.

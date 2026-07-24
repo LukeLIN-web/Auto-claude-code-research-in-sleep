@@ -1,7 +1,7 @@
 ---
 name: rebuttal
 description: "Workflow 4: Submission rebuttal pipeline. Parses external reviews, enforces coverage and grounding, drafts a safe text-only rebuttal under venue limits, and manages follow-up rounds. Use when user says \"rebuttal\", \"reply to reviewers\", \"ICML rebuttal\", \"OpenReview response\", or wants to answer external reviews safely."
-argument-hint: [paper-path-or-review-bundle]
+argument-hint: "[paper-path-or-review-bundle]"
 allowed-tools: Bash(*), Read, Grep, Glob, Write, Edit, Skill, mcp__codex__codex, mcp__codex__codex-reply, mcp__manual_review__review, mcp__manual_review__review_reply
 ---
 
@@ -40,7 +40,7 @@ Workflow 4:   rebuttal (post-submission external reviews)
 
 - **VENUE = `ICML`** — Default venue. Override if needed.
 - **RESPONSE_MODE = `TEXT_ONLY`** — v1 default.
-- **REVIEWER_MODEL = `gpt-5.5`** — Default model for the Codex backend. Used for internal stress-testing. Manual backend uses whatever model the user chooses.
+- **REVIEWER_MODEL = `gpt-5.6-sol`** — Default model for the Codex backend. Used for internal stress-testing. Manual backend uses whatever model the user chooses.
 - **REVIEWER_BACKEND = `codex`** — Default: Codex MCP (xhigh). Override with `— reviewer: oracle-pro` for Oracle MCP, or `— reviewer: manual` for Manual Review MCP. If manual-review MCP is unavailable, stop and print the install command; do not fall back to Codex. See `shared-references/reviewer-routing.md`.
 - **MAX_INTERNAL_DRAFT_ROUNDS = 2** — draft → lint → revise.
 - **VENUE_MODE = `single_document`** — `single_document` for one shared author response, or `per_reviewer_thread` when each reviewer thread renders independently. Confirm the venue/interface before drafting if unclear. Affects Phase 4/7 output shape.
@@ -49,7 +49,7 @@ Workflow 4:   rebuttal (post-submission external reviews)
 - **AUTO_EXPERIMENT = false** — When `true`, automatically invoke `/experiment-bridge` to run supplementary experiments when the strategy plan identifies reviewer concerns that require new empirical evidence. When `false` (default), pause and present the evidence gap to the user for manual handling.
 - **QUICK_MODE = false** — When `true`, only run Phase 0-3 (parse reviews, atomize concerns, build strategy). Outputs `ISSUE_BOARD.md` + `STRATEGY_PLAN.md` and stops — no drafting, no stress test. Useful for quickly understanding what reviewers want before deciding how to respond.
 - **REBUTTAL_DIR = `rebuttal/`**
-- **RENDER_HTML = true** — When `true` (default), auto-render `rebuttal/REBUTTAL_DRAFT_rich.md` (the detailed reviewer-facing draft) to HTML after Phase 6 / Phase 8 finalization. Uses **full Codex review gate** (final pre-submission deliverable — reviewer-facing content, render fidelity matters). The plain-text `PASTE_READY.txt` is NOT rendered (it's character-counted plain text by design). Set `false` to skip, or pass `— render html: false`.
+- **RENDER_HTML = true** — When `true` (default), Phase 9 renders each canonical response file to HTML. Set `false`, or pass `— render html: false`, to skip.
 
 > Override: `/rebuttal "paper/" — venue: NeurIPS, character limit: 5000`
 
@@ -91,12 +91,31 @@ Three hard gates — if any fails, do NOT finalize:
 2. **Commitment gate** — every promise maps to: `already_done`, `approved_for_rebuttal`, or `future_work_only`. Not approved = blocked.
 3. **Coverage gate** — every reviewer concern ends in: `answered`, `deferred_intentionally`, or `needs_user_input`. No issue disappears.
 
+## Artifacts
+
+The response text is **authored in exactly one place** — the canonical file(s) for the active `VENUE_MODE`. Every other representation is a **derived view**: regenerated mechanically from its source whenever the source changes, and never hand-edited. All edits (internal revise rounds, stress-test fixes, follow-ups) land in the canonical file. Do not create any response-bearing file outside this table.
+
+| File | Mode | Role |
+|---|---|---|
+| `REBUTTAL_STATE.md` | both | canonical — phase, venue rules, round, stress-test verdicts |
+| `REVIEWS_RAW.md`, `FOLLOWUP_LOG.md` | both | canonical — verbatim reviewer text |
+| `ISSUE_BOARD.md` | both | canonical — atomized concerns |
+| `STRATEGY_PLAN.md` | both | canonical — themes, response modes, budgets |
+| `REVISION_PLAN.md` | both | canonical — promised paper edits (checklist) |
+| `REBUTTAL_DRAFT.md` | single_document | **canonical response text** — the only authored copy; over-limit material inline, marked `[OPTIONAL — cut if over limit]` |
+| `PASTE_READY.txt` | single_document | derived — `REBUTTAL_DRAFT.md` minus `[OPTIONAL]` blocks, markdown stripped, exact character count |
+| `Reviewer_<ID>_response.md` | per_reviewer_thread | **canonical response text** — one self-contained file per reviewer; each file IS the paste target for its thread (no aggregate draft, no `PASTE_READY.txt`) |
+| `SETUP_METRICS_BLOCK.md` | per_reviewer_thread | canonical — shared setup/metrics text; the copies embedded in reviewer files are derived inclusions (the one sanctioned duplication): edit only the block, then re-propagate to every reviewer file that embeds it |
+| `MCP_STRESS_TEST_round<N>.md` | both | canonical — verbatim stress-test transcripts (Phase 6) |
+| `SUPPLEMENTARY_FIG_PDF/` | per_reviewer_thread, optional | derived — venue-compliant figure PDF (Phase 7); no response text |
+| `*.html` (+ `.review.json` sidecar) | both, if `RENDER_HTML` | derived — Phase 9 render of each canonical response file |
+
 ## Workflow
 
 ### Phase 0: Resume or Initialize
 
 1. If `rebuttal/REBUTTAL_STATE.md` exists → resume from recorded phase
-2. Otherwise → create `rebuttal/`, initialize all output documents
+2. Otherwise → create `rebuttal/`, initialize the canonical documents for the active `VENUE_MODE` (Artifacts table) — never the other mode's files
 3. Load paper, reviews, venue rules, any user-confirmed evidence
 
 ### Phase 1: Validate Inputs and Normalize Reviews
@@ -165,22 +184,19 @@ If the strategy plan identifies issues that require new empirical evidence (tagg
 
 ### Phase 4: Draft Initial Rebuttal
 
-Create the draft artifact(s) per `VENUE_MODE`:
-- `single_document` mode → one `rebuttal/REBUTTAL_DRAFT_v1.md`
-- `per_reviewer_thread` mode → one `rebuttal/Reviewer_<ID>_response.md` per reviewer (no top-level `REBUTTAL_DRAFT_v1.md`)
+Author the canonical response file(s) (see Artifacts):
 
-**Structure depends on `VENUE_MODE`:**
-
-- `single_document` — one `REBUTTAL_DRAFT_v1.md`:
+- `single_document` — one `REBUTTAL_DRAFT.md`:
   1. Short opener — thank reviewers + 2-4 global resolutions
   2. Per-reviewer numbered responses — answer → evidence → implication
   3. Short closing — resolved / remaining / acceptance case
+  - Material worth keeping but over the strict limit stays inline, marked `[OPTIONAL — cut if over limit]`. There is no separate "rich"/"strict" pair of drafts — the strict paste text is derived.
 
 - `per_reviewer_thread` — one self-contained `Reviewer_<ID>_response.md` per reviewer:
   1. Brief acknowledgment of that reviewer's main thrust
   2. Numbered W#/Q# responses (answer → evidence → implication)
   3. Optional shared experimental-setup paragraph (see "Reusable setup block" below)
-  - Each file must be readable standalone. No "see Reviewer X's response" references. No global opener.
+  - Each file must be readable standalone. No "see Reviewer X's response" references. No global opener. No aggregate draft on top of these files — run metadata (round, verdicts, per-file counts) goes in `REBUTTAL_STATE.md`.
 
 Default reply pattern per issue:
 - Sentence 1: direct answer
@@ -211,7 +227,7 @@ Hard rules:
 - NEVER promise what user hasn't approved
 - If no strong evidence exists, say less not more
 
-**`single_document` mode only**: also generate `rebuttal/PASTE_READY.txt` (plain text, exact character count for the OpenReview/CMT paste field). In `per_reviewer_thread` mode skip this artifact — each `Reviewer_<ID>_response.md` is itself the paste target for its thread.
+After authoring or changing a canonical draft, regenerate its derived artifacts per the Artifacts table (`single_document`: `PASTE_READY.txt`).
 
 Also generate `rebuttal/REVISION_PLAN.md` — the **overall revision checklist**.
 
@@ -219,32 +235,25 @@ This document is the single source of truth for every paper revision promised (e
 
 Structure:
 
-1. **Header**
-   - Paper title, venue, character limit, rebuttal round
-   - Links back to `ISSUE_BOARD.md`, `STRATEGY_PLAN.md`, `REBUTTAL_DRAFT_v1.md`
+1. **Header** — paper title, venue, character limit, rebuttal round.
 
-2. **Overall checklist** — a single flat GitHub-style checklist covering **every** revision item, so the author can tick items off as they land in the camera-ready / revised PDF:
+2. **Overall checklist** — one flat GitHub-style checklist, one atomic paper edit per line, each carrying its `issue_id`, target section, commitment tag, and status:
 
    ```markdown
    ## Overall Checklist
 
-   - [ ] (R1-C2) Add assumption hierarchy table to Section 3.1 — commitment: `approved_for_rebuttal` — owner: author — status: pending
-   - [ ] (R2-C1) Clarify novelty delta vs. Smith'24 in Section 2 related work — commitment: `already_done` — status: verify wording
+   - [ ] (R1-C2) Add assumption hierarchy table to §3.1 — commitment: `approved_for_rebuttal` — status: pending
+   - [ ] (R2-C1) Clarify novelty delta vs. Smith'24 in §2 related work — commitment: `already_done` — status: verify wording
    - [ ] (R3-C4) Add runtime breakdown figure to Appendix B — commitment: `future_work_only` — status: deferred, note in camera-ready
-   - ...
    ```
 
-   Checklist items must be **atomic** (one paper edit per line) and each must reference its `issue_id` so it maps back to `ISSUE_BOARD.md`.
+3. **Commitment summary** — counts of `already_done` / `approved_for_rebuttal` / `future_work_only`, plus any blocking `needs_user_input` items.
 
-3. **Grouped view** — the same items regrouped by (a) paper section/location and (b) severity, so the author can plan the revision pass efficiently.
-
-4. **Commitment summary** — counts of `already_done` / `approved_for_rebuttal` / `future_work_only`, plus any `needs_user_input` items that are blocking.
-
-5. **Out-of-scope log** — reviewer concerns that will **not** trigger a paper revision (e.g. `deferred_intentionally`, `narrow_concession` with no edit), with a one-line reason each. This keeps the checklist honest: nothing silently disappears.
+4. **Out-of-scope log** — reviewer concerns that will **not** trigger a paper revision (e.g. `deferred_intentionally`, `narrow_concession` with no edit), with a one-line reason each. This keeps the checklist honest: nothing silently disappears.
 
 Rules for `REVISION_PLAN.md`:
 - Every checklist item must map to at least one `issue_id` from `ISSUE_BOARD.md`.
-- Every promise in `REBUTTAL_DRAFT_v1.md` that implies a paper edit must appear as a checklist item — if it is not in the plan, it is a commitment-gate violation.
+- Every promise in the canonical draft(s) that implies a paper edit must appear as a checklist item — if it is not in the plan, it is a commitment-gate violation.
 - Never add items that are not backed by the draft or by user-confirmed evidence.
 - On rerun / follow-up rounds, update checkbox state in place rather than regenerating from scratch.
 
@@ -256,7 +265,7 @@ Run all lints:
 3. **Commitment** — promises are approved AND every paper-edit promise in the draft appears as a checklist item in `REVISION_PLAN.md` (and vice versa — no orphan items in the plan)
 4. **Tone** — flag aggressive/submissive/evasive phrases
 5. **Consistency** — no contradictions across reviewer replies
-6. **Limit** — exact character count, compress if over (redundancy → friendly → opener → wording, never drop critical answers)
+6. **Limit** — exact character count on the paste target(s): freshly derived `PASTE_READY.txt`, or each `Reviewer_<ID>_response.md`. Compress if over (redundancy → friendly → opener → wording, never drop critical answers)
 7. **Thread-local context** (`per_reviewer_thread` mode only) — each reviewer file must be intelligible without reading any other reviewer file. Flag any "see Reviewer X" references or undefined terms that rely on cross-thread context.
 8. **Adversarial design-choice scan** — for each experimental claim, ask: "Could a hostile reviewer find a non-obvious design choice (compute-match, frozen subset, sampling protocol) that I haven't disclosed?" If yes, add a one-line caveat in the Setup paragraph. Narrower than provenance; focused on *design choices* not factual sources.
 
@@ -266,6 +275,7 @@ Use the selected backend. *For codex:*
 
 ```
 mcp__codex__codex:
+  model: gpt-5.6-sol
   config: {"model_reasoning_effort": "xhigh"}
   prompt: |
     Stress-test this rebuttal draft:
@@ -287,34 +297,14 @@ mcp__codex__codex:
 
 ### Phase 7: Finalize
 
-**Outputs depend on `VENUE_MODE`:**
+The stress-tested canonical file(s) from Phases 4-6 ARE the deliverable — do not produce any new copy of the response text here.
 
-**`single_document` mode** — produce two versions:
-
-1. **`rebuttal/PASTE_READY.txt`** — strict version
-   - Plain text, exact character count, fits venue limit
-   - Ready to paste directly into the venue interface
-   - No markdown formatting, no extras
-
-2. **`rebuttal/REBUTTAL_DRAFT_rich.md`** — extended version
-   - Same structure but with **more detail**: fuller explanations, additional evidence, optional paragraphs
-   - Marked with `[OPTIONAL — cut if over limit]` for sections that exceed the strict version
-   - Author can read this to understand the full reasoning, then manually decide what to keep/cut/rewrite
-   - Useful for follow-up rounds — the extra material is pre-written
-
-**`per_reviewer_thread` mode** — produce one file per reviewer:
-
-1. **`rebuttal/Reviewer_<ID>_response.md`** — one self-contained file per reviewer, ready to paste into the corresponding reviewer thread
-2. **`rebuttal/SETUP_METRICS_BLOCK.md`** — optional canonical setup/metrics text when reused across reviewer files
-3. **`rebuttal/SUPPLEMENTARY_FIG_PDF/`** (optional) — when the venue does not allow PDF revision but allows anonymous figure links, generate a venue-compliant supplementary PDF. Do not hard-code an anonymous-hosting platform or typesetting style; choose what the target venue accepts.
-
-**Both modes:**
-
-4. Update `rebuttal/REBUTTAL_STATE.md`
-5. Refresh `rebuttal/REVISION_PLAN.md` so the overall checklist matches the final draft (add items, mark `already_done` as checked, carry forward any `pending` items)
-6. Present to user:
-   - For `single_document`: `PASTE_READY.txt` character count vs venue limit; `REBUTTAL_DRAFT_rich.md` for review
-   - For `per_reviewer_thread`: list of per-reviewer files with word counts; `SETUP_METRICS_BLOCK.md` if used; supplementary PDF if generated
+1. Regenerate every derived artifact from the final canonical file(s) (Artifacts table) and verify the paste targets against the venue limit: `PASTE_READY.txt` exact character count, or each `Reviewer_<ID>_response.md` word/char count
+2. Optional, `per_reviewer_thread` mode: `rebuttal/SUPPLEMENTARY_FIG_PDF/` — when the venue does not allow PDF revision but allows anonymous figure links, generate a venue-compliant supplementary PDF. Do not hard-code an anonymous-hosting platform or typesetting style; choose what the target venue accepts.
+3. Update `rebuttal/REBUTTAL_STATE.md`
+4. Refresh `rebuttal/REVISION_PLAN.md` so the overall checklist matches the final draft (add items, mark `already_done` as checked, carry forward any `pending` items)
+5. Present to user:
+   - Paste target(s) with counts vs venue limit
    - `REVISION_PLAN.md` checklist — counts of pending / approved / deferred
    - Remaining risks + lines needing manual approval
 
@@ -332,17 +322,17 @@ When new reviewer comments arrive:
 
 ### Phase 9: Render HTML view (auto, when `RENDER_HTML = true`, default)
 
-After Phase 6 (initial rebuttal) or Phase 8 (follow-up rounds) finalize `rebuttal/REBUTTAL_DRAFT_rich.md`, invoke `/render-html` on the detailed draft:
+After Phase 7 (initial rebuttal) or Phase 8 (follow-up rounds) finalizes the canonical response file(s), invoke `/render-html` on each one — `REBUTTAL_DRAFT.md`, or every `Reviewer_<ID>_response.md`:
 
 ```
-/render-html "rebuttal/REBUTTAL_DRAFT_rich.md"
+/render-html "rebuttal/Reviewer_<ID>_response.md"
 ```
 
-Uses **full Codex review gate** (reviewer-facing pre-submission deliverable — render fidelity matters; the rich draft contains author-controlled formatting that the reviewer should see exactly as intended). Output: `rebuttal/REBUTTAL_DRAFT_rich.html` with embedded source SHA256 and `.review.json` sidecar.
+Uses **full Codex review gate** (reviewer-facing pre-submission deliverable — render fidelity matters). Output: sibling `.html` with embedded source SHA256 and `.review.json` sidecar — a derived view, never edited directly.
 
 Do NOT render `rebuttal/PASTE_READY.txt` — it's exact-character-count plain text by design, not a structural artifact.
 
-**Non-blocking**: if `/render-html` fails (helper missing, Codex MCP unavailable, file write error), log the failure and treat the rebuttal phase as complete — the `PASTE_READY.txt` and `REBUTTAL_DRAFT_rich.md` are the canonical outputs.
+**Non-blocking**: if `/render-html` fails (helper missing, Codex MCP unavailable, file write error), log the failure and treat the rebuttal phase as complete — the canonical `.md` files are the deliverable.
 
 Skip if `RENDER_HTML = false`.
 
@@ -353,7 +343,7 @@ Skip if `RENDER_HTML = false`.
 - **Never overpromise.** Only promise what user explicitly approved.
 - **Full coverage.** Every reviewer concern tracked and accounted for.
 - **Preserve raw records.** Reviews and MCP outputs stored verbatim.
-- **Structure follows `VENUE_MODE`.** `single_document` → global opener with shared concerns + per-reviewer numbered detail. `per_reviewer_thread` → no global opener; each reviewer file is self-contained.
+- **One authored copy.** Response text is authored only in the canonical file(s) of the Artifacts table; every other representation — including the setup-block copies embedded in reviewer files — is regenerated mechanically from its canonical source, never hand-edited.
 - **Answer friendly reviewers too.** Reinforce supportive framing.
 - **Meta-reviewer closing.** Summarize resolved/remaining/why accept.
 - **Evidence > rhetoric.** Derivations and numbers over prose.

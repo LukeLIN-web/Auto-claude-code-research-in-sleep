@@ -185,7 +185,7 @@ The `difficulty: nightmare` flag lets GPT-5.5 read your repo directly via `codex
 4. ✍️ **Draft** — global opener + numbered per-reviewer responses + closing for the meta-reviewer
 5. 🛡️ **Safety check** — 6 lints: coverage (no concern dropped), provenance (every claim cites paper/review/user-confirmed result), commitment (no overpromising), tone, internal consistency, character limit
 6. 🔬 **GPT-5.5 stress test** — fresh-thread reviewer reads the draft cold, tries to break it
-7. 📤 **Finalize** — two outputs: `PASTE_READY.txt` (exact character count, ready to drop into OpenReview) + `REBUTTAL_DRAFT_rich.md` (extended, for human editing)
+7. 📤 **Finalize** — the authored `REBUTTAL_DRAFT.md` is the deliverable; `PASTE_READY.txt` (exact character count, ready to drop into OpenReview) is derived from it mechanically
 
 ```bash
 /rebuttal "paper/ + reviews" --- venue: ICML --- character limit: 5000

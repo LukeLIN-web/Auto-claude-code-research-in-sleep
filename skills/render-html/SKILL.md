@@ -282,7 +282,7 @@ Verdict rules:
 | `/paper-claim-audit` | `paper/PAPER_CLAIM_AUDIT.md` | full gate | Audit-class artifact |
 | `/citation-audit` | `paper/CITATION_AUDIT.md` | full gate | Audit-class artifact |
 | `/proof-checker` | `PROOF_AUDIT.md` | full gate | Audit-class artifact |
-| `/rebuttal` | `REBUTTAL_DRAFT_rich.md` | full gate | Pre-submission deliverable |
+| `/rebuttal` | `REBUTTAL_DRAFT.md` or each `Reviewer_<ID>_response.md` | full gate | Pre-submission deliverable |
 | `/paper-writing` | (no auto-HTML) | n/a | The final reader artifact is PDF |
 | `/research-wiki` | `research-wiki/index.html` dashboard | future | Phase 2.1 — dashboard template work, not in this round |
 

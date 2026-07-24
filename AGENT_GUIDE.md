@@ -83,7 +83,7 @@ Post-paper:      W4 (rebuttal), W5 (resubmit to new venue), W6 (talk)
 | W1.5 | `/experiment-bridge` | `EXPERIMENT_PLAN.md` | running code, `EXPERIMENT_LOG.md` | Have a plan, need to implement |
 | W2 | `/auto-review-loop "scope"` | paper + results | improved paper + `REVIEW_STATE.json` | Iterative improvement loop |
 | W3 | `/paper-writing "NARRATIVE_REPORT.md"` | narrative report | `paper/main.pdf` + LaTeX source | Ready to write |
-| W4 | `/rebuttal "paper/ + reviews"` | paper + reviews | `PASTE_READY.txt` + `REBUTTAL_DRAFT_rich.md` | Reviews received |
+| W4 | `/rebuttal "paper/ + reviews"` | paper + reviews | `REBUTTAL_DRAFT.md` (canonical) + derived `PASTE_READY.txt` | Reviews received |
 | W5 | `/resubmit-pipeline "paper/" --- venue: X` | polished paper + new venue | `<NEW_VENUE_DIR>/` + `RESUBMIT_REPORT.json` | Port to another venue under hard constraints |
 | W6 | `/paper-talk "paper/" --- venue: X` | paper | Beamer + PPTX + speaker notes + Q&A prep | Conference talk after acceptance |
 

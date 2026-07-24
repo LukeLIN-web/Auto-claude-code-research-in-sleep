@@ -206,7 +206,7 @@ ARIS 读论文 → 找弱点 → 克隆代码 → 针对*那些*弱点用*那套
 - 🔒 **不过度承诺** — 没批准的不承诺
 - 🔒 **全覆盖** — 每个审稿意见都追踪
 
-两版输出：`PASTE_READY.txt`（精确字数，直接粘贴）+ `REBUTTAL_DRAFT_rich.md`（详细版，自己改）
+单一手写稿 `REBUTTAL_DRAFT.md`（超限内容用 `[OPTIONAL]` 标记），`PASTE_READY.txt` 由它机械生成（精确字数，直接粘贴）
 
 <details>
 <summary><b>展开 rebuttal 参数</b> —— venue、character limit（必填）、quick mode、auto experiment、压测轮数、follow-up 上限</summary>
@@ -913,7 +913,7 @@ NARRATIVE_REPORT.md ──► /paper-plan ──► /paper-figure ──► /pap
 5. ✍️ **起草** —— 全局开场 + per-reviewer 编号回复 + meta-reviewer 收尾
 6. 🛡️ **安全检查** —— 6 道 lint：覆盖率、出处可追、承诺受控、语气、内部一致性、字符限制
 7. 🔬 **GPT-5.5 压力测试** —— 内部怀疑式终审 draft
-8. 📄 **定稿** —— 两份产物：`PASTE_READY.txt`（精确字数，直接粘贴投递）+ `REBUTTAL_DRAFT_rich.md`（扩展版用于人工编辑）
+8. 📄 **定稿** —— 唯一手写稿 `REBUTTAL_DRAFT.md` 即交付物；`PASTE_READY.txt`（精确字数，直接粘贴投递）由它机械再生
 9. 🔄 **Follow-up 回合** —— reviewer 追问场景的 delta 回复，技术细节逐轮升级
 
 <details>
