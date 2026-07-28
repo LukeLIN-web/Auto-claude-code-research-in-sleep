@@ -202,9 +202,16 @@ Author the canonical response file(s) (see Artifacts):
   - Each file must be readable standalone. No "see Reviewer X's response" references. No global opener. No aggregate draft on top of these files — run metadata (round, stress-test verdicts) goes in `REBUTTAL_STATE.md`. Per-file character counts do not: recount them from the files each time you need to check the limit.
 
 Default reply pattern per issue:
-- Sentence 1: the direct answer to the question as asked — the verdict, the number, or the yes/no ("All four headline contrasts are significant", "Both are robust to the reference"). NEVER open with process or setup ("We ran...", "We recomputed...", "New table on...") — that buries the answer; method details come after the verdict.
+- Sentence 1: a short thanks naming what the comment did, then the direct answer to the question as asked — the verdict, the number, or the yes/no ("Thank you for this pivotal comment. All four headline contrasts are significant."). NEVER open with process or setup ("We ran...", "We recomputed...", "New table on...") — that buries the answer; method details come after the verdict.
 - Sentence 2-4: grounded evidence
 - Last sentence: implication for the paper
+
+**Thanks opener (every answer).** Each `A#` opens by thanking the reviewer, then delivers the verdict immediately — the thanks is a lead-in, never a delay:
+- Keep it to one clause or one short sentence (≤ 10 words), and put the direct answer in the same sentence or the next one. If the verdict has slipped past sentence two, the opener is too long.
+- Name what the comment did, so the thanks carries information: `Thank you for this pivotal comment` / `for pushing on the judge's validated scope` / `for this precise question about per-law support` / `for checking the artifacts directly`. Generic praise with no object ("Thank you for the insightful comment") is filler when it appears more than once.
+- Vary the wording across answers within a file and across reviewer files. The same thanks sentence repeated at every `A#` reads as a template and devalues all of them; treat it under the same no-verbatim-reuse rule as shared evidence.
+- Thank for the observation, not for the verdict. Thanking a reviewer for a concern the answer then refutes ("Thank you for catching this error" when no error exists) concedes a point the evidence does not.
+- The file-level acknowledgment at the top of the response covers that reviewer's main thrust; the per-answer openers must not restate it in the same words.
 
 **Paragraph length (readability).** No paragraph over 4-5 sentences in the reviewer-facing text. When a response to one W/Q runs longer, insert blank lines at argument boundaries — typical seams: concession/claim | mechanism or evidence | concrete example | scope statement or revision promise. Split with line breaks only; never reword while splitting. Long walls of text read as evasive and reviewers skim past the numbers buried mid-paragraph.
 
@@ -284,7 +291,8 @@ Run all lints:
 8. **Adversarial design-choice scan** — for each experimental claim, ask: "Could a hostile reviewer find a non-obvious design choice (compute-match, frozen subset, sampling protocol) that I haven't disclosed?" If yes, add a one-line caveat in the Setup paragraph. Narrower than provenance; focused on *design choices* not factual sources.
 9. **Cross-thread duplication** (`per_reviewer_thread` mode only) — compare reviewer files pairwise: any sentence of ~15+ words appearing near-verbatim in more than one file, outside the `SETUP_METRICS_BLOCK.md` inclusion, fails. Fix by keeping the full treatment in the primary thread and recomposing the other occurrences per the shared-evidence recipe (Phase 4).
 10. **Losing-comparison scan** — flag every sentence or table where a baseline/competitor beats ours, in numbers OR in words (qualitative phrasings like "trails", "higher than ours", "not as strong" fail too). Fix: delete the losing comparison entirely and restate the claim in positive scope terms on the metrics we win (Phase 4 favorable-comparison selection); if a reviewer explicitly demanded that exact number, escalate to the user rather than including it.
-11. **Limitations-promise scan** — in each response's Limitations block, flag any promise-to-revise phrasing ("will be written into", "becomes an explicit statement", "we will state/name/separate in Limitations", "both become paper edits"). Fix: replace with the merits-based defense (Phase 4 "Limitations items are weaknesses") and move the edit to `REVISION_PLAN.md` marked `unpromised`.
+11. **Thanks-opener scan** — every `A#` must open with a thanks clause followed by the verdict within two sentences. Flag: answers with no thanks, thanks longer than one sentence, a verdict pushed past sentence two, and any thanks wording repeated across answers or across reviewer files.
+12. **Limitations-promise scan** — in each response's Limitations block, flag any promise-to-revise phrasing ("will be written into", "becomes an explicit statement", "we will state/name/separate in Limitations", "both become paper edits"). Fix: replace with the merits-based defense (Phase 4 "Limitations items are weaknesses") and move the edit to `REVISION_PLAN.md` marked `unpromised`.
 
 ### Phase 6: External Reviewer Stress Test
 
@@ -362,6 +370,7 @@ Skip if `RENDER_HTML = false`.
 - **Preserve raw records.** Reviews and MCP outputs stored verbatim.
 - **One authored copy.** Response text is authored only in the canonical file(s) of the Artifacts table; every other representation — including the setup-block copies embedded in reviewer files — is regenerated mechanically from its canonical source, never hand-edited.
 - **No copy-paste across threads.** Shared evidence gets its full treatment in exactly one primary thread; every other thread cites it in 1–2 reviewer-tailored sentences (Phase 4 shared-evidence recipe). Only `SETUP_METRICS_BLOCK.md` inclusions repeat verbatim.
+- **Thank, then answer.** Every answer opens with a short, specific thanks and delivers the verdict within two sentences; wording varies across answers and files, never a repeated template.
 - **Answer friendly reviewers too.** Reinforce supportive framing.
 - **Meta-reviewer closing.** Summarize resolved/remaining/why accept.
 - **Evidence > rhetoric.** Derivations and numbers over prose.
