@@ -95,9 +95,11 @@ Three hard gates — if any fails, do NOT finalize:
 
 The response text is **authored in exactly one place** — the canonical file(s) for the active `VENUE_MODE`. Every other representation is a **derived view**: regenerated mechanically from its source whenever the source changes, and never hand-edited. All edits (internal revise rounds, stress-test fixes, follow-ups) land in the canonical file. Do not create any response-bearing file outside this table.
 
+The rule covers **measurements** of the response, not only its text. Character counts, word counts and per-file lengths are derived facts that own no file: measure them at the moment a decision depends on them, and let the number die with the check. A count written into any document is wrong as soon as the response is edited, and whoever reads it next — including you on resume — will take it for fact.
+
 | File | Mode | Role |
 |---|---|---|
-| `REBUTTAL_STATE.md` | both | canonical — phase, venue rules, round, stress-test verdicts |
+| `REBUTTAL_STATE.md` | both | canonical — phase, venue rules, round, stress-test verdicts. Never record anything measurable from the response files (character or word counts, per-file lengths) |
 | `REVIEWS_RAW.md`, `FOLLOWUP_LOG.md` | both | canonical — verbatim reviewer text |
 | `ISSUE_BOARD.md` | both | canonical — atomized concerns |
 | `STRATEGY_PLAN.md` | both | canonical — themes, response modes, budgets |
@@ -194,12 +196,13 @@ Author the canonical response file(s) (see Artifacts):
 
 - `per_reviewer_thread` — one self-contained `Reviewer_<ID>_response.md` per reviewer:
   1. Brief acknowledgment of that reviewer's main thrust
-  2. Numbered W#/Q# responses (answer → evidence → implication)
+  2. One section per W#/Q# (grouped as `**W1 + Q1**` when one answer covers both): the label, then the reviewer's original text quoted verbatim in a blockquote (copied from the raw review — never paraphrased; ellipsize only overlong passages), then the answer as `**A1:**`, `**A2:**`, ... (answer → evidence → implication)
   3. Optional shared experimental-setup paragraph (see "Reusable setup block" below)
-  - Each file must be readable standalone. No "see Reviewer X's response" references. No global opener. No aggregate draft on top of these files — run metadata (round, verdicts, per-file counts) goes in `REBUTTAL_STATE.md`.
+  - Quoted review text counts toward the paste-box character limit — budget for it before drafting.
+  - Each file must be readable standalone. No "see Reviewer X's response" references. No global opener. No aggregate draft on top of these files — run metadata (round, stress-test verdicts) goes in `REBUTTAL_STATE.md`. Per-file character counts do not: recount them from the files each time you need to check the limit.
 
 Default reply pattern per issue:
-- Sentence 1: direct answer
+- Sentence 1: the direct answer to the question as asked — the verdict, the number, or the yes/no ("All four headline contrasts are significant", "Both are robust to the reference"). NEVER open with process or setup ("We ran...", "We recomputed...", "New table on...") — that buries the answer; method details come after the verdict.
 - Sentence 2-4: grounded evidence
 - Last sentence: implication for the paper
 
@@ -207,6 +210,13 @@ Default reply pattern per issue:
 
 **Reusable setup block (per_reviewer_thread mode).**
 If multiple reviewer-thread responses need the same experimental setup or metric definitions, write a canonical `SETUP_METRICS_BLOCK.md`. Reuse it consistently in each reviewer file that needs it. Target ≤ 150 words; expand only with genuinely reviewer-specific additions inline. Change-once-update-everywhere prevents drift across threads.
+
+**Shared evidence across threads (per_reviewer_thread mode).**
+When one result or analysis answers concerns from multiple reviewers, it appears at exactly one depth per thread:
+1. **Primary thread** — the reviewer whose issue card owns the most direct ask. This file carries the full treatment: protocol sentence, key numbers, honest caveat.
+2. **Every other thread** — a 1–2 sentence citation recomposed in *that* reviewer's framing, carrying only the number(s) that answer their specific ask. Write it fresh from the evidence doc; never transplant sentences from another reviewer file.
+
+Self-contained means the reviewer can follow the response without opening another thread — not that every thread repeats the full result. Reviewers and the AC read all threads; near-verbatim repetition reads as boilerplate and burns each thread's character budget. The only sanctioned verbatim duplication across reviewer files is the `SETUP_METRICS_BLOCK.md` inclusion.
 
 Heuristics from successful rebuttals (content):
 - Evidence > assertion
@@ -219,10 +229,12 @@ Heuristics from successful rebuttals (content):
 
 **Reviewer-defensive moves:**
 - **Minimum sufficient evidence per concern.** Usually one numerical anchor: the metric that maps directly to *that reviewer's* specific ask. Cut metrics other reviewers care about — bloat dilutes the answer.
+- **Favorable-comparison selection.** A response quotes a head-to-head number only where our method wins it. If a baseline beats us on a metric, the losing comparison stays out of every response file entirely — no figures AND no qualitative acknowledgment (no "trails", "lower than", "not as strong as" phrasing): report our own number, anchor the comparison on the metrics we win, and state the claim in positive scope terms ("the judge's validated strength is X"), which requires no reference to the opponent. If a reviewer explicitly demands the unfavorable number itself, pause and surface the conflict to the user instead of volunteering it. (`narrow_concession` remains available for the reviewer's substantive points — never for baseline head-to-heads.)
 - **Pre-registered calibration phrasing.** When a threshold or hold-out was fixed before generated samples were inspected, say so explicitly with a phrase like "set on hold-out before any generated sample was inspected." Defuses cherry-pick attacks at near-zero word cost. Only use when actually true.
 - **Surface non-obvious design choices upfront.** If the experimental setup has a non-obvious caveat (compute-matched ≠ epoch-matched, atypical seed protocol, restricted parameter subset, etc.), name it concretely with numbers where they clarify the design choice. Pre-empts adversarial reverse engineering.
 - **Structural distinction over denial.** When a reviewer claims your work reduces to / is subsumed by a generic framework, do not deny the reduction. Identify the structural feature your parameterization preserves that the generic framework does not — see `response_mode: structural_distinction`.
 - **Concede without surrendering the claim.** When the reviewer is partly right, explicitly accept the local point, then state what remains true and why it still supports the paper's contribution. Pair the concession with the preserved theorem, mechanism, empirical result, or scope condition.
+- **Limitations items are weaknesses.** When a reviewer lists Limitations (or asks that something "be stated explicitly"), answer each item on the merits exactly like a W#: 1-2 sentences of positive argument per item, grounded in numbers already in the response (framing like "Our position on each:"). Never reply with promise-to-revise phrasing ("will be written into the Limitations section", "becomes an explicit statement in the revised Limitations", "we will state in Limitations") — a promise-to-revise reads as conceding the point instead of defending it. The corresponding paper edit, if the author approves one, is tracked in `REVISION_PLAN.md` only and marked `unpromised`. Revision promises attached to W#/Q# answers ("We will add CIs to the law tables") remain allowed and stay future tense.
 
 Hard rules:
 - NEVER invent experiments, numbers, derivations, citations, or links
@@ -256,7 +268,7 @@ Structure:
 Rules for `REVISION_PLAN.md`:
 - Every checklist item must map to at least one `issue_id` from `ISSUE_BOARD.md`.
 - Every promise in the canonical draft(s) that implies a paper edit must appear as a checklist item — if it is not in the plan, it is a commitment-gate violation.
-- Never add items that are not backed by the draft or by user-confirmed evidence.
+- Never add items that are not backed by the draft, by user-confirmed evidence, or by a user-approved edit deliberately kept out of the response text (mark these `unpromised` — e.g. Limitations defenses).
 - On rerun / follow-up rounds, update checkbox state in place rather than regenerating from scratch.
 
 ### Phase 5: Safety Validation
@@ -264,12 +276,15 @@ Rules for `REVISION_PLAN.md`:
 Run all lints:
 1. **Coverage** — every issue maps to draft anchor
 2. **Provenance** — every factual sentence has source
-3. **Commitment** — promises are approved AND every paper-edit promise in the draft appears as a checklist item in `REVISION_PLAN.md` (and vice versa — no orphan items in the plan)
+3. **Commitment** — promises are approved AND every paper-edit promise in the draft appears as a checklist item in `REVISION_PLAN.md` (and vice versa — no orphan items in the plan, except items marked `unpromised`: edits the author will make that the response text deliberately does not promise, per the Limitations rule)
 4. **Tone** — flag aggressive/submissive/evasive phrases
 5. **Consistency** — no contradictions across reviewer replies
 6. **Limit** — exact character count on the paste target(s): freshly derived `PASTE_READY.txt`, or each `Reviewer_<ID>_response.md`. Compress if over (redundancy → friendly → opener → wording, never drop critical answers)
 7. **Thread-local context** (`per_reviewer_thread` mode only) — each reviewer file must be intelligible without reading any other reviewer file. Flag any "see Reviewer X" references or undefined terms that rely on cross-thread context.
 8. **Adversarial design-choice scan** — for each experimental claim, ask: "Could a hostile reviewer find a non-obvious design choice (compute-match, frozen subset, sampling protocol) that I haven't disclosed?" If yes, add a one-line caveat in the Setup paragraph. Narrower than provenance; focused on *design choices* not factual sources.
+9. **Cross-thread duplication** (`per_reviewer_thread` mode only) — compare reviewer files pairwise: any sentence of ~15+ words appearing near-verbatim in more than one file, outside the `SETUP_METRICS_BLOCK.md` inclusion, fails. Fix by keeping the full treatment in the primary thread and recomposing the other occurrences per the shared-evidence recipe (Phase 4).
+10. **Losing-comparison scan** — flag every sentence or table where a baseline/competitor beats ours, in numbers OR in words (qualitative phrasings like "trails", "higher than ours", "not as strong" fail too). Fix: delete the losing comparison entirely and restate the claim in positive scope terms on the metrics we win (Phase 4 favorable-comparison selection); if a reviewer explicitly demanded that exact number, escalate to the user rather than including it.
+11. **Limitations-promise scan** — in each response's Limitations block, flag any promise-to-revise phrasing ("will be written into", "becomes an explicit statement", "we will state/name/separate in Limitations", "both become paper edits"). Fix: replace with the merits-based defense (Phase 4 "Limitations items are weaknesses") and move the edit to `REVISION_PLAN.md` marked `unpromised`.
 
 ### Phase 6: External Reviewer Stress Test
 
@@ -346,10 +361,13 @@ Skip if `RENDER_HTML = false`.
 - **Full coverage.** Every reviewer concern tracked and accounted for.
 - **Preserve raw records.** Reviews and MCP outputs stored verbatim.
 - **One authored copy.** Response text is authored only in the canonical file(s) of the Artifacts table; every other representation — including the setup-block copies embedded in reviewer files — is regenerated mechanically from its canonical source, never hand-edited.
+- **No copy-paste across threads.** Shared evidence gets its full treatment in exactly one primary thread; every other thread cites it in 1–2 reviewer-tailored sentences (Phase 4 shared-evidence recipe). Only `SETUP_METRICS_BLOCK.md` inclusions repeat verbatim.
 - **Answer friendly reviewers too.** Reinforce supportive framing.
 - **Meta-reviewer closing.** Summarize resolved/remaining/why accept.
 - **Evidence > rhetoric.** Derivations and numbers over prose.
 - **Concede selectively.** Narrow honest concessions > broad denials.
+- **Never volunteer losing comparisons.** A comparison a baseline wins never appears in a response — neither its numbers nor any qualitative mention that the baseline is ahead. Omit it and claim only the metrics we win.
+- **Limitations get defenses, not promises.** Reviewer-listed Limitations items are answered like weaknesses — position + evidence per item; any resulting paper edit lives only in `REVISION_PLAN.md` (marked `unpromised`), never as a promise in the response text.
 - **Don't waste space on unwinnable arguments.** Answer once, move on.
 - **Respect the limit.** Character budget is a hard constraint.
 - **Resume cleanly.** Continue from REBUTTAL_STATE.md on rerun.
