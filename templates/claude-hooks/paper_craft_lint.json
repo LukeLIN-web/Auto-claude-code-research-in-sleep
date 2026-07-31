@@ -1,0 +1,17 @@
+{
+  "_comment": "ARIS paper-craft lint: advisory PostToolUse check on .tex and matplotlib .py writes. Catches the mechanically checkable subset of shared-references/manuscript-craft.md §5 and figure-craft.md §1-3 (missing ~ before \\cite/\\ref, raster \\includegraphics, 'x' instead of $\\times$, lowercase \\mathcal, leftover co-author color macros and draft comments, titles inside figures, PNG savefig, red+green palettes). Advisory only — the write already landed; exit 2 shows the notes to the model, nothing is reverted or blocked. Repo docs under skills/ docs/ templates/ are skipped because they quote these patterns as examples. Merge into your project's .claude/settings.json; adjust the script path for your checkout.",
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"${CLAUDE_PROJECT_DIR}/templates/claude-hooks/paper_craft_lint.py\"",
+            "timeout": 5
+          }
+        ]
+      }
+    ]
+  }
+}

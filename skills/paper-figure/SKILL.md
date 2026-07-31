@@ -22,13 +22,24 @@ Generate all figures and tables for a paper based on: **$ARGUMENTS**
 
 **In practice:** For a typical ML paper, this skill handles ~60% of figures (all data plots + tables). The remaining ~40% (hero figure, architecture diagram, qualitative results) need to be created manually and placed in `figures/` before running `/paper-write`. The skill will detect these as "existing figures" and preserve them.
 
+## Craft Rules (read first)
+
+Before writing any plotting code, read
+[`../shared-references/figure-craft.md`](../shared-references/figure-craft.md).
+It is the SSOT for the mechanical rules this skill's defaults implement — font
+scaling, line weights, color safety, bar labeling, the
+generate → typeset → export split, W&B export pitfalls, and the figure critique
+loop. The constants and checklist below are derived from it; when they disagree,
+`figure-craft.md` wins and this file should be corrected.
+
 ## Constants
 
 - **STYLE = `publication`** — Visual style preset. Options: `publication` (default, clean for print), `poster` (larger fonts), `slide` (bold colors)
 - **DPI = 300** — Output resolution
 - **FORMAT = `pdf`** — Output format. Options: `pdf` (vector, best for LaTeX), `png` (raster fallback)
 - **COLOR_PALETTE = `tab10`** — Default matplotlib color cycle. Options: `tab10`, `Set2`, `colorblind` (deuteranopia-safe)
-- **FONT_SIZE = 10** — Base font size (matches typical conference body text)
+- **FONT_SIZE = 10** — Base font size, **expressed in final on-page points**. The value passed to matplotlib must be divided by the include scale: a figure saved 5 in wide and included at `0.48\textwidth` (≈3.3 in) shrinks by ~0.66, so `FONT_SIZE / 0.66 ≈ 15` is the source value. Never let a rendered glyph print smaller than the paper's body text. See `figure-craft.md` § "The scale rule".
+- **LINE_WIDTH = 2.0** — Default line width. Matplotlib's 1.5 default prints thin and cheap.
 - **FIG_DIR = `figures/`** — Output directory for generated figures
 - **REVIEWER_MODEL = `gpt-5.5`** — Model used via Codex MCP for figure quality review.
 
@@ -66,15 +77,24 @@ Create a shared style configuration script:
 # paper_plot_style.py — shared across all figure scripts
 import matplotlib.pyplot as plt
 import matplotlib
+
+# On-page target sizes, then divided by the include scale so the PRINTED glyph
+# is at least body size. INCLUDE_SCALE = includegraphics width / figsize width.
+INCLUDE_SCALE = 0.66          # 5in canvas included at 0.48\textwidth (~3.3in)
+SRC = lambda pt: pt / INCLUDE_SCALE
+
 matplotlib.rcParams.update({
-    'font.size': FONT_SIZE,
+    'font.size': SRC(FONT_SIZE),
     'font.family': 'serif',
     'font.serif': ['Times New Roman', 'Times', 'DejaVu Serif'],
-    'axes.labelsize': FONT_SIZE,
-    'axes.titlesize': FONT_SIZE + 1,
-    'xtick.labelsize': FONT_SIZE - 1,
-    'ytick.labelsize': FONT_SIZE - 1,
-    'legend.fontsize': FONT_SIZE - 1,
+    'axes.labelsize': SRC(FONT_SIZE),
+    'axes.titlesize': SRC(FONT_SIZE + 1),
+    'xtick.labelsize': SRC(FONT_SIZE),
+    'ytick.labelsize': SRC(FONT_SIZE),
+    'legend.fontsize': SRC(FONT_SIZE),
+    'lines.linewidth': LINE_WIDTH,
+    'lines.markersize': 7,
+    'axes.linewidth': 1.2,
     'figure.dpi': DPI,
     'savefig.dpi': DPI,
     'savefig.bbox': 'tight',
@@ -199,6 +219,11 @@ Save all snippets to `figures/latex_includes.tex` for easy copy-paste into the p
 
 ### Step 7: Figure Quality Review with REVIEWER_MODEL
 
+If the reviewer backend is vision-capable, send the **rendered figure image** at
+its printed size, not only the description — scale, crowding and label-overlap
+problems are invisible in a textual summary. Ask what a reviewer at the target
+venue would find wrong with the figure.
+
 Send figure descriptions and captions to GPT-5.5 for review:
 
 ```
@@ -222,7 +247,13 @@ mcp__codex__codex:
 
 Before finishing, verify each figure (from pedrohcgs/claude-code-my-workflow):
 
-- [ ] Font size readable at printed paper size (not too small)
+- [ ] Rendered glyphs in the compiled PDF are ≥ body-text size (no zooming to read an axis)
+- [ ] Line widths ≥ LINE_WIDTH; markers readable at final scale
+- [ ] No red-green pairing (most common color-vision deficiency)
+- [ ] Bars use pale fills with the value printed on top of each bar
+- [ ] Labels/legend entries capitalized and short (few words, large type)
+- [ ] Multipliers typeset as `$\times$`, never a letter `x`
+- [ ] Exported PDF is cropped — no embedded page margins shrinking the figure
 - [ ] Colors distinguishable in grayscale (print-friendly)
 - [ ] **No title inside figures** — titles go only in LaTeX `\caption{}` (from pedrohcgs)
 - [ ] Legend does not overlap data

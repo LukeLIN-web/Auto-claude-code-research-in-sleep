@@ -21,6 +21,26 @@ Get a multi-round critical review of research work from the selected external re
 
 - REVIEWER_MODEL = `gpt-5.5` — Default model for the Codex backend. Must be an OpenAI model (e.g., `gpt-5.5`, `o3`, `gpt-4o`). Manual backend uses whatever model the user chooses.
 - **REVIEWER_BACKEND = `codex`** — Default: Codex MCP (xhigh). Override with `— reviewer: oracle-pro` for Oracle MCP, or `— reviewer: manual` for Manual Review MCP. If manual-review MCP is unavailable, stop and print the install command; do not fall back to Codex. See `shared-references/reviewer-routing.md`.
+- **REVIEWER_PERSONA = `P1`** — The frame the reviewer is asked to adopt, from
+  [`../shared-references/reviewer-personas.md`](../shared-references/reviewer-personas.md).
+  `P1` (Gatekeeper: reject-by-default, scored, plus a rewrite strategy) is the
+  default because this skill answers "is this submittable?". Override with
+  `— persona: P2` for an unscored, six-heading, evidence-anchored review when
+  the deliverable is a verifiable fix list rather than a verdict.
+
+## Persona
+
+Send the persona template **verbatim** from `reviewer-personas.md` (§2 for P1,
+§3 for P2), with `[VENUE]` and the manuscript/context fields filled in. Do not
+paraphrase it — the reject-by-default framing and the evidence-anchor clause are
+what make the output actionable rather than flattering.
+
+The anchor rule applies to every round: each weakness must name a section,
+figure, table or equation, or state `No direct evidence found in the manuscript.`
+**Spot-check the anchors before acting on a finding** — open the cited location.
+A finding whose anchor does not exist, or does not say what the reviewer claims,
+is dropped, not debated. This is the cheapest defense against a reviewer model
+inventing plausible-sounding weaknesses.
 
 ## Reviewer Calling Convention
 
@@ -70,14 +90,15 @@ Send a detailed prompt with xhigh reasoning, using the selected backend.
 mcp__codex__codex:
   config: {"model_reasoning_effort": "xhigh"}
   prompt: |
+    [REVIEWER_PERSONA template, verbatim from shared-references/reviewer-personas.md]
+
     [Full research context + specific questions]
-    Please act as a senior ML reviewer (NeurIPS/ICML level). Identify:
-    1. Logical gaps or unjustified claims
-    2. Missing experiments that would strengthen the story
-    3. Narrative weaknesses
-    4. Whether the contribution is sufficient for a top venue
-    Please be brutally honest.
 ```
+
+The persona template already carries the role, the reject-by-default stance, the
+review dimensions (originality / rigor / claim-evidence consistency), the anchor
+requirement, and the output contract. Append the project context and any specific
+questions below it — do not restate the role in your own words.
 
 *For manual backend:* use `mcp__manual_review__review` with the same prompt and `config: {"model_reasoning_effort": "xhigh"}`. Save the returned `threadId`.
 
@@ -131,13 +152,14 @@ Update project memory/notes with key review conclusions.
 - Be honest about weaknesses — hiding them leads to worse feedback
 - Push back on criticisms you disagree with, but accept valid ones
 - Focus on ACTIONABLE feedback — "what experiment would fix this?"
+- Every weakness must carry an evidence anchor; spot-check anchors before acting, and drop findings whose anchor does not check out
 - Document the threadId for potential future resumption
 - The review document should be self-contained (readable without the conversation)
 
 ## Prompt Templates
 
 ### For initial review:
-"I'm going to present a complete ML research project for your critical review. Please act as a senior ML reviewer (NeurIPS/ICML level)..."
+Use the REVIEWER_PERSONA template verbatim (`../shared-references/reviewer-personas.md` §2 for P1, §3 for P2), then append the project context. The follow-up templates below are additive — they run inside the same thread after the persona review lands.
 
 ### For experiment design:
 "Please design the minimal additional experiment package that gives the highest acceptance lift per GPU week. Our compute: [describe]. Be very specific about configurations."

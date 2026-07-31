@@ -33,6 +33,8 @@ Keep the existing `insleep` workflow and outputs, but use the shared references 
 
 - Read `../shared-references/writing-principles.md` when framing the one-sentence contribution, Abstract, Introduction, Related Work, or hero figure.
 - Read `../shared-references/venue-checklists.md` before freezing the outline for a specific venue.
+- Read `../shared-references/manuscript-craft.md` when allocating sections — the section policy (one Experiments section, Advantages paragraph, appendix pointers) constrains the outline, and display-item caps at some venues constrain the figure plan.
+- Read `../shared-references/figure-craft.md` when drafting the figure plan — plan for one high-density headline figure rather than several thin ones.
 - Only load these references when needed; do not paste their full contents into the working draft.
 
 ## Optional: Style reference (`— style-ref: <source>`, opt-in)

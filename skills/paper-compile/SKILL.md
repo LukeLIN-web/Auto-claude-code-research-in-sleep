@@ -162,6 +162,28 @@ grep -c "LaTeX Warning.*undefined" compile.log
 grep -c "Citation.*undefined" compile.log
 ```
 
+**Source hygiene (craft lint):** the mechanically checkable subset of
+[`../shared-references/manuscript-craft.md`](../shared-references/manuscript-craft.md)
+§5 — that file is the SSOT, these greps are just its cheap enforcement. Report
+each hit; none of them are compile errors, all of them are things a reviewer
+sees.
+
+```bash
+cd $PAPER_DIR
+# Missing non-breaking space before a reference: "Table \ref" instead of "Table~\ref"
+grep -rnE '[A-Za-z0-9] +\\(cite[tp]?|ref|eqref)\{' --include=*.tex .
+# Raster images included directly
+grep -rniE '\\includegraphics(\[[^]]*\])?\{[^}]*\.(png|jpe?g)\}' --include=*.tex .
+# Multiplier written as a letter
+grep -rnE '[0-9]+(\.[0-9]+)?[ ]?x( |-)(faster|speedup|smaller|larger|less|more)' --include=*.tex .
+# \mathcal with a lowercase argument (renders wrong or errors)
+grep -rnE '\\mathcal\{[a-z]' --include=*.tex .
+# Draft leftovers: co-author color macros and commented-out notes shipped to arXiv
+grep -rnE '\\textcolor\{(red|blue|green|orange)\}' --include=*.tex .
+# Overfull boxes intruding into the margin (venue format violation, not cosmetic)
+grep -nE 'Overfull \\hbox' compile.log | head -20
+```
+
 ### Step 6: Page Count Verification
 
 **CRITICAL**: Verify paper fits within MAX_PAGES.

@@ -19,6 +19,11 @@ The goal is not to generate a giant benchmark wishlist. The goal is to turn a pr
 3. the method is elegant enough that extra complexity is unnecessary
 4. any frontier-model-era component is genuinely useful, not decorative
 
+## References
+
+- [`../shared-references/experiment-craft.md`](../shared-references/experiment-craft.md) — run ordering (big swings first), comparability rules that make every run reusable as an ablation (fixed baseline setting, equal effective batch size via gradient accumulation, keep checkpoints), and table-driven rather than hunch-driven execution. Read before fixing the run order.
+- [`../shared-references/experiment-integrity.md`](../shared-references/experiment-integrity.md) — the honesty boundary for what a result may claim.
+
 ## Constants
 
 - **OUTPUT_DIR = `refine-logs/`** — Default destination for experiment planning artifacts.

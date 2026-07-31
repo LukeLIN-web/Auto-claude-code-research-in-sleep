@@ -114,6 +114,20 @@ Long-running loops may hit the context window limit, triggering automatic compac
 
 #### Phase A: Review
 
+**Persona.** This loop uses persona **P1 (Gatekeeper)** from
+[`../shared-references/reviewer-personas.md`](../shared-references/reviewer-personas.md)
+— the stopping rule needs a score — with P2's **anchor rule** bolted on: every
+weakness must name the section / figure / table / equation it comes from, or say
+`No direct evidence found in the manuscript.` For a heavier review, paste the P1
+template verbatim ahead of the round context instead of the condensed prompt
+below; the condensed form is the same frame, shortened for a per-round loop.
+
+**Anchor spot-check (before Phase B).** Open the location each weakness cites.
+A weakness whose anchor does not exist — or does not say what the reviewer
+claims — is **dropped, not fixed**: log it in `AUTO_REVIEW.md` as
+`DROPPED (bad anchor)` and do not spend a round on it. Without this check the
+loop happily "fixes" hallucinated problems and reports progress.
+
 **Route by REVIEWER_DIFFICULTY:**
 
 ##### Medium (default) — MCP Review
@@ -133,12 +147,17 @@ mcp__codex__codex:
 
     Please act as a senior ML reviewer (NeurIPS/ICML level).
 
+    Default to a rejection stance unless the work's strengths change your mind.
+
     1. Score this work 1-10 for a top venue
-    2. List remaining critical weaknesses (ranked by severity)
+    2. List remaining critical weaknesses (ranked by severity). For each, give an
+       evidence anchor — the section / figure / table / equation it comes from —
+       or write exactly "No direct evidence found in the manuscript."
     3. For each weakness, specify the MINIMUM fix (experiment, analysis, or reframing)
     4. State clearly: is this READY for submission? Yes/No/Almost
 
-    Be brutally honest. If the work is ready, say so clearly.
+    Be brutally honest and specific: not "experiments are insufficient" but
+    "no robustness evaluation on <dataset>". If the work is ready, say so clearly.
 ```
 
 *For manual backend:* use `mcp__manual_review__review` with the `prompt` text above and `config: {"model_reasoning_effort": "xhigh"}`. Save the returned `threadId`.

@@ -35,6 +35,14 @@ A **fresh reviewer with zero prior context** catches these because it has no exp
 | `/result-to-claim` | Does the data scientifically support this claim? |
 | **`/paper-claim-audit`** | **Does the paper report the data truthfully and precisely?** |
 
+## Reviewer Persona
+
+Audits use persona **P2 (evidence-anchored, unscored)** from
+[`../shared-references/reviewer-personas.md`](../shared-references/reviewer-personas.md):
+fixed headings, every finding anchored to a specific location, and **no score or
+accept/reject verdict**. A number invites arguing with the number; an anchored
+finding is either confirmed or dropped by opening the file it points at.
+
 ## Core Principle
 
 **Zero-context, fresh reviewer.** The auditor receives ONLY:

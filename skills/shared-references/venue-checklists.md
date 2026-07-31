@@ -1,4 +1,4 @@
-# Venue Checklists for ICLR, NeurIPS, ICML, and IEEE
+# Venue Checklists for ICLR, NeurIPS, ICML, IEEE, AAAI, ACM, TMLR, and Nature MI
 
 Use this reference near the end of `paper-plan` and during the final checks in `paper-write`.
 
@@ -102,6 +102,115 @@ Final-check implications:
 - Verify no `\citep` or `\citet` commands are present.
 - Confirm the correct `\documentclass` option (`[conference]`, not `[journal]`).
 - Some conferences require IEEE copyright notice — check submission portal for specific requirements.
+
+## AAAI
+
+Planning implications:
+
+- Submission is a **single `.tex` file**. Do not ship unused figure assets.
+- **No references in the abstract.**
+- The reference list is not required to start on its own page — it follows the
+  main body directly.
+- Figures must be at least 300 dpi; 72 dpi is rejected.
+- `listings` is for real code excerpts; `algorithm` is for pseudocode. Do not
+  typeset pseudocode as a code listing.
+- The AAAI style disables `\section` numbering by default, so plan
+  cross-references accordingly (name sections, or re-enable numbering per the
+  venue's own guidance).
+
+Final-check implications:
+
+- Nothing intrudes into the margin — no oversized figure, no long unbroken
+  equation. Read the compile log for overfull boxes (`manuscript-craft.md` §5).
+- Confirm the abstract is citation-free and the single-file requirement is met.
+
+## ACM `acmart` venues (ACM MM, SIGIR, KDD, CHI, DAC 2026+, ...)
+
+Planning implications:
+
+- The class is `acmart.cls`; the conference layout is the `sigconf` format.
+  The template ships several sample variants — **`authordraft` is the submission
+  format**, the plain `sigconf` sample is what a camera-ready is reformatted to.
+  Other variants differ only in bibliography engine (`biblatex`), i18n, or TeX
+  engine (`lualatex`/`xelatex`); pick `authordraft` unless a specific need
+  applies.
+- Page budget is typically "N pages plus 1 page for references only" — check the
+  CFP for whether references are excluded. Some ACM-hosted venues (e.g. DAC)
+  **do not accept an appendix at all**; everything must fit the main body.
+- The abstract must use the template's default formatting. No bold, no color, no
+  restyling — modifying it is a format violation.
+- Keep the CCS concepts block. The permission/copyright block is nominally
+  removable but is best left in — it must return for the camera-ready anyway.
+
+Final-check implications:
+
+- Verify the correct sample variant is in use and no camera-ready-only options
+  are enabled.
+- Confirm author list is final: many ACM-hosted venues freeze author addition and
+  reordering at the submission deadline.
+
+## TMLR / JMLR
+
+Planning implications:
+
+- TMLR uses **double-blind** review and publishes reviews openly; JMLR is a
+  separate track with its own scope (ML theory and methodology, not applications
+  of ML to other fields).
+- TMLR has **no page limit** — length must be justified by content. Papers past
+  ~12 pages take longer to review. This makes TMLR a good fit for
+  experiment-dense work that a conference page budget would mutilate.
+- TMLR's acceptance criteria are claim-centric rather than novelty-centric:
+  rejection targets bold claims without rigorous evidence, unclear writing, false
+  novelty claims relative to published work, and reimplementations of already
+  replicated ideas. Plan the claims-to-evidence matrix accordingly.
+- JMLR-length papers (50-90 pages, derivation-heavy) are normal; do not compress
+  proofs to conference density.
+
+Final-check implications:
+
+- Confirm every claim in the abstract has a rigorously supported counterpart in
+  the body — this is TMLR's primary rejection axis.
+- Confirm anonymity for TMLR.
+
+## Nature Machine Intelligence (and Springer Nature journals)
+
+Planning implications:
+
+- Scope skews to genuinely new capability rather than incremental improvement.
+- Classes: `sn-jnl.cls` with `sn-nature.bst`. The submission template is
+  single-column; that is expected, not a mistake.
+- **Article format**: main text up to ~3,500 words excluding abstract, Methods,
+  references and figure legends; abstract up to ~150 words and unreferenced;
+  **at most ~6 display items** (figures + tables combined); ~50 references as a
+  guideline.
+- Structure is fixed: Introduction (**no heading**) → Results → Discussion →
+  Methods, with topical subheadings in Results and Methods but none in
+  Discussion. Results is the experiments section; Methods carries settings;
+  Discussion carries advantages and future work.
+- The display-item cap forces composite figures — plan each figure as a panel
+  grid from the start (`figure-craft.md`).
+- Double-blind is opt-in; the default is not anonymous.
+- The first submission does not require the final template — section order
+  matching the published structure is what matters. Expect roughly two weeks to
+  an editorial decision, ~6 weeks to first review if sent out, and a multi-month
+  total cycle.
+
+Final-check implications:
+
+- Count display items against the cap before adding any figure.
+- Confirm the Introduction carries no heading and Discussion carries no
+  subheadings.
+
+## Deadlines and acceptance rates
+
+Do not hard-code deadlines or acceptance rates into skills or plans — they move
+every cycle. Resolve them at planning time from the venue's own CFP, plus:
+
+- <https://aideadlines.org/> — deadline tracker across ML/CV/NLP/RO/SP/DM.
+- <https://github.com/lixin4ever/Conference-Acceptance-Rate> — historical rates.
+
+When a plan depends on a deadline, record the date **and the URL it came from**,
+so a stale number is traceable rather than silently trusted.
 
 ## Minimal Submission Checklist
 
