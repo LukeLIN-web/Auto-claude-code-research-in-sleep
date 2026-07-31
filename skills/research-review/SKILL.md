@@ -1,11 +1,11 @@
 ---
 name: research-review
 description: Get a deep critical review of research from an external reviewer backend (Codex or manual). Use when user says "review my research", "help me review", "get external review", or wants critical feedback on research ideas, papers, or experimental results.
-argument-hint: [topic-or-scope]
+argument-hint: "[topic-or-scope]"
 allowed-tools: Bash(*), Read, Grep, Glob, Write, Edit, mcp__codex__codex, mcp__codex__codex-reply, mcp__manual_review__review, mcp__manual_review__review_reply
 ---
 
-# Research Review via External Reviewer Backend (xhigh reasoning)
+# Research Review via External Reviewer Backend (ultra reasoning)
 
 > 🔒 **Do not wrap this skill in `/loop`, `/schedule`, or `CronCreate`.** It is
 > verdict-bearing — it produces a cross-model review verdict, multi-round with
@@ -19,8 +19,8 @@ Get a multi-round critical review of research work from the selected external re
 
 ## Constants
 
-- REVIEWER_MODEL = `gpt-5.5` — Default model for the Codex backend. Must be an OpenAI model (e.g., `gpt-5.5`, `o3`, `gpt-4o`). Manual backend uses whatever model the user chooses.
-- **REVIEWER_BACKEND = `codex`** — Default: Codex MCP (xhigh). Override with `— reviewer: oracle-pro` for Oracle MCP, or `— reviewer: manual` for Manual Review MCP. If manual-review MCP is unavailable, stop and print the install command; do not fall back to Codex. See `shared-references/reviewer-routing.md`.
+- REVIEWER_MODEL = `gpt-5.6-sol` — Default model for the Codex backend, reasoning effort `ultra` (deep-audit tier). Must be an OpenAI model (e.g., `gpt-5.6-sol`, `gpt-5.5`, `o3`). Manual backend uses whatever model the user chooses.
+- **REVIEWER_BACKEND = `codex`** — Default: Codex MCP (ultra). Override with `— reviewer: oracle-pro` for Oracle MCP, or `— reviewer: manual` for Manual Review MCP. If manual-review MCP is unavailable, stop and print the install command; do not fall back to Codex. See `shared-references/reviewer-routing.md`.
 - **REVIEWER_PERSONA = `P1`** — The frame the reviewer is asked to adopt, from
   [`../shared-references/reviewer-personas.md`](../shared-references/reviewer-personas.md).
   `P1` (Gatekeeper: reject-by-default, scored, plus a rewrite strategy) is the
@@ -60,8 +60,11 @@ When calling the reviewer, branch on REVIEWER_BACKEND:
     prompt: [follow-up prompt]
     config: {"model_reasoning_effort": "xhigh"}
 
-Prompt fidelity: the manual prompt must be exactly the same text that Codex would receive.
-Review tracing applies equally to both backends.
+Content fidelity: the manual reviewer should see the same substantive review
+brief Codex would read. If the manual UI supports file upload / attachment,
+reuse the same brief file; otherwise paste the brief contents inline because
+remote web UIs cannot read your local filesystem paths. Review tracing applies
+equally to both backends.
 
 ## Context: $ARGUMENTS
 
@@ -82,30 +85,56 @@ Before calling the external reviewer, compile a comprehensive briefing:
 3. Identify: core claims, methodology, key results, known weaknesses
 
 ### Step 2: Initial Review (Round 1)
-Send a detailed prompt with xhigh reasoning, using the selected backend.
+Send a detailed prompt with ultra reasoning, using the selected backend. For
+the `codex` backend, keep the MCP payload short: write the full briefing to
+`RESEARCH_REVIEW_REQUEST.md`, then point Codex at that file.
 
 *For codex backend:*
 
 ```
 mcp__codex__codex:
-  config: {"model_reasoning_effort": "xhigh"}
+  model: gpt-5.6-sol
+  config: {"model_reasoning_effort": "ultra"}
   prompt: |
-    [REVIEWER_PERSONA template, verbatim from shared-references/reviewer-personas.md]
+    Read the review brief at <absolute path to RESEARCH_REVIEW_REQUEST.md>.
+    Executor notes are not evidence beyond the files they cite, so verify the
+    referenced artifacts before judging. Trust nothing the author tells you —
+    verify everything yourself.
 
-    [Full research context + specific questions]
+    [REVIEWER_PERSONA template, verbatim from shared-references/reviewer-personas.md]
 ```
 
 The persona template already carries the role, the reject-by-default stance, the
 review dimensions (originality / rigor / claim-evidence consistency), the anchor
-requirement, and the output contract. Append the project context and any specific
-questions below it — do not restate the role in your own words.
+requirement, and the output contract — do not restate the role in your own words.
+The review brief carries the substance: full research context, the specific
+questions, and the primary artifact / raw-result paths the reviewer should
+inspect.
 
-*For manual backend:* use `mcp__manual_review__review` with the same prompt and `config: {"model_reasoning_effort": "xhigh"}`. Save the returned `threadId`.
+*For manual backend:* use `mcp__manual_review__review` with the same persona
+template and brief contents. If the manual-review UI supports attachments, attach
+`RESEARCH_REVIEW_REQUEST.md`; otherwise paste the brief inline. Save the
+returned `threadId`.
 
 ### Step 3: Iterative Dialogue (Rounds 2-N)
 For `codex` backend: use `mcp__codex__codex-reply` with the returned `threadId`.
 For `manual` backend: use `mcp__manual_review__review_reply` with the same `threadId`.
-Use the appropriate tool to continue the conversation:
+Use the appropriate tool to continue the conversation. For Codex follow-up
+rounds, write an updated brief such as `RESEARCH_REVIEW_ROUND_2.md` and send
+only the path:
+
+```text
+mcp__codex__codex-reply:
+  threadId: [saved reviewer threadId from Step 2]
+  # replies inherit the thread's model/effort (gpt-5.6-sol ultra)
+  prompt: |
+    Read the updated review brief at <absolute path to
+    RESEARCH_REVIEW_ROUND_2.md>.
+    Focus on unresolved weaknesses and whether the revision actually fixed them.
+```
+
+For manual follow-up rounds, attach that same updated brief if possible;
+otherwise paste it inline.
 
 For each round:
 1. **Respond** to criticisms with evidence/counterarguments
@@ -147,8 +176,10 @@ Update project memory/notes with key review conclusions.
 
 ## Key Rules
 
-- ALWAYS use `config: {"model_reasoning_effort": "xhigh"}` for reviews
-- Send comprehensive context in Round 1 — the external model cannot read your files
+- ALWAYS pin `model: gpt-5.6-sol` + `config: {"model_reasoning_effort": "ultra"}` for reviews (deep-audit tier; capability fallback per `reviewer-routing.md`, never below `xhigh`)
+- Put comprehensive context in the review brief. Codex can read local files
+  when you pass an absolute path; manual reviewers usually cannot, so attach or
+  paste the same brief there.
 - Be honest about weaknesses — hiding them leads to worse feedback
 - Push back on criticisms you disagree with, but accept valid ones
 - Focus on ACTIONABLE feedback — "what experiment would fix this?"

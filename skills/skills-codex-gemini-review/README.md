@@ -8,6 +8,11 @@ This package is a **thin override layer** for users who want:
 
 It is designed to sit on top of the upstream Codex-native package at `skills/skills-codex/`.
 
+Because the executor is Codex and the reviewer is Gemini, overlay traces and
+audit artifacts record `review_independence: cross-family` and
+`acceptance_status: accepted`. The verifier still decides whether all required
+audits reached accepted assurance.
+
 ## What this package contains
 
 - Only the reviewer-aware skill overrides that need a different reviewer backend
@@ -26,7 +31,7 @@ Current overrides:
 - `grant-proposal`
 - `paper-plan`
 - `paper-figure`
-- `paper-poster`
+- `paper-poster-html`
 - `paper-slides`
 - `paper-write`
 - `paper-writing`
@@ -58,7 +63,7 @@ The additional **7** routed reviewer-aware entry points are:
 - `grant-proposal`
 - `paper-writing`
 - `paper-slides`
-- `paper-poster`
+- `paper-poster-html`
 
 So when comparing against the Claude overlay, the cleanest statement is:
 
@@ -78,7 +83,7 @@ So when comparing against the Claude overlay, the cleanest statement is:
   - `idea-creator`
   - `grant-proposal`
   - `paper-slides`
-  - `paper-poster`
+  - `paper-poster-html`
 - **3 wrappers** mostly orchestrate downstream reviewer-aware skills and pass `REVIEWER_MODEL=gemini-review` through:
   - `idea-discovery`
   - `idea-discovery-robot`

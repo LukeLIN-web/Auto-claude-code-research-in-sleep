@@ -8,6 +8,10 @@
 
 它不是新造一套完整技能包，而是叠加在上游已有的 `skills/skills-codex/` 之上。
 
+由于执行者是 Codex、审稿人是 Gemini，本 overlay 的 trace/audit 记录
+`review_independence: cross-family` 与 `acceptance_status: accepted`；最终仍由
+审计汇总器确认所有必需阶段是否都达到 accepted。
+
 ## 这个包包含什么
 
 - 只包含需要切换 reviewer backend 的 reviewer-aware skill 覆盖文件
@@ -26,7 +30,7 @@
 - `grant-proposal`
 - `paper-plan`
 - `paper-figure`
-- `paper-poster`
+- `paper-poster-html`
 - `paper-slides`
 - `paper-write`
 - `paper-writing`
@@ -58,7 +62,7 @@
 - `grant-proposal`
 - `paper-writing`
 - `paper-slides`
-- `paper-poster`
+- `paper-poster-html`
 
 所以和 Claude overlay 对比时，最准确的一句话是：
 
@@ -78,7 +82,7 @@
   - `idea-creator`
   - `grant-proposal`
   - `paper-slides`
-  - `paper-poster`
+  - `paper-poster-html`
 - **3 个 wrapper**：主要串联下游 reviewer-aware skill，并传递 `REVIEWER_MODEL=gemini-review`
   - `idea-discovery`
   - `idea-discovery-robot`

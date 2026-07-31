@@ -4,12 +4,15 @@
 
 ## 当前范围
 
-- 基座覆盖：主线 `skills/` 的 `78` 个 skill 全量同步
-- 支持目录：`shared-references/`
+- 基座覆盖：主线 `skills/` 的 `81` 个 skill 全量同步
+- 支持目录：`shared-references/`，与主线 `30/30` 名称完整对齐
 - reviewer-heavy skill 的默认 reviewer 契约：
   - 首轮：`spawn_agent`
   - 续接：`send_input`
   - 推理强度：`xhigh`
+  - 基础 Codex 自审：`review_independence: same-family`、
+    `acceptance_status: provisional`
+  - Claude/Gemini overlay 或确定性验证：`acceptance_status: accepted`
 - 可选 overlay：
   - `skills-codex-claude-review`
   - `skills-codex-gemini-review`
@@ -91,7 +94,7 @@ bash ~/aris_repo/tools/smart_update_codex.sh --project ~/your-project --apply
 
 - `comm-lit-review`
 - `research-lit`
-- `paper-poster`
+- `paper-poster-html`
 - `pixel-art`
 
 如果缺少所需能力，必须明确提示用户去配置，不允许自动改成简化路径继续跑。

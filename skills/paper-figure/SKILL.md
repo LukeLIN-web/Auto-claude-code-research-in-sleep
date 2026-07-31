@@ -1,7 +1,7 @@
 ---
 name: paper-figure
 description: "Generate publication-quality figures and tables from experiment results. Use when user says \"画图\", \"作图\", \"generate figures\", \"paper figures\", or needs plots for a paper."
-argument-hint: [figure-plan-or-data-path]
+argument-hint: "[figure-plan-or-data-path]"
 allowed-tools: Bash(*), Read, Write, Edit, Grep, Glob, mcp__codex__codex, mcp__codex__codex-reply
 ---
 
@@ -41,7 +41,7 @@ loop. The constants and checklist below are derived from it; when they disagree,
 - **FONT_SIZE = 10** — Base font size, **expressed in final on-page points**. The value passed to matplotlib must be divided by the include scale: a figure saved 5 in wide and included at `0.48\textwidth` (≈3.3 in) shrinks by ~0.66, so `FONT_SIZE / 0.66 ≈ 15` is the source value. Never let a rendered glyph print smaller than the paper's body text. See `figure-craft.md` § "The scale rule".
 - **LINE_WIDTH = 2.0** — Default line width. Matplotlib's 1.5 default prints thin and cheap.
 - **FIG_DIR = `figures/`** — Output directory for generated figures
-- **REVIEWER_MODEL = `gpt-5.5`** — Model used via Codex MCP for figure quality review.
+- **REVIEWER_MODEL = `gpt-5.6-sol`** — Model used via Codex MCP for figure quality review.
 
 ## Inputs
 
@@ -199,7 +199,11 @@ for script in gen_fig*.py; do
 done
 ```
 
-Verify all output files exist and are non-empty.
+Verify all output files exist and are non-empty. Then **render-then-verify**:
+re-open each RENDERED PDF/PNG (not the script) and self-check — no clipped
+labels, no legend covering data, every number/label readable at final print
+size. This self-check happens BEFORE the Step 7 review, so the reviewer's
+budget goes to substance, not to catching clipped axes.
 
 ### Step 6: Generate LaTeX Include Snippets
 
@@ -224,11 +228,11 @@ its printed size, not only the description — scale, crowding and label-overlap
 problems are invisible in a textual summary. Ask what a reviewer at the target
 venue would find wrong with the figure.
 
-Send figure descriptions and captions to GPT-5.5 for review:
+Send figure descriptions and captions to GPT-5.6-Sol for review:
 
 ```
 mcp__codex__codex:
-  model: gpt-5.5
+  model: gpt-5.6-sol
   config: {"model_reasoning_effort": "xhigh"}
   prompt: |
     Review these figure/table plans for a [VENUE] submission.
@@ -245,7 +249,35 @@ mcp__codex__codex:
 
 ### Step 8: Quality Checklist
 
-Before finishing, verify each figure (from pedrohcgs/claude-code-my-workflow):
+The checklist is PARTITIONED (pattern from Anthropic's Claude Science
+`figure-style` skill, Apache-2.0): **correctness rules always bind** — they are
+about whether the figure tells the truth, have no aesthetic content, and no
+style choice may override them; **guidance rules are defaults** — they produce
+a clean result, but a deliberate, stated alternative may override them.
+
+**Correctness — always binds, verify against the DATA before the render:**
+
+- [ ] **Excluded data never enters summaries** — a row excluded/flagged in the
+      source either disappears entirely or is drawn visibly distinct (open /
+      hatched marker, named in the key); it never feeds a mean/CI plotted
+      alongside included rows
+- [ ] **Captions and any claim-like title text are tested against EVERY plotted
+      row** — if one category contradicts the claim, qualify it ("on 3 of 4
+      benchmarks") or downgrade to a description; a figure that overclaims is
+      wrong even if it renders beautifully
+- [ ] **Comparable conditions only** — arms measured under different N / budget
+      / protocol are not drawn as visual peers; separate them or mark the
+      difference in the caption
+- [ ] **State n and what was held fixed** — every panel with a summary mark
+      says n and the unit of replication (panel or caption)
+- [ ] **Render-then-verify** — the Step-5 self-check on the RENDERED PDF/PNG
+      (not the script) actually happened: no clipped labels, no legend covering
+      data, every number/label readable at final print size
+
+**Guidance — strong defaults (from pedrohcgs/claude-code-my-workflow), a
+deliberate stated alternative may override — EXCEPT items that Key Rules below
+make hard (vector-PDF output and no-titles-inside-figures are Key Rules: treat
+those two as binding, not overridable):**
 
 - [ ] Rendered glyphs in the compiled PDF are ≥ body-text size (no zooming to read an axis)
 - [ ] Line widths ≥ LINE_WIDTH; markers readable at final scale

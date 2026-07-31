@@ -1,8 +1,8 @@
 ---
 name: idea-creator
 description: Generate and rank research ideas given a broad direction. Use when user says "找idea", "brainstorm ideas", "generate research ideas", "what can we work on", or wants to explore a research area for publishable directions.
-argument-hint: [research-direction]
-allowed-tools: Bash(*), Read, Write, Grep, Glob, WebSearch, WebFetch, Agent, mcp__codex__codex, mcp__codex__codex-reply, mcp__manual_review__review, mcp__manual_review__review_reply
+argument-hint: "[research-direction]"
+allowed-tools: Bash(*), Read, Write, Grep, Glob, WebSearch, WebFetch, Agent, Skill, mcp__codex__codex, mcp__codex__codex-reply, mcp__manual_review__review, mcp__manual_review__review_reply
 ---
 
 # Research Idea Creator
@@ -11,7 +11,7 @@ Generate publishable research ideas for: $ARGUMENTS
 
 ## Overview
 
-Given a broad research direction from the user, systematically generate, validate, and rank concrete research ideas. This skill composes with `/research-lit`, `/novelty-check`, and `/research-review` to form a complete idea discovery pipeline.
+Given a broad research direction from the user, systematically generate, validate, and rank concrete research ideas. Standalone, Phase 1's landscape survey is **inline** (WebSearch — it does not invoke `/research-lit`); Phases 4-5 invoke `/novelty-check`, `/run-experiment`, and `/monitor-experiment` for validation and pilots. For the full sub-skill pipeline (`/research-lit` → idea generation → `/novelty-check` → `/research-review`), run `/idea-discovery` (Workflow 1), which orchestrates this skill.
 
 ## Constants
 
@@ -19,7 +19,7 @@ Given a broad research direction from the user, systematically generate, validat
 - **PILOT_TIMEOUT_HOURS = 3** — Hard timeout: kill pilots exceeding 3 hours. Collect partial results if available.
 - **MAX_PILOT_IDEAS = 3** — Pilot at most 3 ideas in parallel. Additional ideas are validated on paper only.
 - **MAX_TOTAL_GPU_HOURS = 8** — Total GPU budget for all pilots combined.
-- **REVIEWER_MODEL = `gpt-5.5`** — Default model for the Codex backend. Must be an OpenAI model (e.g., `gpt-5.5`, `o3`, `gpt-4o`). Manual backend uses whatever model the user chooses, **but it must be a non-Claude model** — the executor is Claude, so pasting into any Claude product makes Claude judge Claude and voids the cross-model invariant (see `shared-references/reviewer-routing.md`).
+- **REVIEWER_MODEL = `gpt-5.6-sol`** — Default model for the Codex backend. Must be an OpenAI model (e.g., `gpt-5.6-sol`, `o3`, `gpt-4o`). Manual backend uses whatever model the user chooses, **but it must be a non-Claude model** — the executor is Claude, so pasting into any Claude product makes Claude judge Claude and voids the cross-model invariant (see `shared-references/reviewer-routing.md`).
 - **REVIEWER_BACKEND = `codex`** — Default: Codex MCP (xhigh). Override with `— reviewer: oracle-pro` for Oracle MCP, or `— reviewer: manual` for Manual Review MCP. If manual-review MCP is unavailable, stop and print the install command; do not fall back to Codex. See `shared-references/reviewer-routing.md`.
 - **OUTPUT_DIR = `idea-stage/`** — All idea-stage outputs go here. Create the directory if it doesn't exist.
 
@@ -43,8 +43,11 @@ When calling the reviewer for idea evaluation, branch on REVIEWER_BACKEND:
     prompt: [follow-up prompt]
     config: {"model_reasoning_effort": "xhigh"}
 
-Prompt fidelity: the manual prompt must be exactly the same text that Codex would receive.
-Review tracing applies equally to both backends.
+Content fidelity: the manual reviewer should see the same substantive bundle
+content Codex would read. If the manual UI supports file upload / attachment,
+reuse the same bundle file; otherwise paste the bundle contents inline because
+remote web UIs cannot read your local filesystem paths. Review tracing applies
+equally to both backends.
 
 ## Workflow
 
@@ -59,14 +62,17 @@ contract):
 ```bash
 cd "$(git rev-parse --show-toplevel 2>/dev/null || pwd)" || exit 1
 ARIS_REPO="${ARIS_REPO:-$(awk -F'\t' '$1=="repo_root"{print $2; exit}' .aris/installed-skills.txt 2>/dev/null)}"
+if [ -z "${ARIS_REPO:-}" ] && [ -f "$HOME/.aris/repo" ]; then
+  ARIS_REPO=$(cat "$HOME/.aris/repo" 2>/dev/null) || true
+fi
 WIKI_SCRIPT=".aris/tools/research_wiki.py"
 [ -f "$WIKI_SCRIPT" ] || WIKI_SCRIPT="tools/research_wiki.py"
 [ -f "$WIKI_SCRIPT" ] || { [ -n "${ARIS_REPO:-}" ] && WIKI_SCRIPT="$ARIS_REPO/tools/research_wiki.py"; }
 [ -f "$WIKI_SCRIPT" ] || {
-  echo "WARN: research_wiki.py not found at .aris/tools/, tools/, or \$ARIS_REPO/tools/." >&2
+  echo "WARN: research_wiki.py not found at .aris/tools/, tools/, \$ARIS_REPO/tools/, or via ~/.aris/repo." >&2
   echo "      The idea-creation primary output (idea ranking) will still be produced." >&2
   echo "      Wiki integration (load query_pack, write idea pages, add edges, rebuild query_pack) will be skipped." >&2
-  echo "      Fix: rerun 'bash tools/install_aris.sh', export ARIS_REPO, or 'cp <ARIS-repo>/tools/research_wiki.py tools/'." >&2
+  echo "      Fix: rerun 'bash tools/install_aris.sh' or 'smart_update.sh' (refreshes ~/.aris/repo), export ARIS_REPO, or 'cp <ARIS-repo>/tools/research_wiki.py tools/'." >&2
   WIKI_SCRIPT=""
 }
 ```
@@ -164,19 +170,25 @@ the candidate set that enters Phase 3.
 
 Use the selected reviewer backend (see Reviewer Calling Convention) for divergent thinking.
 
-*For `codex` backend:*
+For the `codex` backend, **do not inline the full landscape + gaps prompt**
+once it stops being tiny. Write the full brainstorming request to
+`idea-stage/codex_brainstorm_bundle.md`, then keep the MCP prompt short:
 
 ```
 mcp__codex__codex:
   model: REVIEWER_MODEL
   config: {"model_reasoning_effort": "xhigh"}
   prompt: |
-    You are a senior ML researcher brainstorming research ideas.
+    Read the idea-generation bundle at <absolute path to
+    idea-stage/codex_brainstorm_bundle.md> and follow all instructions in it.
 ```
 
-*For `manual` backend:* use `mcp__manual_review__review` with the exact same prompt text and `config: {"model_reasoning_effort": "xhigh"}`. Save the returned `threadId` for Phase 4 follow-up.
+*For `manual` backend:* use `mcp__manual_review__review` with the same bundle
+contents. If the manual-review UI supports attachments, attach
+`idea-stage/codex_brainstorm_bundle.md`; otherwise paste the bundle contents
+inline. Save the returned `threadId` for Phase 4 follow-up.
 
-The brainstorming prompt:
+Bundle contents:
 
 ```
     You are a senior ML researcher brainstorming research ideas.
@@ -184,10 +196,10 @@ The brainstorming prompt:
     Research direction: [user's direction]
 
     Here is the current landscape:
-    [paste landscape map from Phase 1]
+    [write the Phase-1 landscape map into this bundle file]
 
     Key gaps identified:
-    [paste gaps from Phase 1]
+    [write the Phase-1 gap summary into this bundle file]
 
     Generate 8-12 concrete research ideas. For each idea:
     1. One-sentence summary
@@ -256,11 +268,18 @@ per-idea novelty search:
 1. **Cross-model triage (devil's advocate) — ranks ALL candidates first.**
    Use the selected reviewer backend (see Reviewer Calling Convention). For
    `codex`, use `mcp__codex__codex-reply` (same thread). For `manual`, use
-   `mcp__manual_review__review_reply` with the saved threadId. Pass every
-   candidate with its `prior_work` / `so_what` / `effort_note` annotations:
+   `mcp__manual_review__review_reply` with the saved threadId. For the
+   `codex` backend, write the full annotated candidate set to
+   `idea-stage/codex_triage_bundle.md` and send only a path-based follow-up:
+   ```
+   Read the idea-triage bundle at <absolute path to
+   idea-stage/codex_triage_bundle.md> and follow all instructions in it.
+   ```
+   For the `manual` backend, attach that same bundle if possible; otherwise
+   paste its contents inline. Bundle contents:
    ```
    Here is the full annotated candidate set (deduped, budget-feasible):
-   [paste all candidates with their prior_work / so_what / effort_note notes]
+   [write all candidates with their prior_work / so_what / effort_note notes]
 
    For each, play devil's advocate:
    - What's the strongest objection a reviewer would raise?
@@ -313,6 +332,8 @@ Note: Skip this phase if the ideas are purely theoretical or if no GPU is availa
 
 Write a structured report to `idea-stage/IDEA_REPORT.md`:
 
+**Lead every recommended idea with its method, in plain language.** Before any hypothesis, novelty score, or claim, state in 2–4 concrete steps what we actually build / train / run — no jargon, no claim-IDs. The reader must understand *what we do* before *what we claim*; claims (hypothesis, validation, expected outcome) come after and read as the method's acceptance criteria.
+
 ```markdown
 # Research Idea Report
 
@@ -326,6 +347,7 @@ Write a structured report to `idea-stage/IDEA_REPORT.md`:
 ## Recommended Ideas (ranked)
 
 ### Idea 1: [title]
+- **Method (what we actually do)**: [2–4 concrete steps in plain language — what we build / train / run. No jargon, no claim-IDs, no hypothesis yet. Lead with this so the reader grasps the approach first.]
 - **Hypothesis**: [one sentence]
 - **Minimum experiment**: [concrete description]
 - **Expected outcome**: [what success/failure looks like]
@@ -371,35 +393,33 @@ Write a structured report to `idea-stage/IDEA_REPORT.md`:
 This is critical for spiral learning — without it, `ideas/` stays empty and re-ideation has no memory.
 
 `$WIKI_SCRIPT` was resolved in Phase 0 above. If Phase 0 did not run
-(no `research-wiki/`), this phase is skipped. If Phase 0 ran but the
-resolution chain failed to find the helper (`$WIKI_SCRIPT` is empty),
-the page-write step still runs (idea pages are plain markdown the
-agent writes directly), but the edge / query-pack / log steps that
-require the helper are skipped with a single warning.
+(no `research-wiki/`), skip this phase. The idea page is written by a
+**deterministic helper (`upsert_idea`)** — NOT freehand markdown — so **every
+generation, including a re-run with updated constraints, records reliably**
+(one CLI call per idea, not a prose step the model can skip). `upsert_idea`
+writes the page, wires the `inspired_by` / `addresses_gap` edges, and rebuilds
+index + query_pack in a single call. **Default skip-on-exist**: a re-ideation
+run records NEW ideas without clobbering an existing idea whose `outcome`
+`/result-to-claim` may already have enriched. If `$WIKI_SCRIPT` is empty
+(helper unreachable) the ideas are **NOT** recorded and a single WARN prints
+(fix: `bash tools/install_aris.sh` or `export ARIS_REPO`).
 
 ```
-if research-wiki/ exists:
+if research-wiki/ exists AND [ -n "$WIKI_SCRIPT" ]:
     for each idea in recommended_ideas + eliminated_ideas:
-        1. Create page: research-wiki/ideas/<idea_id>.md
-           - node_id: idea:<id>
-           - stage: proposed (or: piloted, archived)
-           - outcome: unknown (or: negative, mixed, positive)
-           - based_on: [paper:<slug>, ...]
-           - target_gaps: [gap:<id>, ...]
-           - Include: hypothesis, proposed method, expected outcome
-           - If pilot was run: actual outcome, failure notes, reusable components
-
-        2. Add edges (only if $WIKI_SCRIPT resolved):
-           [ -n "$WIKI_SCRIPT" ] && python3 "$WIKI_SCRIPT" add_edge research-wiki/ --from "idea:<id>" --to "paper:<slug>" --type inspired_by --evidence "..."
-           [ -n "$WIKI_SCRIPT" ] && python3 "$WIKI_SCRIPT" add_edge research-wiki/ --from "idea:<id>" --to "gap:<id>" --type addresses_gap --evidence "..."
-
-    Rebuild query pack (only if $WIKI_SCRIPT resolved):
-        [ -n "$WIKI_SCRIPT" ] && python3 "$WIKI_SCRIPT" rebuild_query_pack research-wiki/
-    Log (only if $WIKI_SCRIPT resolved):
-        [ -n "$WIKI_SCRIPT" ] && python3 "$WIKI_SCRIPT" log research-wiki/ "idea-creator wrote N ideas (M recommended, K eliminated)"
-
-    if [ -z "$WIKI_SCRIPT" ]:
-        echo "WARN: idea pages were written but edges / query_pack / log were skipped because research_wiki.py is unreachable (see Phase 0 warning above)." >&2
+        # recommended → --stage proposed; eliminated-at-ideation → --stage archived.
+        # --outcome stays "pending" (the experiment verdict, negative/mixed/positive,
+        # is set LATER by /result-to-claim — never guessed here).
+        python3 "$WIKI_SCRIPT" upsert_idea research-wiki/ \
+          --slug "<stable-idea-id>" --title "<idea title>" \
+          --stage "<proposed|archived>" --outcome pending \
+          --thesis "<core hypothesis / direction>" \
+          --risks "<novelty / feasibility risks; why killed if eliminated>" \
+          --based-on "<paper:slug,paper:slug2>" --target-gaps "<G2,G10>" \
+          || echo "WARN: upsert_idea failed for <id> (continuing; audit/report unaffected)" >&2
+    python3 "$WIKI_SCRIPT" log research-wiki/ "idea-creator wrote N ideas (M recommended, K eliminated)"
+elif research-wiki/ exists AND [ -z "$WIKI_SCRIPT" ]:
+    echo "WARN: ideas NOT recorded — research_wiki.py unreachable (see Phase 0). Fix: bash tools/install_aris.sh or smart_update.sh (refreshes ~/.aris/repo), or export ARIS_REPO." >&2
 ```
 
 ## Output Protocols

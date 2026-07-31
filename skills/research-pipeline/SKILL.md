@@ -15,7 +15,17 @@ allowed-tools: Bash(*), Read, Write, Edit, Grep, Glob, WebSearch, WebFetch, Skil
 > the cross-model jury. A heartbeat may say "keep going," never "good enough."
 > See
 > [`shared-references/external-cadence.md`](../shared-references/external-cadence.md)
-> (overnight-pipeline rule).
+> (overnight-pipeline rule + stall detection & forced structural pivot). At heartbeat
+> startup, touch the run state first each tick and register this run with the watchdog
+> `loop` type (so a silent death surfaces as STALE); unregister on completion. The
+> watchdog only detects — it never acquits. Each tick also record the new-finding count
+> via the `iteration_log.py` helper (resolve through the canonical
+> `.aris/tools → tools → $ARIS_REPO/tools → $ARIS_REPO/tools via ~/.aris/repo`
+> chain, integration-contract §2; warn-and-skip if unresolved):
+> `python3 "$ITER_LOG" note <root> <run_id> <phase> <n>`. On the returned
+> `pivot=structural` (stale ≥ 2) the nudge must change a STRUCTURAL constraint and pick an
+> untried direction; on `pivot=human` (stale ≥ 4) flag for attention. Counting only —
+> never a quality verdict.
 
 End-to-end autonomous research workflow for: **$ARGUMENTS**
 
@@ -25,7 +35,7 @@ End-to-end autonomous research workflow for: **$ARGUMENTS**
 - **ARXIV_DOWNLOAD = false** — When `true`, `/research-lit` downloads the top relevant arXiv PDFs during literature survey. When `false` (default), only fetches metadata via arXiv API. Passed through to `/idea-discovery` → `/research-lit`.
 - **HUMAN_CHECKPOINT = false** — When `true`, the auto-review loops (Stage 3) pause after each round's review to let you see the score and provide custom modification instructions before fixes are implemented. When `false` (default), loops run fully autonomously. Passed through to `/auto-review-loop`.
 - **REVIEWER_DIFFICULTY = medium** — How adversarial the reviewer is. `medium` (default): standard MCP review. `hard`: adds reviewer memory + debate protocol. `nightmare`: GPT reads repo directly via `codex exec` + memory + debate. Passed through to `/auto-review-loop`.
-- **CODE_REVIEW = true** — GPT-5.5 xhigh reviews experiment code before deployment. Catches logic bugs before wasting GPU hours. Set `false` to skip. Passed through to `/experiment-bridge`.
+- **CODE_REVIEW = true** — GPT-5.6-Sol xhigh reviews experiment code before deployment. Catches logic bugs before wasting GPU hours. Set `false` to skip. Passed through to `/experiment-bridge`.
 - **BASE_REPO = false** — GitHub repo URL to use as base codebase. When set, `/experiment-bridge` clones the repo first and implements experiments on top of it. When `false` (default), writes code from scratch or reuses existing project files. Passed through to `/experiment-bridge`.
 - **COMPACT = false** — When `true`, generates compact summary files for short-context models and session recovery. Passed through to `/idea-discovery` and `/experiment-bridge`.
 - **AUTO_WRITE = false** — When `true`, automatically invoke Workflow 3 (`/paper-writing`) after Stage 4. Requires `VENUE` to be set. When `false` (default), Stage 4 generates `NARRATIVE_REPORT.md` and stops — user invokes `/paper-writing` manually.
@@ -51,11 +61,12 @@ It orchestrates up to four major workflows in sequence. Workflow 3 (paper writin
 
 This pipeline is long and can fail mid-run; it tracks per-stage state via
 `run_state.py` so you can resume instead of restarting (see
-[`shared-references/resumable-runs.md`](shared-references/resumable-runs.md)).
+[`shared-references/resumable-runs.md`](../shared-references/resumable-runs.md)).
 Skip this whole section if `RESUMABLE = false`.
 
 Resolve the helper via the canonical chain (integration-contract §2):
 `.aris/tools/run_state.py` → `tools/run_state.py` → `$ARIS_REPO/tools/run_state.py`
+→ `$ARIS_REPO/tools/run_state.py` via `~/.aris/repo`
 (warn-and-skip if unresolved — never block the pipeline).
 
 **Phases**, in order: `idea-discovery, experiment-bridge, auto-review-loop, summary, paper-writing`.
@@ -73,9 +84,9 @@ Resolve the helper via the canonical chain (integration-contract §2):
 
   | phase | what sets `accepted` | record as reviewer |
   |-------|----------------------|--------------------|
-  | `idea-discovery` | Gate 1 cross-model jury / novelty-check passed | `codex-gpt-5.5` + thread id |
+  | `idea-discovery` | Gate 1 cross-model jury / novelty-check passed | `codex-gpt-5.6-sol` + thread id |
   | `experiment-bridge` | experiments actually ran (jobs completed) — deterministic | `deterministic:experiment-bridge` |
-  | `auto-review-loop` | the loop hit its positive STOP (`score>=6 AND verdict∈{ready,almost}` — codex's verdict) | `codex-gpt-5.5` + final review trace id |
+  | `auto-review-loop` | the loop hit its positive STOP (`score>=6 AND verdict∈{ready,almost}` — codex's verdict) | `codex-gpt-5.6-sol` + final review trace id |
   | `summary` | `NARRATIVE_REPORT.md` written (+ rendered if `RENDER_HTML`) — deterministic | `deterministic:summary` |
   | `paper-writing` | submission audits passed (`verify_paper_audits.sh` exit 0) — deterministic | `deterministic:verify_paper_audits.sh` |
 
@@ -88,6 +99,42 @@ output JSON) — not just the reviewer label.
 
 A stage left `done` (gate failed/ambiguous, or the run crashed before the gate)
 is re-validated on the next resume — the acceptance obligation is never skipped.
+
+## Overnight heartbeat: stall detection → forced structural pivot
+
+Only when an unattended heartbeat is driving this run (overnight `/loop` /
+`CronCreate`). Skip otherwise. Doctrine + rationale:
+[`shared-references/external-cadence.md`](../shared-references/external-cadence.md)
+→ "Stall detection & forced structural pivot". This is a Type-A signal — it counts
+findings and changes *direction*, never *judges quality*.
+
+Resolve the helper via the canonical chain (integration-contract §2), warn-and-skip
+if unresolved (never block the run):
+```bash
+ITER_LOG=".aris/tools/iteration_log.py"
+[ -f "$ITER_LOG" ] || ITER_LOG="tools/iteration_log.py"
+[ -f "$ITER_LOG" ] || ITER_LOG="${ARIS_REPO:-}/tools/iteration_log.py"
+[ -f "$ITER_LOG" ] || { [ -z "${ARIS_REPO:-}" ] && [ -f "$HOME/.aris/repo" ] && ARIS_REPO="$(cat "$HOME/.aris/repo" 2>/dev/null)"; } || true
+[ -f "$ITER_LOG" ] || ITER_LOG="${ARIS_REPO:-}/tools/iteration_log.py"
+[ -f "$ITER_LOG" ] || { echo "WARN: iteration_log.py not resolved; skipping stall detection" >&2; ITER_LOG=""; }
+```
+Then, **each heartbeat tick**, record how many concrete new findings the current
+stage produced and read the returned `pivot`:
+```bash
+[ -n "$ITER_LOG" ] && python3 "$ITER_LOG" note "$ROOT" "$RUN_ID" "$STAGE" "$N_NEW_FINDINGS"
+# → {"stale_count": N, "pivot": "none|structural|human"}
+```
+Act on `pivot`:
+- `none` — keep going.
+- `structural` (stale ≥ 2) — the next nudge must change a **structural constraint**
+  (frame / objective / data / representation), not a tactical parameter, and pick a
+  direction different from every one already tried. Record the chosen frame so future
+  ticks can avoid it: `python3 "$ITER_LOG" note "$ROOT" "$RUN_ID" "$STAGE" 0 --direction "<the new frame>"`.
+- `human` (stale ≥ 4) — stop nudging blindly; flag for human attention (escalate, do
+  not silently abandon).
+
+The heartbeat may say "keep going / change direction," never "good enough" — every
+quality verdict still terminates in the cross-model jury (`acceptance-gate.md`).
 
 ## Pipeline
 
@@ -142,7 +189,7 @@ Once the user confirms which idea to pursue, delegate implementation and deploym
 **What this does (fully autonomous):**
 1. Parses `refine-logs/EXPERIMENT_PLAN.md` — extracts milestones, run order, compute budget
 2. Implements experiment code — extends pilot to full scale, follows existing codebase conventions
-3. **Cross-model code review** — GPT-5.5 xhigh reviews the implementation for logic bugs, incorrect metrics, and ground-truth misuse before any GPU time is spent
+3. **Cross-model code review** — GPT-5.6-Sol xhigh reviews the implementation for logic bugs, incorrect metrics, and ground-truth misuse before any GPU time is spent
 4. **Sanity check** — runs the smallest experiment first to verify the environment; auto-debugs failures (up to 3 attempts, with `/codex:rescue` fallback)
 5. Deploys full experiments — auto-routes by job count (≤5 → `/run-experiment`, ≥10 → `/experiment-queue` with OOM retry, wave gating, crash-safe state)
 6. Collects initial results — parses outputs, updates `refine-logs/EXPERIMENT_TRACKER.md`, runs `/training-check` if W&B is configured
@@ -170,7 +217,7 @@ Once initial results are in, start the autonomous improvement loop:
 ```
 
 **What this does (up to 4 rounds):**
-1. GPT-5.5 xhigh reviews the work (score, weaknesses, minimum fixes)
+1. GPT-5.6-Sol xhigh reviews the work (score, weaknesses, minimum fixes)
 2. Claude Code implements fixes (code changes, new experiments, reframing)
 3. Deploy fixes, collect new results
 4. Re-review → repeat until (score ≥ 6/10 AND verdict ∈ {ready, almost}) or 4 rounds reached
