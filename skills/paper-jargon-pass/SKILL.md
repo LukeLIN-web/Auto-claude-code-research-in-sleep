@@ -1,6 +1,6 @@
 ---
 name: paper-jargon-pass
-description: "Use when a paper reads fine to the author but a reviewer would stall on it — 论文术语审查/没定义就用的词和数字/审稿人读不懂/统一术语/undefined notation/jargon audit for papers. Catches terms used before they are defined, lab-internal working vocabulary that leaked into English (考场→\"court\", 口径→\"caliber\"), config numbers that arrive before the thing they configure is named (\"600-second blocks\", \"the top B=3 blocks\"), and one word carrying three meanings. Three passes: assembly check → blind read of the compiled PDF → verify against code/data and rewrite."
+description: "Use when a paper reads fine to the author but a reviewer would stall on it — 论文术语审查/没定义就用的词和数字/审稿人读不懂/统一术语/undefined notation/jargon audit for papers. Catches terms used before they are defined, lab-internal working vocabulary that leaked into English (考场→\"court\", 口径→\"caliber\"), config numbers that arrive before the thing they configure is named (\"600-second blocks\", \"the top B=3 blocks\"), one word carrying three meanings, and 废话/无中生有 — prose narrating things that do not exist (\"Video-Odyssey publishes no row for this backbone and has no column\"), flagged by the delete-test and deleted or demoted to a table footnote. Three passes: assembly check → blind read of the compiled PDF → verify against code/data and rewrite."
 argument-hint: "[paper 目录或 clone 目录,默认自动发现]"
 allowed-tools: Bash(*), Read, Write, Edit, Grep, Glob
 ---
@@ -58,11 +58,12 @@ pdftotext -layout main.pdf - | sed -n '1,240p'   # 正文,按页序,一次一段
 
 > 隔离提醒:如果本次会话已经读过这份稿子的实现或前几轮审查记录,你已经污染了。此时把每一节派给一个独立 subagent 盲读(每个只给一段 pdftotext 文本、禁止读任何文件),你只汇总不补充。
 
-### 记什么:门槛
+### 记什么:两种信号
 
-**门槛是"必须停下重读,或必须往回/往后翻页才能继续"。** 能带着一个临时含义按正常速度读下去、且后文没有推翻它的,不记。
+- **卡住**(A/B 组)——必须停下重读,或必须往回/往后翻页才能继续。能带着一个临时含义按正常速度读下去、且后文没有推翻它的,不记。
+- **空转**(C 组·废话)——读得毫不费力,但读完说不出这句在这干什么:它不定义、不主张、不配置。判据是**删句测试**:把这句删掉重读前后段,若没有任何主张、定义或配置常数失去支撑,记。
 
-承重条目通常 5–15 条。**超过 20 条就停止逐词记录,直接写文档级判定**——那已经不是措辞问题,而是这篇稿子缺一个记号约定小节或缺一张符号表。
+卡住的承重条目通常 5–15 条。**超过 20 条就停止逐词记录,直接写文档级判定**——那已经不是措辞问题,而是这篇稿子缺一个记号约定小节或缺一张符号表。空转条目超过 ~15 条同理:那不是几句废话,是整篇在写审计日志,文档级判定里直接建议跑 `/paper-prose-tighten` 做全文清理,本技能只处置盲读撞见的这几条。
 
 ### 类型
 
@@ -84,7 +85,10 @@ pdftotext -layout main.pdf - | sed -n '1,240p'   # 正文,按页序,一次一段
 - **数目不自洽**——号称"五个 benchmark"实际列了四个加一个附录的;"all eight"与表里行数对不上。
 - **一句话塞太多**——单个术语都没问题,但一句里堆了十几个专名(用户举的那句就是:分块 + 定位 pass + 候选窗 + top-B + 读出预算 + 答题前向,全在一个分号句里)。处置是**拆句**,不是换词。
 
-### ledger 格式
+**C 组 · 废话**(不是看不懂,是没内容;处置只有删或降级,没有"改写"选项。判死生需要全稿语境——套件枚举了哪些考场、别的表有哪些行——所以 C 组**不吃盲读隔离**:盲读只标记空转句,判定放第二趟,也可以在第二趟直接用 grep 候选清单补扫)
+
+- **无中生有**——句子的主语是一个不存在的东西:`Video-Odyssey publishes no row for this backbone and has no column for it`、`X does not report Y for this setting`、`no official number exists for…`。为一个空格子、一个别人没做的实验、一条没有的基线写整句正文。它最隐蔽,因为读起来像尽职的披露——这正是它能活过历版草稿的原因。判死生只看一条:**读者在这个图表里看得见这个空缺吗?** 看得见(某格是 `—`、某行比套件枚举少一行、n 比全量小)→ 缺席承重,落法是图例里的一短句(`a dash = none published` 就是范本),不是叙事句;看不见(那个实体从头就不在这张表里)→ 删。同一句法两种命运:`Video-Odyssey has no whole-clip arm.`(解释表里可见的空格)留;`Video-Odyssey publishes no row for this backbone and has no column.`(表里根本没有这一列,而真正被省掉的候选它反而只字未提)删。
+- 其余子类照 `/paper-prose-tighten` 的切除分类认:记账计数、自辩元叙述、否弃方案的游记、复述与叠 hedge。盲读时不用背分类,过删句测试就记;完整判据与保留红线(显著性限定词、划范围的分母、协议差异不许删)以那份技能为准。
 
 写到 `paper/review-stage/jargon/<UTC时间戳>/ledger-<节名>.md`(**不要写进 Overleaf clone**)。一节一份。用分块不用表格。
 
@@ -102,6 +106,16 @@ pdftotext -layout main.pdf - | sed -n '1,240p'   # 正文,按页序,一次一段
 
 - **置信度**衡量*你*有多确定;**严重度**衡量*读者*被伤得多重:`承重`=主张挂在它上面,不懂它这一节就白读。二者独立。
 
+C 组条目字段更少(没有"我猜是"——废话不需要猜,只需要删句测试):
+
+```
+### C-N. <一句话标题>
+- 位置:PDF p4 / sections/05_results.tex:88
+- 原句:<逐字抄,别转述>
+- 删句测试:删掉后受损的主张 = 无      ← 写得出受损者就不是废话,改判 keep,不进 ledger
+- 处置:删 | 降级表注
+```
+
 ledger 末尾另开两节:
 
 - **文档级判定**——不锚在任何行号上的整篇问题。论文里最常见的三条:①**缺记号约定**(应该在 §3.1 开头用一段把 block / window / readout budget / $B$ / $M$ 一次性定义,而不是散在六处);②**这一节是对另一节的 diff**(症状:一半悬空指代都"翻到 §3 十秒就能答"——如果 §3 存在的话);③**术语在正文与 caption 之间不同步**。这类问题的正解是加一段/改结构,不是逐词改写。
@@ -116,6 +130,13 @@ ledger 末尾另开两节:
 **改之前先对账。** `grep` 原词的命中率比想象中低:论文里的词在代码里往往叫别的名字(`window` = `region`、`readout` = `answer_forward`)。有效顺序是**先把数字对一遍**:B 组记下的"数值互斥"条目,拿 `paper/data/*.json`、`outputs/eval/` 逐题产物、`scripts/fig_*.py` 逐个核。数字错只能这样找出来,读措辞永远发现不了。
 
 **B 组不进改写流程**:自相矛盾、数目不自洽、数值互斥 → 直接列给用户(信哪个由用户定);断句歧义、一句话塞太多 → 改结构(拆句/拆列表),不换词;隐含前提 → 补一句口径**并同时报**(作者脑子里有一套没写下来的约定,补完得让他确认补对了)。
+
+**C 组在改写前处置,只有两个动作**:①默认**整句删**。删完重读该段:一查悬空指代(被删句喂养的 "this comparison""that row" 会跟着悬空),二反跑删句测试——若某个主张真的少了支撑,恢复原句、改判 keep 并记一笔为什么。②缺席确实需要交代的(表里有 `—`/`*` 等着解释),先**降级成表注一条**,再删正文句。删句持 `/paper-prose-tighten` 的红线:显著性限定词、划范围的分母、让对比不公平的协议差异,不许跟着整句陪葬——它们缩成主张上的一个形容词或一条表注活下来。
+
+两个实战陷阱:
+
+- **废话的主产地是 caption,而表 caption 多为脚本生成**(文件头有 AUTO-GENERATED 标记)。删句必须落在生成器(`tab_*.py` / caption SSOT)并重跑构建——直接改 `.tex` 会被下一次 build 原样复活;降级出的表注同样写进生成器。顺手核对生成器注释:它可能声称"caption 里解释了"而 caption 里其实没有。
+- **上一版分析的披露句不许删**:`An earlier pre-specified analysis had shown little effect; the full read supersedes it` 形似流水账,但删掉=隐藏一次结果不一致的前置分析,变相把主张洗得更稳。这类句子连同你的判断上报 user,与 B 组同待遇。
 
 A 组逐条处置,四选一:
 
@@ -144,7 +165,7 @@ A 组逐条处置,四选一:
 3. **页序检查**(可脚本化):对每个被改的术语,`pdftotext` 后定义出现的页 ≤ 首次使用的页。
 4. **验收盲读是强制步骤,且必须派给独立 subagent**——你在第二趟里已经被实现污染第二次了,自己重读绝对发现不了残留。给它新编的 PDF 前两页 + 一张随机 caption,不给任何上下文。新一轮不再产生 `承重` 条目才算过。
 5. 全篇没有新增只有本组懂的词;换掉的词全仓无残留(`grep -rn` 旧词,含 `fig_*.py`)。
-6. 汇报分三块,**顺序不能反**:①装配问题与结构改动(丢节、缺记号小节)②发现的 bug(自相矛盾、数值互斥、数目不自洽)③已改的措辞。措辞列表最长但最不重要,放最后。
+6. 汇报分三块,**顺序不能反**:①装配问题与结构改动(丢节、缺记号小节)②发现的 bug(自相矛盾、数值互斥、数目不自洽)③已删的废话(每条附一行删句测试)与已改的措辞。措辞列表最长但最不重要,放最后。
 
 ## 常见错判
 
@@ -164,3 +185,8 @@ A 组逐条处置,四选一:
 | 只改了 `.tex`,图里旧词还在 | 换词要扫 `scripts/fig_*.py` 并重出图 |
 | 只改了一个 Overleaf clone | 两个 clone 的 `sections/` 都要改 |
 | 顺手修了 `references.bib` / undefined citation | bib 只 pull 不写,一律不碰不报 |
+| 把"X 没有 Y / X 不报 Z"当成严谨的披露留着 | 主语是不存在之物的句子先过删句测试;真承重的缺席降级成表注,不留正文 |
+| grep 命中一堆 absence 句就开删 | 命中清单是候选不是死刑名单:实测 ~8 成是承重的协议/范围声明;唯一判据是删句测试 + 可见空缺规则,别为交差硬删 |
+| 把废话改写得更通顺 | C 组没有改写选项:改写废话得到的是更顺的废话;只删或降级 |
+| 删句后不查前后指代 | 被删句喂养的 "this comparison""that row" 会悬空;删一句要重读整段 |
+| 盲读记出几十条废话还在逐句处置 | 那是整篇的病,写进文档级判定,转 `/paper-prose-tighten` 做全文清理 |

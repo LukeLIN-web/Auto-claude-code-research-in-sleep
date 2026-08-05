@@ -1,6 +1,6 @@
 ---
 name: paper-prose-tighten
-description: "Cut filler from paper prose: bookkeeping-count enumerations (\"abstained blocks 569 → 551\", \"32 of the 39\", \"discordant pairs 166:103\"), defensive meta-narration (\"we report this rather than claim X\", \"a reader is entitled to know\"), and self-referential audit trail that no reviewer reads. Use when user says \"论文废话太多\", \"不要罗列数量\", \"清理废话\", \"tighten the prose\", \"cut the filler\", \"too wordy\", or before submission when sections read like an audit log instead of an argument."
+description: "Cut filler from paper prose: bookkeeping-count enumerations (\"abstained blocks 569 → 551\", \"32 of the 39\", \"discordant pairs 166:103\"), defensive meta-narration (\"we report this rather than claim X\", \"a reader is entitled to know\"), narrated absences / 无中生有 (\"Video-Odyssey publishes no row for this backbone and has no column\"), and self-referential audit trail that no reviewer reads. Use when user says \"论文废话太多\", \"不要罗列数量\", \"清理废话\", \"无中生有\", \"tighten the prose\", \"cut the filler\", \"too wordy\", or before submission when sections read like an audit log instead of an argument."
 argument-hint: "[paper-directory-or-section-files]"
 allowed-tools: Bash(*), Read, Write, Edit, Grep, Glob
 ---
@@ -60,7 +60,7 @@ A number survives when **it is the claim**. A number dies when it is
 reading its prose; they read the tables. Counts belong in tables, in the
 artifacts, or nowhere.
 
-## The Four Cut Classes
+## The Five Cut Classes
 
 ### 1. Bookkeeping enumerations
 
@@ -120,7 +120,34 @@ The same fact in the topic sentence, in the middle, and in the closing
 ("consistent with", "we read as", "in the sense that", "not in the sense that").
 Keep one instance, at the position where the reader needs it.
 
-## What NOT To Cut
+### 5. Narrated absences (无中生有)
+
+Prose whose grammatical subject is something that does not exist:
+
+- "Video-Odyssey publishes no row for this backbone and has no column for it."
+- "X does not report Y for this setting."
+- "No official number exists for Z."
+
+A full sentence spent on an empty cell, an experiment nobody ran, a baseline
+nobody published. It reads like diligent disclosure — which is why it survives
+draft after draft. The deciding test: **can the reader see the gap in the
+artifact?** A dash in a cell, a reduced $n$, a row missing from an enumerated
+suite — visible, so the absence is load-bearing and lives as one terse legend
+clause (`a dash = none published`; `Video-Odyssey has no whole-clip arm.`),
+never as a narrative sentence. An entity that was never in the table at all —
+invisible, delete. The same surface shape gets both verdicts: the two examples
+above differ only in whether the table shows the hole being explained.
+
+Two field notes. This class concentrates **in captions** — that is where
+authors explain table gaps — so captions are in scope for class 5 even though
+the rest of this skill edits prose; and table captions are typically generated
+(an `AUTO-GENERATED` header): put the cut in the generator script and rebuild,
+or the next build resurrects the sentence.
+
+**Keep** an absence statement also when the absence *is* the claim ("no prior
+benchmark evaluates audio-visual retrieval jointly" as a motivation sentence)
+or when it states a protocol fact a reviewer would otherwise assume the other
+way ("no test-set videos appear in training").
 
 Deleting text must never upgrade a claim. Hard stops:
 
@@ -133,6 +160,11 @@ Deleting text must never upgrade a claim. Hard stops:
 - **Never delete numbers from tables or captions.** This skill edits *prose*.
   A count moved out of a paragraph is fine precisely because the table keeps it.
 - **Never delete a citation or `\cite` key.**
+- **Never delete a disclosure that an earlier pre-specified analysis read
+  differently** ("an earlier pre-registered subset had shown little effect; the
+  full read supersedes it"). It parses as class-3 journey narration, but
+  deleting it hides a discordant prior analysis — a prose file-drawer that
+  upgrades the surviving claim's apparent robustness. Refer it to the author.
 
 Rule of thumb: cut what proves *diligence*; keep what bounds *scope*.
 
@@ -149,12 +181,17 @@ Rule of thumb: cut what proves *diligence*; keep what bounds *scope*.
    # bookkeeping shapes: "N of M", "N:M", "N -> M"
    grep -nE '[0-9]+ of [0-9]|[0-9]\{?:\}?[0-9]|\\to [0-9]' sections/*.tex
    # meta-narration stems
-   grep -niE 'we (report|claim|make|state|note|stress|log) (this|it|none|them)|rather than (claim|letting|running|averag)|entitled to know|guard(ing)? against|we count it as such' sections/*.tex
+   grep -niE 'we (report|claim|make|state|note|stress|log) (this|it|none|them)|rather than (claim|letting|running|averag)|net (it|this|that) away|averag\w* away|entitled to know|guard(ing)? against|we count it as such' sections/*.tex
+   # narrated absences: sentences about things that don't exist
+   grep -niE 'publishes no|has no (row|column|entry)|does not (report|publish|evaluate|include|provide)|no official|not (available|reported) (in|for)' sections/*.tex
    ```
 
 3. **Classify, don't rewrite yet.** Tag each hit cut / keep / rewrite. The
    temptation is to rewrite a bloated sentence into a slightly less bloated one;
-   most hits should be **whole-clause deletions**.
+   most hits should be **whole-clause deletions**. On a paper whose claims are
+   already settled, expect most hits to be keeps — in practice ~80% of
+   absence-pattern hits are load-bearing protocol scope. A low cut count is the
+   test working, not failing.
 
 4. **Edit.** Prefer deleting a clause over restructuring a sentence — the fewer
    words that move, the smaller the chance of shifting a claim.
@@ -169,7 +206,7 @@ Rule of thumb: cut what proves *diligence*; keep what bounds *scope*.
 
 ## Reporting
 
-Report as: sections touched, what was cut by class (1–4), and explicitly
+Report as: sections touched, what was cut by class (1–5), and explicitly
 **what was kept and why** — the kept-list is the evidence that tightening did
 not become overclaiming. Do not report a "% reduction" as the headline; the
 headline is that the argument reads straight through.
