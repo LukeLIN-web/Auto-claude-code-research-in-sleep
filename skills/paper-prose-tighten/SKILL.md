@@ -1,6 +1,6 @@
 ---
 name: paper-prose-tighten
-description: "Cut filler from paper prose: bookkeeping-count enumerations (\"abstained blocks 569 → 551\", \"32 of the 39\", \"discordant pairs 166:103\"), defensive meta-narration (\"we report this rather than claim X\", \"a reader is entitled to know\"), narrated absences / 无中生有 (\"Video-Odyssey publishes no row for this backbone and has no column\"), and self-referential audit trail that no reviewer reads. Use when user says \"论文废话太多\", \"不要罗列数量\", \"清理废话\", \"无中生有\", \"tighten the prose\", \"cut the filler\", \"too wordy\", or before submission when sections read like an audit log instead of an argument."
+description: "Cut filler from paper prose: bookkeeping-count enumerations (\"abstained blocks 569 → 551\", \"32 of the 39\", \"discordant pairs 166:103\"), defensive meta-narration (\"we report this rather than claim X\", \"a reader is entitled to know\"), narrated absences / 无中生有 (\"Video-Odyssey publishes no row for this backbone and has no column\"), false pivots / 错误的转折 (\"X rather than Y\", \"the advantage is not reducible to Z\" — delete the negated alternative, state the claim directly), and self-referential audit trail that no reviewer reads. Use when user says \"论文废话太多\", \"不要罗列数量\", \"清理废话\", \"无中生有\", \"错误的转折\", \"tighten the prose\", \"cut the filler\", \"too wordy\", or before submission when sections read like an audit log instead of an argument."
 argument-hint: "[paper-directory-or-section-files]"
 allowed-tools: Bash(*), Read, Write, Edit, Grep, Glob
 ---
@@ -60,7 +60,7 @@ A number survives when **it is the claim**. A number dies when it is
 reading its prose; they read the tables. Counts belong in tables, in the
 artifacts, or nowhere.
 
-## The Five Cut Classes
+## The Six Cut Classes
 
 ### 1. Bookkeeping enumerations
 
@@ -149,6 +149,51 @@ benchmark evaluates audio-visual retrieval jointly" as a motivation sentence)
 or when it states a protocol fact a reviewer would otherwise assume the other
 way ("no test-set videos appear in training").
 
+### 6. False pivots (错误的转折)
+
+A claim delivered as the correction of an alternative nobody proposed: the
+sentence erects a reading, negates it, and only then states the claim. The
+negated half is the author debating themselves; the positive half is the whole
+content.
+
+- "The advantage is also not reducible to the material the compressor had to
+  drop: sorting the same questions by the share of the clip's audio the
+  baseline kept, \method leads inside every level of that coverage." →
+  "\method leads at every level of the baseline's audio coverage." The
+  reviewer had not yet formed the reading being rebutted.
+- "X rather than Y" where Y is the author's own invention: delete "rather
+  than Y", keep X. "the map is ordered by two properties of the questions
+  rather than by the benchmark" → "the map is ordered by two properties of
+  the questions."
+- "not A but B" → "B".
+
+**Rewrite pattern:** delete everything from the pivot word on ("rather than
+…", "not … but", "is not reducible to …") and let the positive claim stand
+alone. If the sentence opens with the negation, the rewrite is the positive
+claim, stated directly. No keep cases: you do not know what the reader's
+default reading is, so a pivot never earns its place by "correcting" one.
+
+**Field notes (first full pass, 2026-08-05, ~90 cuts).**
+(a) The worst pivots are invisible to a "rather than" grep: sentence-lead
+negations ("The obvious reading of that pair … is the one the data rejects",
+"Nor is the gain fully accounted for by…", "That the shortlist moves is not
+by itself evidence…", "Neither length is a swept hyperparameter"), negative
+`\paragraph` headers ("…is not doing hidden accuracy work"), caption bold
+titles ("The regime, not the benchmark, sets…"), and question-form section
+titles ("Is the Lead Bought by What the Montage Discarded?"). Sweep headers,
+titles, and captions by eye, not only by grep.
+(b) Deleting the "rather than Y" tail is usually scope-safe because the
+surviving X carries the scope itself ("a same-stack anchor", "third-party
+reads", "systems as published"). When the negated half is the *only* scope
+carrier, restate it positively ("same-weights, cross-protocol comparison")
+— the hard stops below still forbid dropping the scope.
+(c) A negation-first setup often binds a later pronoun ("that explanation",
+"It does not") — deleting only the clause dangles the reference. Rewrite the
+passage as one positive sentence.
+(d) A generator can carry the same pivot in two strings (the LaTeX caption
+and a preview/notes block). After editing it, rebuild and re-grep the
+rendered `.tex` to confirm the cut landed.
+
 Deleting text must never upgrade a claim. Hard stops:
 
 - **Never delete a significance qualifier** to make a null read as a win.
@@ -184,6 +229,9 @@ Rule of thumb: cut what proves *diligence*; keep what bounds *scope*.
    grep -niE 'we (report|claim|make|state|note|stress|log) (this|it|none|them)|rather than (claim|letting|running|averag)|net (it|this|that) away|averag\w* away|entitled to know|guard(ing)? against|we count it as such' sections/*.tex
    # narrated absences: sentences about things that don't exist
    grep -niE 'publishes no|has no (row|column|entry)|does not (report|publish|evaluate|include|provide)|no official|not (available|reported) (in|for)' sections/*.tex
+   # false pivots: negated-alternative claims (high recall — classify by hand;
+   # headers, caption titles, and section titles need an eye pass on top)
+   grep -niE 'rather than|instead of|not reducible|, not |; it is|\bnor is|not by itself|not only|is not|are not' sections/*.tex tables/*.tex
    ```
 
 3. **Classify, don't rewrite yet.** Tag each hit cut / keep / rewrite. The
@@ -206,7 +254,7 @@ Rule of thumb: cut what proves *diligence*; keep what bounds *scope*.
 
 ## Reporting
 
-Report as: sections touched, what was cut by class (1–5), and explicitly
+Report as: sections touched, what was cut by class (1–6), and explicitly
 **what was kept and why** — the kept-list is the evidence that tightening did
 not become overclaiming. Do not report a "% reduction" as the headline; the
 headline is that the argument reads straight through.
