@@ -265,6 +265,11 @@ ARIS 读论文 → 找弱点 → 克隆代码 → 针对*那些*弱点用*那套
 
 ## 2. 📢 最近更新
 
+- **2026-08-09** — ![NEW](https://img.shields.io/badge/NEW-red?style=flat-square) 🦆 **Copilot CLI 宿主下,`/auto-review-loop` 默认改用其原生 rubber-duck 审稿 subagent**([#360](https://github.com/wanshuiyin/Auto-claude-code-research-in-sleep/pull/360),closes [#258](https://github.com/wanshuiyin/Auto-claude-code-research-in-sleep/issues/258);by [@Functionhx](https://github.com/Functionhx))。不再依赖 Codex MCP、不再固定 GPT 型号:每轮由宿主内置 subagent 审稿,helper 从宿主持久化的会话事件中提取并复验双方真实模型与跨家族关系,同家族/家族不明/证据缺失一律 fail-closed 到已知异族外部后备或 `REVIEW_UNAVAILABLE`。显式指定的外部 reviewer 照旧优先——**标准的 Claude Code + Codex 搭配完全不受影响**:原生路线仅当 ARIS 本身跑在 Copilot CLI 会话里才会启用(一次性宿主探针判定;其他任何环境直接回落 Codex 默认)。⚠️ 运行 `bash tools/smart_update.sh --apply` 拉取更新。
+- **2026-08-09** — ![NEW](https://img.shields.io/badge/NEW-red?style=flat-square) 🚧 **`/idea-discovery` 不能再静默跳过阶段**([#383](https://github.com/wanshuiyin/Auto-claude-code-research-in-sleep/pull/383),closes [#285](https://github.com/wanshuiyin/Auto-claude-code-research-in-sleep/issues/285);by [@3mom3](https://github.com/3mom3))。确定性证据门逐一检查五个阶段的 run-state 记录与规范报告章节,缺任何一项,最终报告就带上可见的 `BLOCKED: <stage> evidence missing` 段落,而不是产出一份"看起来完整"的 `IDEA_REPORT.md`。该门只证明执行证据;各阶段的验收仍归各自的审查门。⚠️ 运行 `bash tools/smart_update.sh --apply` 拉取更新。
+- **2026-08-05** — ![FIX](https://img.shields.io/badge/FIX-2ea44f?style=flat-square) 🈶 **research wiki 的非 ASCII 处理修好了**([#386](https://github.com/wanshuiyin/Auto-claude-code-research-in-sleep/pull/386)、[#387](https://github.com/wanshuiyin/Auto-claude-code-research-in-sleep/pull/387);由 [@LIMMIL7](https://github.com/LIMMIL7) 报告)。两个 bug 叠在一起:`research_wiki.py` 大部分文件操作沿用平台默认编码,cp936 环境下写出的 wiki 换台机器就读不了;而 `slugify()` 会剥掉所有非 ASCII 字符,纯中文标题因此塌成 `<年份>_untitled`,同年第二篇这样的论文就被当成重复静默丢弃。两处均已修复;ASCII slug 保持不变,已有的 UTF-8 wiki 继续兼容(老的 cp936 wiki 现在会指名哪个文件需要转码,而不是抛裸 traceback)。另外 `/research-lit` 找不到本地文献库时会明确告警,不再静默跳过。⚠️ 运行 `bash tools/smart_update.sh --apply` 拉取更新。
+- **2026-08-04** — ![NEW](https://img.shields.io/badge/NEW-red?style=flat-square) 🖼️ **上游项目动态:[posterly](https://github.com/Chenruishuo/posterly)——`/paper-poster-html` 的引擎——迎来一次大的设计升级。** `/paper-poster-html` 的测量门机制正是改编自 posterly(MIT,by [@Chenruishuo](https://github.com/Chenruishuo))。据其开发者,今年 ICML 会场约 50 张论文海报由它制作;会后更新复盘了业内成熟海报的呈现手法,在"开箱即用"的基线之上大幅提升了设计感与风格多样性。做海报的同学值得一看:[GitHub](https://github.com/Chenruishuo/posterly) · [Blog](https://www.tryposterly.com/blog)。
+- **2026-08-03** — ![NEW](https://img.shields.io/badge/NEW-red?style=flat-square) 🧭 **`/proof-orchestrator` —— 工作流 7,独立理论轨道:带记忆的证明战役**([#381](https://github.com/wanshuiyin/Auto-claude-code-research-in-sleep/pull/381),社区贡献 by [@shenmuxing](https://github.com/shenmuxing),改编自其本人的 [EtaSkill](https://github.com/shenmuxing/EtaSkill))。硬定理很少一轮对话就倒下——这个 skill 把证明工作跑成有状态的 local-first 流水线:冻结精确目标、本地攻坚与审计、过七行记号记分卡(未定义符号与符号冲突必须为零)和自顶向下推导结构门——名为润色实为纠错,循环论证在自顶向下重写那一刻现形;证明卡住时,产出可直接复制粘贴的 GPT Pro 交接包。run 跨 session 延续:每个新 run 记录此前哪些 claim 已证/猜想/已否决,只有审计通过的 claim 才被复用。可按需请求 DeepSeek 对抗性第二意见。工作流 1–6 不会调用它;`/proof-checker` 仍是投稿门。⚠️ 运行 `bash tools/smart_update.sh --apply` 拉取更新。
 - **2026-07-14** — ![NEW](https://img.shields.io/badge/NEW-red?style=flat-square) 🐞 **[`/web-debug-search`](skills/web-debug-search/SKILL.md)**（Issue [#211](https://github.com/wanshuiyin/Auto-claude-code-research-in-sleep/issues/211)）。新增聚焦调试/发现的检索流程：搜索 GitHub Issues 与 Discussions，支持精确/归一化错误字符串匹配、版本兼容性追踪和明确的失败处理。所有结果都标记为调试用途，不能作为论文引用证据。
 - **2026-07-14** — ![NEW](https://img.shields.io/badge/NEW-red?style=flat-square) 🧩 **选择性安装 + 全局脚本指针**([#366](https://github.com/wanshuiyin/Auto-claude-code-research-in-sleep/pull/366))。81 个 skill 不再"一股脑全装"——四套安装器都支持按组/按 skill 选装(`--list-groups` / `--groups X,Y` / `--skills X` / `--exclude Y`,或 TTY 下的全屏勾选界面),pipeline 硬依赖自动带全。更新时上游**新增**的 skill 会逐个确认(`--add-new` / `--skip-new` 供脚本化;拒绝的记住、不再重复问)。同时修了全局 copy 安装(`~/.claude/skills`)找不到 helper 脚本的问题,新增指针文件 `~/.aris/repo`。⚠️ 向后兼容:`--quiet` 全新安装仍是全装;跑一次任意安装器/更新器即可拿到指针文件。[选择性安装 →](#install-skills)
 - **2026-07-12** — ![NEW](https://img.shields.io/badge/NEW-red?style=flat-square) 🛡️ **投稿前,你的论文先过一遍审稿人那侧的取证**([#357](https://github.com/wanshuiyin/Auto-claude-code-research-in-sleep/pull/357))。新 skill `/integrity-forensics`:SHA-pin 薄启动器,把 [Anti-Autoresearch](https://github.com/wanshuiyin/Anti-Autoresearch) 那套敌意审稿人能跑的扫描(证据账本、九个审计维度、数值核心、纯规则裁决器)先跑在你自己的论文上。结论进一道 typed gate——flag 能拦下投稿,"没查出问题"只记作"无新阻断"、不算无罪判决;finding 只有带类型、带 hash 的证据、或人签字的 waiver 才能销项(把句子改个措辞不算数,台账会记下来)。`/paper-writing` 在 submission 档默认就跑(`— self_forensics: false` 可关;Codex 镜像是 opt-in,且只能跑上游的确定性切片——能报 flag,永远说不出 CLEAN)。⚠️ 首次运行需要联网克隆并校验上游;跑 `bash tools/smart_update.sh --apply` 拉取更新。
@@ -367,7 +372,7 @@ ARIS 读论文 → 找弱点 → 克隆代码 → 针对*那些*弱点用*那套
 git clone https://github.com/wanshuiyin/Auto-claude-code-research-in-sleep.git
 bash Auto-claude-code-research-in-sleep/tools/install_aris.sh ~/your-project   # 把 ARIS skill symlink 进 <project>/.claude/skills/
 # （想全局安装？cp -r Auto-claude-code-research-in-sleep/skills/* ~/.claude/skills/）
-# （不需要全部 81 个？--list-groups / --groups X,Y / --skills X —— 见下方"选择性安装"）
+# （不需要全部 82 个？--list-groups / --groups X,Y / --skills X —— 见下方"选择性安装"）
 
 # 可选：Codex mirror 项目级受管安装
 bash Auto-claude-code-research-in-sleep/tools/install_aris_codex.sh ~/your-codex-project
@@ -399,7 +404,7 @@ claude
 > /meta-optimize                               # 元优化：分析使用记录 → 提出技能改进方案
 ```
 
-> 不需要全部 81 个 skill？见下方[选择性安装](#install-skills)按组/按 skill 挑选。
+> 不需要全部 82 个 skill？见下方[选择性安装](#install-skills)按组/按 skill 挑选。
 
 <details>
 <summary><b>📚 Research Wiki（可选）</b> —— 一行 init 启用跨 session 持久记忆；完整说明见 <a href="#-research-wiki--persistent-research-memory">§ Research Wiki</a></summary>
@@ -541,14 +546,14 @@ Codex 基础镜像默认由新的 Codex `spawn_agent` 自审：流程可以继�
 
 ## 4. ✨ 功能亮点
 
-ARIS 用 **81 个可组合 skill** 覆盖科研全生命周期——文献查新 → idea 发现 → GPU 实验 → 自动 review 循环 → 论文写作 → peer review——配合**跨模型对抗审**（Claude 执行 · GPT-5.6-Sol xhigh 审 · 可选 **GPT-5.5 Pro** via Oracle）、DBLP/CrossRef 反幻觉引用、持久化 **Research Wiki**、灵活模型后端、human-in-the-loop 检查点，以及可选的飞书 / Zotero / Obsidian / GPU 集成。
+ARIS 用 **82 个可组合 skill** 覆盖科研全生命周期——文献查新 → idea 发现 → GPU 实验 → 自动 review 循环 → 论文写作 → peer review——配合**跨模型对抗审**（Claude 执行 · GPT-5.6-Sol xhigh 审 · 可选 **GPT-5.5 Pro** via Oracle）、DBLP/CrossRef 反幻觉引用、持久化 **Research Wiki**、灵活模型后端、human-in-the-loop 检查点，以及可选的飞书 / Zotero / Obsidian / GPU 集成。
 
 🔥 *而且这套"广度 / 审 / 记忆"三角能适配任何 agent 的 **ultracode 式深度模式**：广度 pass 适配运行时暴露的能力（Claude Code 原生 ultracode / workflows + Opus 4.8、Codex `spawn_agent`，或纯顺序执行），并按层级干净降级（fan-out → agent spawn → 顺序）。三件事分得很清楚：**广度 · 跨模型对抗审 → 准确性 · research wiki → 记忆性**。无论循环由谁推进，最后都回到同一套跨模型对抗审 + research wiki：**能推进，不能定案**。*
 
 <details>
 <summary><b>完整功能清单</b></summary>
 
-- 📊 **81 个可组合 skill** — 自由混搭，或串联为完整流水线（`/idea-discovery`、`/auto-review-loop`、`/paper-writing`、`/research-pipeline`）。[完整目录 →](docs/SKILLS_CATALOG.md)
+- 📊 **82 个可组合 skill** — 自由混搭，或串联为完整流水线（`/idea-discovery`、`/auto-review-loop`、`/paper-writing`、`/research-pipeline`）。[完整目录 →](docs/SKILLS_CATALOG.md)
 - 🔍 **文献 & 查新** — 多源论文搜索（**[Zotero](docs/integrations/ZOTERO_CN.md)** + **[Obsidian](docs/integrations/OBSIDIAN_CN.md)** + **本地 PDF** + arXiv/Scholar）+ 跨模型查新验证
 - 💡 **Idea 发现** — 文献调研 → 头脑风暴 8-12 个 idea → 查新 → GPU pilot 实验 → 排名报告
 - 🔄 **自动 review 循环** — 4 轮自主审稿，一夜从 5/10 提升到 7.5/10，自动跑 20+ 组 GPU 实验
@@ -581,7 +586,7 @@ ARIS 用 **81 个可组合 skill** 覆盖科研全生命周期——文献查新
 <a id="skills-catalog"></a>
 <a id="-skills-catalog"></a>
 
-ARIS 现有 **81+ 个 skill**，覆盖文献调研、idea 生成、实验、审计、论文写作、演讲、专利、meta 工具等——完整目录（每个 skill 含 role / category / 依赖）在 **[`docs/SKILLS_CATALOG.md`](docs/SKILLS_CATALOG.md)**，独立成文以保持 README 可扫读。
+ARIS 现有 **82+ 个 skill**，覆盖文献调研、idea 生成、实验、审计、论文写作、演讲、专利、meta 工具等——完整目录（每个 skill 含 role / category / 依赖）在 **[`docs/SKILLS_CATALOG.md`](docs/SKILLS_CATALOG.md)**，独立成文以保持 README 可扫读。
 
 <details>
 <summary><b>常用入口</b> —— 场景 → 入口 skill</summary>
@@ -602,7 +607,7 @@ ARIS 现有 **81+ 个 skill**，覆盖文献调研、idea 生成、实验、审�
 
 </details>
 
-→ **[按 category 浏览全部 81 个 skill →](docs/SKILLS_CATALOG.md)**
+→ **[按 category 浏览全部 82 个 skill →](docs/SKILLS_CATALOG.md)**
 
 ---
 
@@ -715,6 +720,7 @@ ARIS 全流程完成并进入投稿/审稿阶段的真实项目。**所列分数
 - **已有结果，需要迭代改进？** 工作流 2 → `/auto-review-loop`
 - **准备写论文了？** 工作流 3 → `/paper-writing`（或分步：`/paper-plan` → `/paper-figure` → `/paper-write` → `/paper-compile` → `/auto-paper-improvement-loop`）
 - **全流程？** 工作流 1 → 1.5 → 2 → 3 → `/research-pipeline`，从文献调研一路到投稿
+- **要打一场跨 session 的证明攻坚战？** 工作流 7 → `/proof-orchestrator` — run 目录制证明战役、GPT Pro 交接包、跨 run 接续
 - **想让 ARIS 记住并学习？** 📚 `/research-wiki init` — 跨会话持久记忆，论文、idea、失败实验复合积累
 - **想让 ARIS 优化自己？** 工作流 M → `/meta-optimize` — 分析使用日志，提出技能改进，reviewer 审核
 
@@ -1066,6 +1072,69 @@ NARRATIVE_REPORT.md ──► /paper-plan ──► /paper-figure ──► /pap
 ### 工作流 6:Conference Talk Pipeline 🎤(论文 → slides → polish → audits)
 
 `/paper-talk` 把录用论文做成报告:提纲 → `/paper-slides`(Beamer + PPTX + 备注 + Q&A)→ `/slides-polish`(逐页 Codex 视觉审)→ 可选 conference-ready 审计门。是 `/paper-writing` / `/paper-poster-html` 的姊妹流程。**完整流程 → [docs/RESUBMIT_AND_TALK_CN.md](docs/RESUBMIT_AND_TALK_CN.md)**
+
+### 工作流 7:Proof Orchestrator 🧭(独立理论轨道——攻坚一个定理,以天为单位而不是以轮为单位)
+
+> **"这个证明要花一周、用三个工具。让每次尝试、每次审计、每次升级都留在案卷上。"**
+
+硬定理是战役,不是一轮对话。`/proof-orchestrator` 把证明工作跑成有状态的 local-first 流水线——每次 run 有自己的目录,完成的 run 成为 append-only 证据,每个新 run 记录此前哪些 claim 已证/猜想/已否决:
+
+1. 🎯 **冻结目标** — 精确的定理、假设、量词、允许引用的来源;新开 run 或接续旧 run
+2. 🧱 **维护本地证据** — run 目录:`task.md` / `materials.md` / 稳定的来源快照
+3. 🧠 **本地攻坚** — 完整的证明、反证、反例或诊断;卡住时收窄到最小的那条硬 obligation
+4. 🔍 **正确性审计** — 每条引理、界、量词逐一对假设核验;claim 标注 已证/引用/猜想/修补/无支撑
+5. ✒️ **表达润色** — 两道门:七行记号记分卡(核心对象保留率 100%、未定义符号为零、符号冲突为零)+ 自顶向下推导结构门(依赖图无环、子目标不得暗中假设结论——名为润色实为纠错:一个抗拒干净自顶向下重写的证明往往藏着 gap,循环论证在重排那一刻就会现形)
+6. 📦 **GPT Pro 交接** — 卡住的证明打成交接包:`browser-prompt.md`(可直接复制)、`source-manifest.md`(来源角色)、`handoff.md`(上传顺序 + 回贴指引)
+7. 🧾 **回贴复审** — 只做格式修复,然后走完整正确性审计与润色,产出 `final.md`
+
+<details>
+<summary><b>展开工作流 7 流程图</b> —— 冻结目标 → 本地攻坚 → 审计 → 记号/结构门 → (卡住时)GPT Pro 交接 → 回贴复审 → final.md,外加可选 DeepSeek 分支</summary>
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│              Workflow 7: Proof Orchestrator                     │
+│                                                                 │
+│   定理到达(新开 run,或接续旧 run)                             │
+│         │                                                       │
+│         ▼                                                       │
+│   ┌──────────┐     ┌──────────┐     ┌──────────┐               │
+│   │ 冻结目标 │────▶│ 本地证明 │────▶│ 正确性   │               │
+│   │ + 本地   │     │ 攻坚     │     │ 审计     │               │
+│   │ 证据     │     │          │     │          │               │
+│   └──────────┘     └──────────┘     └──────────┘               │
+│                         │                │                      │
+│                  LOCAL_BLOCKED     ┌──────────┐                │
+│                         │          │ 记号门 + │                │
+│                         │          │ 结构门   │──▶ final.md    │
+│                         │          │          │                │
+│                         │          └──────────┘                │
+│                         ▼                                       │
+│   ┌───────────────────────────────────────────┐                │
+│   │ GPT Pro 交接包                            │                │
+│   │ browser-prompt.md · source-manifest.md ·  │                │
+│   │ handoff.md —— 浏览器由你来开              │                │
+│   └───────────────────────────────────────────┘                │
+│                         │                                       │
+│                         ▼                                       │
+│   gpt-pro-output.md → 格式修复 → 复审 → 两道门 → final.md      │
+│                                                                 │
+│   可选(按需):DeepSeek 对抗审 via llm-chat                    │
+│   → 本地核验 → run 内 provisional 证据                         │
+│                                                                 │
+│   状态:prompts/<run-id>/ —— 完成的 run 只增不改;              │
+│   新 run 只复用审计通过的 claim                                 │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+</details>
+
+**涉及 Skills:** `proof-orchestrator`(+ 可选 DeepSeek 分支用 `llm-chat` MCP)
+
+> ⚖️ **可选 DeepSeek 第二意见:** 在审计阶段按需请求,得到一次验证过模型的跨家族对抗审——发现先经本地核验,再记为 run 内的 provisional 证据。装了 `call-gpt-pro` skill 后,也可以在某次 run 上让它代跑 GPT Pro 调用。
+
+> 🧭 **设计上就是独立的。** 工作流 7 是理论工作自己的轨道——工作流 1–6 的任何环节都不会调用它,工作流 3 里的投稿门仍归 `/proof-checker`。当一个定理超出 `/proof-writer` 单次起草的量级——多天攻坚、跨 run 接续、或最强的证明器在浏览器标签页里——就用它。
+
+> 💡 **接续:** 指向旧 run(`next.md` / `redo.md`)——它读取 `final.md` / `audit.md`,只复用审计通过的 claim,并带着完整出处新开一个 run 目录。
 
 <a id="-research-wiki--persistent-research-memory"></a>
 
