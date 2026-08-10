@@ -115,10 +115,12 @@ Pipeline Status 约定不依赖任何工具——LLM 只需要遵循 CLAUDE.md �
 
 | Hook | 事件 | 用途 |
 |------|------|------|
-| `session-restore.sh` | `PreToolUse`（首次调用） | 新会话 → 自动读取 Pipeline Status + 状态文件 |
-| `context-refresh.sh` | `PreToolUse`（节流） | 周期性将 Pipeline Status 注入上下文 |
+| `session-restore.sh` | `SessionStart` | 新会话/恢复会话（含压缩后）→ 自动读取 Pipeline Status + 状态文件 |
+| `context-refresh.sh` | `UserPromptSubmit`（节流） | 周期性将 Pipeline Status 注入上下文 |
 | `pre-compact-remind.sh` | `PreCompact` | 压缩前提醒 LLM 保存状态 |
 | `progress-remind.sh` | `PostToolUse`（Write/Edit） | 代码修改后提醒更新 EXPERIMENT_TRACKER.md |
+
+> **事件选择很关键。** `PreToolUse`/`PostToolUse` hook 在 exit 0 时的普通 stdout **不会**进入模型上下文——只在 ctrl+o transcript 视图里显示，模型根本看不到。想注入上下文,要用 `SessionStart` / `UserPromptSubmit` 的 stdout（exit 0），或在其他事件上用 JSON 输出的 `hookSpecificOutput.additionalContext`，或 exit 2 + stderr。下面的 hook 已按此接线,不要改回 `PreToolUse`。
 
 ### 安装
 
@@ -132,22 +134,19 @@ mkdir -p ~/.claude/hooks
 
 ##### `session-restore.sh` — 新会话自动恢复
 
-最重要的 hook。新会话的第一次工具调用时，自动读取 Pipeline Status 并提醒 LLM 恢复对应工作流。
+最重要的 hook。会话启动、恢复或压缩后重启时，自动读取 Pipeline Status 并提醒 LLM 恢复对应工作流。`SessionStart` 的 stdout 会直接注入模型上下文，且该事件天然每次会话启动只触发一次——不需要任何 once-per-session 标记文件。
 
 ```bash
 cat > ~/.claude/hooks/session-restore.sh << 'HOOKEOF'
 #!/bin/bash
-# PreToolUse hook: 新会话首次工具调用时自动恢复项目上下文
-# 每个会话只触发一次。修改 RESEARCH_ROOT 指向你的项目父目录。
+# SessionStart hook: 会话启动/恢复/压缩后重启时自动恢复项目上下文。
+# SessionStart 每次会话启动只触发一次，stdout 直接注入模型上下文。
+# 修改 RESEARCH_ROOT 指向你的项目父目录。
 
 RESEARCH_ROOT="${ARIS_RESEARCH_ROOT:-$HOME/research}"
 CWD=$(pwd)
 
 [[ "$CWD" != "$RESEARCH_ROOT"/* ]] && exit 0
-
-FLAG="/tmp/aris-session-restore-$$"
-[ -f "$FLAG" ] && exit 0
-touch "$FLAG"
 
 PROJECT_DIR=""
 SEARCH_DIR="$CWD"
@@ -214,24 +213,28 @@ chmod +x ~/.claude/hooks/session-restore.sh
 
 ##### `context-refresh.sh` — 周期性状态刷新
 
+运行在 `UserPromptSubmit` 上——exit 0 时 stdout 会在你的 prompt 之前注入模型上下文。
+
 ```bash
 cat > ~/.claude/hooks/context-refresh.sh << 'HOOKEOF'
 #!/bin/bash
-# PreToolUse hook: 每 30 次工具调用刷新一次 Pipeline Status
+# UserPromptSubmit hook: 每 10 条用户 prompt 重新注入一次 Pipeline Status。
+# 计数按会话隔离：用 stdin JSON 里的 session_id 作为计数器文件名。
 
 INPUT=$(cat)
+SESSION_ID=$(echo "$INPUT" | jq -r '.session_id // empty')
 RESEARCH_ROOT="${ARIS_RESEARCH_ROOT:-$HOME/research}"
 CWD=$(pwd)
 
 [[ "$CWD" != "$RESEARCH_ROOT"/* ]] && exit 0
 
-COUNTER_FILE="/tmp/aris-context-refresh-counter"
+COUNTER_FILE="/tmp/aris-context-refresh-${SESSION_ID:-global}"
 COUNT=0
 [ -f "$COUNTER_FILE" ] && COUNT=$(cat "$COUNTER_FILE" 2>/dev/null || echo 0)
 COUNT=$((COUNT + 1))
 echo "$COUNT" > "$COUNTER_FILE"
 
-[ "$COUNT" -ne 1 ] && [ $((COUNT % 30)) -ne 0 ] && exit 0
+[ $((COUNT % 10)) -ne 0 ] && exit 0
 
 PROJECT_CLAUDE=""
 SEARCH_DIR="$CWD"
@@ -278,13 +281,18 @@ chmod +x ~/.claude/hooks/pre-compact-remind.sh
 
 ##### `progress-remind.sh` — 代码修改后提醒
 
+`PostToolUse` 在 exit 0 时的普通 stdout 不会进入模型上下文，所以提醒改用 `hookSpecificOutput.additionalContext` JSON 输出（exit 2 + stderr 也可以，但会以错误样式呈现）。
+
 ```bash
 cat > ~/.claude/hooks/progress-remind.sh << 'HOOKEOF'
 #!/bin/bash
-# PostToolUse hook: 每 10 次写操作提醒更新状态文件
+# PostToolUse hook: 每 10 次写操作提醒更新状态文件。
+# PostToolUse 的普通 stdout 不注入上下文——提醒通过
+# hookSpecificOutput.additionalContext JSON 返回。
 
 INPUT=$(cat)
 TOOL_NAME=$(echo "$INPUT" | jq -r '.tool_name // empty')
+SESSION_ID=$(echo "$INPUT" | jq -r '.session_id // empty')
 
 case "$TOOL_NAME" in
   Write|Edit) ;;
@@ -301,7 +309,7 @@ case "$FILE_PATH" in
     exit 0 ;;
 esac
 
-COUNTER_FILE="/tmp/aris-progress-remind-counter"
+COUNTER_FILE="/tmp/aris-progress-remind-${SESSION_ID:-global}"
 COUNT=0
 [ -f "$COUNTER_FILE" ] && COUNT=$(cat "$COUNTER_FILE" 2>/dev/null || echo 0)
 COUNT=$((COUNT + 1))
@@ -309,7 +317,8 @@ echo "$COUNT" > "$COUNTER_FILE"
 
 [ $((COUNT % 10)) -ne 0 ] && exit 0
 
-echo "[progress-remind] 已累计 ${COUNT} 次代码修改。如有阶段性进展，请更新 EXPERIMENT_TRACKER.md 和 Pipeline Status。"
+jq -n --arg msg "[progress-remind] 已累计 ${COUNT} 次代码修改。如有阶段性进展，请更新 EXPERIMENT_TRACKER.md 和 Pipeline Status。" \
+  '{hookSpecificOutput: {hookEventName: "PostToolUse", additionalContext: $msg}}'
 HOOKEOF
 chmod +x ~/.claude/hooks/progress-remind.sh
 ```
@@ -321,15 +330,20 @@ chmod +x ~/.claude/hooks/progress-remind.sh
 ```json
 {
   "hooks": {
-    "PreToolUse": [
+    "SessionStart": [
       {
-        "matcher": "",
         "hooks": [
           {
             "type": "command",
             "command": "~/.claude/hooks/session-restore.sh",
             "timeout": 5
-          },
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
           {
             "type": "command",
             "command": "~/.claude/hooks/context-refresh.sh",
@@ -351,7 +365,7 @@ chmod +x ~/.claude/hooks/progress-remind.sh
     ],
     "PostToolUse": [
       {
-        "matcher": "",
+        "matcher": "Write|Edit",
         "hooks": [
           {
             "type": "command",

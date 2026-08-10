@@ -117,10 +117,12 @@ The Pipeline Status convention works without any tooling — the LLM just needs 
 
 | Hook | Event | Purpose |
 |------|-------|---------|
-| `session-restore.sh` | `PreToolUse` (first call) | New session → auto-read Pipeline Status + state files |
-| `context-refresh.sh` | `PreToolUse` (throttled) | Periodically inject Pipeline Status into context |
+| `session-restore.sh` | `SessionStart` | New/resumed session (incl. after compaction) → auto-read Pipeline Status + state files |
+| `context-refresh.sh` | `UserPromptSubmit` (throttled) | Periodically inject Pipeline Status into context |
 | `pre-compact-remind.sh` | `PreCompact` | Remind LLM to save state before compaction |
 | `progress-remind.sh` | `PostToolUse` (Write/Edit) | Remind LLM to update EXPERIMENT_TRACKER.md after code changes |
+
+> **Event choice matters.** For `PreToolUse`/`PostToolUse` hooks, plain stdout with exit 0 is **not** added to the model's context — it only appears in the ctrl+o transcript view, so the model never sees it. Context injection works via `SessionStart` / `UserPromptSubmit` stdout (exit 0), or — on other events — via JSON output with `hookSpecificOutput.additionalContext`, or exit 2 with the message on stderr. The hooks below are wired accordingly; don't move them back to `PreToolUse`.
 
 ### Setup
 
@@ -134,24 +136,20 @@ mkdir -p ~/.claude/hooks
 
 ##### `session-restore.sh` — Auto-recover on new session
 
-The most important hook. On the first tool call of a new session, it reads your project's Pipeline Status and reminds the LLM which workflow to resume.
+The most important hook. When a session starts, resumes, or restarts after compaction, it reads your project's Pipeline Status and reminds the LLM which workflow to resume. `SessionStart` stdout is added directly to the model's context, and the event fires once per session start — no once-per-session flag file is needed.
 
 ```bash
 cat > ~/.claude/hooks/session-restore.sh << 'HOOKEOF'
 #!/bin/bash
-# PreToolUse hook: auto-recover project state on new session start.
-# Fires once per session (first tool call only).
+# SessionStart hook: auto-recover project state when a session starts,
+# resumes, or restarts after compaction. SessionStart fires once per
+# session start and its stdout is injected into the model's context.
 # Customize RESEARCH_ROOT to your project parent directory.
 
 RESEARCH_ROOT="${ARIS_RESEARCH_ROOT:-$HOME/research}"
 CWD=$(pwd)
 
 [[ "$CWD" != "$RESEARCH_ROOT"/* ]] && exit 0
-
-# Once per session (PID-based flag)
-FLAG="/tmp/aris-session-restore-$$"
-[ -f "$FLAG" ] && exit 0
-touch "$FLAG"
 
 # Find project root (nearest directory with CLAUDE.md)
 PROJECT_DIR=""
@@ -219,27 +217,29 @@ chmod +x ~/.claude/hooks/session-restore.sh
 
 ##### `context-refresh.sh` — Periodic state injection
 
-Keeps the LLM aware of current project state during long sessions.
+Keeps the LLM aware of current project state during long sessions. Runs on `UserPromptSubmit` — its stdout (exit 0) is added to the model's context before your prompt.
 
 ```bash
 cat > ~/.claude/hooks/context-refresh.sh << 'HOOKEOF'
 #!/bin/bash
-# PreToolUse hook: periodically inject Pipeline Status into context.
-# Throttled to once every 30 tool calls.
+# UserPromptSubmit hook: periodically re-inject Pipeline Status into context.
+# Throttled to once every 10 user prompts, counted per session using the
+# session_id field from the hook's stdin JSON.
 
 INPUT=$(cat)
+SESSION_ID=$(echo "$INPUT" | jq -r '.session_id // empty')
 RESEARCH_ROOT="${ARIS_RESEARCH_ROOT:-$HOME/research}"
 CWD=$(pwd)
 
 [[ "$CWD" != "$RESEARCH_ROOT"/* ]] && exit 0
 
-COUNTER_FILE="/tmp/aris-context-refresh-counter"
+COUNTER_FILE="/tmp/aris-context-refresh-${SESSION_ID:-global}"
 COUNT=0
 [ -f "$COUNTER_FILE" ] && COUNT=$(cat "$COUNTER_FILE" 2>/dev/null || echo 0)
 COUNT=$((COUNT + 1))
 echo "$COUNT" > "$COUNTER_FILE"
 
-[ "$COUNT" -ne 1 ] && [ $((COUNT % 30)) -ne 0 ] && exit 0
+[ $((COUNT % 10)) -ne 0 ] && exit 0
 
 PROJECT_CLAUDE=""
 SEARCH_DIR="$CWD"
@@ -286,13 +286,18 @@ chmod +x ~/.claude/hooks/pre-compact-remind.sh
 
 ##### `progress-remind.sh` — Nudge after code changes
 
+`PostToolUse` stdout with exit 0 never reaches the model, so this hook emits its reminder as `hookSpecificOutput.additionalContext` JSON (exit 2 + stderr would also work, but renders as an error).
+
 ```bash
 cat > ~/.claude/hooks/progress-remind.sh << 'HOOKEOF'
 #!/bin/bash
 # PostToolUse hook: after code edits, periodically remind to update state files.
+# Plain stdout is NOT injected into context on PostToolUse — the reminder is
+# returned as hookSpecificOutput.additionalContext JSON instead.
 
 INPUT=$(cat)
 TOOL_NAME=$(echo "$INPUT" | jq -r '.tool_name // empty')
+SESSION_ID=$(echo "$INPUT" | jq -r '.session_id // empty')
 
 case "$TOOL_NAME" in
   Write|Edit) ;;
@@ -309,7 +314,7 @@ case "$FILE_PATH" in
     exit 0 ;;
 esac
 
-COUNTER_FILE="/tmp/aris-progress-remind-counter"
+COUNTER_FILE="/tmp/aris-progress-remind-${SESSION_ID:-global}"
 COUNT=0
 [ -f "$COUNTER_FILE" ] && COUNT=$(cat "$COUNTER_FILE" 2>/dev/null || echo 0)
 COUNT=$((COUNT + 1))
@@ -317,7 +322,8 @@ echo "$COUNT" > "$COUNTER_FILE"
 
 [ $((COUNT % 10)) -ne 0 ] && exit 0
 
-echo "[progress-remind] ${COUNT} code edits so far. If you have milestone results, update EXPERIMENT_TRACKER.md and Pipeline Status."
+jq -n --arg msg "[progress-remind] ${COUNT} code edits so far. If you have milestone results, update EXPERIMENT_TRACKER.md and Pipeline Status." \
+  '{hookSpecificOutput: {hookEventName: "PostToolUse", additionalContext: $msg}}'
 HOOKEOF
 chmod +x ~/.claude/hooks/progress-remind.sh
 ```
@@ -329,15 +335,20 @@ Add to `~/.claude/settings.json` (merge with existing hooks):
 ```json
 {
   "hooks": {
-    "PreToolUse": [
+    "SessionStart": [
       {
-        "matcher": "",
         "hooks": [
           {
             "type": "command",
             "command": "~/.claude/hooks/session-restore.sh",
             "timeout": 5
-          },
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
           {
             "type": "command",
             "command": "~/.claude/hooks/context-refresh.sh",
@@ -359,7 +370,7 @@ Add to `~/.claude/settings.json` (merge with existing hooks):
     ],
     "PostToolUse": [
       {
-        "matcher": "",
+        "matcher": "Write|Edit",
         "hooks": [
           {
             "type": "command",

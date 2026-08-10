@@ -39,13 +39,16 @@ codex mcp add claude-review -- ~/.codex/mcp-servers/claude-review/run_with_claud
 
 - `CLAUDE_BIN`: Claude CLI path, defaults to `claude`
 - `CLAUDE_REVIEW_MODEL`: optional reviewer model override
+- `CLAUDE_REVIEW_FALLBACK_MODEL`: optional comma-separated model list passed to `claude --fallback-model` (used when the primary model is overloaded/unavailable)
+- `CLAUDE_REVIEW_MAX_BUDGET_USD`: optional hard per-invocation spend cap passed to `claude --max-budget-usd`
+- `CLAUDE_REVIEW_MAX_ATTEMPTS`: retries for transient CLI/API failures (429/5xx/529, rate limit, connection errors) with exponential backoff + jitter, defaults to `3`
 - `CLAUDE_REVIEW_SYSTEM`: optional default system prompt
 - `CLAUDE_REVIEW_TOOLS`: Claude tools override, defaults to empty string
 - `CLAUDE_REVIEW_TIMEOUT_SEC`: subprocess timeout, defaults to `600`
 
 ## Notes
 
-- The bridge runs Claude in non-interactive `-p` mode.
+- The bridge runs Claude in non-interactive `-p` mode. The review prompt is fed via **stdin** (not argv), so large prompts do not hit the kernel's ~128KiB per-argument limit.
 - By default the reviewer gets **no tools**. This matches the original ARIS pattern where the external reviewer only sees the prompt context prepared by the executor.
 - `threadId` is the native Claude session id and can be passed directly to `review_reply`.
 - `jobId` is a bridge-local background task id stored on disk under `~/.codex/state/claude-review/jobs/` by default, so status can be resumed across MCP server restarts.

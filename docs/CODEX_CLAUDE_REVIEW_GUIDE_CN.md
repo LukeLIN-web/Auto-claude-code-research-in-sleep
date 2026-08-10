@@ -47,7 +47,7 @@ codex mcp add claude-review -- ~/.codex/mcp-servers/claude-review/run_with_claud
 
 ```bash
 codex mcp remove claude-review
-codex mcp add claude-review --env CLAUDE_REVIEW_MODEL=claude-opus-4-1 -- python3 ~/.codex/mcp-servers/claude-review/server.py
+codex mcp add claude-review --env CLAUDE_REVIEW_MODEL=claude-opus-5 -- python3 ~/.codex/mcp-servers/claude-review/server.py
 ```
 
 ## 验证

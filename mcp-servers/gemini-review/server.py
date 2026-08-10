@@ -61,7 +61,8 @@ DEFAULT_MODEL = os.environ.get("GEMINI_REVIEW_MODEL", "")
 DEFAULT_SYSTEM = os.environ.get("GEMINI_REVIEW_SYSTEM", "")
 DEFAULT_BACKEND = os.environ.get("GEMINI_REVIEW_BACKEND", "api")
 DEFAULT_TIMEOUT_SEC = int(os.environ.get("GEMINI_REVIEW_TIMEOUT_SEC", "600"))
-DEFAULT_API_MODEL = os.environ.get("GEMINI_REVIEW_API_MODEL", "gemini-2.5-flash")
+DEFAULT_API_MODEL = os.environ.get("GEMINI_REVIEW_API_MODEL", "gemini-3-pro-preview")
+DEFAULT_API_MAX_OUTPUT_TOKENS = int(os.environ.get("GEMINI_REVIEW_MAX_OUTPUT_TOKENS", "65536"))
 DEFAULT_AGY_PRINT_TIMEOUT = os.environ.get("GEMINI_REVIEW_AGY_PRINT_TIMEOUT", f"{DEFAULT_TIMEOUT_SEC}s")
 MAX_STATUS_WAIT_SECONDS = int(os.environ.get("GEMINI_REVIEW_MAX_STATUS_WAIT_SECONDS", "30"))
 AGY_APP_DATA_DIR = Path(
@@ -87,8 +88,10 @@ TERMINAL_JOB_STATES = {"completed", "failed"}
 SHARED_TEMP_DIRS = {Path("/tmp"), Path("/var/tmp")}
 SAFE_ID_MAX_LEN = 128
 SAFE_ID_RE = re.compile(r"^[0-9A-Za-z_-]+$")
+# `auto-gemini-*` is the Gemini CLI's auto-routing alias family (e.g.
+# auto-gemini-3-pro) — still a Gemini-family model, so whitelist it.
 GEMINI_MODEL_RE = re.compile(
-    r"^(?:gemini-[A-Za-z0-9][A-Za-z0-9_.:+-]*|models/gemini-[A-Za-z0-9][A-Za-z0-9_.:+-]*|publishers/google/models/gemini-[A-Za-z0-9][A-Za-z0-9_.:+-]*)$",
+    r"^(?:(?:auto-)?gemini-[A-Za-z0-9][A-Za-z0-9_.:+-]*|models/gemini-[A-Za-z0-9][A-Za-z0-9_.:+-]*|publishers/google/models/gemini-[A-Za-z0-9][A-Za-z0-9_.:+-]*)$",
     re.IGNORECASE,
 )
 GEMINI_LABEL_RE = re.compile(
@@ -880,6 +883,17 @@ def extract_agy_response_from_state(
     return None, f"Antigravity transcript has no final response yet: {conversation_id}", None
 
 
+def extract_api_finish_reason(payload: dict[str, Any]) -> str:
+    candidates = payload.get("candidates")
+    if isinstance(candidates, list):
+        for candidate in candidates:
+            if isinstance(candidate, dict):
+                finish_reason = candidate.get("finishReason")
+                if isinstance(finish_reason, str) and finish_reason:
+                    return finish_reason
+    return ""
+
+
 def extract_api_response_text(payload: dict[str, Any]) -> str:
     candidates = payload.get("candidates")
     if isinstance(candidates, list):
@@ -907,6 +921,16 @@ def extract_api_response_text(payload: dict[str, Any]) -> str:
         if isinstance(block_reason, str) and block_reason:
             raise ValueError(f"Gemini API response blocked: {block_reason}")
 
+    finish_reason = extract_api_finish_reason(payload)
+    if finish_reason == "MAX_TOKENS":
+        raise ValueError(
+            "Gemini API response hit maxOutputTokens before emitting any text "
+            "(finishReason=MAX_TOKENS); raise GEMINI_REVIEW_MAX_OUTPUT_TOKENS"
+        )
+    if finish_reason:
+        raise ValueError(
+            f"Gemini API response does not contain candidate text (finishReason={finish_reason})"
+        )
     raise ValueError("Gemini API response does not contain candidate text")
 
 
@@ -1138,17 +1162,24 @@ def run_gemini_cli_review(
         return None, "Gemini CLI JSON payload does not contain a non-empty response field"
 
     reported_model = str(payload.get("model", "") or selected_model or "gemini-cli")
-    model_family_error = require_gemini_model(reported_model, "Gemini CLI")
-    if model_family_error:
-        return None, model_family_error
-
-    return {
+    result_payload: dict[str, Any] = {
         "response": response_text,
         "model": reported_model,
         "duration_ms": duration_ms,
         "stop_reason": payload.get("stop_reason"),
         "backend": "cli",
-    }, None
+    }
+    model_family_error = require_gemini_model(reported_model, "Gemini CLI")
+    if model_family_error:
+        # The review already ran (and was paid for). An unrecognized reported
+        # model string is usually a new CLI alias rather than a cross-model
+        # violation — keep the result and surface the mismatch as a warning
+        # instead of discarding the completed review.
+        result_payload["warning"] = (
+            f"{model_family_error}. Result kept; verify the reviewer model "
+            "before relying on the cross-model invariant."
+        )
+    return result_payload, None
 
 
 def run_agy_cli_review(
@@ -1307,7 +1338,12 @@ def run_gemini_api_review(
         return None, model_family_error
     request_payload: dict[str, Any] = {
         "contents": [],
-        "generationConfig": {"temperature": 0.2},
+        "generationConfig": {
+            "temperature": 0.2,
+            # Without an explicit cap some models default low and long reviews
+            # come back truncated (finishReason=MAX_TOKENS).
+            "maxOutputTokens": DEFAULT_API_MAX_OUTPUT_TOKENS,
+        },
     }
     selected_system = (system or DEFAULT_SYSTEM).strip()
     if selected_system:
@@ -1373,13 +1409,21 @@ def run_gemini_api_review(
     except ValueError as exc:
         return None, str(exc)
 
-    return {
+    finish_reason = extract_api_finish_reason(api_payload)
+    result_payload: dict[str, Any] = {
         "response": response_text,
         "model": selected_model,
         "duration_ms": duration_ms,
-        "stop_reason": None,
+        "stop_reason": finish_reason or None,
         "backend": "api",
-    }, None
+    }
+    if finish_reason == "MAX_TOKENS":
+        result_payload["warning"] = (
+            "Gemini API output was truncated at maxOutputTokens "
+            f"({DEFAULT_API_MAX_OUTPUT_TOKENS}); raise GEMINI_REVIEW_MAX_OUTPUT_TOKENS "
+            "if the review looks cut off."
+        )
+    return result_payload, None
 
 
 def run_gemini_review(
