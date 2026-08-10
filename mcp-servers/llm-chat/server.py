@@ -4,12 +4,15 @@
 Environment Variables:
     LLM_API_KEY         - API key (required)
     LLM_BASE_URL        - API base URL (default: https://api.openai.com/v1)
-    LLM_MODEL           - Model name (default: gpt-4o)
-    LLM_FALLBACK_MODEL  - Fallback model on 504 timeout (default: gpt-4o)
+    LLM_MODEL           - Model name (default: gpt-5.6-sol)
+    LLM_FALLBACK_MODEL  - Optional fallback model tried after the primary model
+                          exhausts its retries (default: unset = no fallback)
+    LLM_MAX_TOKENS      - Completion token cap (default: 8192)
+    LLM_MAX_ATTEMPTS    - Attempts per model for retryable failures (default: 3)
     LLM_SERVER_NAME     - Server name for MCP (default: llm-chat)
 
 Supported Providers (examples):
-    OpenAI:      LLM_BASE_URL=https://api.openai.com/v1 LLM_MODEL=gpt-4o
+    OpenAI:      LLM_BASE_URL=https://api.openai.com/v1 LLM_MODEL=gpt-5.6-sol
     DeepSeek:    LLM_BASE_URL=https://api.deepseek.com/v1 LLM_MODEL=deepseek-chat
     Kimi:        LLM_BASE_URL=https://api.moonshot.cn/v1 LLM_MODEL=moonshot-v1-32k
     MiniMax:     LLM_BASE_URL=https://api.minimax.io/v1 LLM_MODEL=MiniMax-M3
@@ -18,8 +21,10 @@ Supported Providers (examples):
 import datetime
 import json
 import os
+import random
 import sys
 import tempfile
+import time
 import httpx
 
 _stdio_initialized = False
@@ -46,9 +51,22 @@ def _init_stdio():
 # Configuration from environment
 API_KEY = os.environ.get("LLM_API_KEY", "")
 BASE_URL = os.environ.get("LLM_BASE_URL", "https://api.openai.com/v1")
-DEFAULT_MODEL = os.environ.get("LLM_MODEL", "gpt-4o")
-FALLBACK_MODEL = os.environ.get("LLM_FALLBACK_MODEL", "gpt-4o")
+DEFAULT_MODEL = os.environ.get("LLM_MODEL", "gpt-5.6-sol")
+# No default fallback: an unset fallback means "retry the primary only".
+# (Defaulting it to DEFAULT_MODEL made the fallback arm a no-op.)
+FALLBACK_MODEL = os.environ.get("LLM_FALLBACK_MODEL", "")
+MAX_TOKENS = int(os.environ.get("LLM_MAX_TOKENS", "8192"))
 SERVER_NAME = os.environ.get("LLM_SERVER_NAME", "llm-chat")
+
+# Retry policy: transient statuses get exponential backoff + jitter,
+# honoring Retry-After when the server sends one.
+RETRYABLE_STATUSES = {429, 500, 502, 503, 504, 529}
+MAX_ATTEMPTS_PER_MODEL = max(1, int(os.environ.get("LLM_MAX_ATTEMPTS", "3")))
+
+# Newer OpenAI models only accept max_completion_tokens; most OpenAI-compatible
+# providers only accept max_tokens. Start with the new name and downgrade once
+# (process-wide) when the provider rejects it with a 400 naming the parameter.
+_token_param = "max_completion_tokens"
 
 # Debug logging
 DEBUG_LOG = os.path.join(tempfile.gettempdir(), f"{SERVER_NAME}-mcp-debug.log")
@@ -90,8 +108,45 @@ def send_response(response):
     sys.stdout.write(output)
     sys.stdout.flush()
 
+def _retry_delay(attempt, response=None):
+    """Exponential backoff + jitter; honor Retry-After when present."""
+    if response is not None:
+        retry_after = response.headers.get("retry-after")
+        if retry_after:
+            try:
+                return min(float(retry_after), 60.0)
+            except ValueError:
+                pass
+    return min(2 ** attempt + random.uniform(0.0, 1.0), 30.0)
+
+
+def _post_chat(client, url, headers, current_model, messages):
+    """POST once; transparently downgrade max_completion_tokens -> max_tokens."""
+    global _token_param
+    payload = {
+        "model": current_model,
+        "messages": messages,
+        _token_param: MAX_TOKENS,
+    }
+    response = client.post(url, headers=headers, json=payload)
+    if (
+        response.status_code == 400
+        and _token_param == "max_completion_tokens"
+        and "max_completion_tokens" in response.text
+    ):
+        debug_log("Provider rejected max_completion_tokens; downgrading to max_tokens")
+        _token_param = "max_tokens"
+        payload = {
+            "model": current_model,
+            "messages": messages,
+            "max_tokens": MAX_TOKENS,
+        }
+        response = client.post(url, headers=headers, json=payload)
+    return response
+
+
 def call_llm(messages, model=None):
-    """Call LLM Chat Completions API with 504 retry and fallback"""
+    """Call LLM Chat Completions API with retries and optional model fallback"""
     if not API_KEY:
         return None, "LLM_API_KEY environment variable not set"
 
@@ -102,51 +157,53 @@ def call_llm(messages, model=None):
         "Authorization": f"Bearer {API_KEY}"
     }
 
-    # Try: original model → retry same model → fallback model
-    for attempt in range(3):
-        current_model = use_model if attempt < 2 else FALLBACK_MODEL
-        payload = {
-            "model": current_model,
-            "messages": messages,
-            "max_tokens": 4096
-        }
+    models = [use_model]
+    if FALLBACK_MODEL and FALLBACK_MODEL != use_model:
+        models.append(FALLBACK_MODEL)
 
-        debug_log(f"Calling LLM API (attempt {attempt + 1}): model={current_model}")
+    last_error = None
+    for current_model in models:
+        for attempt in range(MAX_ATTEMPTS_PER_MODEL):
+            debug_log(f"Calling LLM API (attempt {attempt + 1}/{MAX_ATTEMPTS_PER_MODEL}): model={current_model}")
+            try:
+                with httpx.Client(timeout=300.0) as client:
+                    response = _post_chat(client, url, headers, current_model, messages)
+            except httpx.HTTPError as e:
+                last_error = f"Connection error: {e}"
+                debug_log(f"API exception on attempt {attempt + 1} with {current_model}: {e}")
+                if attempt < MAX_ATTEMPTS_PER_MODEL - 1:
+                    time.sleep(_retry_delay(attempt))
+                continue
 
-        try:
-            with httpx.Client(timeout=300.0) as client:
-                response = client.post(url, headers=headers, json=payload)
+            if response.status_code in RETRYABLE_STATUSES:
+                last_error = f"API error {response.status_code}: {response.text[:200]}"
+                debug_log(f"Retryable {last_error} (attempt {attempt + 1} with {current_model})")
+                if attempt < MAX_ATTEMPTS_PER_MODEL - 1:
+                    time.sleep(_retry_delay(attempt, response))
+                continue
 
-                if response.status_code == 504:
-                    debug_log(f"504 Gateway Timeout on attempt {attempt + 1} with model {current_model}")
-                    if attempt < 2:
-                        continue  # retry or fallback
+            if response.status_code != 200:
+                error_msg = f"API error {response.status_code}: {response.text[:500]}"
+                debug_log(f"API error: {error_msg}")
+                return None, error_msg
 
-                if response.status_code != 200:
-                    error_msg = f"API error {response.status_code}: {response.text[:500]}"
-                    debug_log(f"API error: {error_msg}")
-                    return None, error_msg
-
+            try:
                 data = response.json()
-                try:
-                    content = data["choices"][0]["message"]["content"]
-                except (KeyError, IndexError, TypeError) as e:
-                    return None, f"Unexpected API response structure: {e}"
-                if current_model != use_model:
-                    fallback_note = f"\n\n[Note: Used fallback model {current_model} after 504 timeout with {use_model}]"
-                    content = fallback_note + "\n" + content
-                    debug_log(f"API success with fallback model {current_model}, response length: {len(content)}")
-                elif attempt > 0:
-                    debug_log(f"API success on retry (attempt {attempt + 1}), response length: {len(content)}")
-                else:
-                    debug_log(f"API success, response length: {len(content)}")
-                return content, None
-        except Exception as e:
-            debug_log(f"API exception on attempt {attempt + 1}: {str(e)}")
-            if attempt == 2:
-                return None, str(e)
+            except ValueError as e:
+                return None, f"API returned non-JSON response: {e}"
+            try:
+                content = data["choices"][0]["message"]["content"]
+            except (KeyError, IndexError, TypeError) as e:
+                return None, f"Unexpected API response structure: {e}"
+            if current_model != use_model:
+                fallback_note = f"\n\n[Note: Used fallback model {current_model} after errors with {use_model}]"
+                content = fallback_note + "\n" + content
+                debug_log(f"API success with fallback model {current_model}, response length: {len(content)}")
+            else:
+                debug_log(f"API success (attempt {attempt + 1}), response length: {len(content)}")
+            return content, None
 
-    return None, "All attempts failed with 504 Gateway Timeout"
+    return None, last_error or "All attempts failed"
 
 def handle_request(request):
     """Handle a JSON-RPC request"""

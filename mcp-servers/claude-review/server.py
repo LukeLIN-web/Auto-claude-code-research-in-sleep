@@ -9,6 +9,8 @@ from __future__ import annotations
 
 import json
 import os
+import random
+import re
 import shutil
 import subprocess
 import sys
@@ -38,6 +40,11 @@ DEFAULT_MODEL = os.environ.get("CLAUDE_REVIEW_MODEL", "")
 DEFAULT_SYSTEM = os.environ.get("CLAUDE_REVIEW_SYSTEM", "")
 DEFAULT_TOOLS = os.environ.get("CLAUDE_REVIEW_TOOLS", "")
 DEFAULT_TIMEOUT_SEC = int(os.environ.get("CLAUDE_REVIEW_TIMEOUT_SEC", "600"))
+# Optional CLI passthroughs (claude CLI >= 2.x, both --print-only flags):
+# comma-separated fallback model list, and a hard per-invocation budget cap.
+DEFAULT_FALLBACK_MODEL = os.environ.get("CLAUDE_REVIEW_FALLBACK_MODEL", "")
+DEFAULT_MAX_BUDGET_USD = os.environ.get("CLAUDE_REVIEW_MAX_BUDGET_USD", "")
+MAX_ATTEMPTS = max(1, int(os.environ.get("CLAUDE_REVIEW_MAX_ATTEMPTS", "3")))
 _default_debug_dir = os.environ.get("TEMP", "/tmp") if sys.platform == "win32" else "/tmp"
 DEBUG_LOG = Path(os.environ.get("CLAUDE_REVIEW_DEBUG_LOG", f"{_default_debug_dir}/{SERVER_NAME}-mcp-debug.log"))
 STATE_DIR = Path(
@@ -233,7 +240,6 @@ def serialize_job(job: dict[str, Any]) -> dict[str, Any]:
 
 
 def build_command(
-    prompt: str,
     *,
     session_id: str | None = None,
     model: str | None = None,
@@ -244,7 +250,11 @@ def build_command(
     if not bin_path:
         raise FileNotFoundError(f"Claude CLI not found: {CLAUDE_BIN}")
 
-    cmd = [bin_path, "-p", prompt, "--output-format", "json", "--permission-mode", "plan"]
+    # The prompt is intentionally NOT on argv: it is fed via stdin (`claude -p`
+    # reads the prompt from stdin when no positional prompt is given). Large
+    # review prompts on argv hit the kernel's MAX_ARG_STRLEN (~128KiB) and make
+    # the launch fail with E2BIG.
+    cmd = [bin_path, "-p", "--output-format", "json", "--permission-mode", "plan"]
 
     if session_id:
         cmd.extend(["--resume", session_id])
@@ -252,6 +262,12 @@ def build_command(
     selected_model = model or DEFAULT_MODEL
     if selected_model:
         cmd.extend(["--model", selected_model])
+
+    if DEFAULT_FALLBACK_MODEL:
+        cmd.extend(["--fallback-model", DEFAULT_FALLBACK_MODEL])
+
+    if DEFAULT_MAX_BUDGET_USD:
+        cmd.extend(["--max-budget-usd", DEFAULT_MAX_BUDGET_USD])
 
     selected_system = system or DEFAULT_SYSTEM
     if selected_system:
@@ -262,26 +278,23 @@ def build_command(
     return cmd
 
 
-def run_claude_review(
+# Error signatures worth retrying: upstream API throttling/overload/transient
+# network failures surfaced through the CLI's error text. Timeouts and other
+# failures return immediately.
+TRANSIENT_CLI_ERROR_RE = re.compile(
+    r"\b(?:429|500|502|503|529)\b"
+    r"|rate.?limit|overloaded|too many requests"
+    r"|connection (?:error|refused|reset)|ECONNRESET|ECONNREFUSED|ETIMEDOUT|fetch failed",
+    re.IGNORECASE,
+)
+
+
+def run_claude_once(
+    cmd: list[str],
     prompt: str,
     *,
-    session_id: str | None = None,
     model: str | None = None,
-    system: str | None = None,
-    tools: str | None = None,
 ) -> tuple[dict[str, Any] | None, str | None]:
-    try:
-        cmd = build_command(
-            prompt,
-            session_id=session_id,
-            model=model,
-            system=system,
-            tools=tools,
-        )
-    except FileNotFoundError as exc:
-        return None, str(exc)
-
-    debug_log(f"RUN {' '.join(cmd)}")
     try:
         result = subprocess.run(
             cmd,
@@ -289,12 +302,14 @@ def run_claude_review(
             text=True,
             encoding='utf-8',
             errors='replace',
-            stdin=subprocess.DEVNULL,
+            input=prompt,
             timeout=DEFAULT_TIMEOUT_SEC,
             check=False,
         )
     except subprocess.TimeoutExpired:
         return None, f"Claude review timed out after {DEFAULT_TIMEOUT_SEC} seconds"
+    except OSError as exc:
+        return None, f"failed to launch Claude CLI: {exc}"
 
     payload, parse_error = parse_claude_json(result.stdout or "")
     if parse_error:
@@ -336,6 +351,42 @@ def run_claude_review(
         "duration_ms": payload.get("duration_ms"),
         "stop_reason": payload.get("stop_reason"),
     }, None
+
+
+def run_claude_review(
+    prompt: str,
+    *,
+    session_id: str | None = None,
+    model: str | None = None,
+    system: str | None = None,
+    tools: str | None = None,
+) -> tuple[dict[str, Any] | None, str | None]:
+    try:
+        cmd = build_command(
+            session_id=session_id,
+            model=model,
+            system=system,
+            tools=tools,
+        )
+    except FileNotFoundError as exc:
+        return None, str(exc)
+
+    debug_log(f"RUN {' '.join(cmd)} prompt_chars={len(prompt)}")
+    last_error: str | None = None
+    for attempt in range(MAX_ATTEMPTS):
+        if attempt:
+            delay = min(2 ** attempt + random.uniform(0.0, 1.0), 30.0)
+            debug_log(
+                f"RETRY attempt={attempt + 1}/{MAX_ATTEMPTS} sleep={delay:.1f}s reason={last_error}"
+            )
+            time.sleep(delay)
+        payload, error = run_claude_once(cmd, prompt, model=model)
+        if not error:
+            return payload, None
+        last_error = error
+        if not TRANSIENT_CLI_ERROR_RE.search(error):
+            return None, error
+    return None, last_error
 
 
 def start_async_review(
@@ -701,6 +752,7 @@ def main() -> None:
 
     debug_log(f"=== {SERVER_NAME} starting ===")
     while True:
+        request: dict[str, Any] | None = None
         try:
             request = read_message()
             if request is None:
@@ -710,8 +762,22 @@ def main() -> None:
             if response is not None:
                 send_response(response)
         except Exception:
+            # A single failed request must not kill the whole MCP server:
+            # answer with a JSON-RPC error and keep serving. Only bail out if
+            # even the error response cannot be written (broken stdout).
             debug_log(traceback.format_exc())
-            break
+            request_id = request.get("id") if isinstance(request, dict) else None
+            if request_id is None:
+                continue
+            try:
+                send_response({
+                    "jsonrpc": "2.0",
+                    "id": request_id,
+                    "error": {"code": -32603, "message": "Internal error; see debug log"},
+                })
+            except Exception:
+                debug_log(traceback.format_exc())
+                break
 
 
 if __name__ == "__main__":

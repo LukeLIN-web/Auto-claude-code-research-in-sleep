@@ -4,8 +4,10 @@
 import datetime
 import json
 import os
+import random
 import sys
 import tempfile
+import time
 import httpx
 
 _stdio_initialized = False
@@ -49,6 +51,24 @@ debug_log(f"MINIMAX_MODEL: {os.environ.get('MINIMAX_MODEL', 'not set')}")
 MINIMAX_API_KEY = os.environ.get("MINIMAX_API_KEY", "")
 MINIMAX_BASE_URL = os.environ.get("MINIMAX_BASE_URL", "https://api.minimax.io/v1")
 DEFAULT_MODEL = os.environ.get("MINIMAX_MODEL", "MiniMax-M3")
+MAX_TOKENS = int(os.environ.get("MINIMAX_MAX_TOKENS", "8192"))
+
+# Retry policy: transient statuses get exponential backoff + jitter,
+# honoring Retry-After when the server sends one.
+RETRYABLE_STATUSES = {429, 500, 502, 503, 504, 529}
+MAX_ATTEMPTS = max(1, int(os.environ.get("MINIMAX_MAX_ATTEMPTS", "3")))
+
+
+def _retry_delay(attempt, response=None):
+    """Exponential backoff + jitter; honor Retry-After when present."""
+    if response is not None:
+        retry_after = response.headers.get("retry-after")
+        if retry_after:
+            try:
+                return min(float(retry_after), 60.0)
+            except ValueError:
+                pass
+    return min(2 ** attempt + random.uniform(0.0, 1.0), 30.0)
 
 # MiniMax requires temperature in (0.0, 1.0]
 def clamp_temperature(temp):
@@ -122,29 +142,48 @@ def call_minimax(messages, model=None, temperature=0.7):
     payload = {
         "model": model or DEFAULT_MODEL,
         "messages": messages,
-        "max_tokens": 4096,
+        "max_tokens": MAX_TOKENS,
         "temperature": clamped_temp
     }
 
     debug_log(f"Calling MiniMax API: {url}")
 
-    try:
-        with httpx.Client(timeout=120.0) as client:
-            response = client.post(url, headers=headers, json=payload)
-            if response.status_code != 200:
-                error_msg = f"API error {response.status_code}: {response.text[:500]}"
-                debug_log(f"API error: {error_msg}")
-                return None, error_msg
+    last_error = None
+    for attempt in range(MAX_ATTEMPTS):
+        try:
+            with httpx.Client(timeout=120.0) as client:
+                response = client.post(url, headers=headers, json=payload)
+        except Exception as e:
+            last_error = f"Connection error: {e}"
+            debug_log(f"API exception on attempt {attempt + 1}: {e}")
+            if attempt < MAX_ATTEMPTS - 1:
+                time.sleep(_retry_delay(attempt))
+            continue
+
+        if response.status_code in RETRYABLE_STATUSES:
+            last_error = f"API error {response.status_code}: {response.text[:200]}"
+            debug_log(f"Retryable {last_error} (attempt {attempt + 1}/{MAX_ATTEMPTS})")
+            if attempt < MAX_ATTEMPTS - 1:
+                time.sleep(_retry_delay(attempt, response))
+            continue
+
+        if response.status_code != 200:
+            error_msg = f"API error {response.status_code}: {response.text[:500]}"
+            debug_log(f"API error: {error_msg}")
+            return None, error_msg
+
+        try:
             data = response.json()
-            try:
-                content = data["choices"][0]["message"]["content"]
-            except (KeyError, IndexError, TypeError) as e:
-                return None, f"Unexpected API response structure: {e}"
-            debug_log(f"API success, response length: {len(content)}")
-            return content, None
-    except Exception as e:
-        debug_log(f"API exception: {str(e)}")
-        return None, str(e)
+        except ValueError as e:
+            return None, f"API returned non-JSON response: {e}"
+        try:
+            content = data["choices"][0]["message"]["content"]
+        except (KeyError, IndexError, TypeError) as e:
+            return None, f"Unexpected API response structure: {e}"
+        debug_log(f"API success, response length: {len(content)}")
+        return content, None
+
+    return None, last_error or "All attempts failed"
 
 def handle_request(request):
     """Handle a JSON-RPC request"""
