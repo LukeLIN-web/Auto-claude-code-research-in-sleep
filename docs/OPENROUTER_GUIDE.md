@@ -115,9 +115,9 @@ Use a specific Anthropic-family model for Claude Code execution and a non-Anthro
     "ANTHROPIC_AUTH_TOKEN": "sk-or-v1-your-openrouter-key",
     "ANTHROPIC_API_KEY": "",
     "ANTHROPIC_BASE_URL": "https://openrouter.ai/api",
-    "ANTHROPIC_DEFAULT_OPUS_MODEL": "anthropic/claude-opus-4.6",
-    "ANTHROPIC_DEFAULT_SONNET_MODEL": "anthropic/claude-sonnet-4.6",
-    "ANTHROPIC_SMALL_FAST_MODEL": "anthropic/claude-sonnet-4.6",
+    "ANTHROPIC_DEFAULT_OPUS_MODEL": "anthropic/claude-opus-5",
+    "ANTHROPIC_DEFAULT_SONNET_MODEL": "anthropic/claude-sonnet-5",
+    "ANTHROPIC_SMALL_FAST_MODEL": "anthropic/claude-haiku-4.5",
     "API_TIMEOUT_MS": "3000000",
     "CLAUDE_CODE_MAX_OUTPUT_TOKENS": "6000"
   },
@@ -142,7 +142,7 @@ Use a specific Anthropic-family model for Claude Code execution and a non-Anthro
   "env": {
     "ANTHROPIC_AUTH_TOKEN": "your-executor-api-key",
     "ANTHROPIC_BASE_URL": "https://api.anthropic.com",
-    "ANTHROPIC_DEFAULT_OPUS_MODEL": "claude-opus-4-6",
+    "ANTHROPIC_DEFAULT_OPUS_MODEL": "claude-opus-5",
     "API_TIMEOUT_MS": "3000000",
     "CLAUDE_CODE_MAX_OUTPUT_TOKENS": "6000"
   },

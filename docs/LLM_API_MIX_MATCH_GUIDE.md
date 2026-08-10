@@ -30,7 +30,7 @@
 {
   "ANTHROPIC_AUTH_TOKEN": "sk-ant-xxx",
   "ANTHROPIC_BASE_URL": "https://api.anthropic.com",
-  "ANTHROPIC_DEFAULT_OPUS_MODEL": "claude-opus-4-6"
+  "ANTHROPIC_DEFAULT_OPUS_MODEL": "claude-opus-5"
 }
 ```
 
@@ -239,7 +239,7 @@ Codex CLI 使用 OpenAI 的 **Responses API** (`/v1/responses`)，这个 API 只
   "env": {
     "ANTHROPIC_AUTH_TOKEN": "sk-ant-xxx",
     "ANTHROPIC_BASE_URL": "https://api.anthropic.com",
-    "ANTHROPIC_DEFAULT_OPUS_MODEL": "claude-opus-4-6"
+    "ANTHROPIC_DEFAULT_OPUS_MODEL": "claude-opus-5"
   },
   "mcpServers": {
     "llm-chat": {
