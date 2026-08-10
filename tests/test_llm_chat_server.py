@@ -88,7 +88,7 @@ class TestToolsList(unittest.TestCase):
 class TestToolCallNoApiKey(unittest.TestCase):
     """Test tool call behavior when LLM_API_KEY is missing."""
 
-    @patch("tests._llm_chat_helpers.LLM_API_KEY", "")
+    @patch("tests._llm_chat_helpers.API_KEY", "")
     def test_missing_api_key_returns_error(self):
         """Tool call without API key should return isError result."""
         from tests._llm_chat_helpers import handle_request
@@ -103,7 +103,7 @@ class TestToolCallNoApiKey(unittest.TestCase):
 class TestCallLlmSuccess(unittest.TestCase):
     """Test call_llm for successful API responses."""
 
-    @patch("tests._llm_chat_helpers.LLM_API_KEY", "test-key")
+    @patch("tests._llm_chat_helpers.API_KEY", "test-key")
     @patch("httpx.Client")
     def test_successful_call_returns_content(self, mock_client_cls):
         """A 200 response should return the message content."""
@@ -123,7 +123,7 @@ class TestCallLlmSuccess(unittest.TestCase):
         self.assertEqual(content, "Hello from LLM!")
         self.assertIsNone(error)
 
-    @patch("tests._llm_chat_helpers.LLM_API_KEY", "test-key")
+    @patch("tests._llm_chat_helpers.API_KEY", "test-key")
     @patch("httpx.Client")
     def test_custom_model_is_passed(self, mock_client_cls):
         """The requested model name should appear in the API payload."""
@@ -143,7 +143,7 @@ class TestCallLlmSuccess(unittest.TestCase):
         payload = mock_client.post.call_args[1]["json"]
         self.assertEqual(payload["model"], "deepseek-chat")
 
-    @patch("tests._llm_chat_helpers.LLM_API_KEY", "test-key")
+    @patch("tests._llm_chat_helpers.API_KEY", "test-key")
     @patch("httpx.Client")
     def test_api_error_status_returns_error_message(self, mock_client_cls):
         """Non-200, non-504 status should return an error string."""
@@ -161,7 +161,7 @@ class TestCallLlmSuccess(unittest.TestCase):
         self.assertIsNone(content)
         self.assertIn("401", error)
 
-    @patch("tests._llm_chat_helpers.LLM_API_KEY", "test-key")
+    @patch("tests._llm_chat_helpers.API_KEY", "test-key")
     @patch("httpx.Client")
     def test_malformed_response_returns_clear_error(self, mock_client_cls):
         """Missing or empty choices in API response should return a clear
@@ -187,7 +187,7 @@ class TestCallLlmSuccess(unittest.TestCase):
             self.assertIsNotNone(error)
             self.assertIn("Unexpected API response structure", error)
 
-    @patch("tests._llm_chat_helpers.LLM_API_KEY", "")
+    @patch("tests._llm_chat_helpers.API_KEY", "")
     def test_missing_api_key_returns_error(self):
         """call_llm without API key should return error immediately."""
         from tests._llm_chat_helpers import call_llm
@@ -196,78 +196,82 @@ class TestCallLlmSuccess(unittest.TestCase):
         self.assertIn("LLM_API_KEY", error)
 
 
-class TestCallLlm504Retry(unittest.TestCase):
-    """Test the 504 retry and fallback model logic in call_llm."""
+def _mock_client(mock_client_cls, responses):
+    """Wire a mocked httpx.Client whose post() yields `responses` in order."""
+    mock_client = MagicMock()
+    mock_client.__enter__ = MagicMock(return_value=mock_client)
+    mock_client.__exit__ = MagicMock(return_value=False)
+    if isinstance(responses, list):
+        mock_client.post.side_effect = responses
+    else:
+        mock_client.post.return_value = responses
+    mock_client_cls.return_value = mock_client
+    return mock_client
 
-    @patch("tests._llm_chat_helpers.LLM_API_KEY", "test-key")
+
+def _resp(status_code, content=None, text=""):
+    resp = MagicMock()
+    resp.status_code = status_code
+    resp.text = text
+    resp.headers = {}
+    if content is not None:
+        resp.json.return_value = {"choices": [{"message": {"content": content}}]}
+    return resp
+
+
+class TestCallLlmRetry(unittest.TestCase):
+    """Retry/fallback semantics: MAX_ATTEMPTS_PER_MODEL tries on the primary
+    model (backoff on retryable statuses), then the fallback model if set."""
+
+    @patch("tests._llm_chat_helpers._retry_delay", return_value=0)
+    @patch("tests._llm_chat_helpers.API_KEY", "test-key")
     @patch("tests._llm_chat_helpers.DEFAULT_MODEL", "gpt-4o")
     @patch("tests._llm_chat_helpers.FALLBACK_MODEL", "gpt-4o-mini")
     @patch("httpx.Client")
-    def test_504_twice_then_fallback_succeeds(self, mock_client_cls):
-        """Two 504s should trigger fallback model on attempt 3."""
-        resp_504 = MagicMock()
-        resp_504.status_code = 504
+    def test_504_twice_then_primary_succeeds(self, mock_client_cls, _delay):
+        """Two 504s stay on the primary model; success on attempt 3, no note."""
+        mock_client = _mock_client(
+            mock_client_cls, [_resp(504), _resp(504), _resp(200, "Retry reply")]
+        )
 
-        resp_ok = MagicMock()
-        resp_ok.status_code = 200
-        resp_ok.json.return_value = {
-            "choices": [{"message": {"content": "Fallback reply"}}]
-        }
+        from tests._llm_chat_helpers import call_llm
+        content, error = call_llm([{"role": "user", "content": "test"}])
 
-        mock_client = MagicMock()
-        mock_client.__enter__ = MagicMock(return_value=mock_client)
-        mock_client.__exit__ = MagicMock(return_value=False)
-        mock_client.post.side_effect = [resp_504, resp_504, resp_ok]
-        mock_client_cls.return_value = mock_client
+        self.assertIsNone(error)
+        self.assertEqual(content, "Retry reply")
+        self.assertNotIn("[Note:", content)
+        for call_item in mock_client.post.call_args_list:
+            self.assertEqual(call_item[1]["json"]["model"], "gpt-4o")
+
+    @patch("tests._llm_chat_helpers._retry_delay", return_value=0)
+    @patch("tests._llm_chat_helpers.API_KEY", "test-key")
+    @patch("tests._llm_chat_helpers.DEFAULT_MODEL", "gpt-4o")
+    @patch("tests._llm_chat_helpers.FALLBACK_MODEL", "gpt-4o-mini")
+    @patch("httpx.Client")
+    def test_primary_exhausted_then_fallback_succeeds(self, mock_client_cls, _delay):
+        """After the primary exhausts its attempts, the fallback model serves
+        the request and a fallback note is prepended."""
+        mock_client = _mock_client(
+            mock_client_cls,
+            [_resp(504), _resp(429), _resp(503), _resp(200, "Fallback reply")],
+        )
 
         from tests._llm_chat_helpers import call_llm
         content, error = call_llm([{"role": "user", "content": "test"}])
 
         self.assertIsNone(error)
         self.assertIn("Fallback reply", content)
-        # Fallback note should be prepended
         self.assertIn("[Note: Used fallback model gpt-4o-mini", content)
+        models = [c[1]["json"]["model"] for c in mock_client.post.call_args_list]
+        self.assertEqual(models, ["gpt-4o", "gpt-4o", "gpt-4o", "gpt-4o-mini"])
 
-    @patch("tests._llm_chat_helpers.LLM_API_KEY", "test-key")
-    @patch("tests._llm_chat_helpers.DEFAULT_MODEL", "gpt-4o")
-    @patch("tests._llm_chat_helpers.FALLBACK_MODEL", "gpt-4o-mini")
+    @patch("tests._llm_chat_helpers._retry_delay", return_value=0)
+    @patch("tests._llm_chat_helpers.API_KEY", "test-key")
+    @patch("tests._llm_chat_helpers.FALLBACK_MODEL", "")
     @patch("httpx.Client")
-    def test_504_once_then_retry_succeeds_no_fallback_note(self, mock_client_cls):
-        """A single 504 followed by success should use original model (no fallback note)."""
-        resp_504 = MagicMock()
-        resp_504.status_code = 504
-
-        resp_ok = MagicMock()
-        resp_ok.status_code = 200
-        resp_ok.json.return_value = {
-            "choices": [{"message": {"content": "Retry success"}}]
-        }
-
-        mock_client = MagicMock()
-        mock_client.__enter__ = MagicMock(return_value=mock_client)
-        mock_client.__exit__ = MagicMock(return_value=False)
-        mock_client.post.side_effect = [resp_504, resp_ok]
-        mock_client_cls.return_value = mock_client
-
-        from tests._llm_chat_helpers import call_llm
-        content, error = call_llm([{"role": "user", "content": "test"}])
-
-        self.assertIsNone(error)
-        self.assertEqual(content, "Retry success")
-        self.assertNotIn("[Note:", content)
-
-    @patch("tests._llm_chat_helpers.LLM_API_KEY", "test-key")
-    @patch("httpx.Client")
-    def test_three_504s_returns_error(self, mock_client_cls):
-        """Three consecutive 504s should return the gateway timeout error."""
-        resp_504 = MagicMock()
-        resp_504.status_code = 504
-
-        mock_client = MagicMock()
-        mock_client.__enter__ = MagicMock(return_value=mock_client)
-        mock_client.__exit__ = MagicMock(return_value=False)
-        mock_client.post.return_value = resp_504
-        mock_client_cls.return_value = mock_client
+    def test_all_504s_returns_error(self, mock_client_cls, _delay):
+        """Persistent 504s with no fallback configured surface the error."""
+        _mock_client(mock_client_cls, _resp(504, text="gateway timeout"))
 
         from tests._llm_chat_helpers import call_llm
         content, error = call_llm([{"role": "user", "content": "test"}])
@@ -275,39 +279,63 @@ class TestCallLlm504Retry(unittest.TestCase):
         self.assertIsNone(content)
         self.assertIn("504", error)
 
-    @patch("tests._llm_chat_helpers.LLM_API_KEY", "test-key")
-    @patch("tests._llm_chat_helpers.DEFAULT_MODEL", "primary-model")
-    @patch("tests._llm_chat_helpers.FALLBACK_MODEL", "fallback-model")
+    @patch("tests._llm_chat_helpers._retry_delay", return_value=0)
+    @patch("tests._llm_chat_helpers.API_KEY", "test-key")
     @patch("httpx.Client")
-    def test_fallback_uses_different_model_name(self, mock_client_cls):
-        """On attempt 3, the payload model should be FALLBACK_MODEL, not DEFAULT_MODEL."""
-        resp_504 = MagicMock()
-        resp_504.status_code = 504
-
-        resp_ok = MagicMock()
-        resp_ok.status_code = 200
-        resp_ok.json.return_value = {
-            "choices": [{"message": {"content": "OK"}}]
-        }
-
-        mock_client = MagicMock()
-        mock_client.__enter__ = MagicMock(return_value=mock_client)
-        mock_client.__exit__ = MagicMock(return_value=False)
-        mock_client.post.side_effect = [resp_504, resp_504, resp_ok]
-        mock_client_cls.return_value = mock_client
+    def test_non_retryable_error_returns_immediately(self, mock_client_cls, _delay):
+        """A 401 must not be retried."""
+        mock_client = _mock_client(mock_client_cls, _resp(401, text="bad key"))
 
         from tests._llm_chat_helpers import call_llm
-        call_llm([{"role": "user", "content": "test"}])
+        content, error = call_llm([{"role": "user", "content": "test"}])
 
-        # The third call (index 2) should use the fallback model
-        third_call_payload = mock_client.post.call_args_list[2][1]["json"]
-        self.assertEqual(third_call_payload["model"], "fallback-model")
+        self.assertIsNone(content)
+        self.assertIn("401", error)
+        self.assertEqual(mock_client.post.call_count, 1)
+
+
+class TestTokenParamDowngrade(unittest.TestCase):
+    """max_completion_tokens is sent first; a 400 naming the parameter
+    downgrades to max_tokens (sticky for the process)."""
+
+    def setUp(self):
+        import tests._llm_chat_helpers as helpers
+        self._helpers = helpers
+        self._orig = helpers._token_param
+        helpers._token_param = "max_completion_tokens"
+
+    def tearDown(self):
+        self._helpers._token_param = self._orig
+
+    @patch("tests._llm_chat_helpers.API_KEY", "test-key")
+    @patch("tests._llm_chat_helpers.DEFAULT_MODEL", "gpt-4o")
+    @patch("httpx.Client")
+    def test_400_on_max_completion_tokens_downgrades(self, mock_client_cls):
+        mock_client = _mock_client(
+            mock_client_cls,
+            [
+                _resp(400, text="Unsupported parameter: max_completion_tokens"),
+                _resp(200, "OK"),
+            ],
+        )
+
+        from tests._llm_chat_helpers import call_llm
+        content, error = call_llm([{"role": "user", "content": "test"}])
+
+        self.assertIsNone(error)
+        self.assertEqual(content, "OK")
+        first = mock_client.post.call_args_list[0][1]["json"]
+        second = mock_client.post.call_args_list[1][1]["json"]
+        self.assertIn("max_completion_tokens", first)
+        self.assertIn("max_tokens", second)
+        self.assertNotIn("max_completion_tokens", second)
+        self.assertEqual(self._helpers._token_param, "max_tokens")
 
 
 class TestToolCallFullFlow(unittest.TestCase):
     """Test the complete tools/call path through handle_request."""
 
-    @patch("tests._llm_chat_helpers.LLM_API_KEY", "test-key")
+    @patch("tests._llm_chat_helpers.API_KEY", "test-key")
     @patch("httpx.Client")
     def test_tool_call_success(self, mock_client_cls):
         """Successful tool call should return content without isError."""
@@ -330,7 +358,7 @@ class TestToolCallFullFlow(unittest.TestCase):
         self.assertFalse(resp["result"].get("isError", False))
         self.assertEqual(resp["result"]["content"][0]["text"], "Test response")
 
-    @patch("tests._llm_chat_helpers.LLM_API_KEY", "test-key")
+    @patch("tests._llm_chat_helpers.API_KEY", "test-key")
     @patch("httpx.Client")
     def test_tool_call_with_system_prompt(self, mock_client_cls):
         """System prompt should be included as first message with role='system'."""
@@ -363,7 +391,7 @@ class TestToolCallFullFlow(unittest.TestCase):
         self.assertEqual(payload["messages"][0]["content"], "You are a strict reviewer")
         self.assertEqual(payload["messages"][1]["role"], "user")
 
-    @patch("tests._llm_chat_helpers.LLM_API_KEY", "test-key")
+    @patch("tests._llm_chat_helpers.API_KEY", "test-key")
     @patch("httpx.Client")
     def test_tool_call_api_error_returns_is_error(self, mock_client_cls):
         """An API error should be surfaced as isError=True in the result."""
