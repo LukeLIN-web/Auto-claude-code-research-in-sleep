@@ -1,6 +1,6 @@
 ---
 name: paper-prose-tighten
-description: "Cut filler from paper prose: bookkeeping-count enumerations (\"abstained blocks 569 → 551\", \"32 of the 39\", \"discordant pairs 166:103\"), defensive meta-narration (\"we report this rather than claim X\", \"a reader is entitled to know\"), narrated absences / 无中生有 (\"Video-Odyssey publishes no row for this backbone and has no column\"), false pivots / 错误的转折 (\"X rather than Y\", \"the advantage is not reducible to Z\" — delete the negated alternative, state the claim directly), and self-referential audit trail that no reviewer reads. Use when user says \"论文废话太多\", \"不要罗列数量\", \"清理废话\", \"无中生有\", \"错误的转折\", \"tighten the prose\", \"cut the filler\", \"too wordy\", or before submission when sections read like an audit log instead of an argument."
+description: "Cut filler from paper prose: bookkeeping-count enumerations (\"abstained blocks 569 → 551\", \"32 of the 39\", \"discordant pairs 166:103\"), defensive meta-narration (\"we report this rather than claim X\", \"a reader is entitled to know\"), narrated absences / 无中生有 (\"Video-Odyssey publishes no row for this backbone and has no column\"), false pivots / 错误的转折 (\"X rather than Y\", \"the advantage is not reducible to Z\" — delete the negated alternative, state the claim directly), cross-section duplication / 跨节重复 (an intro contribution bullet that pre-plays a whole results subsection; the same result in a subsection and again in the conclusion bullets), and self-referential audit trail that no reviewer reads. Use when user says \"论文废话太多\", \"不要罗列数量\", \"清理废话\", \"无中生有\", \"错误的转折\", \"每一段都在讲啥\", \"我要删减文字\", \"tighten the prose\", \"cut the filler\", \"too wordy\", or before submission when sections read like an audit log instead of an argument."
 argument-hint: "[paper-directory-or-section-files]"
 allowed-tools: Bash(*), Read, Write, Edit, Grep, Glob
 ---
@@ -60,7 +60,7 @@ A number survives when **it is the claim**. A number dies when it is
 reading its prose; they read the tables. Counts belong in tables, in the
 artifacts, or nowhere.
 
-## The Six Cut Classes
+## The Seven Cut Classes
 
 ### 1. Bookkeeping enumerations
 
@@ -119,6 +119,9 @@ The same fact in the topic sentence, in the middle, and in the closing
 "therefore" sentence; and hedges layered onto already-hedged claims
 ("consistent with", "we read as", "in the sense that", "not in the sense that").
 Keep one instance, at the position where the reader needs it.
+
+This class is **within-paragraph**. Its section-scale twin is class 7, which no
+amount of reading one paragraph at a time will surface.
 
 ### 5. Narrated absences (无中生有)
 
@@ -194,6 +197,33 @@ passage as one positive sentence.
 and a preview/notes block). After editing it, rebuild and re-grep the
 rendered `.tex` to confirm the cut landed.
 
+### 7. Cross-section duplication (跨节重复)
+
+Two paragraphs in different sections carrying the same content at different
+resolutions. Individually each reads fine; the duplication is only visible from
+the paragraph map (procedure step 1), never from reading straight through — by
+the time the reader reaches the second copy, the first is 8 pages back and the
+author has forgotten writing it.
+
+The recurring shapes, in descending yield:
+
+| Shape | Fix |
+|-------|-----|
+| An intro **contribution bullet that pre-plays a whole results subsection** — the same regime map, the same axes, the same per-benchmark ordering | The bullet keeps the *claim* and the two axis names; every reading of the table moves to the subsection. Point at the table, not at the finding. |
+| A finding stated in a results **subsection** and again as a **conclusion/analysis bullet** | Keep the results copy; delete the bullet — unless the bullet carries something the subsection does not (see the hard stop below). |
+| The method's governing **principle** stated informally in the intro and formally in the method | Intro keeps the hazard in one sentence and cites `\S`; the formal statement, the decomposition, and the concrete quotas live once, in the method. |
+| A **scaling / cost / budget** argument in the intro and again in a "Bounded X" method subsection | Same rule: the intro asserts the property, the method derives it. |
+| The **motivation** ("clips are too long to fit") in the intro and again in Settings | Settings keeps only what scopes the *experiment* (which benchmarks are over the wall). |
+
+**Rewrite pattern:** decide which section is the fact's semantic owner —
+normally the one that *derives* rather than *asserts* it — and reduce every
+other copy to a claim plus a `\S\ref{}`. This is SSOT applied to prose.
+
+**Keep** the second copy when the two are at genuinely different resolutions and
+the reader needs both: an intro one-liner and a method derivation are not
+duplicates. The test is whether the second copy contains a *number, a
+comparison, or a mechanism* the first does not.
+
 Deleting text must never upgrade a claim. Hard stops:
 
 - **Never delete a significance qualifier** to make a null read as a win.
@@ -210,15 +240,67 @@ Deleting text must never upgrade a claim. Hard stops:
   full read supersedes it"). It parses as class-3 journey narration, but
   deleting it hides a discordant prior analysis — a prose file-drawer that
   upgrades the surviving claim's apparent robustness. Refer it to the author.
+- **Never delete a duplicate before checking it is one.** Two class-7 traps,
+  both hit on the first real pass:
+  - *The "duplicate" carries a result that exists nowhere else.* A conclusion
+    bullet reading "both training stages port to a second backbone" looked like
+    a restatement of a whole results subsection — but the subsection covered
+    only the *answer* stage, and the bullet's localization-stage result appeared
+    in no section and no appendix. **Grep the distinguishing noun** (here the
+    evidence-hit metric) across `sections/` before deleting; if it is unique,
+    the fix is to move the sentence into the owning section, not to delete it.
+  - *The appendix cites the body for what you are moving to the appendix.*
+    Before "this belongs in the appendix", grep the appendix for a back-pointer
+    (`\S\ref{sec:...}`, "the rule of §4", "the ruling of §5"). An appendix that
+    reads "each panel's comparator follows the fair-baseline ruling of §5"
+    requires §5 to still state that ruling. Keep a one-sentence version in the
+    body and cut only the self-justification around it.
 
 Rule of thumb: cut what proves *diligence*; keep what bounds *scope*.
 
 ## Procedure
 
-1. **Scope.** Main text first (`\section` bodies), appendix second. Skip tables,
+1. **Map every paragraph before reading for style.** Classes 1–6 are found by
+   grep; class 7 and oversized paragraphs are found only here. Emit one row per
+   paragraph — file, line span, word count, and **one line saying what it
+   claims**:
+
+   ```bash
+   python - <<'PY'
+   import re
+   for f in ['01_intro.tex','02_related.tex','03_method.tex','04_results.tex']:
+       print('='*8, f)
+       buf, start = [], 0
+       def flush(buf, start, end):
+           t = '\n'.join(buf).strip()
+           if not t: return
+           w = len(re.findall(r"[A-Za-z][A-Za-z'\-]*", t))
+           print(f"  L{start}-{end}\t{w:4d}w\t{re.sub(r'\\s+',' ',t)[:70]}")
+       for i, l in enumerate(open('sections/'+f).read().split('\n'), 1):
+           if l.strip() == '': flush(buf, start, i-1); buf, start = [], i+1
+           else:
+               if not buf: start = i
+               buf.append(l)
+       flush(buf, start, i)
+   PY
+   ```
+
+   Then read the map, not the paper. Two things fall out that no reading pass
+   gives you:
+   - **Two rows whose one-line summaries are the same claim** → class 7. This is
+     where the largest single cuts are.
+   - **Any row over ~250 words** → it is carrying several findings at once.
+     Cutting it is not enough; **split it** (see step 5). A 350-word paragraph
+     stays unreadable at 250.
+
+   Present the map to the author before editing. It is also the artifact they
+   asked for when they say "每一段都在讲啥" — and their pick of which rows to cut
+   is worth more than your own ranking.
+
+2. **Scope.** Main text first (`\section` bodies), appendix second. Skip tables,
    captions, and figure code unless the caption itself narrates.
 
-2. **Inventory.** Pull every candidate to a scratch list before editing:
+3. **Inventory.** Pull every candidate to a scratch list before editing:
 
    ```bash
    # numbers-in-prose density, per section
@@ -234,27 +316,40 @@ Rule of thumb: cut what proves *diligence*; keep what bounds *scope*.
    grep -niE 'rather than|instead of|not reducible|, not |; it is|\bnor is|not by itself|not only|is not|are not' sections/*.tex tables/*.tex
    ```
 
-3. **Classify, don't rewrite yet.** Tag each hit cut / keep / rewrite. The
+4. **Classify, don't rewrite yet.** Tag each hit cut / keep / rewrite. The
    temptation is to rewrite a bloated sentence into a slightly less bloated one;
    most hits should be **whole-clause deletions**. On a paper whose claims are
    already settled, expect most hits to be keeps — in practice ~80% of
    absence-pattern hits are load-bearing protocol scope. A low cut count is the
    test working, not failing.
 
-4. **Edit.** Prefer deleting a clause over restructuring a sentence — the fewer
-   words that move, the smaller the chance of shifting a claim.
+5. **Edit.** Prefer deleting a clause over restructuring a sentence — the fewer
+   words that move, the smaller the chance of shifting a claim. The one
+   restructuring worth doing is the **paragraph split** step 1 flagged: find the
+   findings inside the over-long paragraph, give each its own paragraph with its
+   own topic sentence, and cut in the process. Splitting without cutting is
+   still a win; the reader can now see where each finding starts.
 
-5. **Verify the claim set is unchanged.** For each edited paragraph, state in
+6. **Verify the claim set is unchanged.** For each edited paragraph, state in
    one line what it claimed before and after. Any difference is a bug, not a
-   tightening. Re-check every hard stop above.
+   tightening. Re-check every hard stop above. Then re-grep the labels you
+   dropped a `\ref` to — a deleted paragraph can be the only citer of an
+   appendix section.
 
-6. **Compile** and report the size change (words or lines per section), plus a
+7. **Compile** and report the size change (words or lines per section), plus a
    list of anything you deliberately left because cutting it would have
    loosened a claim.
 
+**Calibrate the estimate.** A per-item cut target set from the map will
+overshoot by roughly 2×: load-bearing paragraphs *compress*, they do not delete,
+and every "delete this section" item tends to turn into "move one sentence and
+delete the rest". A 1,600-word plan landing at ~700 is the normal outcome, not a
+failure to execute — say so plainly instead of padding the cut to hit the
+estimate.
+
 ## Reporting
 
-Report as: sections touched, what was cut by class (1–6), and explicitly
+Report as: sections touched, what was cut by class (1–7), and explicitly
 **what was kept and why** — the kept-list is the evidence that tightening did
 not become overclaiming. Do not report a "% reduction" as the headline; the
 headline is that the argument reads straight through.
@@ -264,3 +359,10 @@ headline is that the argument reads straight through.
 Do not run this skill twice on the same text expecting further gain. The second
 pass finds nothing safe to cut and starts eating scope qualifiers to justify
 itself. One pass, then stop.
+
+The exception is a **class-7-only** pass. Classes 1–6 are sentence-local and are
+genuinely exhausted in one run; class 7 is not, because it is created fresh
+every time a section is rewritten — tightening §4 to point at a table leaves the
+intro bullet that pre-plays §4 untouched. After any round of section rewriting,
+re-emit the paragraph map (step 1) and diff the one-line summaries. Nothing
+else.
