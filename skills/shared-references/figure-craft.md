@@ -10,7 +10,8 @@ distilled into rules. Where it conflicts with a venue's own guide, the venue win
 ## When to Read
 
 - Before writing the first `matplotlib` line in `paper-figure`.
-- Before hand-drawing an architecture / pipeline figure in `paper-illustration`.
+- Before drawing a method / architecture / pipeline figure in `figure-spec`
+  (either path — renderer or hand-authored SVG) or `paper-illustration`.
 - During the figure pass of `auto-paper-improvement-loop` or any figure review.
 
 ## 0. The economics
@@ -54,6 +55,9 @@ prints at ~6.6 pt and is unreadable. Either:
 Checkable statement of the same rule: **the rendered glyph height in the
 compiled PDF must be at least the body-text glyph height.** Zooming should not
 be required to read an axis.
+For `figure-spec` SVG figures this check is mechanical: `verify_figure.py`'s
+print-size gate computes every glyph's printed size from the SVG viewBox and
+the declared include width, and fails the figure below the floor.
 
 Corollary: fewer words. Big fonts and long labels do not coexist — cut label
 text until it fits at the enlarged size.

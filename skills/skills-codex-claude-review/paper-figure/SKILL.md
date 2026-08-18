@@ -23,7 +23,7 @@ Generate all figures and tables for a paper based on: **$ARGUMENTS**
 | **Data-driven plots** | ✅ Yes | Line plots (training curves), bar charts (method comparison), scatter plots, heatmaps, box/violin plots |
 | **Comparison tables** | ✅ Yes | LaTeX tables comparing prior bounds, method features, ablation results |
 | **Multi-panel figures** | ✅ Yes | Subfigure grids combining multiple plots (e.g., 3×3 dataset × method) |
-| **Architecture/pipeline diagrams** | ❌ No — manual | Model architecture, data flow diagrams, system overviews. At best can generate a rough TikZ skeleton, but **expect to draw these yourself** using tools like draw.io, Figma, or TikZ |
+| **Architecture/pipeline diagrams** | ❌ No — use `/figure-spec` | Model architecture, data flow diagrams, system overviews. Draw with `/figure-spec` (blueprint-locked vector SVG, renderer or hand-authored path); manual draw.io / Figma / TikZ remains a fallback |
 | **Generated image grids** | ❌ No — manual | Grids of generated samples (e.g., GAN/diffusion outputs). These come from running your model, not from this skill |
 | **Photographs / screenshots** | ❌ No — manual | Real-world images, UI screenshots, qualitative examples |
 
@@ -172,7 +172,7 @@ Method & Rate & Depends on $D$? & Multi-modal? \\
 ```
 
 **Architecture/pipeline diagrams** (MANUAL — outside this skill's scope):
-- These require manual creation using draw.io, Figma, Keynote, or TikZ
+- Draw these with `/figure-spec` (blueprint-locked vector SVG); manual draw.io, Figma, Keynote, or TikZ remains a fallback
 - This skill can generate a rough TikZ skeleton as a starting point, but **do not expect publication-quality results**
 - If the figure already exists in `figures/`, preserve it and generate only the LaTeX `\includegraphics` snippet
 - Flag as `[MANUAL]` in the figure plan and `latex_includes.tex`
