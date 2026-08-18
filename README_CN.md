@@ -14,6 +14,9 @@
 
 🤖 **AI agent 兄弟们：** 直接读 [`AGENT_GUIDE.md`](AGENT_GUIDE.md) —— 给 LLM 消费的路由 index，不是给人浏览的。
 
+🧱 **ARIS 的审阅器确实好用 —— 但它也提议过"加个没人读的哈希" → [HERO](https://github.com/wanshuiyin/HERO-Anti-OverDefense) 就是治这个的契约。** **H**ashing(哈希)、**E**dge cases(边界情况)、**R**ubrics(把判断换成机械)、**O**verbuild(过度建设)——agent 过度防御的四种形状,压成一段约 550 token、粘进 `CLAUDE.md` / `AGENTS.md` 的短文本。
+*它约束的是 agent **提议怎么修**,不是它**能找什么**。*
+
 🎬 **ARIS 走向多模态 → [ARIS-Movie-Director](https://github.com/wanshuiyin/ARIS-Movie-Director)** —— 给它一个粗略的故事,拿回一部按场景检查过的图像电影(参考运行有 19 个场景)。
 长故事最容易坏在两点:模型忘了前面的细节,或者自己给自己打分——所以 ARIS 用 research-wiki 记住上下文,再让别的模型检查每一帧。
 
