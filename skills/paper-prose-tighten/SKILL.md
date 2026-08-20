@@ -1,6 +1,6 @@
 ---
 name: paper-prose-tighten
-description: "Cut filler from paper prose: bookkeeping-count enumerations (\"abstained blocks 569 → 551\", \"32 of the 39\", \"discordant pairs 166:103\"), defensive meta-narration (\"we report this rather than claim X\", \"a reader is entitled to know\"), narrated absences / 无中生有 (\"Video-Odyssey publishes no row for this backbone and has no column\"), false pivots / 错误的转折 (\"X rather than Y\", \"the advantage is not reducible to Z\" — delete the negated alternative, state the claim directly), cross-section duplication / 跨节重复 (an intro contribution bullet that pre-plays a whole results subsection; the same result in a subsection and again in the conclusion bullets), artifact-provenance assurance (\"the deployed checkpoint is fixed without reference to any evaluation signal\", \"held-out accuracy is flat from step 300 through 900\"), and self-referential audit trail that no reviewer reads. Also carries the escalation rule: when a claim only survives behind a pile of caveats, delete the claim. Use when user says \"论文废话太多\", \"caveat 太多\", \"越讲越乱\", \"别解释了\", \"不要罗列数量\", \"清理废话\", \"无中生有\", \"错误的转折\", \"每一段都在讲啥\", \"我要删减文字\", \"tighten the prose\", \"cut the filler\", \"too wordy\", or before submission when sections read like an audit log instead of an argument."
+description: "Cut filler from paper prose: bookkeeping-count enumerations (\"abstained blocks 569 → 551\", \"32 of the 39\", \"discordant pairs 166:103\"), defensive meta-narration (\"we report this rather than claim X\", \"a reader is entitled to know\"), narrated absences / 无中生有 (\"Video-Odyssey publishes no row for this backbone and has no column\"), false pivots / 错误的转折 (\"X rather than Y\", \"the advantage is not reducible to Z\" — delete the negated alternative, state the claim directly), cross-section duplication / 跨节重复 (an intro contribution bullet that pre-plays a whole results subsection; the same result in a subsection and again in the conclusion bullets), artifact-provenance assurance (\"the deployed checkpoint is fixed without reference to any evaluation signal\", \"held-out accuracy is flat from step 300 through 900\"), process/engineering vocabulary / 流程工程术语 (\"a preregistered two-benchmark ablation\", \"criteria frozen before any readout\", \"the frozen margin\", \"early-kill gate\" — delete the modifier, keep the noun), and self-referential audit trail that no reviewer reads. Also carries the escalation rule: when a claim only survives behind a pile of caveats, delete the claim. Use when user says \"论文废话太多\", \"caveat 太多\", \"越讲越乱\", \"别解释了\", \"不要罗列数量\", \"清理废话\", \"无中生有\", \"错误的转折\", \"每一段都在讲啥\", \"我要删减文字\", \"preregistered 都删了\", \"不该出现这种工程的术语\", \"tighten the prose\", \"cut the filler\", \"too wordy\", or before submission when sections read like an audit log instead of an argument."
 argument-hint: "[paper-directory-or-section-files]"
 allowed-tools: Bash(*), Read, Write, Edit, Grep, Glob
 ---
@@ -82,7 +82,7 @@ the paragraph is unreadable in defence of a claim that never earned a paragraph.
 When an author says the explanation itself is the problem, they are exercising
 this rule — do not answer it with a better-worded explanation.
 
-## The Eight Cut Classes
+## The Nine Cut Classes
 
 ### 1. Bookkeeping enumerations
 
@@ -281,6 +281,69 @@ spends three sentences to defend a supporting claim. Deleting both dissolves the
 contradiction and costs nothing. **When a reviewer flags "these two statements
 disagree" and both are class 8, subtract.**
 
+### 9. Process vocabulary (流程/工程术语)
+
+The words we use to *run* experiments, leaking into the words the paper is
+*written* in: `preregistered`, `pre-specified`, `criteria frozen before any
+readout`, `frozen before any test number was read`, `the frozen margin`, `a
+frozen evaluation set`, `stopping rule`, `early-kill gate`, `acceptance gate`.
+
+Classes 2 and 8 walk straight past these, because a class-9 hit is an
+**adjective on a real result**, not a sentence of its own: the noun it modifies
+is load-bearing, the sentence survives the paragraph map intact, and nothing
+looks deletable. It is also the one class that says nothing to the reader it
+means to reassure — a reviewer cannot check that a margin was fixed before the
+readout, so the word is an assertion about our internal timeline, and asserting
+it invites the suspicion it was meant to settle.
+
+| Cut | Keep |
+|-----|------|
+| `a preregistered two-benchmark ablation` | `a two-benchmark ablation` |
+| `With criteria frozen before any new readout, we re-measured …` | `We re-measured …` |
+| `non-inferior at a margin frozen before any readout` | `non-inferior` — the margin's value lives in the appendix |
+| `passes the preregistered non-degradation gate` | `does not degrade` |
+| `selected on a dev split before any test number` | `selected on a dev split` |
+| `well under the $0.40$ early-kill gate` | `well under $0.40$` |
+| `the paper's frozen default configuration` | `the paper's default configuration` |
+
+**Rewrite pattern:** delete the modifier, keep the noun. Unlike class 8 the
+sentence almost never dies — an ablation that was preregistered is still an
+ablation, and the result it reports is untouched.
+
+**Keep** `frozen` in its *technical* sense, which shares the word and nothing
+else: `frozen backbone`, `frozen scans`, `frozen window enumeration`, `frozen
+tokenizer`, `frozen protocol` describe weights and configuration that do not
+move. `frozen before …` describes when *we* looked. Only the second is a hit.
+
+**Keep** the object a process word modifies when that object scopes the claim: a
+non-inferiority **margin** bounds what "non-inferior" means and stays (value in
+the appendix, per the no-numbers-in-body rule); only the story of when it was
+fixed goes.
+
+**Field note (2026-08-20 — the ruling that created this class).** The author's
+words: 「preregistered 都删了, 论文里就不该出现这种工程的术语. 记住」. Eight
+instances of the word and eleven of its relatives left one paper in a single
+sweep, and no claim moved.
+
+The same ruling retired an entire *apparatus* of this kind — a training pool's
+structural probe, its permutation null, its role-injection negative control and
+its acceptance gate — carried redundantly in three places (a config-table row, a
+method sentence, an appendix paragraph of numbers), i.e. class 7 stacked on
+class 8 stacked on class 9. Deleting all three was safe because **no reported
+number was scored on that pool**: the probes defended *training* data, and every
+result in the paper is benchmark accuracy, which a training-pool shortcut can
+only depress. Run that test before retiring any verification apparatus —
+*does a reported number depend on the thing being verified?* — and if the answer
+is yes, it is scope, not process, and it stays.
+
+**Sweep note.** Do not sweep this class with one big `-E` alternation. Under
+`ugrep` (aliased to `grep` on some machines here) a pattern like
+`pre-?regist|pre-?specif|…` returned **zero hits on files that held eight**.
+Count each term separately as a fixed string and treat a zero from a compound
+regex as unproven, not as absence. Then sweep the copies outside `sections/`:
+figure/table generator strings in `paper/scripts/*.py` and `label` fields in
+`paper/data/*.json` render into the PDF too.
+
 Deleting text must never upgrade a claim. Hard stops:
 
 - **Never delete a significance qualifier** to make a null read as a win.
@@ -300,6 +363,15 @@ Deleting text must never upgrade a claim. Hard stops:
   full read supersedes it"). It parses as class-3 journey narration, but
   deleting it hides a discordant prior analysis — a prose file-drawer that
   upgrades the surviving claim's apparent robustness. Refer it to the author.
+  When the author rules *delete* — and on 2026-08-20 one did, for a sentence
+  disclosing that a training pool's first construction had leaked and was
+  rebuilt — the ruling is theirs, but verify one thing first and say it back:
+  **is any reported number scored on the artifact whose history you are
+  erasing?** Here nothing was (the pool was training data; every reported result
+  was benchmark accuracy, which a training-pool shortcut can only depress), so
+  the deletion retired a discarded *build*, not a discarded *reading*. Had one
+  number come from that pool, the same deletion would have been the file-drawer
+  this stop exists to prevent.
 - **Never delete a duplicate before checking it is one.** Two class-7 traps,
   both hit on the first real pass:
   - *The "duplicate" carries a result that exists nowhere else.* A conclusion
@@ -359,7 +431,7 @@ Rule of thumb: cut what proves *diligence*; keep what bounds *scope*.
 
 2. **Scope.** Main text first (`\section` bodies), appendix second. Tables,
    captions and figure code belong to `paper-table-craft` / `paper-figure-craft`;
-   touch them here only to sweep class 5, 6 and 8 leakage, and never to decide
+   touch them here only to sweep class 5, 6, 8 and 9 leakage, and never to decide
    what a caption should contain.
 
 3. **Inventory.** Pull every candidate to a scratch list before editing:
@@ -378,6 +450,14 @@ Rule of thumb: cut what proves *diligence*; keep what bounds *scope*.
    grep -niE 'rather than|instead of|not reducible|, not |; it is|\bnor is|not by itself|not only|is not|are not' sections/*.tex tables/*.tex
    # artifact provenance / hygiene assurance (sweep tables/ too: it hides in config cells)
    grep -niE 'without reference to|pre-?specified|pre-?registered stopping|deployed checkpoint|the run.s endpoint|held-out (accuracy|acc) is flat|chosen by (benchmark|evaluation)|frozen (evaluation |)subset|seed' sections/*.tex tables/*.tex
+   # process vocabulary (class 9) -- count each term separately; one big -E
+   # alternation silently returns zero under ugrep (see class 9's sweep note)
+   for t in preregistered pre-registered pre-specified prespecified \
+            "criteria frozen" "frozen before" "frozen margin" \
+            "frozen evaluation" "stopping rule" "kill gate" "acceptance gate"; do
+     n=$(grep -ric -- "$t" sections/*.tex tables/*.tex 2>/dev/null | awk -F: '{s+=$NF} END{print s+0}')
+     [ "$n" != 0 ] && printf '%4s  %s\n' "$n" "$t"
+   done
    ```
 
 4. **Classify, don't rewrite yet.** Tag each hit cut / keep / rewrite. The
@@ -413,7 +493,7 @@ estimate.
 
 ## Reporting
 
-Report as: sections touched, what was cut by class (1–8), and explicitly
+Report as: sections touched, what was cut by class (1–9), and explicitly
 **what was kept and why** — the kept-list is the evidence that tightening did
 not become overclaiming. Do not report a "% reduction" as the headline; the
 headline is that the argument reads straight through.
