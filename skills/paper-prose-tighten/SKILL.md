@@ -1,6 +1,6 @@
 ---
 name: paper-prose-tighten
-description: "Cut filler from paper prose: bookkeeping-count enumerations (\"abstained blocks 569 → 551\", \"32 of the 39\", \"discordant pairs 166:103\"), defensive meta-narration (\"we report this rather than claim X\", \"a reader is entitled to know\"), narrated absences / 无中生有 (\"Video-Odyssey publishes no row for this backbone and has no column\"), false pivots / 错误的转折 (\"X rather than Y\", \"the advantage is not reducible to Z\" — delete the negated alternative, state the claim directly), cross-section duplication / 跨节重复 (an intro contribution bullet that pre-plays a whole results subsection; the same result in a subsection and again in the conclusion bullets), and self-referential audit trail that no reviewer reads. Use when user says \"论文废话太多\", \"不要罗列数量\", \"清理废话\", \"无中生有\", \"错误的转折\", \"每一段都在讲啥\", \"我要删减文字\", \"tighten the prose\", \"cut the filler\", \"too wordy\", or before submission when sections read like an audit log instead of an argument."
+description: "Cut filler from paper prose: bookkeeping-count enumerations (\"abstained blocks 569 → 551\", \"32 of the 39\", \"discordant pairs 166:103\"), defensive meta-narration (\"we report this rather than claim X\", \"a reader is entitled to know\"), narrated absences / 无中生有 (\"Video-Odyssey publishes no row for this backbone and has no column\"), false pivots / 错误的转折 (\"X rather than Y\", \"the advantage is not reducible to Z\" — delete the negated alternative, state the claim directly), cross-section duplication / 跨节重复 (an intro contribution bullet that pre-plays a whole results subsection; the same result in a subsection and again in the conclusion bullets), artifact-provenance assurance (\"the deployed checkpoint is fixed without reference to any evaluation signal\", \"held-out accuracy is flat from step 300 through 900\"), and self-referential audit trail that no reviewer reads. Also carries the escalation rule: when a claim only survives behind a pile of caveats, delete the claim. Use when user says \"论文废话太多\", \"caveat 太多\", \"越讲越乱\", \"别解释了\", \"不要罗列数量\", \"清理废话\", \"无中生有\", \"错误的转折\", \"每一段都在讲啥\", \"我要删减文字\", \"tighten the prose\", \"cut the filler\", \"too wordy\", or before submission when sections read like an audit log instead of an argument."
 argument-hint: "[paper-directory-or-section-files]"
 allowed-tools: Bash(*), Read, Write, Edit, Grep, Glob
 ---
@@ -60,7 +60,29 @@ A number survives when **it is the claim**. A number dies when it is
 reading its prose; they read the tables. Counts belong in tables, in the
 artifacts, or nowhere.
 
-## The Seven Cut Classes
+## The Escalation: Caveat Pressure Means Cut the Claim
+
+A sentence that needs one qualifying clause to be true is a sentence to fix. A
+sentence that needs two or three is a sentence the paper is better off without,
+and the caveats are the diagnosis rather than the disease. The more you explain,
+the messier it gets.
+
+> **If the honest version of a claim takes a pile of caveats, delete the claim.**
+
+This is the escalation of the audit-application rule above, and it fires on
+*secondary* claims — a supporting dose curve, a corroborating subset, a "we also
+checked" reading — never on a headline. The test is what the paper loses: a
+load-bearing claim keeps its caveats because both are load-bearing; a
+nice-to-have leaves with its caveats attached, and the section reads straight
+through for the first time.
+
+The failure it replaces: each review round adds one clarifying clause, every
+clause is individually correct and individually cheap, and three rounds later
+the paragraph is unreadable in defence of a claim that never earned a paragraph.
+When an author says the explanation itself is the problem, they are exercising
+this rule — do not answer it with a better-worded explanation.
+
+## The Eight Cut Classes
 
 ### 1. Bookkeeping enumerations
 
@@ -224,6 +246,40 @@ the reader needs both: an intro one-liner and a method derivation are not
 duplicates. The test is whether the second copy contains a *number, a
 comparison, or a mechanism* the first does not.
 
+### 8. Artifact provenance and hygiene assurance
+
+Sentences whose subject is *how the artifact was produced* rather than what the
+system does: which checkpoint was deployed and how it was picked, which split a
+curve was flat on, which seed, which stopping rule, what the choice was *not*
+made with reference to. They read as reproducibility, which is why they survive
+every pass — but reproduction reads the config table, not the prose.
+
+| Cut | Why |
+|-----|-----|
+| `the deployed checkpoint is the run's endpoint, fixed without reference to any evaluation signal, so neither adapter's checkpoint is chosen by benchmark performance` | asserts the absence of cherry-picking; a config table naming the endpoint already carries it |
+| `held-out accuracy is flat from step $300$ through $900$`, in a config-table cell | a second curve nobody plots, on a set nobody else in the paper names |
+| `step $2000$, selected by a pre-specified stopping rule inside epoch 1` | the *rule* may be a reproduction fact; `pre-specified` is the assurance — drop that word, keep the rule |
+| `on a frozen evaluation subset, accuracy rises across every checkpoint measured` | the subset's identity is bookkeeping; `accuracy rises across the measured checkpoints` is the claim |
+
+**Rewrite pattern:** a checkpoint's *identity* is configuration and belongs in
+the config table as a bare value (`step 900, the run's endpoint`). Everything
+about how it was chosen, what it was not chosen by, and what else was flat
+where — delete.
+
+**Keep** a provenance fact when a reviewer could otherwise reconstruct a
+*different* experiment: the split a headline number is scored on, a train/test
+separation, a denominator rule, a protocol the comparison depends on. Those are
+hard stops below, not class-8 hits.
+
+**Field note (2026-08-20).** This class manufactures apparent contradictions.
+Two hygiene sentences written weeks apart — a config-table cell reporting a flat
+held-out curve over one range, a results sentence reporting a rising curve over
+another — described two different sets, and an external reviewer read them as
+the paper contradicting itself. Naming the two sets is the wrong repair: it
+spends three sentences to defend a supporting claim. Deleting both dissolves the
+contradiction and costs nothing. **When a reviewer flags "these two statements
+disagree" and both are class 8, subtract.**
+
 Deleting text must never upgrade a claim. Hard stops:
 
 - **Never delete a significance qualifier** to make a null read as a win.
@@ -260,8 +316,8 @@ Rule of thumb: cut what proves *diligence*; keep what bounds *scope*.
 
 ## Procedure
 
-1. **Map every paragraph before reading for style.** Classes 1–6 are found by
-   grep; class 7 and oversized paragraphs are found only here. Emit one row per
+1. **Map every paragraph before reading for style.** Classes 1–6 and 8 are found
+   by grep; class 7 and oversized paragraphs are found only here. Emit one row per
    paragraph — file, line span, word count, and **one line saying what it
    claims**:
 
@@ -314,6 +370,8 @@ Rule of thumb: cut what proves *diligence*; keep what bounds *scope*.
    # false pivots: negated-alternative claims (high recall — classify by hand;
    # headers, caption titles, and section titles need an eye pass on top)
    grep -niE 'rather than|instead of|not reducible|, not |; it is|\bnor is|not by itself|not only|is not|are not' sections/*.tex tables/*.tex
+   # artifact provenance / hygiene assurance (sweep tables/ too: it hides in config cells)
+   grep -niE 'without reference to|pre-?specified|pre-?registered stopping|deployed checkpoint|the run.s endpoint|held-out (accuracy|acc) is flat|chosen by (benchmark|evaluation)|frozen (evaluation |)subset|seed' sections/*.tex tables/*.tex
    ```
 
 4. **Classify, don't rewrite yet.** Tag each hit cut / keep / rewrite. The
@@ -349,7 +407,7 @@ estimate.
 
 ## Reporting
 
-Report as: sections touched, what was cut by class (1–7), and explicitly
+Report as: sections touched, what was cut by class (1–8), and explicitly
 **what was kept and why** — the kept-list is the evidence that tightening did
 not become overclaiming. Do not report a "% reduction" as the headline; the
 headline is that the argument reads straight through.
@@ -360,8 +418,8 @@ Do not run this skill twice on the same text expecting further gain. The second
 pass finds nothing safe to cut and starts eating scope qualifiers to justify
 itself. One pass, then stop.
 
-The exception is a **class-7-only** pass. Classes 1–6 are sentence-local and are
-genuinely exhausted in one run; class 7 is not, because it is created fresh
+The exception is a **class-7-only** pass. Classes 1–6 and 8 are sentence-local and
+are genuinely exhausted in one run; class 7 is not, because it is created fresh
 every time a section is rewritten — tightening §4 to point at a table leaves the
 intro bullet that pre-plays §4 untouched. After any round of section rewriting,
 re-emit the paragraph map (step 1) and diff the one-line summaries. Nothing
