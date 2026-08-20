@@ -48,6 +48,8 @@ fact are one row.
 | **Caption carries no numbers, no pointer at another float.** Banned: `\ref{}`, `\S`, Appendix, `Table~`, `Figure~`, "the text". 1200 chars hard cap. | — | Enforced, not remembered: `tab_common.check_caption`, fired at `write_table` for generated tables and at `check_captions.py` for every compiled `.tex`. |
 | **A fired caption gate means rewrite the caption whole.** Never raise the cap, never patch the tail. | — | Captions bloat by accretion; they had reached 2.8 KB before the cap. |
 | **`n` is unmarked when the denominator is full.** Mark it only for a subset, a dropped-item set, or a gap — and say why. | — | |
+| **A table's printed type size is measured, never scaled into place.** `\small` prints at **8.97 pt** in this class; the floor is the figures' floor, 7.5 pt. | — | `\resizebox{\textwidth}{!}` sets the type size by an accident of the table's own width — measured on one build: 10.96 pt (`tab:main`, *magnified* past the 9.96 pt body text), 8.90, 8.41, against 8.97 everywhere else. Fix an overflowing table by the gutter (`\tabcolsep`) or by structure; never by scaling. |
+| **One owner for the paired-difference cell**: `tab_common.delta_bold`. | — | Four generators had reimplemented `lo > 0 or hi < 0`, and the zero convention had drifted three ways across tables (`0.00`, `+0.00`, `\pm0.00`) — a reader comparing two tables reads the same mark as two different things. |
 | **Every cell in a comparison table is on the same protocol.** A mixed-source official number is allowed only in a `base` cell, marked with `*` and its citation; paired Δ only between same-protocol measured cells. | — | See memory `main-table-official-anchor-mixed-source`, `no-protocol-switch-to-rescue-arm`. |
 
 ## What a caption is
@@ -70,6 +72,14 @@ Four ways it stops being that:
   caption is the least-scanned string in the paper: a cross-reference survives
   the table being renamed, moved, or deleted, and comes back as `??`.
 
+The 1200-char gate is a backstop, not a target. **Aim at ~600**, and treat a
+caption within a few characters of the cap as already broken rather than nearly
+fine: one was found at 1197/1200, where any future wording fix would have failed
+the build. The excess is reliably the same thing — the protocol argument for why
+the table is a fair comparison. That argument belongs in the paragraph the float
+sits in; the caption keeps only the marks and row terms a reader needs without
+leaving the table.
+
 ## Cell-level cut classes
 
 When a table has grown prose, these are the shapes, in descending yield.
@@ -82,6 +92,7 @@ When a table has grown prose, these are the shapes, in descending yield.
 | **T4 Sub-slice bookkeeping** | a second bound on a subset hung off the main bound (`$V\leq0.041$ … ; $\leq0.009$ on the 3,404 training chains`) | the main bound is the constraint |
 | **T5 False pivot in a cell** | `assigned from the gold windows' empirical start-time law (rank-matched quantiles), not drawn uniformly` | delete from the pivot on |
 | **T6 Split pair** | `Gold slot balance` / `Gold letter balance`; `Target` / `Loss masking` | one row |
+| **T8 Another table's rows** | a results table reproducing the five external-reference rows of the main table verbatim, marks and all | one table owns a comparison; the second points at it. The duplicate is invisible from either table alone — it is `paper-prose-tighten`'s class 7 with floats instead of paragraphs |
 | **T7 Deployed-vs-training disclaimer** | `The deployed grid (8×75 s per block) is not retrained on` | a protocol fact the method section states in its own voice; keep it there, not in a cell |
 
 ## Hard stops
@@ -111,10 +122,28 @@ When a table has grown prose, these are the shapes, in descending yield.
 3. Classify every cell T1–T7. Prefer deleting a clause over rewriting a cell.
 4. Rewrite the caption **whole**, from the four-way test above. Do not edit it
    in place; that is how it grew.
-5. Compile, and require all three: `rc=0`, **zero** `Overfull \hbox` in
-   `main.log`, `check_captions.py` clean. A merged row is the usual source of a
-   new overfull.
-6. Report what was cut by class and, separately, **what was kept because
+5. Compile, and require all four: `rc=0`, **zero** `Overfull \hbox` in
+   `main.log`, `check_captions.py` clean, and the **printed type size measured**
+   — every table at the same pt, none under 7.5:
+
+   ```python
+   # pymupdf env; find the page by a string unique to the table
+   import fitz
+   for p in fitz.open("main.pdf"):
+       if "Compressed-audio descent" not in p.get_text(): continue
+       for b in p.get_text("dict")["blocks"]:
+           for l in b["lines"]:
+               for sp in l["spans"]:
+                   print(round(sp["size"], 2), sp["text"][:30])
+   ```
+
+   Read the **second** smallest size, not the smallest: superscript marks
+   (`*`, `‡`, `◦`) and subscripts legitimately sit near 6 pt.
+6. **Sweep across tables, not just within one.** One benchmark, one spelling;
+   one convention per mark (bold = decided) in every table that uses it; no
+   number reported in two tables. These are invisible from a single float and
+   are where the real defects were.
+7. Report what was cut by class and, separately, **what was kept because
    something else cites it**.
 
 ## Mechanics live elsewhere — point, do not copy
