@@ -52,12 +52,51 @@ is settled — do not re-propose an alternative; reopening it needs the user.**
 | **Every printed glyph in 7.5–11 pt** (body text is 10). Do not shrink type to fit; change the layout. | — | Declared ≠ printed, and the ratio cannot be computed from `figsize` when `savefig.bbox="tight"` crops the canvas. Measurement recipe: memory `paper-figure-and-table-build`. |
 | **`fig:architecture` is a hand-written SVG under a content lock**, not matplotlib. | 2026-08-17 | Edit `paper/scripts/fig_arch.svg`; any wording change moves in lockstep with `fig_arch_blueprint.json` or the build rejects the drift. |
 
+## Measuring the printed size (do this, do not estimate)
+
+The WYSIWYG law is checked with one number: `scale = frac × TEXT_W / pdf_width_in`,
+where `frac` is the `\textwidth` fraction the figure is included at.
+
+```python
+import fitz                                   # pymupdf env
+p = fitz.open("figures/keepcap_sweep.pdf")[0]
+s = frac * 6.5 / (p.rect.width / 72)          # TEXT_W from paper_plot_style
+sz = [sp["size"] * s for b in p.get_text("dict")["blocks"]
+      for l in b.get("lines", []) for sp in l["spans"] if sp["text"].strip()]
+print(round(p.rect.width / 72, 2), round(s, 3), round(min(sz), 2), round(max(sz), 2))
+```
+
+Four things this catches that nothing else does:
+
+- **`frac` is not always what the `\includegraphics` line says.** A figure inside
+  a `minipage` is included at the *minipage's* width — `width=\linewidth` in a
+  `0.52\textwidth` minipage is `frac = 0.52`.
+- **`savefig.bbox="tight"` crops the canvas**, so the PDF is narrower than
+  `figsize` and the scale must come from the *PDF*, never from `figsize`.
+- **The failure signature is `pdf_width_in ≠ frac × TEXT_W`.** Two live cases,
+  both invisible on screen: a 6.78 in canvas included at 6.175 in (0.91×, tick
+  labels at 6.92 pt) and a 6.54 in canvas at 5.98 in (0.914×, in-bar numbers at
+  7.32 pt). The fix was to draw at the width the page uses and let
+  `paper_plot_style`'s `declared_pt` / `PT_TITLE…PT_ANN` ladder set the type —
+  **both figures had hardcoded `fontsize=6.0` / `6.5` / `8` instead of using it.**
+  `grep -n 'fontsize=[0-9]' fig_*.py` is the whole audit.
+- **Read the second-smallest size, not the smallest.** Superscript markers and
+  subscripts (`*`, `‡`, `A$_1$`) legitimately sit near 6 pt and produced three
+  false alarms out of five on the first sweep.
+
 ## What a caption is
 
 The legend for *this* graphic: the title, the symbols, the axes, what a panel
 is. Not how to read the conclusion, not the reservations on that reading —
 those are the prose of the section the figure sits in, and for an appendix
 figure, that appendix section.
+
+The 1200-char gate is a backstop, not a target. **Aim at ~600.** What overflows
+is reliably the protocol paragraph, and it belongs in the section the figure sits
+in. One caption ending in a reading instruction — *"each panel's y-axis is
+windowed to its own range: read curves within a panel"* — is not an incomplete
+caption but a figure whose panels cannot be compared; fix the axes, not the
+sentence.
 
 And the reciprocal rule, which is where the duplication actually shows up
 (`paper/CLAUDE.md`, 2026-08-03): **appendix prose does not repeat a number the
@@ -95,6 +134,10 @@ Reach for these in order; the first two fix most complaints.
   suddenly ~28 MB when its neighbours are ~20 KB is a preview that leaked into
   the compile directory (CJK font, unsubsettable). Fix by rerunning that
   figure's generator only.
+- **An asset nothing references is a live defect.** `teaser.pdf` was rebuilt
+  and pushed to Overleaf on every build with no `\includegraphics` anywhere in
+  the paper. Check with
+  `ls figures/*.pdf` against `grep -rho 'figures/[a-z_0-9]*\.pdf' sections/`.
 - **Never delete a scope qualifier from a caption to make it fit.** Rewrite it;
   if the caliber genuinely does not fit, it was prose to begin with.
 
@@ -108,3 +151,7 @@ Reach for these in order; the first two fix most complaints.
 | caption position, `.bib`, co-author macros | memory `paper-layout-and-citation-rules` |
 | what the prose may say about a figure | skill `paper-prose-tighten`, `paper/CLAUDE.md` |
 | tables | skill `paper-table-craft` |
+
+Sweep across figures, not just within one: one benchmark, one spelling; one
+convention per mark in every figure that uses it; and no number a figure already
+draws repeated in the prose. Those are invisible from a single figure.
