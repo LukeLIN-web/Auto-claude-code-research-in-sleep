@@ -164,10 +164,11 @@ invisible, delete. The same surface shape gets both verdicts: the two examples
 above differ only in whether the table shows the hole being explained.
 
 Two field notes. This class concentrates **in captions** — that is where
-authors explain table gaps — so captions are in scope for class 5 even though
-the rest of this skill edits prose; and table captions are typically generated
-(an `AUTO-GENERATED` header): put the cut in the generator script and rebuild,
-or the next build resurrects the sentence.
+authors explain table gaps — so sweep captions for class 5 even though the rest
+of this skill edits prose; and a generated caption (an `AUTO-GENERATED` header)
+must be cut in the generator script, or the next build resurrects the sentence.
+What a caption is *for* is not this skill's call: `paper-table-craft` and
+`paper-figure-craft` own that.
 
 **Keep** an absence statement also when the absence *is* the claim ("no prior
 benchmark evaluates audio-visual retrieval jointly" as a motivation sentence)
@@ -290,6 +291,9 @@ Deleting text must never upgrade a claim. Hard stops:
   (different stack, dropped-failure denominator, different budget).
 - **Never delete numbers from tables or captions.** This skill edits *prose*.
   A count moved out of a paragraph is fine precisely because the table keeps it.
+  A table or caption that is itself bloated is a different job: hand it to
+  `paper-table-craft` / `paper-figure-craft`, which know which rows the body
+  cites and which numbers the figure already draws.
 - **Never delete a citation or `\cite` key.**
 - **Never delete a disclosure that an earlier pre-specified analysis read
   differently** ("an earlier pre-registered subset had shown little effect; the
@@ -353,8 +357,10 @@ Rule of thumb: cut what proves *diligence*; keep what bounds *scope*.
    asked for when they say "每一段都在讲啥" — and their pick of which rows to cut
    is worth more than your own ranking.
 
-2. **Scope.** Main text first (`\section` bodies), appendix second. Skip tables,
-   captions, and figure code unless the caption itself narrates.
+2. **Scope.** Main text first (`\section` bodies), appendix second. Tables,
+   captions and figure code belong to `paper-table-craft` / `paper-figure-craft`;
+   touch them here only to sweep class 5, 6 and 8 leakage, and never to decide
+   what a caption should contain.
 
 3. **Inventory.** Pull every candidate to a scratch list before editing:
 
