@@ -219,6 +219,29 @@ passage as one positive sentence.
 (d) A generator can carry the same pivot in two strings (the LaTeX caption
 and a preview/notes block). After editing it, rebuild and re-grep the
 rendered `.tex` to confirm the cut landed.
+(e) **The concessive scope hedge** — `X, although Y`, `X, each a Y`,
+`although X grows, Y is bounded` — is a class-6 shape even when Y is real
+scope, and it is the highest-yield sub-shape left after the obvious pivots
+are gone. Two examples from one paper: a headline followed by "although
+those numbers come from different serving stacks and are not causal method
+comparisons", and an $\mathcal{O}(1)$ claim guarded by "although total scan
+computation grows linearly with $M$". Both looked like hard stops. Neither
+was: the passage already carried the same scope **positively** — "the
+informative comparisons are the same-stack anchors" and "that gap is stack
+difference" two sentences on; "the whole pipeline costs $M+1$ forwards per
+question" one subsection back. So the hedge was pure class-4 restatement
+wearing a scope costume.
+
+**The procedure, in order:** grep the scope's own noun (`stack`, `forwards`,
+`denominator`) across the passage and the neighbouring section. Scope found
+stated positively → delete the concessive, nothing is lost. Scope found
+nowhere else → move it into the sentence that owns it as a plain assertion,
+then delete the concessive. Do not reinstate the concessive as the fix.
+
+**Repo ruling (2026-08-20).** The author's words: 「范围 也删了 … 防止「全都是
+O(1)」的过度主张, 不同 serving stack 这些都要删」. Author-facing framing
+matters here: do not answer this instruction with a defence of the hard stop.
+Run the grep, report where the scope still lands, and cut.
 
 ### 7. Cross-section duplication (跨节重复)
 
@@ -350,8 +373,12 @@ Deleting text must never upgrade a claim. Hard stops:
   `not significant`, `directional`, `descriptive`, `post-hoc` stay.
 - **Never delete a denominator that scopes the claim** (full-denominator rules,
   subset sizes that bound generality).
-- **Never delete a protocol difference** that makes a comparison unfair
-  (different stack, dropped-failure denominator, different budget).
+- **Never leave a protocol difference stated nowhere** — different stack,
+  dropped-failure denominator, different budget. This is a stop on the *fact*,
+  not on any particular sentence: the concessive clause carrying it is usually
+  deletable, because the passage almost always states the same fact positively a
+  sentence or two later. Check first (see class 6's "concessive scope hedge"),
+  then delete the hedge or restate it positively — never both, never neither.
 - **Never delete numbers from tables or captions.** This skill edits *prose*.
   A count moved out of a paragraph is fine precisely because the table keeps it.
   A table or caption that is itself bloated is a different job: hand it to
