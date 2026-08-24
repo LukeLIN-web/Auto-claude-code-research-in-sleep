@@ -1,6 +1,6 @@
 ---
 name: paper-prose-tighten
-description: "Cut filler from paper prose: bookkeeping-count enumerations (\"abstained blocks 569 → 551\", \"32 of the 39\", \"discordant pairs 166:103\"), defensive meta-narration (\"we report this rather than claim X\", \"a reader is entitled to know\"), narrated absences / 无中生有 (\"Video-Odyssey publishes no row for this backbone and has no column\"), false pivots / 错误的转折 (\"X rather than Y\", \"the advantage is not reducible to Z\" — delete the negated alternative, state the claim directly), cross-section duplication / 跨节重复 (an intro contribution bullet that pre-plays a whole results subsection; the same result in a subsection and again in the conclusion bullets), artifact-provenance assurance (\"the deployed checkpoint is fixed without reference to any evaluation signal\", \"held-out accuracy is flat from step 300 through 900\"), process/engineering vocabulary / 流程工程术语 (\"a preregistered two-benchmark ablation\", \"criteria frozen before any readout\", \"the frozen margin\", \"early-kill gate\" — delete the modifier, keep the noun), and self-referential audit trail that no reviewer reads. Also carries the escalation rule: when a claim only survives behind a pile of caveats, delete the claim. Use when user says \"论文废话太多\", \"caveat 太多\", \"越讲越乱\", \"别解释了\", \"不要罗列数量\", \"清理废话\", \"无中生有\", \"错误的转折\", \"每一段都在讲啥\", \"我要删减文字\", \"preregistered 都删了\", \"不该出现这种工程的术语\", \"tighten the prose\", \"cut the filler\", \"too wordy\", or before submission when sections read like an audit log instead of an argument."
+description: "Cut filler from paper prose: bookkeeping-count enumerations (\"abstained blocks 569 → 551\", \"32 of the 39\", \"discordant pairs 166:103\"), defensive meta-narration (\"we report this rather than claim X\", \"a reader is entitled to know\"), narrated absences / 无中生有 (\"Video-Odyssey publishes no row for this backbone and has no column\"), false pivots / 错误的转折 (\"X rather than Y\", \"the advantage is not reducible to Z\" — delete the negated alternative, state the claim directly), value series across conditions / 罗列 (\"96.7 / 90.0 / 91.3 / 80.8% across the four distance layers\", \"+0.82pp on TraceAV, +0.69 on LVOmniBench, -1.60 on OmniVideoBench\" — one quantity at three or more conditions is a table row read aloud; keep the shape word, delete the ladder), cross-section duplication / 跨节重复 (an intro contribution bullet that pre-plays a whole results subsection; the same result in a subsection and again in the conclusion bullets), artifact-provenance assurance (\"the deployed checkpoint is fixed without reference to any evaluation signal\", \"held-out accuracy is flat from step 300 through 900\"), process/engineering vocabulary / 流程工程术语 (\"a preregistered two-benchmark ablation\", \"criteria frozen before any readout\", \"the frozen margin\", \"early-kill gate\" — delete the modifier, keep the noun), and self-referential audit trail that no reviewer reads. Also carries the escalation rule: when a claim only survives behind a pile of caveats, delete the claim. Use when user says \"论文废话太多\", \"caveat 太多\", \"越讲越乱\", \"别解释了\", \"不要罗列数量\", \"严格禁止罗列\", \"清理这种罗列\", \"清理废话\", \"无中生有\", \"错误的转折\", \"每一段都在讲啥\", \"我要删减文字\", \"preregistered 都删了\", \"不该出现这种工程的术语\", \"tighten the prose\", \"cut the filler\", \"too wordy\", or before submission when sections read like an audit log instead of an argument."
 argument-hint: "[paper-directory-or-section-files]"
 allowed-tools: Bash(*), Read, Write, Edit, Grep, Glob
 ---
@@ -82,7 +82,7 @@ the paragraph is unreadable in defence of a claim that never earned a paragraph.
 When an author says the explanation itself is the problem, they are exercising
 this rule — do not answer it with a better-worded explanation.
 
-## The Nine Cut Classes
+## The Ten Cut Classes
 
 ### 1. Bookkeeping enumerations
 
@@ -367,6 +367,49 @@ regex as unproven, not as absence. Then sweep the copies outside `sections/`:
 figure/table generator strings in `paper/scripts/*.py` and `label` fields in
 `paper/data/*.json` render into the PDF too.
 
+### 10. Value series across conditions (罗列)
+
+One quantity's readings at three or more conditions — distance layers,
+benchmarks, checkpoints, compression rates — strung through a sentence with
+slashes or commas. It is a table row read out loud.
+
+| Cut | Why |
+|-----|-----|
+| `the block hit rate is $96.7$ / $90.0$ / $91.3$ / $80.8\%$ across the four distance layers` | the same sentence already says it: *falls with distance* |
+| `window choice inside a retained block does not, at $83.0$ / $83.3$ / $85.0$ / $84.4\%$` | "does not" **is** the reading; the four numbers only prove we looked |
+| `$+0.82$pp on TraceAV, $+0.69$ on LVOmniBench, $-1.60$ on OmniVideoBench and $+0.28$ on MMOU --- bounded by $1.6$pp` | the bound is the claim; the four values are its raw material |
+| `median $5$ / $5$ / $2$ / $2$ on TraceAV / LVOmniBench / OmniVideoBench / MMOU` | one adjective — "single-digit" — carries all four |
+| `$45.7\%$ at base, then $48.5$ / $50.3$ / $50.4\%$ at steps $100$ / $300$ / $600$` | "rises monotonically, flattening after step 300" is the whole content |
+| `$81.3\%$ in a single window, $97.8\%$ within three, none more than eight` | keep the bound the readout budget is compared against, drop the ladder under it |
+
+A series always exists to show a **shape** — monotone fall, flat, one condition
+out of line. A reader cannot hold four numbers and does not try: they take the
+shape word and skip the digits. So write the shape and delete the digits. **A
+series is never load-bearing as a series**; if its shape is not worth one word,
+the sentence was not worth keeping either.
+
+**Rewrite pattern:** keep the shape word (`falls with distance`, `does not`,
+`holds level`, `single-digit`, `rises monotonically`), point at the table or
+figure if one carries the values, and keep at most the **one** number the
+argument turns on — a bound, or a ceiling the series is measured against.
+
+**Not this class** — two values in contrast (`$37.18\%$ when a retained window
+covers the evidence and $14.29\%$ when none does`), a range or IQR (`conversion
+rates span $0.18$ to $0.40$`), and a pair whose *near-equality* is the claim
+(`retains a median $30.4\%$ of the deployed windows' seconds against a deployed
+coverage of $29.6\%$`). Those are comparisons, not enumerations.
+
+**The appendix is not exempt.** The house rule that lets an appendix keep
+numbers (`paper/CLAUDE.md`) exempts *isolated* numbers that no figure carries —
+never a series. Appendices are where this class survives a body-only sweep:
+every hit of the ruling that created the class was in one.
+
+**Field note (2026-08-24 — the ruling that created this class).** The author
+pasted back three consecutive appendix sentences carrying twelve numbers in four
+series and wrote 「严格禁止」. Class 1 walks past these: they are not counts,
+denominators or pair splits but *results*, each individually a number the paper
+is entitled to report. The defect is the enumeration, not the digit.
+
 Deleting text must never upgrade a claim. Hard stops:
 
 - **Never delete a significance qualifier** to make a null read as a win.
@@ -468,6 +511,9 @@ Rule of thumb: cut what proves *diligence*; keep what bounds *scope*.
    grep -o '\$[0-9][0-9,{}.\\]*\$' sections/*.tex | sort | uniq -c | sort -rn | head -40
    # bookkeeping shapes: "N of M", "N:M", "N -> M"
    grep -nE '[0-9]+ of [0-9]|[0-9]\{?:\}?[0-9]|\\to [0-9]' sections/*.tex
+   # class 10 value series: slash-strung readings, and "x on A, y on B, z on C"
+   grep -nE '\$[0-9.]+\$ ?/ ?\$[0-9.]+\$' sections/*.tex | grep -v '&'
+   grep -nE '(on|at) [A-Z][A-Za-z-]+, \$?[-+0-9]' sections/*.tex | grep -v '&'
    # meta-narration stems
    grep -niE 'we (report|claim|make|state|note|stress|log) (this|it|none|them)|rather than (claim|letting|running|averag)|net (it|this|that) away|averag\w* away|entitled to know|guard(ing)? against|we count it as such' sections/*.tex
    # narrated absences: sentences about things that don't exist
