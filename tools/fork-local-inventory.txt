@@ -1,0 +1,36 @@
+# Fork-local additions under skills/ — present in this fork, absent upstream.
+#
+# One entry per line, path relative to skills/:
+#   <skill-name>                     a fork-local skill directory
+#   shared-references/<name>.md      a fork-local shared reference
+#
+# Why this file exists: the upstream-parity checks in
+# tools/check_skills_inventory.py (Codex mirror completeness, install-catalog
+# completeness, and the skill counts printed in README.md / README_CN.md /
+# AGENT_GUIDE.md / docs/ARIS_INTRO.*) describe the UPSTREAM inventory. They are
+# therefore run against skills/ minus these entries. Without the subtraction a
+# fork-local skill forces a choice between two wrong things: printing a false
+# count in the upstream READMEs ("ARIS ships 88+ skills"), or hand-maintaining a
+# skills-codex/ mirror for a skill that is never shipped to Codex CLI users.
+#
+# Rules:
+#   - Add a line here the same commit that adds the skill / reference.
+#   - Drop the line if the entry is deleted (a stale entry is a check failure)
+#     or if upstream adopts it — then it stops being fork-local and must be
+#     mirrored and cataloged like any upstream skill.
+#   - Uncataloged skills are NEVER dropped by the installers: they land in the
+#     "ungrouped" bucket of tools/skill_picker.py and install normally.
+#
+# Fork-local skills are still subject to every non-parity rule (Agent-grant
+# hygiene, frontmatter shape); only upstream parity is waived.
+
+paper-figure-craft
+paper-float-compact
+paper-jargon-pass
+paper-prose-tighten
+paper-table-craft
+remote-tmux
+shared-references/experiment-craft.md
+shared-references/figure-craft.md
+shared-references/manuscript-craft.md
+shared-references/reviewer-personas.md

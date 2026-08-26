@@ -6,7 +6,11 @@ import subprocess
 import sys
 from pathlib import Path
 
-from tools.check_skills_inventory import check_inventory
+from tools.check_skills_inventory import (
+    check_inventory,
+    fork_local_references,
+    fork_local_skills,
+)
 
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
@@ -33,15 +37,20 @@ def has_send_input_block(text: str) -> bool:
 
 
 def test_codex_skill_set_matches_mainline() -> None:
-    main_names = skill_names(MAIN_SKILLS)
-    codex_names = skill_names(CODEX_SKILLS)
+    # Upstream inventory only. Fork-local skills ship no Codex mirror; they are
+    # declared in tools/fork-local-inventory.txt and excluded from both sides so
+    # the constant below keeps tracking upstream's count.
+    local = fork_local_skills()
+    main_names = skill_names(MAIN_SKILLS) - local
+    codex_names = skill_names(CODEX_SKILLS) - local
     assert len(main_names) == 82
     assert main_names == codex_names
 
 
 def test_codex_shared_reference_set_matches_mainline() -> None:
-    main_refs = {p.name for p in (MAIN_SKILLS / "shared-references").glob("*.md")}
-    codex_refs = {p.name for p in (CODEX_SKILLS / "shared-references").glob("*.md")}
+    local = fork_local_references()
+    main_refs = {p.name for p in (MAIN_SKILLS / "shared-references").glob("*.md")} - local
+    codex_refs = {p.name for p in (CODEX_SKILLS / "shared-references").glob("*.md")} - local
     assert len(main_refs) == 31
     assert codex_refs == main_refs
 

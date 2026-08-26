@@ -6,10 +6,15 @@ in all four installers. Drift between skills/ and the catalog silently
 degrades UX (uncataloged skills fall into the interactive "ungrouped"
 bucket), so completeness is enforced here.
 """
+import sys
 import unittest
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(REPO_ROOT))  # standalone `python3 tests/test_skill_groups.py`
+
+from tools.check_skills_inventory import fork_local_skills  # noqa: E402
+
 CATALOG = REPO_ROOT / "tools" / "skill-groups.tsv"
 SKILLS_DIR = REPO_ROOT / "skills"
 # Not skills: support dir + codex mirror trees (mirror reuses mainline names).
@@ -36,13 +41,19 @@ def parse_catalog():
 
 
 def upstream_skills():
+    """Skills the catalog is responsible for: upstream's set, not the fork's.
+
+    Fork-local skills (tools/fork-local-inventory.txt) are deliberately
+    uncataloged — the installers put uncataloged skills in the "ungrouped"
+    bucket and still install them, so nothing is lost by leaving them out.
+    """
     return {
         p.name
         for p in SKILLS_DIR.iterdir()
         if (p / "SKILL.md").is_file()
         and p.name not in NON_SKILL_DIRS
         and not p.name.startswith("skills-codex")
-    }
+    } - fork_local_skills()
 
 
 class CatalogTest(unittest.TestCase):
