@@ -19,6 +19,8 @@ ARIS_INTRO = REPO_ROOT / "docs" / "ARIS_INTRO.md"
 ARIS_INTRO_HTML = REPO_ROOT / "docs" / "ARIS_INTRO.html"
 CODEX_README = CODEX_ROOT / "README.md"
 CODEX_README_CN = CODEX_ROOT / "README_CN.md"
+FORK_LOCAL = REPO_ROOT / "tools" / "fork-local-inventory.txt"
+REFERENCE_PREFIX = "shared-references/"
 BOM = b"\xef\xbb\xbf"
 
 FORBIDDEN_CODEX_REVIEWER_STRINGS = (
@@ -93,6 +95,36 @@ def read(path: Path) -> str:
     return path.read_text(encoding="utf-8")
 
 
+def fork_local_entries() -> set[str]:
+    """Paths under skills/ that this fork adds and upstream does not carry.
+
+    Every check below that asserts parity with upstream — Codex mirror set,
+    install catalog, and the skill counts printed in the READMEs — describes the
+    upstream inventory, so it runs against `skills/` minus these entries. See
+    tools/fork-local-inventory.txt for the bookkeeping rules.
+    """
+    if not FORK_LOCAL.is_file():
+        return set()
+    return {
+        line.strip()
+        for line in read(FORK_LOCAL).splitlines()
+        if line.strip() and not line.lstrip().startswith("#")
+    }
+
+
+def fork_local_skills() -> set[str]:
+    return {e for e in fork_local_entries() if not e.startswith(REFERENCE_PREFIX)}
+
+
+def fork_local_references() -> set[str]:
+    return {e[len(REFERENCE_PREFIX):] for e in fork_local_entries() if e.startswith(REFERENCE_PREFIX)}
+
+
+def fork_local_is_present(entry: str) -> bool:
+    path = SKILLS_ROOT / entry
+    return path.is_file() if entry.startswith(REFERENCE_PREFIX) else (path / "SKILL.md").is_file()
+
+
 def catalog_names() -> set[str]:
     text = read(CATALOG)
     return set(re.findall(r"\[`/([^`]+)`\]\(\.\./skills/[^)]+/SKILL\.md\)", text))
@@ -116,11 +148,23 @@ def require_count(path: Path, text: str, pattern: str, expected_count: int, fail
 
 def check_inventory() -> list[str]:
     failures: list[str] = []
-    main = skill_names(SKILLS_ROOT)
-    codex = skill_names(CODEX_ROOT)
+    local_skills = fork_local_skills()
+    local_refs = fork_local_references()
+    main = skill_names(SKILLS_ROOT) - local_skills
+    codex = skill_names(CODEX_ROOT) - local_skills
     catalog = catalog_names()
-    main_refs = {path.name for path in (SKILLS_ROOT / "shared-references").glob("*.md")}
-    codex_refs = {path.name for path in (CODEX_ROOT / "shared-references").glob("*.md")}
+    main_refs = {path.name for path in (SKILLS_ROOT / "shared-references").glob("*.md")} - local_refs
+    codex_refs = {path.name for path in (CODEX_ROOT / "shared-references").glob("*.md")} - local_refs
+
+    # A stale fork-local entry silently exempts nothing (deleted skill) or, worse,
+    # exempts a name upstream has since taken — either way the waiver outlives its
+    # reason, so it is a failure rather than a no-op.
+    stale_local = sorted(e for e in fork_local_entries() if not fork_local_is_present(e))
+    require(
+        not stale_local,
+        f"tools/fork-local-inventory.txt lists entries that do not exist: {', '.join(stale_local)}",
+        failures,
+    )
 
     missing_codex = sorted(main - codex)
     extra_codex = sorted(codex - main)
