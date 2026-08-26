@@ -21,6 +21,7 @@ Determine the output language using this priority:
 - Technical terms with no standard Chinese translation (keep English, optionally annotate: "attention mechanism (注意力机制)")
 - LaTeX content — paper-writing workflow always outputs English for venue submission
 - JSON state files — keys and structure remain English
+- **Reviewer prompts sent to an external reviewer backend** — the persona templates in `reviewer-personas.md` are sent verbatim in the language they are authored in (P1 Chinese, P2 English) and are never translated in either direction, in any skill that sends one. The review they produce is localized per the table below; the prompt is not. The machine-read markers inside a template (`Score:`, `Verdict:` and its enum, the `No direct evidence found in the manuscript.` sentinel) stay English in every template — see the next bullet.
 - **Machine-parsed markers** — never localize the following, regardless of language setting:
   - Markdown frontmatter keys (e.g., `outcome:`, `node_id:`, `title:`, `type:`)
   - Research Wiki schema fields parsed by `tools/research_wiki.py` (e.g., `outcome: negative`, `outcome: positive`, `node_id:`)
@@ -34,7 +35,7 @@ Determine the output language using this priority:
 | /idea-creator | Full | IDEA_REPORT.md follows language setting |
 | /idea-discovery | Full | Inherits from sub-skills |
 | /analyze-results | Full | Result analysis follows language setting |
-| /auto-review-loop | Partial | AUTO_REVIEW.md follows setting; reviewer prompts stay English |
+| /auto-review-loop | Partial | AUTO_REVIEW.md follows setting; the persona template is sent verbatim and never translated (see above) |
 | /experiment-plan | Full | EXPERIMENT_PLAN.md follows setting |
 | /experiment-bridge | Full | EXPERIMENT_RESULTS.md follows setting |
 | /research-refine | Full | FINAL_PROPOSAL.md follows setting |
