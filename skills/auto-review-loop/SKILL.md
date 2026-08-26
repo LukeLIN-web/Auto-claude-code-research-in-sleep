@@ -284,7 +284,12 @@ older invocation.
 weakness must name the section / figure / table / equation it comes from, or say
 `No direct evidence found in the manuscript.` For a heavier review, paste the P1
 template verbatim ahead of the round context instead of the condensed prompt
-below; the condensed form is the same frame, shortened for a per-round loop.
+below. The two are the same frame but **not the same output contract**: P1 emits
+`Score:` and `Verdict:` (its field contract is written for this loop) and bans
+prose outside its two parts, so when you use it you must still name the extra
+fields this loop parses — verified claims, unverified/false claims, ranked
+weaknesses with minimum fixes, and the memory update — as caller-required
+fields. A reply missing `Verdict:` is not a review the stop gate can read.
 
 **Anchor spot-check (before Phase B).** Open the location each weakness cites.
 A weakness whose anchor does not exist — or does not say what the reviewer

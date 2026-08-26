@@ -35,12 +35,18 @@ Send the persona template **verbatim** from `reviewer-personas.md` (§2 for P1,
 paraphrase it — the reject-by-default framing and the evidence-anchor clause are
 what make the output actionable rather than flattering.
 
-The anchor rule applies to every round: each weakness must name a section,
-figure, table or equation, or state `No direct evidence found in the manuscript.`
-**Spot-check the anchors before acting on a finding** — open the cited location.
-A finding whose anchor does not exist, or does not say what the reviewer claims,
-is dropped, not debated. This is the cheapest defense against a reviewer model
-inventing plausible-sounding weaknesses.
+The anchor rule (`reviewer-personas.md` §4) applies to every round, including the
+spot-check that drops a finding whose anchor does not hold up. Do not restate it
+here — it has one owner.
+
+At idea/project stage the artifact is not a manuscript: send P1's
+**proposal-stage variant** (§2), which anchors findings to the supplied context
+files and lifts the ban on citing outside literature, since prior-work coverage
+is what the review is for at that stage.
+
+Follow-up rounds obey `reviewer-personas.md` §5: **no prose rebuttal** — the
+reviewer re-reads the current files and rules SUSTAINED / OVERRULED / PARTIALLY
+SUSTAINED itself.
 
 ## Reviewer Calling Convention
 
@@ -137,7 +143,11 @@ For manual follow-up rounds, attach that same updated brief if possible;
 otherwise paste it inline.
 
 For each round:
-1. **Respond** to criticisms with evidence/counterarguments
+1. **Re-submit the updated artifact** and ask the reviewer to re-check each
+   prior criticism against the current files and rule SUSTAINED / OVERRULED /
+   PARTIALLY SUSTAINED. Do not argue the point in prose — an account of what you
+   changed, or of why the criticism was wrong, is exactly what
+   `shared-references/reviewer-independence.md` forbids passing to a reviewer.
 2. **Ask targeted follow-ups** on the most actionable points
 3. **Request specific deliverables**: experiment designs, paper outlines, claims matrices
 
