@@ -121,8 +121,9 @@ system.
 
 These say *"trust us, we were careful."* A reviewer's trust comes from the
 protocol section and the tables. Delete the sentence; if it carried a real scope
-limit, that limit survives as **one adjective** on the claim
-(`descriptive`, `not significant`, `directional`) — not as its own sentence.
+limit, that limit survives as **one adjective** on the claim (`descriptive`,
+`post-hoc`) — not as its own sentence. A *null* is the exception: it gets no
+adjective at all (see the hard stop below).
 
 ### 3. Alternatives considered and rejected
 
@@ -412,8 +413,12 @@ is entitled to report. The defect is the enumeration, not the digit.
 
 Deleting text must never upgrade a claim. Hard stops:
 
-- **Never delete a significance qualifier** to make a null read as a win.
-  `not significant`, `directional`, `descriptive`, `post-hoc` stay.
+- **Never let a deletion turn a null into a win.** State which cells were
+  resolved and stop there: delete the whole null-labelling clause
+  (`undetermined`, `directional`, `not significant` — this repo prints none of
+  them) rather than swapping it for `no difference` / `unaffected` / `flat`,
+  which asserts the null instead of declining to name it. `descriptive` and
+  `post-hoc` scope a claim rather than label a null, and stay.
 - **Never delete a denominator that scopes the claim** (full-denominator rules,
   subset sizes that bound generality).
 - **Never leave a protocol difference stated nowhere** — different stack,
