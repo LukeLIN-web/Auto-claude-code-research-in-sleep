@@ -63,10 +63,16 @@ Four ways it stops being that:
 
 - **It restates its own rows.** "Both adapters share the same frozen backbone at
   the same rank and attachment points" — three rows of the table, in a sentence.
-- **It becomes a glossary.** A term used in one row, where that row is already
-  self-evident (`$1135$ / $1135$ / $1134$ over the three slots` defines "gold
-  slot" by showing it), needs no definition. A term used across several rows and
-  not inferable from any of them — `chain` — earns exactly one clause.
+- **It becomes a glossary.** A caption defines only what exists nowhere else:
+  its own column names, its own axes, its own marks (`\ddag`, bold, `---`), and
+  the symbols drawn on the panels. A term the prose already defines — `arm`,
+  `chain`, `pp`, a paired interval, a block length — gets no clause here, however
+  useful one would be to a reader holding the float alone. **A caption is not
+  required to be self-contained.** That requirement is the only door a glossary
+  comes through, and what it buys is one word with N authorities, sitting in the
+  least-scanned strings in the paper. A term's landing place is the one sentence
+  of prose that defines it. (Repo ruling, 2026-08-26: "the body explains it, so
+  do not define it in the caption.")
 - **It explains how to read the conclusion**, or what reservations that reading
   carries. That is prose; for an appendix float, the prose of the section it
   sits in.

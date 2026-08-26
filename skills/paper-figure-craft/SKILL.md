@@ -92,6 +92,15 @@ is. Not how to read the conclusion, not the reservations on that reading —
 those are the prose of the section the figure sits in, and for an appendix
 figure, that appendix section.
 
+*This* graphic is the whole scope. A symbol drawn on a panel is the figure's own
+and gets defined here even when the prose defines it later; a term that only ever
+lives in prose — `arm`, `pp`, a paired interval — does not, however useful a
+definition would be to a reader holding the figure alone. **A caption is not
+required to be self-contained.** That requirement is the only door a glossary
+comes through, and what it buys is one word with N authorities, sitting in the
+least-scanned strings in the paper. (Repo ruling, 2026-08-26: "the body explains
+it, so do not define it in the caption.")
+
 The 1200-char gate is a backstop, not a target. **Aim at ~600.** What overflows
 is reliably the protocol paragraph, and it belongs in the section the figure sits
 in. One caption ending in a reading instruction — *"each panel's y-axis is
