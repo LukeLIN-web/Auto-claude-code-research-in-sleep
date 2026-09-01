@@ -53,8 +53,93 @@ is settled — do not re-propose an alternative; reopening it needs the user.**
 | **Every printed glyph in 7.5–11 pt** (body text is 10). Do not shrink type to fit; change the layout. | — | Declared ≠ printed, and the ratio cannot be computed from `figsize` when `savefig.bbox="tight"` crops the canvas. Measurement recipe: memory `paper-figure-and-table-build`. |
 | **`fig:architecture` is a hand-written SVG under a content lock**, not matplotlib. | 2026-08-17 | Edit `paper/scripts/fig_arch.svg`; any wording change moves in lockstep with `fig_arch_blueprint.json` or the build rejects the drift. |
 | **A figure defines its own symbols where they appear; the caption is not the symbol table.** `fig:architecture`'s caption dropped its `Symbols:` paragraph: each symbol is glossed at the mark that draws it (`M blocks × 600 s` on the edge defines $M$; the badge text `LoRA φloc` says what φ is). Caption = bold title + one clause per panel side, ~300 chars. | 2026-08-30 | "Self-representative" was the user's word. A symbol left undefined in the figure is fixed *in the figure* — widen the badge, extend the label — never by growing the caption back. |
-| **One hue = one meaning within a figure.** A media/data color may not share hue with the structural accent: audio moved off light blue to teal `#79c9b2` because `#2a78d6` (`C_OURS`) is the pipeline/selection accent everywhere. A legend chip must be drawn exactly like some mark in the figure — the white-box-with-blue-border `kept` chip matched nothing and died; kept-ness is direct-labelled next to its marks, and magnification marks (zoom outline + cone) are grey dashed so a solid blue outline reads as selection only. | 2026-08-30 | Route side rails (the Question→Stage-I conditioning edge) down the *empty* margin, away from the corner the panel connectors use. |
+| **One hue = one meaning within a figure.** A media/data color may not share hue with the structural accent: audio moved off light blue to teal `#79c9b2` because `C_OURS` (`#c89336` since 2026-09-01, `#2a78d6` when the ruling was made) is the pipeline/selection accent everywhere. A legend chip must be drawn exactly like some mark in the figure — the white-box-with-blue-border `kept` chip matched nothing and died; kept-ness is direct-labelled next to its marks, and magnification marks (zoom outline + cone) are grey dashed so a solid blue outline reads as selection only. | 2026-08-30 | Route side rails (the Question→Stage-I conditioning edge) down the *empty* margin, away from the corner the panel connectors use. |
+| **Lightness before hue.** Two series a reader must tell apart need a *relative-luminance* step, not just a different hue; compute it before choosing. Saturation is not pushed to the maximum, and one figure has one dominant plus one or two accents. | 2026-09-01 | Issued on a shipped figure whose two curves were gold `#c89336` (L 0.334) and grass green `#88B83D` (L 0.399) — different hues, same lightness, 「根本看不出来」. Recipe and worked cases: **Choosing the colours** below. |
 | **No em dashes in figure labels** — the user reads them as AI-generated. Use `·`, a comma, or a colon; sweep the SVG and the blueprint together. | 2026-08-30 | Prose has its own dash rule (two pairs = split); this one is absolute for label text. |
+
+## Choosing the colours: lightness first
+
+The palette is the user's, not derived from anything (memory
+`paper-figure-palette`): three hues — `C_OURS` gold `#c89336` for our method,
+`C_BASE` brick red `#C1272D`, `C_ALT` olive/grass green `#88B83D` — plus, since
+2026-09-01, the neutrals and the light tints that make a **lightness ladder**
+possible: 深黑/灰黑, 中灰, 浅嫩绿, 浅粉红/珊瑚红. Reach for the neutrals whenever a
+figure has more series than the three hues can separate; that is what they are
+for. This is how to pick inside it (user, 2026-09-01):
+
+1. **明度关系 > 色相关系.** Establish the layers first: dominant, secondary and
+   background must carry a clear **lightness** difference. Whether the colour is
+   pretty is second.
+2. **Do not run the saturation to the maximum.** Pure blue `#0000FF` + pure red
+   `#FF0000` reads badly because both sit at full chroma and high visual energy.
+   Brick red and olive green *are* the desaturated forms — `#FF0000` → `#A94F45`,
+   `#00FF00` → `#68734A`, `#0000FF` → `#526B82`. Pressed toward grey and black,
+   colours stop stealing from each other.
+3. **Warm/cool contrast is allowed; a hard collision is not.** Blue+red is the
+   most direct warm/cool collision and both are bright and pure, so the boundary
+   detonates. Brick red + olive green is dark-warm-red + dark-yellow-green: the
+   hue and temperature difference survives at a fraction of the energy.
+4. **Do not let several colours all play lead.** The shape that works is
+   off-white background + **one dominant** + **one or two accents** + auxiliary
+   greys/greyed hues — not red, blue, green and yellow all at 100%.
+5. Low-saturation dark colours hold up across print, projector and screen alike,
+   which is why the academic look lives on brick red + olive green on white.
+
+> **"鲜艳" ≠ "好看"; "高对比" ≠ "高级".** The polished look is moderate contrast
+> + reduced saturation + controlled lightness + a small amount of accent.
+
+**Compute the luminance; do not eyeball it.** Two hues can sit far apart on the
+wheel and still be the same lightness, which is exactly the failure that shipped:
+
+```python
+import matplotlib.colors as mc
+def L(h):                                     # WCAG relative luminance
+    f = lambda c: c/12.92 if c <= 0.03928 else ((c+0.055)/1.055)**2.4
+    return sum(k*f(c) for k, c in zip((0.2126, 0.7152, 0.0722), mc.to_rgb(h)))
+cr = lambda a, b: round((max(L(a), L(b))+0.05)/(min(L(a), L(b))+0.05), 2)
+```
+
+Luminances of the pieces, so a candidate can be placed without recomputing:
+灰黑 `#292827` **0.021**, brick `#C1272D` **0.130**, 中灰 `#8a8984` **0.250**,
+珊瑚红 `#d9797d` **0.299**, gold `#c89336` **0.334**, olive `#88B83D` **0.399**,
+浅嫩绿 `#bad68e` **0.605**. Gold-vs-olive is a ratio of **1.15** — that is the
+pair the user rejected; gold-vs-brick is **2.13** and reads cleanly. Aim for
+**≥2.1 on every pair a reader must separate inside one panel**, and derive tints
+and steps with `blend` so each hue keeps one authority; never type a second hex.
+
+**The move that makes room is not a fourth hue — it is roles.** Three hues cannot
+separate five series, and every attempt to squeeze another step out of the gold
+fails: the band a line can live in on white is roughly L 0.02–0.35, and gold
+already sits at the top of it. `fig_bench_length` (2026-09-01, the worked case)
+carries five series and resolves to **three levels**:
+
+| role | mark | L |
+|---|---|---|
+| the deployed system — **the one dominant** | gold `C_OURS`, thickest line, filled marker, CI band | 0.334 |
+| its ablation tier (localization only) | 灰黑 `blend(INK1, 0.42, INK2)`, thinner | 0.021 |
+| the single-forward comparator | brick `C_BASE`, open marker | 0.130 |
+
+Two devices did that, and they generalise:
+
+- **One role, one hue; realisations differ by marker.** The whole-clip baseline
+  and the always-fits montage are the same role and are **never in the same
+  panel**, so they share `C_BASE` and separate on open square vs open triangle
+  plus the legend text. Collapsing them freed a whole hue.
+- **The non-hero series go neutral.** An ablation tier is auxiliary; a near-black
+  neutral separates from everything (5.38 against gold, 2.52 against brick) and
+  cannot compete for the lead the way a second saturated colour does. Hold its
+  line weight below the hero's so the darkest mark is not also the heaviest.
+
+Two failed attempts worth not repeating: a second gold one step darker
+(`#795a24`) lands on brick red's lightness (1.09), and a desaturated tan scores
+better against brick on paper but is illegible against gold on the page. Settle
+it with `pdftoppm` at print size and look — not with more arithmetic.
+
+**A hue may not mean two things in one figure, and that includes across panels.**
+`fig_keepcap_sweep`'s third panel drew one of the port's own benchmarks in gold
+while gold meant *main backbone* in the other two; both of that panel's curves
+now sit in the port's own hue (brick + 珊瑚红 `blend(C_BASE, 0.38, white)`, ratio
+1.66) with the identity direct-labelled at the curve end.
 
 ## Measuring the printed size (do this, do not estimate)
 
