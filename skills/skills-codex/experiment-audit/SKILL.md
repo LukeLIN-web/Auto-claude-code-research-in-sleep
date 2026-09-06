@@ -32,7 +32,7 @@ This follows `shared-references/reviewer-independence.md` and `shared-references
 
 ## Constants
 
-- **REVIEWER_BACKEND = `codex`** — Default: Codex reviewer agent (`spawn_agent`, ultra — deep-audit tier). Override with `— reviewer: oracle-pro` for GPT-5.5 Pro via Oracle MCP. See `shared-references/reviewer-routing.md`.
+- **REVIEWER_BACKEND = `codex`** — Default: Codex reviewer agent (`spawn_agent`, max — deep-audit tier). Override with `— reviewer: oracle-pro` for GPT-5.5 Pro via Oracle MCP. See `shared-references/reviewer-routing.md`.
 
 ## Workflow
 
@@ -59,7 +59,7 @@ Pass ONLY file paths and the audit checklist to the reviewer. The reviewer reads
 ```text
 spawn_agent:
   model: gpt-6-astra
-  reasoning_effort: ultra
+  reasoning_effort: max
   message: |
     You are an experiment integrity auditor. Start from the assumption that the
     evaluation is compromised somewhere — your job is to find where. Be
@@ -140,7 +140,7 @@ Parse the reviewer's response and write `EXPERIMENT_AUDIT.md`:
 # Experiment Audit Report
 
 **Date**: [today]
-**Auditor**: GPT-6-Astra ultra (fresh same-family agent, read-only, provisional)
+**Auditor**: GPT-6-Astra max (fresh same-family agent, read-only, provisional)
 **Project**: [project name]
 
 ## Overall Verdict: [PASS | WARN | FAIL]
@@ -191,12 +191,12 @@ Also write `EXPERIMENT_AUDIT.json` for machine consumption:
   "executor_family": "openai",
   "reviewer_model": "gpt-6-astra",
   "reviewer_family": "openai",
-  "reviewer_reasoning": "ultra",
+  "reviewer_reasoning": "max",
   "review_independence": "same-family",
   "acceptance_status": "provisional",
   "generated_at": "2026-04-10T00:00:00Z",
   "date": "2026-04-10",
-  "auditor": "gpt-6-astra-ultra",
+  "auditor": "gpt-6-astra-max",
   "overall_verdict": "warn",
   "integrity_status": "warn",
   "checks": {

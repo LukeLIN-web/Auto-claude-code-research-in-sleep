@@ -99,7 +99,7 @@ Any .md file that is an executor-written summary
 ```
 mcp__codex__codex:
   model: gpt-6-astra
-  config: {"model_reasoning_effort": "ultra"}
+  config: {"model_reasoning_effort": "max"}
   prompt: |
     You are a paper-to-evidence auditor. You have ZERO prior context about
     this research. You will receive only paper source files and raw result
@@ -179,7 +179,7 @@ Parse the reviewer's response and write `PAPER_CLAIM_AUDIT.md`:
 # Paper Claim Audit Report
 
 **Date**: [today]
-**Auditor**: GPT-6-Astra ultra (fresh zero-context thread)
+**Auditor**: GPT-6-Astra max (fresh zero-context thread)
 **Paper**: [paper title from tex]
 
 ## Overall Verdict: [PASS | WARN | FAIL]
@@ -301,7 +301,7 @@ The artifact conforms to the schema in `shared-references/assurance-contract.md`
   "trace_path":       ".aris/traces/paper-claim-audit/<date>_run<NN>/",
   "thread_id":        "<codex mcp thread id>",
   "reviewer_model":   "<resolved — the model that actually ran (target: gpt-6-astra)>",
-  "reviewer_reasoning": "<resolved — the effort that actually ran (target: ultra)>",
+  "reviewer_reasoning": "<resolved — the effort that actually ran (target: max)>",
   "generated_at":     "<UTC ISO-8601>",
   "details": {
     "total_claims":   <int>,

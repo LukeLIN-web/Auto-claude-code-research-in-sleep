@@ -41,7 +41,7 @@ never silently apply:
 1. **The human named THIS patch.** Apply only patches the user listed (`/meta-apply 1,3`
    or `all`); default to applying nothing.
 2. **Fresh landing review PASS, obtained now.** Spawn a fresh `gpt-6-astra`
-   reviewer via `spawn_agent` (`reasoning_effort: ultra`, read-only, paths-only per
+   reviewer via `spawn_agent` (`reasoning_effort: max`, read-only, paths-only per
    [`reviewer-independence.md`](../shared-references/reviewer-independence.md)) on the
    staged `.diff` + its target. Ask: *does this change improve the harness without
    regressions; PASS or KILL + one-line reason.* Include the scope-limits block from

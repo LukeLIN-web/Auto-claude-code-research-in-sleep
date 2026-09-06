@@ -16,7 +16,7 @@ Default: `balanced` (current behavior, zero change for existing users).
 
 | Setting | Value | Why |
 |---------|-------|-----|
-| Codex reasoning_effort | **≥ xhigh** (deep-audit skills run `ultra` — tier table in `reviewer-routing.md`) | Reviewer quality is non-negotiable. `effort` never moves the reviewer tier in either direction — and ARIS `— effort: max` is NOT Codex `reasoning_effort: max` (different axes: pipeline workload vs reviewer reasoning depth) |
+| Codex reasoning_effort | **≥ xhigh** (deep-audit skills run `max` — tier table in `reviewer-routing.md`) | Reviewer quality is non-negotiable. `effort` never moves the reviewer tier in either direction — and ARIS `— effort: max` is NOT Codex `reasoning_effort: max` (different axes: pipeline workload vs reviewer reasoning depth) |
 | DBLP/CrossRef citations | **on** | Citation integrity is non-negotiable |
 | Reviewer independence | **on** | Cross-model protocol is non-negotiable |
 | Experiment integrity | **on** | Fraud prevention is non-negotiable |

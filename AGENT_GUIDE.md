@@ -41,7 +41,7 @@ ARIS has **two independent control axes** plus scoped flags.
 — effort: lite | balanced | max | beast      # default: balanced
 ```
 
-Controls how many papers / ideas / rounds / pilots. Codex reasoning never drops below the tier floor regardless of effort (regular reviews `xhigh`; the deep-audit skills run `ultra` — see `skills/shared-references/reviewer-routing.md`).
+Controls how many papers / ideas / rounds / pilots. Codex reasoning never drops below the tier floor regardless of effort (regular reviews `xhigh`; the deep-audit skills run `max` — see `skills/shared-references/reviewer-routing.md`).
 
 ### Axis 2 — `assurance` (audit strictness, independent of effort)
 
@@ -178,7 +178,7 @@ Advisory CI lint at `.github/workflows/lint-skills-helpers.yml` flags hardcoded 
 - **Thread freshness**: every reviewer call uses `mcp__codex__codex` (or equivalent), **never** `codex-reply` — narrative accumulation inflates scores
 - **Experiment integrity**: executor must NOT judge its own eval code — reviewer audits directly per [`shared-references/experiment-integrity.md`](skills/shared-references/experiment-integrity.md)
 
-The external Codex default is `gpt-6-astra` with two-tier reasoning (deep-audit `ultra` / regular `xhigh`, since 2026-07-10; needs codex-cli ≥ 0.144.1). `gpt-5.5` is the capability fallback; legacy `gpt-5.4` is available as `--- reviewer-model: gpt-5.4`. In a bound Copilot CLI session, `/auto-review-loop` instead defaults to the built-in `rubber-duck` subagent and accepts it only when host events prove the dynamically selected model is from a different family. Oracle Pro tier (`gpt-5.5-pro`) via `--- reviewer: oracle-pro` is a separate routing path.
+The external Codex default is `gpt-6-astra` with two-tier reasoning (deep-audit `max` / regular `xhigh`, since 2026-07-10; needs codex-cli ≥ 0.144.1). `gpt-5.6-sol` then `gpt-5.5` is the capability fallback chain; legacy `gpt-5.4` is available as `--- reviewer-model: gpt-5.4`. In a bound Copilot CLI session, `/auto-review-loop` instead defaults to the built-in `rubber-duck` subagent and accepts it only when host events prove the dynamically selected model is from a different family. Oracle Pro tier (`gpt-5.5-pro`) via `--- reviewer: oracle-pro` is a separate routing path.
 
 ## Shared References
 

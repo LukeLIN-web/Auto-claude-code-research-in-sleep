@@ -88,7 +88,7 @@ Any .md file that is an executor-written summary
 ```text
 spawn_agent:
   model: gpt-6-astra
-  reasoning_effort: ultra
+  reasoning_effort: max
   message: |
     You are a paper-to-evidence auditor. You have ZERO prior context about
     this research. You will receive only paper source files and raw result
@@ -168,7 +168,7 @@ Parse the reviewer's response and write `PAPER_CLAIM_AUDIT.md`:
 # Paper Claim Audit Report
 
 **Date**: [today]
-**Auditor**: GPT-6-Astra ultra (fresh zero-context thread)
+**Auditor**: GPT-6-Astra max (fresh zero-context thread)
 **Paper**: [paper title from tex]
 
 ## Overall Verdict: [PASS | WARN | FAIL]
@@ -295,7 +295,7 @@ The artifact conforms to the schema in `shared-references/assurance-contract.md`
   "reviewer_family":  "openai",
   "review_independence": "same-family",
   "acceptance_status": "provisional",
-  "reviewer_reasoning": "ultra",
+  "reviewer_reasoning": "max",
   "generated_at":     "<UTC ISO-8601>",
   "details": {
     "total_claims":   <int>,

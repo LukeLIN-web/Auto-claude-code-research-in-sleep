@@ -550,8 +550,8 @@ All pipeline behaviors are configurable via inline overrides — append `— key
 | `gpu` | `local` | GPU target: `local` (default), `remote` (SSH server), or `vast` (rent on-demand from [Vast.ai](https://vast.ai) — auto-provision, auto-destroy) |
 | `compact` | `false` | Generate compact summary files (`IDEA_CANDIDATES.md`, `findings.md`, `EXPERIMENT_LOG.md`) for short-context models and session recovery |
 | `ref paper` | `false` | Reference paper to build on (PDF path or arXiv URL). Summarized first, then ideas extend/improve it. Combine with `base repo` for paper+code workflows |
-| `effort` | `balanced` | Work intensity: `lite` (0.4x tokens), `balanced` (default), `max` (2.5x), `beast` (5-8x). Controls breadth/depth/iterations. Codex reasoning never drops below the tier floor (regular `xhigh` / deep audits `ultra`). See [Effort Levels](#-effort-levels) |
-| `reviewer` | auto | Reviewer backend: in Copilot CLI, `/auto-review-loop` auto-binds the native complementary `rubber-duck`; other hosts/skills default to `codex` (GPT-6-Astra, tiered `xhigh`/`ultra`). Explicit `codex`, `manual`, or `oracle-pro` overrides remain available. |
+| `effort` | `balanced` | Work intensity: `lite` (0.4x tokens), `balanced` (default), `max` (2.5x), `beast` (5-8x). Controls breadth/depth/iterations. Codex reasoning never drops below the tier floor (regular `xhigh` / deep audits `max`). See [Effort Levels](#-effort-levels) |
+| `reviewer` | auto | Reviewer backend: in Copilot CLI, `/auto-review-loop` auto-binds the native complementary `rubber-duck`; other hosts/skills default to `codex` (GPT-6-Astra, tiered `xhigh`/`max`). Explicit `codex`, `manual`, or `oracle-pro` overrides remain available. |
 | `difficulty` | `medium` | Reviewer adversarial level: `medium` (default), `hard` (+ memory + debate), `nightmare` (+ GPT reads repo via `codex exec`) |
 
 ```
@@ -599,7 +599,7 @@ Run `aris doctor` to inspect the currently reported sandbox state. `strictMode` 
 <details>
 <summary><b>Codex MCP config + alternative reviewer routing</b> — pin the model in <code>~/.codex/config.toml</code>; pointers to Codex+Claude-review, Codex+Gemini-review, and the Codex mirror install chain</summary>
 
-**Important:** ARIS skills pin the reviewer explicitly (`model: gpt-6-astra` + a per-tier reasoning effort) in every fresh call — your `~/.codex/config.toml` no longer silently decides the reviewer. Still set `model = "gpt-6-astra"` there (recommended): it covers codex-native/mirror sessions and anything that doesn't pin. `ultra`/`max` effort needs codex-cli ≥ 0.144.1 + a session restart.
+**Important:** ARIS skills pin the reviewer explicitly (`model: gpt-6-astra` + a per-tier reasoning effort) in every fresh call — your `~/.codex/config.toml` no longer silently decides the reviewer. Still set `model = "gpt-6-astra"` there (recommended): it covers codex-native/mirror sessions and anything that doesn't pin. `max`/`max` effort needs codex-cli ≥ 0.144.1 + a session restart.
 
 **Want Codex to execute but Claude Code to review?** See [`docs/CODEX_CLAUDE_REVIEW_GUIDE.md`](docs/CODEX_CLAUDE_REVIEW_GUIDE.md). That path installs the base `skills/skills-codex/*`, then overlays `skills/skills-codex-claude-review/*`, and routes review-heavy skills through the local `claude-review` MCP bridge.
 
@@ -1469,7 +1469,7 @@ claude   # hooks active immediately
 
 ### ⚡ Effort Levels
 
-Every skill takes `— effort: lite | balanced | max | beast` — scaling breadth/depth (papers · ideas · pilots · rounds · seeds · audit depth) from ~0.4× to ~5–8×; **`balanced` is the default** (zero change for existing users). What **never** changes at any level: Codex reasoning stays at its tier floor (regular `xhigh`; deep audits `ultra`), DBLP/CrossRef citations on, reviewer independence on, experiment integrity on. **📖 Full spec + per-skill counts → [`effort-contract.md`](skills/shared-references/effort-contract.md)**
+Every skill takes `— effort: lite | balanced | max | beast` — scaling breadth/depth (papers · ideas · pilots · rounds · seeds · audit depth) from ~0.4× to ~5–8×; **`balanced` is the default** (zero change for existing users). What **never** changes at any level: Codex reasoning stays at its tier floor (regular `xhigh`; deep audits `max`), DBLP/CrossRef citations on, reviewer independence on, experiment integrity on. **📖 Full spec + per-skill counts → [`effort-contract.md`](skills/shared-references/effort-contract.md)**
 
 ### Assurance Gate (effort: max | beast)
 

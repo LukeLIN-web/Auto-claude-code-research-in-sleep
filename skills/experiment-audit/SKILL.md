@@ -34,7 +34,7 @@ This follows `shared-references/reviewer-independence.md` and `shared-references
 
 ## Constants
 
-- **REVIEWER_BACKEND = `codex`** — Default: Codex MCP (ultra). Override with `— reviewer: oracle-pro` for Oracle MCP, or `— reviewer: manual` for Manual Review MCP. If manual-review MCP is unavailable, stop and print the install command; do not fall back to Codex. See `shared-references/reviewer-routing.md`.
+- **REVIEWER_BACKEND = `codex`** — Default: Codex MCP (max). Override with `— reviewer: oracle-pro` for Oracle MCP, or `— reviewer: manual` for Manual Review MCP. If manual-review MCP is unavailable, stop and print the install command; do not fall back to Codex. See `shared-references/reviewer-routing.md`.
 
 ## Reviewer Calling Convention
 
@@ -88,7 +88,7 @@ Based on the selected reviewer backend (see Reviewer Calling Convention), pass O
 
 For `codex`, call `mcp__codex__codex` with:
 - `model: gpt-6-astra`
-- `config: {"model_reasoning_effort": "ultra"}`
+- `config: {"model_reasoning_effort": "max"}`
 - `sandbox: read-only`
 - `cwd: [project directory]`
 - `prompt: [the exact full prompt below]`
@@ -181,7 +181,7 @@ Parse the reviewer's response and write `EXPERIMENT_AUDIT.md`:
 # Experiment Audit Report
 
 **Date**: [today]
-**Auditor**: External reviewer backend, ultra reasoning (cross-model, read-only)
+**Auditor**: External reviewer backend, max reasoning (cross-model, read-only)
 **Project**: [project name]
 
 ## Overall Verdict: [PASS | WARN | FAIL]
@@ -221,7 +221,7 @@ Also write `EXPERIMENT_AUDIT.json` for machine consumption:
 ```json
 {
   "date": "2026-04-10",
-  "auditor": "external-reviewer-ultra",
+  "auditor": "external-reviewer-max",
   "overall_verdict": "warn",
   "integrity_status": "warn",
   "checks": {
