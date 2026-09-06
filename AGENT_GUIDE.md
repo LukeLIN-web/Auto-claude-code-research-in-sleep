@@ -2,7 +2,7 @@
 
 > **For AI agents reading this repo cold.** If you are a human, see [README.md](README.md) or [docs/ARIS_INTRO.html](https://wanshuiyin.github.io/Auto-claude-code-research-in-sleep/ARIS_INTRO.html).
 
-ARIS is a research harness: composable Markdown skills that orchestrate the ML research lifecycle through cross-model adversarial collaboration. Executor (Claude / Codex / Cursor / Antigravity / Copilot CLI) writes code & papers; reviewer (GPT-5.6-Sol via Codex MCP, Claude / Gemini via `claude-review` / `gemini-review` MCP, or Copilot's evidence-gated native complementary reviewer for `/auto-review-loop`) critiques independently.
+ARIS is a research harness: composable Markdown skills that orchestrate the ML research lifecycle through cross-model adversarial collaboration. Executor (Claude / Codex / Cursor / Antigravity / Copilot CLI) writes code & papers; reviewer (GPT-6-Astra via Codex MCP, Claude / Gemini via `claude-review` / `gemini-review` MCP, or Copilot's evidence-gated native complementary reviewer for `/auto-review-loop`) critiques independently.
 
 > **Source of Truth.** This file is a *routing index*, not a specification.
 > Behavior of a skill lives in `skills/<name>/SKILL.md`. System-wide
@@ -172,13 +172,13 @@ Advisory CI lint at `.github/workflows/lint-skills-helpers.yml` flags hardcoded 
 ## Cross-Model Protocol
 
 - **Executor** (Claude / Codex / Cursor / Antigravity / Copilot): writes code, runs experiments, drafts papers
-- **Reviewer** (GPT-5.6-Sol via Codex MCP, default; or Claude / Gemini via `*-review` MCP overlays): critiques, scores, demands revisions
+- **Reviewer** (GPT-6-Astra via Codex MCP, default; or Claude / Gemini via `*-review` MCP overlays): critiques, scores, demands revisions
 - **Rule**: executor and reviewer **must** be different model families. Same-family review is a non-feature.
 - **Reviewer independence**: pass file paths only, never summaries or interpretations
 - **Thread freshness**: every reviewer call uses `mcp__codex__codex` (or equivalent), **never** `codex-reply` — narrative accumulation inflates scores
 - **Experiment integrity**: executor must NOT judge its own eval code — reviewer audits directly per [`shared-references/experiment-integrity.md`](skills/shared-references/experiment-integrity.md)
 
-The external Codex default is `gpt-5.6-sol` with two-tier reasoning (deep-audit `ultra` / regular `xhigh`, since 2026-07-10; needs codex-cli ≥ 0.144.1). `gpt-5.5` is the capability fallback; legacy `gpt-5.4` is available as `--- reviewer-model: gpt-5.4`. In a bound Copilot CLI session, `/auto-review-loop` instead defaults to the built-in `rubber-duck` subagent and accepts it only when host events prove the dynamically selected model is from a different family. Oracle Pro tier (`gpt-5.5-pro`) via `--- reviewer: oracle-pro` is a separate routing path.
+The external Codex default is `gpt-6-astra` with two-tier reasoning (deep-audit `ultra` / regular `xhigh`, since 2026-07-10; needs codex-cli ≥ 0.144.1). `gpt-5.5` is the capability fallback; legacy `gpt-5.4` is available as `--- reviewer-model: gpt-5.4`. In a bound Copilot CLI session, `/auto-review-loop` instead defaults to the built-in `rubber-duck` subagent and accepts it only when host events prove the dynamically selected model is from a different family. Oracle Pro tier (`gpt-5.5-pro`) via `--- reviewer: oracle-pro` is a separate routing path.
 
 ## Shared References
 

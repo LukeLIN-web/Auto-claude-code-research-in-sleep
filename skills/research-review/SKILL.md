@@ -19,7 +19,7 @@ Get a multi-round critical review of research work from the selected external re
 
 ## Constants
 
-- REVIEWER_MODEL = `gpt-5.6-sol` — Default model for the Codex backend, reasoning effort `ultra` (deep-audit tier). Must be an OpenAI model (e.g., `gpt-5.6-sol`, `gpt-5.5`, `o3`). Manual backend uses a model the user chooses — it must be a recognized model from a different family (OpenAI, Anthropic, Google, DeepSeek, Moonshot/Kimi, Qwen).
+- REVIEWER_MODEL = `gpt-6-astra` — Default model for the Codex backend, reasoning effort `ultra` (deep-audit tier). Must be an OpenAI model (e.g., `gpt-6-astra`, `gpt-5.5`, `o3`). Manual backend uses a model the user chooses — it must be a recognized model from a different family (OpenAI, Anthropic, Google, DeepSeek, Moonshot/Kimi, Qwen).
 - **REVIEWER_BACKEND = `codex`** — Default: Codex MCP (ultra). Override with `— reviewer: oracle-pro` for Oracle MCP, or `— reviewer: manual` for Manual Review MCP. If manual-review MCP is unavailable, stop and print the install command; do not fall back to Codex. See `shared-references/reviewer-routing.md`.
 - **REVIEWER_PERSONA = `P1`** — The frame the reviewer is asked to adopt, from
   [`../shared-references/reviewer-personas.md`](../shared-references/reviewer-personas.md).
@@ -99,7 +99,7 @@ the `codex` backend, keep the MCP payload short: write the full briefing to
 
 ```
 mcp__codex__codex:
-  model: gpt-5.6-sol
+  model: gpt-6-astra
   config: {"model_reasoning_effort": "ultra"}
   prompt: |
     Read the review brief at <absolute path to RESEARCH_REVIEW_REQUEST.md>.
@@ -108,6 +108,8 @@ mcp__codex__codex:
     verify everything yourself.
 
     [REVIEWER_PERSONA template, verbatim from shared-references/reviewer-personas.md]
+
+    [SCOPE LIMITS block, verbatim from shared-references/review-scope-limits.md]
 ```
 
 The persona template already carries the role, the reject-by-default stance, the
@@ -132,7 +134,7 @@ only the path:
 ```text
 mcp__codex__codex-reply:
   threadId: [saved reviewer threadId from Step 2]
-  # replies inherit the thread's model/effort (gpt-5.6-sol ultra)
+  # replies inherit the thread's model/effort (gpt-6-astra ultra)
   prompt: |
     Read the updated review brief at <absolute path to
     RESEARCH_REVIEW_ROUND_2.md>.
@@ -186,7 +188,7 @@ Update project memory/notes with key review conclusions.
 
 ## Key Rules
 
-- ALWAYS pin `model: gpt-5.6-sol` + `config: {"model_reasoning_effort": "ultra"}` for reviews (deep-audit tier; capability fallback per `reviewer-routing.md`, never below `xhigh`)
+- ALWAYS pin `model: gpt-6-astra` + `config: {"model_reasoning_effort": "ultra"}` for reviews (deep-audit tier; capability fallback per `reviewer-routing.md`, never below `xhigh`)
 - That pin is the **Codex** backend's. For `manual`, use the identity-bearing config from the Reviewer Calling Convention above; `model`, `sandbox` and `cwd` are Codex-only
 - Put comprehensive context in the review brief. Codex can read local files
   when you pass an absolute path; manual reviewers usually cannot, so attach or
