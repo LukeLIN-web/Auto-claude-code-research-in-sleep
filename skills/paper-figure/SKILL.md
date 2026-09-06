@@ -41,7 +41,7 @@ loop. The constants and checklist below are derived from it; when they disagree,
 - **FONT_SIZE = 10** — Base font size, **expressed in final on-page points**. The value passed to matplotlib must be divided by the include scale: a figure saved 5 in wide and included at `0.48\textwidth` (≈3.3 in) shrinks by ~0.66, so `FONT_SIZE / 0.66 ≈ 15` is the source value. Never let a rendered glyph print smaller than the paper's body text. See `figure-craft.md` § "The scale rule".
 - **LINE_WIDTH = 2.0** — Default line width. Matplotlib's 1.5 default prints thin and cheap.
 - **FIG_DIR = `figures/`** — Output directory for generated figures
-- **REVIEWER_MODEL = `gpt-5.6-sol`** — Model used via Codex MCP for figure quality review.
+- **REVIEWER_MODEL = `gpt-6-astra`** — Model used via Codex MCP for figure quality review.
 
 ## Inputs
 
@@ -228,11 +228,11 @@ its printed size, not only the description — scale, crowding and label-overlap
 problems are invisible in a textual summary. Ask what a reviewer at the target
 venue would find wrong with the figure.
 
-Send figure descriptions and captions to GPT-5.6-Sol for review:
+Send figure descriptions and captions to GPT-6-Astra for review:
 
 ```
 mcp__codex__codex:
-  model: gpt-5.6-sol
+  model: gpt-6-astra
   config: {"model_reasoning_effort": "xhigh"}
   prompt: |
     Review these figure/table plans for a [VENUE] submission.

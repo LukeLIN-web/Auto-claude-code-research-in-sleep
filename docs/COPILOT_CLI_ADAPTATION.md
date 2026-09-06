@@ -230,7 +230,7 @@ ARIS skills reference MCP tools by name. These work in Copilot CLI once configur
 
 | ARIS MCP tool | What it does | Required MCP server |
 |--------------|-------------|-------------------|
-| `mcp__codex__codex` | Send prompt to GPT-5.6-Sol/5.5 | Codex |
+| `mcp__codex__codex` | Send prompt to GPT-6-Astra/5.5 | Codex |
 | `mcp__codex__codex-reply` | Continue conversation thread | Codex |
 | `mcp__llm-chat__chat` | Send prompt to any OpenAI-compatible model | llm-chat |
 | `mcp__zotero__*` | Search Zotero library | zotero |
