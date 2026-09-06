@@ -187,7 +187,7 @@ cd claude-fleet && bash run.sh
 >
 > 💭 **为什么是两个模型而不是更多？** 两个是打破自我博弈盲区的最小配置，且双人博弈收敛到 Nash 均衡的效率远高于多人博弈。增加更多审稿者只会增加 API 开销和协调成本，边际收益递减——最大的提升来自 1→2，而非 2→4。
 >
-> Claude Code 的优势是快速丝滑的执行，Codex（GPT-5.6-Sol xhigh）虽然慢但审稿更严谨深入。两者**速度 × 严谨**的互补特性，比单模型自我对话效果更好。
+> Claude Code 的优势是快速丝滑的执行，Codex（GPT-6-Astra xhigh）虽然慢但审稿更严谨深入。两者**速度 × 严谨**的互补特性，比单模型自我对话效果更好。
 >
 > 🧿 **想要最强审稿者？** 任何 skill 加 `— reviewer: oracle-pro` 即可通过 [Oracle MCP](https://github.com/steipete/oracle) 调用 **GPT-5.5 Pro**。Pro 级推理能力适合证明验证、实验审计和最终 stress test。支持 API key 或免费浏览器模式。[设置 →](#-optional-gpt-54-pro-via-oracle)
 
@@ -256,7 +256,7 @@ ARIS 读论文 → 找弱点 → 克隆代码 → 针对*那些*弱点用*那套
 | `character limit` | — | **必填。** 字符限制 |
 | `quick mode` | `false` | 仅解析 + 策略（Phase 0-3），先看审稿人要什么 |
 | `auto experiment` | `false` | 自动跑补充实验（`/experiment-bridge`） |
-| `max stress test rounds` | `1` | GPT-5.6-Sol 压力测试轮数 |
+| `max stress test rounds` | `1` | GPT-6-Astra 压力测试轮数 |
 | `max followup rounds` | `3` | 每个 reviewer follow-up 上限 |
 
 </details>
@@ -277,6 +277,7 @@ ARIS 读论文 → 找弱点 → 克隆代码 → 针对*那些*弱点用*那套
 
 > ⚠️ 凡涉及 skill 变更的条目:跑 `bash tools/smart_update.sh --apply` 拉取。
 
+- **2026-09-07** — ![NEW](https://img.shields.io/badge/NEW-red?style=flat-square) 🧠 **默认审阅模型换成 `gpt-6-astra`。** 所有钉 `gpt-5.6-sol` 的审阅调用改钉 `gpt-6-astra`;两档 effort(七个深审 ultra、其余 xhigh)不变,执行者也不变——你在哪个 agent 里跑 ARIS 就是哪个。账号还没有这个模型?回退链会依次试 `gpt-5.6-sol`、`gpt-5.5`(都 xhigh),不用改配置。
 - **2026-09-06** — ![FIX](https://img.shields.io/badge/FIX-2ea44f?style=flat-square) 🧹 **安装器不再往每个项目塞 Copilot profile**([#431](https://github.com/wanshuiyin/Auto-claude-code-research-in-sleep/issues/431),感谢 [@oblivion-1521](https://github.com/oblivion-1521))。八月起每次安装都会往你的 `.github/agents/` 放两个 Copilot 审稿人 profile 的软链接,不管你用不用——Claude Code 和 Codex 用户拿到的是死文件,提交上去还是坏链接。现在只在装了 `auto-review-loop` 时才部署;`--no-agent-profiles` 永久关掉(`--agent-profiles` 撤销)。下次重跑安装会顺手删掉以前生成的链接,你自己写的文件一律不动。
 - **2026-09-03** — ![FIX](https://img.shields.io/badge/FIX-2ea44f?style=flat-square) 📣 **论文是发布会,不是工作汇报**(规则采自 [anti-defensive-writing-Skill](https://github.com/Adkid-Zephyr/anti-defensive-writing-Skill),作者 [@Adkid-Zephyr](https://github.com/Adkid-Zephyr),觉得有用就 🌟)。写作契约新增四条:围绕真正的最强优势组织叙事;打不赢的指标不设为比赛;不占优的数字照样留在表里,证据支持时解释为目标差异或权衡,不支持就平实陈述、收窄主张——不写成认输,也不硬编权衡;每个实验必须有论证职责,没有就出主线;摘要引言按问题 → 缺口 → 思路 → 最硬的结果开场,结论不在最后一段突然自我否定。`/auto-paper-improvement-loop` 按同样标准挑毛病。收录在 [Awesome 社区](#awesome-community-skills)。
 - **2026-08-26** — ![FIX](https://img.shields.io/badge/FIX-2ea44f?style=flat-square) 🧯 **两处过度防御残留**([#425](https://github.com/wanshuiyin/Auto-claude-code-research-in-sleep/pull/425))。`/research-review` 是唯一没带范围约束块的审阅 prompt,现在补上了,简报结尾从光秃秃的"往死里挑"变成"撑得住就明说"——敌意立场一字未动。`/research-pipeline` 不再因为缺 `VENUE` 死在过夜跑里:找 idea、实验、分析、叙事报告都与 venue 无关,照常跑完——只推迟排版,盖章等 resume。它还一边写着 `VENUE = ICLR` 默认值一边禁止静默默认;默认值已删。
@@ -408,7 +409,7 @@ bash Auto-claude-code-research-in-sleep/tools/smart_update_codex.sh --local ~/.c
 
 # 2. 配置 Codex MCP（review 类 skill 需要）
 npm install -g @openai/codex
-codex setup                    # 提示选模型时选 gpt-5.6-sol
+codex setup                    # 提示选模型时选 gpt-6-astra
 claude mcp add codex -s user -- codex mcp-server
 
 # 3. 在 Claude Code 中使用
@@ -498,7 +499,7 @@ cd Auto-claude-code-research-in-sleep && ls skills/ | xargs -I{} rm -rf ~/.claud
 | `sources` | `all` | 搜索哪些文献源：`zotero`、`obsidian`、`local`、`web`、`semantic-scholar`、`deepxiv`、`exa`、`gemini`、`openalex`、`all`。`semantic-scholar`、`deepxiv`、`exa`、`gemini` 和 `openalex` 都需显式指定 |
 | `arxiv download` | `false` | 文献调研时下载最相关的 arXiv PDF。为 `false` 时仅获取元数据（标题、摘要、作者） |
 | `DBLP_BIBTEX` | `true` | 从 [DBLP](https://dblp.org)/[CrossRef](https://www.crossref.org) 获取真实 BibTeX，替代 LLM 生成。杜绝幻觉引用。零安装 |
-| `code review` | `true` | GPT-5.6-Sol xhigh 部署前审查实验代码。设 `false` 跳过 |
+| `code review` | `true` | GPT-6-Astra xhigh 部署前审查实验代码。设 `false` 跳过 |
 | `wandb` | `false` | 自动给实验脚本加 W&B 日志。设 `true` + 在 CLAUDE.md 配 `wandb_project`。`/monitor-experiment` 从 W&B 拉训练曲线 |
 | `illustration` | `gemini` | 工作流 3 AI 作图：`gemini`（默认，需 `GEMINI_API_KEY`，[获取](https://aistudio.google.com/apikey)）、`mermaid`（免费）、`false`（跳过） |
 | `venue` | `ICLR` | 目标会议：`ICLR`、`NeurIPS`、`ICML`、`CVPR`、`ACL`、`AAAI`、`ACM`、`IEEE_JOURNAL`、`IEEE_CONF`。决定 LaTeX 样式和页数限制 |
@@ -506,7 +507,7 @@ cd Auto-claude-code-research-in-sleep && ls skills/ | xargs -I{} rm -rf ~/.claud
 | `compact` | `false` | 生成精简摘要文件（`IDEA_CANDIDATES.md`、`findings.md`、`EXPERIMENT_LOG.md`），适合短 context 模型和 session 恢复 |
 | `ref paper` | `false` | 参考论文（PDF 路径或 arXiv URL）。先总结论文，再基于它找 idea。配合 `base repo` 实现"论文+代码"工作流 |
 | `effort` | `balanced` | 工作强度：`lite`(0.4x)、`balanced`(默认)、`max`(2.5x)、`beast`(5-8x)。Codex reasoning 永远 `xhigh` |
-| `reviewer` | `codex` | 审稿后端：`codex`（GPT-5.6-Sol,分档 `xhigh`/`ultra`,默认）、`oracle-pro`（GPT-5.5 Pro via [Oracle](https://github.com/steipete/oracle)） |
+| `reviewer` | `codex` | 审稿后端：`codex`（GPT-6-Astra,分档 `xhigh`/`ultra`,默认）、`oracle-pro`（GPT-5.5 Pro via [Oracle](https://github.com/steipete/oracle)） |
 | `difficulty` | `medium` | 审稿对抗强度：`medium`（默认）、`hard`（+ memory + 辩论）、`nightmare`（+ GPT 通过 `codex exec` 直读仓库） |
 
 ```
@@ -549,7 +550,7 @@ cd Auto-claude-code-research-in-sleep && ls skills/ | xargs -I{} rm -rf ~/.claud
 <details>
 <summary><b>Codex MCP 配置 + 替代 reviewer 路由</b> —— 在 <code>~/.codex/config.toml</code> 钉模型；Codex+Claude 审稿、Codex+Gemini 审稿、Codex mirror 安装链的入口指向</summary>
 
-**重要：** ARIS skill 现在在每个 fresh call 里显式钉住 reviewer（`model: gpt-5.6-sol` + 按档位的 reasoning effort）——`~/.codex/config.toml` 不再静默决定 reviewer。仍建议在其中写 `model = "gpt-5.6-sol"`：它覆盖 codex 原生/mirror 会话和任何未钉住的调用。`ultra`/`max` 档需要 codex-cli ≥ 0.144.1 并重启 session。
+**重要：** ARIS skill 现在在每个 fresh call 里显式钉住 reviewer（`model: gpt-6-astra` + 按档位的 reasoning effort）——`~/.codex/config.toml` 不再静默决定 reviewer。仍建议在其中写 `model = "gpt-6-astra"`：它覆盖 codex 原生/mirror 会话和任何未钉住的调用。`ultra`/`max` 档需要 codex-cli ≥ 0.144.1 并重启 session。
 
 **想让 Codex 执行、Claude Code 审稿？** 见 [`docs/CODEX_CLAUDE_REVIEW_GUIDE_CN.md`](docs/CODEX_CLAUDE_REVIEW_GUIDE_CN.md)。这条路径会先安装基础 `skills/skills-codex/*`，再叠加 `skills/skills-codex-claude-review/*`，并通过本地 `claude-review` MCP bridge 转发 review-heavy skill 的审稿请求。
 
@@ -567,7 +568,7 @@ Codex 基础镜像默认由新的 Codex `spawn_agent` 自审：流程可以继�
 
 ## 4. ✨ 功能亮点
 
-ARIS 用 **82 个可组合 skill** 覆盖科研全生命周期——文献查新 → idea 发现 → GPU 实验 → 自动 review 循环 → 论文写作 → peer review——配合**跨模型对抗审**（Claude 执行 · GPT-5.6-Sol xhigh 审 · 可选 **GPT-5.5 Pro** via Oracle）、DBLP/CrossRef 反幻觉引用、持久化 **Research Wiki**、灵活模型后端、human-in-the-loop 检查点，以及可选的飞书 / Zotero / Obsidian / GPU 集成。
+ARIS 用 **82 个可组合 skill** 覆盖科研全生命周期——文献查新 → idea 发现 → GPU 实验 → 自动 review 循环 → 论文写作 → peer review——配合**跨模型对抗审**（Claude 执行 · GPT-6-Astra xhigh 审 · 可选 **GPT-5.5 Pro** via Oracle）、DBLP/CrossRef 反幻觉引用、持久化 **Research Wiki**、灵活模型后端、human-in-the-loop 检查点，以及可选的飞书 / Zotero / Obsidian / GPU 集成。
 
 🔥 *而且这套"广度 / 审 / 记忆"三角能适配任何 agent 的 **ultracode 式深度模式**：广度 pass 适配运行时暴露的能力（Claude Code 原生 ultracode / workflows + Opus 4.8、Codex `spawn_agent`，或纯顺序执行），并按层级干净降级（fan-out → agent spawn → 顺序）。三件事分得很清楚：**广度 · 跨模型对抗审 → 准确性 · research wiki → 记忆性**。无论循环由谁推进，最后都回到同一套跨模型对抗审 + research wiki：**能推进，不能定案**。*
 
@@ -579,10 +580,10 @@ ARIS 用 **82 个可组合 skill** 覆盖科研全生命周期——文献查新
 - 💡 **Idea 发现** — 文献调研 → 头脑风暴 8-12 个 idea → 查新 → GPU pilot 实验 → 排名报告
 - 🔄 **自动 review 循环** — 4 轮自主审稿，一夜从 5/10 提升到 7.5/10，自动跑 20+ 组 GPU 实验
 - 📝 **论文写作** — 研究叙事 → 大纲 → 图表 → LaTeX → PDF → 自动审稿（4/10 → 8.5/10），一条命令。通过 [DBLP](https://dblp.org)/[CrossRef](https://www.crossref.org) 反幻觉引用
-- 🤖 **跨模型协作** — Claude Code 执行，GPT-5.6-Sol xhigh 审稿。对抗式而非自我博弈。可选：`— reviewer: oracle-pro` → **GPT-5.5 Pro** via [Oracle](https://github.com/steipete/oracle)
+- 🤖 **跨模型协作** — Claude Code 执行，GPT-6-Astra xhigh 审稿。对抗式而非自我博弈。可选：`— reviewer: oracle-pro` → **GPT-5.5 Pro** via [Oracle](https://github.com/steipete/oracle)
 - 📝 **Peer Review** — 以审稿人视角审阅他人论文，结构化打分 + meta-review
-- 🖥️ **审稿驱动实验** — GPT-5.6-Sol 说"跑个消融"，Claude 自动写脚本、rsync 到 GPU、`screen` 启动、收结果、写回论文。`CLAUDE.md` 里配服务器（[配置](#gpu-server-setup)），或用 `gpu: vast` 从 [Vast.ai](https://vast.ai) 按需租
-- 🔀 **灵活模型** — 默认 Claude × GPT-5.6-Sol，也支持 [GLM、MiniMax、Kimi、LongCat、DeepSeek 等](#alternative-model-combinations)——无需 Claude 或 OpenAI API
+- 🖥️ **审稿驱动实验** — GPT-6-Astra 说"跑个消融"，Claude 自动写脚本、rsync 到 GPU、`screen` 启动、收结果、写回论文。`CLAUDE.md` 里配服务器（[配置](#gpu-server-setup)），或用 `gpu: vast` 从 [Vast.ai](https://vast.ai) 按需租
+- 🔀 **灵活模型** — 默认 Claude × GPT-6-Astra，也支持 [GLM、MiniMax、Kimi、LongCat、DeepSeek 等](#alternative-model-combinations)——无需 Claude 或 OpenAI API
 - 🛑 **Human-in-the-loop** — 关键决策点可配置检查点。`AUTO_PROCEED=true` 全自动，`false` 逐步审批
 - 📱 **[飞书通知](docs/integrations/FEISHU_CN.md)** — 三种模式：**关闭（默认，推荐）**、仅推送（webhook → 手机）、双向交互（飞书里审批/回复）。未配置时零影响
 
@@ -763,12 +764,12 @@ ARIS 全流程完成并进入投稿/审稿阶段的真实项目。**所列分数
 还没有具体 idea？给一个研究方向就行——`/idea-discovery` 搞定剩下的：
 
 1. 📚 **调研**全景（最新论文、开放问题、反复出现的局限性）
-2. 🧠 **头脑风暴** 8-12 个具体 idea（GPT-5.6-Sol xhigh）
+2. 🧠 **头脑风暴** 8-12 个具体 idea（GPT-6-Astra xhigh）
 3. 🔍 **初筛**可行性、算力成本、快速查新
 4. 🛡️ **深度验证** top idea（完整查新 + devil's advocate review）
 5. 🧪 **并行 pilot 实验**（top 2-3 个 idea 分别上不同 GPU，30 分钟 - 2 小时）
 6. 🏆 **按实验信号排序**——有正信号的 idea 排前面
-7. 🔬 **精炼方案**——冻结问题锚点，通过 GPT-5.6-Sol 迭代 review 打磨方法
+7. 🔬 **精炼方案**——冻结问题锚点，通过 GPT-6-Astra 迭代 review 打磨方法
 8. 🧪 **规划实验**——claim-driven 实验路线图，含 ablation、预算和执行顺序
 
 输出 `IDEA_REPORT.md`（排名后的 idea）+ `refine-logs/FINAL_PROPOSAL.md`（精炼后的方案）+ `refine-logs/EXPERIMENT_PLAN.md`（实验路线图）。失败的 idea 也记录在案，避免重复踩坑。
@@ -809,13 +810,13 @@ ARIS 全流程完成并进入投稿/审稿阶段的真实项目。**所列分数
 
 1. 📋 **解析**实验计划（`refine-logs/EXPERIMENT_PLAN.md`）
 2. 💻 **实现**实验脚本（复用已有代码，加 argparse/logging/seed）
-3. 🔍 **GPT-5.6-Sol 代码审查** — 跨模型 review 在浪费 GPU 前抓逻辑 bug（`code review: true` 默认开启）
+3. 🔍 **GPT-6-Astra 代码审查** — 跨模型 review 在浪费 GPU 前抓逻辑 bug（`code review: true` 默认开启）
 4. ✅ **Sanity check** — 先跑最小实验，发现运行时 bug
 5. 🚀 **部署**完整实验到 GPU（`/run-experiment`）
 6. 📊 **收集**初始结果，更新实验 tracker
 
 <details>
-<summary><b>展开工作流 1.5 流程图</b> —— 实验计划 → Claude 实现 → GPT-5.6-Sol 审码 → sanity check → GPU 部署 → 监控 → 结果</summary>
+<summary><b>展开工作流 1.5 流程图</b> —— 实验计划 → Claude 实现 → GPT-6-Astra 审码 → sanity check → GPU 部署 → 监控 → 结果</summary>
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
@@ -825,7 +826,7 @@ ARIS 全流程完成并进入投稿/审稿阶段的真实项目。**所列分数
 │         │                                                        │
 │         ▼                                                        │
 │   ┌──────────┐     ┌──────────┐     ┌──────────┐               │
-│   │ Claude   │────▶│ GPT-5.6-Sol  │────▶│ Sanity   │               │
+│   │ Claude   │────▶│ GPT-6-Astra  │────▶│ Sanity   │               │
 │   │ Code     │     │ xhigh    │     │ Check    │               │
 │   │ 写代码    │     │ 审查代码  │     │ (1 GPU)  │               │
 │   └──────────┘     └──────────┘     └──────────┘               │
@@ -853,9 +854,9 @@ ARIS 全流程完成并进入投稿/审稿阶段的真实项目。**所列分数
 
 > "帮我 review 论文，修复问题，循环到通过为止。"
 >
-> GPT-5.6-Sol 审稿 → 定位弱点 → 建议实验 → Claude Code 自动写脚本、部署到 GPU、监控结果、改写论文——你睡觉就行。只需在 `CLAUDE.md` 里配好[GPU 服务器信息](#gpu-server-setup)。
+> GPT-6-Astra 审稿 → 定位弱点 → 建议实验 → Claude Code 自动写脚本、部署到 GPU、监控结果、改写论文——你睡觉就行。只需在 `CLAUDE.md` 里配好[GPU 服务器信息](#gpu-server-setup)。
 
-1. 🔍 **深度评审** — GPT-5.6-Sol xhigh 对当前论文 / claims / 实验做一遍深读，定位弱点
+1. 🔍 **深度评审** — GPT-6-Astra xhigh 对当前论文 / claims / 实验做一遍深读，定位弱点
 2. 🩹 **修复** — Claude 实现修复（改写章节、加 baseline、或通过 `/run-experiment` 跑新实验）；预估超过 4 GPU-小时的实验直接跳过、标记为"需人工跟进"
 3. 📊 **再评估** — `/monitor-experiment` 收结果、改稿、再喂回 reviewer
 4. 🔁 **循环** — 直到分数 ≥ `POSITIVE_THRESHOLD`（默认 6/10）或撞到 `MAX_ROUNDS`（默认 4）；中途上下文窗口满了，工作流会从 `REVIEW_STATE.json` 自动恢复
@@ -877,7 +878,7 @@ ARIS 全流程完成并进入投稿/审稿阶段的真实项目。**所列分数
 <details>
 <summary><b>展开工作流 2 的参数示例、reviewer 难度等级和完整安全机制</b> —— topic/scope 怎么传、medium/hard/nightmare 区别、6 条安全规则</summary>
 
-**传什么参数？** 简短的主题或范围就够——skill 会自动读取项目中的叙事文档（`NARRATIVE_REPORT.md`）、memory 文件、实验结果和历史 review，为 GPT-5.6-Sol 组装完整上下文。示例：
+**传什么参数？** 简短的主题或范围就够——skill 会自动读取项目中的叙事文档（`NARRATIVE_REPORT.md`）、memory 文件、实验结果和历史 review，为 GPT-6-Astra 组装完整上下文。示例：
 - `/auto-review-loop "离散扩散语言模型的 factorized gap"` — 宽泛主题，skill 自动搜集
 - `/auto-review-loop "重点看第 3-5 节，CRF 结果偏弱"` — 指定范围 + 提示
 - `/auto-review-loop` — 也行：skill 读项目文件自动推断主题
@@ -923,7 +924,7 @@ ARIS 全流程完成并进入投稿/审稿阶段的真实项目。**所列分数
 3. 📊 **画图** — `/paper-figure` 从 JSON/CSV 生成数据驱动的图表和对比表
 4. ✍️ **写作** — `/paper-write` 逐 section 生成 LaTeX
 5. 🔧 **编译** — `/paper-compile` 编 PDF、修错、跑页数验证
-6. ✨ **润色** — `/auto-paper-improvement-loop` 跑 2 轮 GPT-5.6-Sol 内容审稿 + 终局格式合规检查
+6. ✨ **润色** — `/auto-paper-improvement-loop` 跑 2 轮 GPT-6-Astra 内容审稿 + 终局格式合规检查
 
 <details>
 <summary><b>展开工作流 3 的写作流向图与命令清单</b> —— NARRATIVE_REPORT → /paper-plan → /paper-figure → /paper-write → /paper-compile → 润色循环</summary>
@@ -961,7 +962,7 @@ NARRATIVE_REPORT.md ──► /paper-plan ──► /paper-figure ──► /pap
 - 📊 **自动图表生成** — 从 JSON 数据生成折线图、柱状图、对比表
 - 🧹 **Bib 自动清理** — 过滤未引用条目（实测 948→215 行）。通过 [DBLP](https://dblp.org)/[CrossRef](https://www.crossref.org) 获取真实 BibTeX，替代 LLM 生成
 - 📄 **灵活节数** — 5-8 节按论文类型选择（理论论文常需 7 节）
-- 🔍 **GPT-5.6-Sol 审稿** — 每步可选外部 LLM 审查
+- 🔍 **GPT-6-Astra 审稿** — 每步可选外部 LLM 审查
 - ✂️ **De-AI 打磨** — 去除 AI 写作痕迹（delve、pivotal、landscape…）
 - 🎯 **精确页数验证** — 基于 `pdftotext` 定位 Conclusion 结束位置
 
@@ -973,7 +974,7 @@ NARRATIVE_REPORT.md ──► /paper-plan ──► /paper-figure ──► /pap
 
 #### 论文自动润色循环 ✨
 
-工作流 3 生成论文后，`/auto-paper-improvement-loop` 自动跑 2 轮 GPT-5.6-Sol xhigh 内容审稿 → 修复 → 重编译，外加一轮格式合规检查，将粗稿自动提升到可投稿质量。
+工作流 3 生成论文后，`/auto-paper-improvement-loop` 自动跑 2 轮 GPT-6-Astra xhigh 内容审稿 → 修复 → 重编译，外加一轮格式合规检查，将粗稿自动提升到可投稿质量。
 
 <details>
 <summary><b>展开论文自动润色 benchmark</b> —— 实测 ICLR 2026 理论论文分数轨迹（4/10 → 8.5/10）+ Round 1/2/3 详细修复清单</summary>
@@ -1039,12 +1040,12 @@ NARRATIVE_REPORT.md ──► /paper-plan ──► /paper-figure ──► /pap
 4. 🧪 **证据补跑**（可选）—— 如果 `auto experiment: true`，通过 `/experiment-bridge` 自动跑补充实验
 5. ✍️ **起草** —— 全局开场 + per-reviewer 编号回复 + meta-reviewer 收尾
 6. 🛡️ **安全检查** —— 6 道 lint：覆盖率、出处可追、承诺受控、语气、内部一致性、字符限制
-7. 🔬 **GPT-5.6-Sol 压力测试** —— 内部怀疑式终审 draft
+7. 🔬 **GPT-6-Astra 压力测试** —— 内部怀疑式终审 draft
 8. 📄 **定稿** —— 两份产物：`PASTE_READY.txt`（精确字数，直接粘贴投递）+ `REBUTTAL_DRAFT_rich.md`（扩展版用于人工编辑）
 9. 🔄 **Follow-up 回合** —— reviewer 追问场景的 delta 回复，技术细节逐轮升级
 
 <details>
-<summary><b>展开工作流 4 的 rebuttal 流程图</b> —— 解析意见 → 策略 → 可选证据补跑 → 起草 → GPT-5.6-Sol 压测 → 双版本定稿 → follow-up 回合</summary>
+<summary><b>展开工作流 4 的 rebuttal 流程图</b> —— 解析意见 → 策略 → 可选证据补跑 → 起草 → GPT-6-Astra 压测 → 双版本定稿 → follow-up 回合</summary>
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
@@ -1061,7 +1062,7 @@ NARRATIVE_REPORT.md ──► /paper-plan ──► /paper-figure ──► /pap
 │                                          │                       │
 │                                          ▼                       │
 │   ┌──────────┐     ┌──────────┐     ┌──────────┐               │
-│   │ 定稿     │◀────│ GPT-5.6-Sol  │◀────│ 起草     │               │
+│   │ 定稿     │◀────│ GPT-6-Astra  │◀────│ 起草     │               │
 │   │ 双版本    │     │ 压力测试 │     │ rebuttal │               │
 │   │          │     │          │     │          │               │
 │   └──────────┘     └──────────┘     └──────────┘               │
@@ -1250,11 +1251,11 @@ claude   # hooks 立即生效
 1. 📊 **被动记录** — hooks 静默记录每次技能调用、工具执行、失败、参数覆盖。事件同时写入**项目级**（`.aris/meta/events.jsonl`）和**全局**（`~/.aris/meta/events.jsonl`，带 `"project"` 标签）两份日志
 2. 🔍 **模式分析** — 识别高频覆盖参数（默认值不好）、重复失败（缺少错误处理）、分数停滞（收敛规则需调整）
 3. 🩹 **生成 Patch** — 对目标 SKILL.md 生成最小修改 + 数据支撑的理由
-4. 🔬 **Reviewer 审核** — GPT-5.6-Sol xhigh 评估每个 patch 是否安全
+4. 🔬 **Reviewer 审核** — GPT-6-Astra xhigh 评估每个 patch 是否安全
 5. ✅ **用户批准** — 从不自动应用，用户说了算
 
 <details>
-<summary><b>展开工作流 M 的流程图与"优化对象"列表</b> —— 事件日志 → SKILL.md patch → GPT-5.6-Sol 审核 → 用户批准；prompt / 默认参数 / 收敛规则 / 错误处理</summary>
+<summary><b>展开工作流 M 的流程图与"优化对象"列表</b> —— 事件日志 → SKILL.md patch → GPT-6-Astra 审核 → 用户批准；prompt / 默认参数 / 收敛规则 / 错误处理</summary>
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
@@ -1267,7 +1268,7 @@ claude   # hooks 立即生效
 │         │                                                        │
 │         ▼                                                        │
 │   ┌──────────┐     ┌──────────┐     ┌──────────┐               │
-│   │ 分析模式  │────▶│ 提出      │────▶│ GPT-5.6-Sol  │               │
+│   │ 分析模式  │────▶│ 提出      │────▶│ GPT-6-Astra  │               │
 │   │          │     │ SKILL.md │     │ 审核      │               │
 │   │          │     │ 修改      │     │ patch    │               │
 │   └──────────┘     └──────────┘     └──────────┘               │
