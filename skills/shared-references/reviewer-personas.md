@@ -61,7 +61,7 @@ Use verbatim; substitute the bracketed fields. **Do not translate the template**
 — it is sent as written whatever the project's output language, and the field
 names inside it are machine-read (see the field contract below). The reviewer's
 reasoning tier is **not** set here either: it comes from the tier table in
-`reviewer-routing.md` (deep-audit skills run `ultra`), and a skill's
+`reviewer-routing.md` (deep-audit skills run `max`), and a skill's
 `— effort:` never moves it (`effort-contract.md`).
 
 **Field contract.** `auto-review-loop` parses this reply: `Score: X/10` and

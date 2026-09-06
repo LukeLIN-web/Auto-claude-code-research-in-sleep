@@ -1,6 +1,6 @@
 ---
 name: proof-checker
-description: Rigorous mathematical proof verification and fixing workflow. Reads a LaTeX proof, identifies gaps via fresh-agent Codex GPT-6-Astra ultra review, fixes each gap with full derivations, re-reviews, and generates an audit report. Base review is same-family provisional. Use when user says "检查证明", "verify proof", "proof check", "审证明", "check this proof", or wants rigorous mathematical verification of a theory paper.
+description: Rigorous mathematical proof verification and fixing workflow. Reads a LaTeX proof, identifies gaps via fresh-agent Codex GPT-6-Astra max review, fixes each gap with full derivations, re-reviews, and generates an audit report. Base review is same-family provisional. Use when user says "检查证明", "verify proof", "proof check", "审证明", "check this proof", or wants rigorous mathematical verification of a theory paper.
 argument-hint: "[path-to-tex-file or proof-description]"
 allowed-tools: Bash(*), Read, Grep, Glob, Write, Edit
 ---
@@ -20,8 +20,8 @@ Systematically verify a mathematical proof via fresh-agent adversarial review, f
 
 - MAX_REVIEW_ROUNDS = 3
 - REVIEWER_MODEL = `gpt-6-astra` via Codex reviewer agent, reasoning effort
-  `ultra` for this deep-audit skill (capability fallback never below `xhigh`)
-- **REVIEWER_BACKEND = `codex`** — Default: Codex reviewer agent (`spawn_agent`, ultra — deep-audit tier). Override with `— reviewer: oracle-pro` for GPT-5.5 Pro via Oracle MCP. See `shared-references/reviewer-routing.md`.
+  `max` for this deep-audit skill (capability fallback never below `xhigh`)
+- **REVIEWER_BACKEND = `codex`** — Default: Codex reviewer agent (`spawn_agent`, max — deep-audit tier). Override with `— reviewer: oracle-pro` for GPT-5.5 Pro via Oracle MCP. See `shared-references/reviewer-routing.md`.
 - AUDIT_DOC: `PROOF_AUDIT.md` at the paper directory root, alongside `main.tex` (cumulative log; when invoked via `/paper-writing`, this is `paper/PROOF_AUDIT.md`)
 - REPORT_TEX: `proof_audit_report.tex` (formal before/after PDF)
 - STATE_FILE: `PROOF_CHECK_STATE.json` (for recovery)
@@ -193,14 +193,14 @@ h_act = Θ(κ^α)  [as κ→0, uniform in π on compact subsets of Π_K, for fix
 ```
 Flag any statement where limit order is ambiguous or uniformity is unclear.
 
-### Phase 1: First Review (Codex GPT-6-Astra ultra)
+### Phase 1: First Review (Codex GPT-6-Astra max)
 
 Submit the **complete proof content** with the following **mandatory reviewer checklist** in the prompt:
 
 ```text
 spawn_agent:
   model: gpt-6-astra
-  reasoning_effort: ultra
+  reasoning_effort: max
   message: |
     You are performing a rigorous mathematical proof review. For EVERY theorem,
     lemma, and proposition, check ALL of the following:
@@ -309,7 +309,7 @@ Log this choice — it is a scope-changing decision when it alters theorem state
 pdflatex -interaction=nonstopmode <file>.tex 2>&1 | grep -E "Error|Warning|undefined"
 ```
 
-### Phase 3: Re-Review (Codex GPT-6-Astra ultra)
+### Phase 3: Re-Review (Codex GPT-6-Astra max)
 
 Launch a fresh reviewer agent for the next review round. Do not use `send_input` here; proof-checker keeps each round independent. Request the same mandatory checklist.
 
@@ -332,7 +332,7 @@ For any fix that resolved a FATAL or CRITICAL issue, submit the **fixed section 
 ```text
 spawn_agent:
   model: gpt-6-astra
-  reasoning_effort: ultra
+  reasoning_effort: max
   message: |
     Blind review of the following proof section. You have NOT seen any prior
     review or discussion. Check every step for correctness, hidden assumptions,
@@ -437,7 +437,7 @@ python3 "$WIKI_SCRIPT" add_claim research-wiki/ --slug "<stable-theorem-id>" \
 
 ### Review-independence protocol
 - **Codex executor analyzes and implements; a fresh Codex reviewer provides adversarial review.** Base review remains same-family/provisional.
-- **Codex reasoning always ultra** (deep-audit tier): never below `xhigh` — only the capability fallback in `reviewer-routing.md` may step down, and only on explicit capability errors.
+- **Codex reasoning always max** (deep-audit tier): never below `xhigh` — only the capability fallback in `reviewer-routing.md` may step down, and only on explicit capability errors.
 - **Send full content**: Don't summarize — send actual math for line-by-line checking.
 - **Fresh reviewer agents**: Save each returned `agent_id` for traceability, but launch a new `spawn_agent` for each review round. Do not use `send_input` across proof-checker rounds.
 
@@ -494,7 +494,7 @@ The artifact conforms to the schema in `shared-references/assurance-contract.md`
   "reviewer_family":  "openai",
   "review_independence": "same-family",
   "acceptance_status": "provisional",
-  "reviewer_reasoning": "ultra",
+  "reviewer_reasoning": "max",
   "generated_at":     "<UTC ISO-8601>",
   "details": {
     "theorems_audited": <int>,

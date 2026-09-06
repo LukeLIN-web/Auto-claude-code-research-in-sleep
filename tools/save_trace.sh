@@ -17,7 +17,7 @@
 #     --skill "auto-review-loop" \
 #     --purpose "round-1-review" \
 #     --model "gpt-6-astra" \
-#     --effort "ultra" \
+#     --effort "max" \
 #     --thread-id "019d8fe0-..." \
 #     --prompt-file /tmp/prompt.txt \
 #     --response-file /tmp/response.txt
@@ -27,7 +27,7 @@
 #     --skill "experiment-audit" \
 #     --purpose "code-audit" \
 #     --model "gpt-6-astra" \
-#     --effort "ultra" \
+#     --effort "max" \
 #     --thread-id "019d8fe0-..." \
 #     --prompt "Review this code..." \
 #     --response "Score: 7/10..."

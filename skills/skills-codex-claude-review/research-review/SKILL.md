@@ -45,7 +45,7 @@ Before calling the external reviewer, compile a comprehensive briefing:
 3. Identify: core claims, methodology, key results, known weaknesses
 
 ### Step 2: Initial Review (Round 1)
-Send a detailed prompt with ultra reasoning:
+Send a detailed prompt with max reasoning:
 
 ```
 mcp__claude-review__review_start:
