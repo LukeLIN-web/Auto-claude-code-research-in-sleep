@@ -142,6 +142,14 @@ with those numbers rather than attempted.
    tables are AUTO-GENERATED, change the *generator* to emit the fragment; the
    parent wrapper lives in the section .tex. Delete panel-caption words the
    parent caption now carries (e.g. the benchmark name).
+   **Panels, not one tabular, whenever the rows are not on one protocol.** An
+   identical column header is not enough: if the nominally same arm reads
+   differently in the two tables (different answer weights, window cap,
+   denominator marker), one tabular invites the cross-row comparison and
+   then needs a group label plus a footnote to disown it. Two panels under a
+   parent caption share the header definitions and keep the comparisons
+   apart. Stack full-width panels with `\par\medskip` between them; the
+   parent float carries no `\label` of its own.
 4. **Two figures → one figure with subfigures** only when a shared caption
    genuinely helps; co-paging (1) achieves the same visual result without
    renumbering.
