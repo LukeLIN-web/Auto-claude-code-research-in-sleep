@@ -25,17 +25,70 @@ decision below is "does image-height + caption-height fit the budget".
 ## Step 1: Inventory — map every float to its page, then look at the pages
 
 ```bash
-# where is each float placed?
-pdftotext main.pdf - | awk -v pat="<caption first words>" 'BEGIN{p=1} /\f/{p++} index($0,pat){print p; exit}'
-# what does the page actually look like? (low DPI is enough to see whitespace)
+# where is each float (and section) placed? The .aux already knows: \newlabel{lab}{{num}{page}}
+python3 - <<'EOF'
+import re
+for lab,num,pg in re.findall(r'\\newlabel\{([^}]+)\}\{\{([^}]*)\}\{(\d+)\}', open("main.aux").read()):
+    if lab.startswith(("fig:","tab:","sec:","app:")): print(f"p{int(pg):2d} {lab:28s} {num}")
+EOF
+# what does the page actually look like? (45-60 dpi is enough to see whitespace)
 pdftoppm -png -r 50 -f <first> -l <last> main.pdf pages/p
 ```
 
-Read the rendered PNGs. You are looking for: floats alone on >40%-empty float
-pages, related floats split by a page break, small floats (< 0.55\textwidth)
+The `.aux` map beats grepping caption words in `pdftotext`: one pass gives every
+float, every section start, and the number each label renders as — the same
+map re-run after an edit is the proof that no float was renumbered.
+
+Read the rendered PNGs — tile 4–7 pages side by side into one PNG (PIL, a
+red page-number tag per tile) so a whole section is judged in one look, then
+zoom to 75–100 dpi only on the pages that look wrong.
+
+You are looking for: floats alone on >40%-empty float pages, related floats split by a page break, small floats (< 0.55\textwidth)
 stacked vertically with dead space beside them, and tables wrapped in
 `\resizebox{\textwidth}` that are *narrower* than `\textwidth` (resizebox
 MAGNIFIES those — a real bug, fix by deleting the resizebox).
+
+## Step 1b: Audit the float barriers before blaming float sizes
+
+If the document uses `placeins` (`\FloatBarrier` at section starts — common
+in appendices), check whether the blank pages are barrier artifacts. Two
+signatures, both seen on one manuscript (42 → 41 pages from fixing them, with
+no content touched):
+
+1. **A barrier fired with a float still deferred.** `\FloatBarrier` forces
+   `\newpage` whenever `\@deferlist` is non-empty; the float lands at the top
+   of the next page, the few lines of text that spilled with it follow, and
+   the page is then ended — a page 70% blank, right before the section start.
+2. **The barrier's own `\suppressfloats[t]`.** After the barrier, no top float
+   may appear on the page where the new section starts. A section that opens
+   with `[t]`-only tables therefore has every float pushed to the *following*
+   page: three tables stacked with no text, and the section's figure alone on
+   the page after that.
+
+Diagnose in one compile, in a scratch copy:
+
+```bash
+sed -i 's/\\usepackage{placeins}/\\usepackage[verbose]{placeins}/' main.tex   # then latexmk
+grep -n 'placeins' main.log | grep -E 'Must dump|stuck|lands on'
+# "Float barrier ... processed on page 33, lands on page 34" + "Must dump some floats"
+#   = signature 1 at that barrier; "Some floats are stuck" = it had to \clearpage.
+```
+
+Fixes, cheapest first — all zero content change:
+
+- `\usepackage[above]{placeins}` removes the `\suppressfloats[t]` (signature 2).
+  A section's own floats may then sit above its heading on the page where it
+  starts; that is the only visible side effect, and it is what plain LaTeX does.
+- For signature 1, make the pre-barrier float placeable *before* the barrier:
+  `[t]` → `[htbp]` lets it drop in "here" under the page's existing top float
+  when the top area is already taken (`\topfraction` × `\textheight` is the
+  cap for *stacked* top floats, and a 9-line caption on the float above is
+  often what pushes the sum over it). Removing that one barrier also works but
+  lets the float drift under the next section's heading.
+- `[below]` only matters for `b` floats; it does nothing for a `[t]` table.
+
+Do this before any merge: the barrier fix is a package option plus one
+specifier, and the merges you were about to plan may not be needed.
 
 ## Step 2: Compute feasibility BEFORE editing
 
@@ -57,6 +110,17 @@ pdfinfo figures/<f>.pdf | grep "Page size"   # natural size in pt
 
 If images alone exceed the budget, the merge is infeasible unless captions are
 cut (Step 4) or the figure is redesigned — say so instead of forcing it.
+
+**Section tiling floor.** Before touching specifiers in a section, sum its
+float heights (image × scale + caption lines × ~11.5pt) and its text, divide
+by `\textheight`, and take the ceiling. If that equals the pages the section
+occupies now, specifiers cannot help — the pieces simply do not tile — and
+only a caption diet or a figure resize moves it. Worked case: a 5-page
+appendix section with six floats (≈1876pt) and ≈1.3 pages of text; every
+specifier combination on its six floats plus `\floatpagefraction` 0.8 gave
+the identical page map. The caption diet on offer there was ≈10 lines
+(≈125pt) against the ≈220pt a page needs, so it was reported as rejected
+with those numbers rather than attempted.
 
 ## Step 3: Merge toolbox (cheapest ref-churn first)
 
@@ -124,6 +188,25 @@ chosen — check height vs `\topfraction`, then adjust specifier or shave the
 caption/figure a few pt. Expect 2–4 compile-inspect rounds; margins are often
 within 10pt of the budget.
 
+**Run the variants in scratch copies, in parallel, never in the shared
+checkout.** Each variant is an `rsync` of the paper dir (minus `.git` and
+build products) plus a few `sed` lines, built with `latexmk`; one build is
+about a minute, and 4–6 run side by side. Print one line per variant — page
+count, the page the body ends on, Overfull count — plus the `.aux` float map
+from Step 1, and compare maps, not impressions. A hypothesis that "looks
+obvious" from the render (an `[H]` figure dragging a subsection to a new
+page) was falsified this way in one round: the `[H]` was irrelevant, the
+float page above it was the cause. Only the winning variant's edits go into
+the real checkout, through the project's own build script.
+
+Prove the edit changed nothing but placement:
+
+```bash
+# body/reference pages untouched (text-identical to the baseline build)
+cmp <(pdftotext -f 1 -l <last body page> base/main.pdf -) <(pdftotext -f 1 -l <same> main.pdf -)
+# no float renumbered: diff the .aux label→(number,page) maps; only pages may move
+```
+
 ## Step 6: Report
 
 State page count before/after, each merge made (and the ref form it produces,
@@ -142,6 +225,14 @@ merges you rejected with the pt arithmetic that rules them out. Leave pushing
   "ensure_input"-style idempotent section injection still finds its anchor.
 - Floats never cross a `\FloatBarrier`/section boundary — merges must stay
   within one section, and cross-section pairings hurt findability anyway.
+- `\FloatBarrier` is itself a page-waster in two ways (Step 1b): a deferred
+  float at the barrier forces a mostly-blank page, and the barrier's
+  `\suppressfloats[t]` cascades a section's `[t]` floats to the next page.
+  `[verbose]` placeins names the barrier; `[above]` + one `[htbp]` fixed both.
+- Two deferred floats that together just clear `\floatpagefraction` form a
+  float page and all text moves off it; raising the fraction only helps if
+  their sum is actually below the new threshold — measure the two heights
+  from the render before assuming.
 - The shared checkout may change under you mid-session (figures regenerated,
   captions touched): re-grep the exact on-disk string before every Edit, and
   re-check that a rewritten caption still matches the *current* figure.
