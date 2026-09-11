@@ -149,7 +149,7 @@ where `frac` is the `\textwidth` fraction the figure is included at.
 ```python
 import fitz                                   # pymupdf env
 p = fitz.open("figures/keepcap_sweep.pdf")[0]
-s = frac * 6.5 / (p.rect.width / 72)          # TEXT_W from paper_plot_style
+s = frac * 5.5 / (p.rect.width / 72)          # TEXT_W from paper_plot_style (5.5 in, iclr2027)
 sz = [sp["size"] * s for b in p.get_text("dict")["blocks"]
       for l in b.get("lines", []) for sp in l["spans"] if sp["text"].strip()]
 print(round(p.rect.width / 72, 2), round(s, 3), round(min(sz), 2), round(max(sz), 2))
