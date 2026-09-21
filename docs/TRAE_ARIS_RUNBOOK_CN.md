@@ -62,8 +62,8 @@ codex login
 2) 在 Trae 中配置 MCP  
 进入 `Settings → MCP → 手动添加`，新增：
 - Name: `codex`
-- Command: `codex`
-- Args: `mcp-server`
+- Command: `python3`
+- Args: `/ABSOLUTE/PATH/TO/aris_repo/mcp-servers/codex-exec/server.py`（ARIS 自带的桥接，底下跑 `codex exec`；codex-cli 0.154 删掉了 `codex mcp-server`）
 
 如你的 Trae 版本支持工作区 MCP 文件，可用：
 
@@ -71,8 +71,8 @@ codex login
 {
   "mcpServers": {
     "codex": {
-      "command": "codex",
-      "args": ["mcp-server"]
+      "command": "python3",
+      "args": ["/ABSOLUTE/PATH/TO/aris_repo/mcp-servers/codex-exec/server.py"]
     }
   }
 }

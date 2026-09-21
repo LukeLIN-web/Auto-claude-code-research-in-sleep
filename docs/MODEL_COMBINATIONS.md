@@ -85,8 +85,8 @@ Configure `~/.claude/settings.json`:
     },
     "mcpServers": {
         "codex": {
-            "command": "/opt/homebrew/bin/codex",
-            "args": ["mcp-server"]
+            "command": "python3",
+            "args": ["/ABSOLUTE/PATH/TO/aris_repo/mcp-servers/codex-exec/server.py"]
         }
     }
 }
