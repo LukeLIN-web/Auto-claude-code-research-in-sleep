@@ -1,6 +1,6 @@
 ---
 name: paper-claim-audit
-description: "Zero-context verification that every number, comparison, and scope claim in the paper matches raw result files. Uses a fresh cross-model reviewer with NO prior context to prevent confirmation bias. Use when user says \"审查论文数据\", \"check paper claims\", \"verify numbers\", \"论文数字核对\", or before submission to ensure paper-to-evidence fidelity."
+description: "Zero-context verification that every number, comparison, and scope claim in the paper matches raw result files — and that every claim about what PRODUCED a number (which weights, which recipe, which arm) and every gloss the paper gives a row, footnote mark or term borrowed from another paper is traceable to its source rather than inferred. Uses a fresh cross-model reviewer with NO prior context to prevent confirmation bias. Use when user says \"审查论文数据\", \"check paper claims\", \"verify numbers\", \"论文数字核对\", \"检查表和图有没有事实错误\", or before submission to ensure paper-to-evidence fidelity."
 argument-hint: "[paper-directory]"
 allowed-tools: Bash(*), Read, Write, Edit, Grep, Glob, mcp__codex__codex
 ---
@@ -33,7 +33,17 @@ A **fresh reviewer with zero prior context** catches these because it has no exp
 |-------|-------------------|
 | `/experiment-audit` | Is the experiment code honest? (fake GT, normalization fraud) |
 | `/result-to-claim` | Does the data scientifically support this claim? |
-| **`/paper-claim-audit`** | **Does the paper report the data truthfully and precisely?** |
+| `/citation-audit` | Is the reference real, and does that paper support being cited here? |
+| **`/paper-claim-audit`** | **Does the paper report the data truthfully and precisely — and describe correctly what produced it and what it borrowed?** |
+
+**Mind the seam with `/citation-audit`.** That skill stops at "the reference
+exists and the context fits"; this one used to stop at "the number matches".
+A sentence that borrows a row from a cited paper and then explains what its
+footnote mark means falls between the two: the number is right, the citation
+is real, and the explanation can be entirely invented. It is checked here
+(failure mode 8) because the gloss is a claim about evidence, and because a
+caption is the least-scanned text in a paper — an invented one survives
+rounds of both audits.
 
 ## Reviewer Persona
 
@@ -85,12 +95,46 @@ wandb-summary.json (if exists)
 **/config.yaml, **/args.json (experiment configs)
 ```
 
+**Source files** (evidence for anything the paper reprints from another
+paper — published rows, footnote marks, bin names, split names). Pass the
+sources themselves, not our notes about them:
+```
+docs/reference/**/*.tex     # full text of the benchmarks/systems we quote
+```
+Without these, failure mode 8 cannot be checked at all: the reviewer has no
+way to tell a transcribed gloss from an invented one. A paper that reprints
+no external row needs none of these.
+
 **Exclude** (no summaries, no interpretations):
 ```
 EXPERIMENT_LOG.md, EXPERIMENT_TRACKER.md, AUTO_REVIEW*.md
 NARRATIVE_REPORT.md, PAPER_PLAN.md, findings.md
 Any .md file that is an executor-written summary
+Our own .md notes ABOUT a cited paper — pass its .tex, not the note
 ```
+
+### Step 1b: Prove float = SSOT mechanically first (Executor — Claude)
+
+Only where the paper's tables and figures are **generated** from an SSOT by
+scripts (this repo's `paper/scripts/tab_*.py` / `fig_*.py` pattern). Skip when
+floats are hand-authored.
+
+Regenerate every float and diff it against what is committed:
+
+- tables → the emitted `.tex` must come back **byte-identical**;
+- figures → the PDFs differ in metadata on every rebuild, so compare
+  **rendered pixels** (`pypdfium2`, `scale=3`, hash the bitmap), not bytes.
+
+A clean diff retires the whole staleness class — "the float was built from an
+older SSOT" — in one command, for every float at once. Restore any float whose
+rebuild was metadata-only so the diff you hand on is the real one.
+
+**Then say so in the reviewer prompt**, and point it at what a diff cannot
+reach: the *prose* of the captions and the *provenance* of the arms (modes
+8–11 below). Without this the reviewer spends its budget re-deriving cells
+that a diff already proved, and the caption sentences — the least-scanned text
+in the paper — get the leftovers. A byte-identical table is not a correct
+table: its caption can still misdescribe what the column is.
 
 ### Step 2: Fresh Reviewer Audit (GPT-6-Astra — NEW thread, no reply)
 
@@ -111,6 +155,12 @@ mcp__codex__codex:
 
     Result files to read:
     [list .json/.csv/.yaml file paths]
+
+    Source papers we reprint rows or marks from:
+    [list .tex file paths, or "none"]
+
+    Floats already proven to match their SSOT mechanically:
+    [list, or "none — check the cells too"]
 
     ## Audit Protocol
 
@@ -155,6 +205,46 @@ mcp__codex__codex:
        but only tested on 2 datasets
        Rule: check if language matches actual evaluation scope
 
+    8. **Borrowed gloss**: The paper reprints a row, a footnote mark or a
+       bin name from someone else's table, and then explains what that mark
+       means. Paper's caption: "a = a finetune by the benchmark's authors,
+       not released". Source's caption: "an author-finetuned backbone" —
+       and nothing more.
+       Rule: every word of the gloss must be traceable to the source's own
+       sentence. Who trained it, whether it was released, what an acronym
+       expands to, which split it is on: if the source does not say it, the
+       paper may not either, however plausible the reading. Quote the
+       source's defining sentence beside the paper's gloss and diff them.
+       This is the one failure mode NEITHER a number audit NOR a citation
+       audit covers: the number is right and the reference is real, and the
+       invented gloss rides along between them. Check each one even when
+       the row's numbers came back exact_match.
+
+    9. **Arm identity**: Claims about what produced a number rather than
+       what it is — "the same weights", "both arms carry the answer
+       adapter", "with no adapter mounted", "trained on X", "the official
+       recipe re-run".
+       Rule: resolve these against the arm's own provenance (adapter path,
+       config, checkpoint id in the product's metadata), never against its
+       accuracy. Two arms can agree on every printed digit and still have
+       been produced by different weights.
+
+    10. **Cross-float conflict**: Two floats describe the same underlying
+        cell in incompatible ways — a table's caption calls a baseline "an
+        official-style whole-clip run on the bare backbone", a figure's
+        caption calls the same cell "the same weights as our method".
+        Rule: group the claims you extracted by the evidence file each one
+        resolves to, then read every description pointing at one file
+        together. A per-claim pass cannot see this; only the grouping can.
+        Where one sentence covers several cells ("otherwise the same
+        weights"), check it against EACH cell it covers — a clause that is
+        true of four spokes and false of three is still false.
+
+    11. **Orphan float**: A table or figure that is typeset but never
+        referenced, or a \ref to a label that no longer exists.
+        Rule: count both directions — every float label against the \ref
+        occurrences in the sources, and every \ref against the labels.
+
     ## Output Format (per claim)
     For each claim, report:
     - claim_id: sequential number
@@ -165,8 +255,11 @@ mcp__codex__codex:
     - evidence_value: the actual number
     - status: exact_match | rounding_ok | ambiguous_mapping |
               missing_evidence | config_mismatch | aggregation_mismatch |
-              number_mismatch | scope_overclaim | unsupported_claim
-    - details: explanation if not exact_match
+              number_mismatch | scope_overclaim | unsupported_claim |
+              source_gloss_unsupported | arm_identity_mismatch |
+              cross_float_conflict | orphan_float
+    - details: explanation if not exact_match. For
+      source_gloss_unsupported, quote the source's own defining sentence.
 
     Overall verdict: PASS | WARN | FAIL
 ```
@@ -337,6 +430,9 @@ external `results/` dirs. The verifier resolves relative entries via
 | All claims reconcile to raw data                      | `PASS`           | `all_numbers_match`   |
 | Minor rounding drift only, no material mismatch       | `WARN`           | `rounding_drift`      |
 | Any material mismatch (wrong number, config mismatch) | `FAIL`           | `claim_mismatch`      |
+| A gloss of a borrowed row or mark the source does not support | `FAIL`   | `source_gloss_unsupported` |
+| Two floats describing one cell incompatibly            | `FAIL`           | `cross_float_conflict` |
+| A float typeset but never referenced                   | `WARN`           | `orphan_float`        |
 | Reviewer invocation failed (network / malformed)      | `ERROR`          | `reviewer_error`      |
 
 ### Thread independence
