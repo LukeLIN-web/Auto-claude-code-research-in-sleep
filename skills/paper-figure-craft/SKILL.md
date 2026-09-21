@@ -52,8 +52,9 @@ is settled — do not re-propose an alternative; reopening it needs the user.**
 | **WYSIWYG width law**: `figsize` width **is** the printed width — `TEXT_W` (in `paper_plot_style.py`) × the `\textwidth` fraction the figure is included at. | — | Otherwise `\includegraphics` scales the type along with the drawing. |
 | **Every printed glyph in 7.5–11 pt** (body text is 10). Do not shrink type to fit; change the layout. | — | Declared ≠ printed, and the ratio cannot be computed from `figsize` when `savefig.bbox="tight"` crops the canvas. Measurement recipe: memory `paper-figure-and-table-build`. |
 | **A schematic's labels are structure and symbols only** — config constants and explanations live in the prose, never printed on the drawing, and never relocated into the caption. Scopes the 2026-08-03 rule to data plots. | 2026-09-21 | Issued on `fig:stream`, whose canvas was carrying `K = 8`, `keep top B = 3`, the frame and window budgets and the ASR settings that `app:streamarena` already states. See **What a caption is**. |
+| **A symbol may be drawn on a figure only if the reader has met its definition by the page the figure lands on.** Reading order is the compiled PDF's, not the `.tex` order. `fig:architecture` prints in §1, so none of §3's notation ($g_m$, $r_{m,k}$, $\phi_{\mathrm{loc}}$, $\omega$, $q$, $K$, $B$, $M$) may appear on it: the label is the word the caption or the preceding prose already uses (`block ranking`, `candidate windows`, `retained blocks`, `localization LoRA`, `outline`). Neither a gloss on the canvas nor a definition in the caption repairs an early symbol; only the word does. | 2026-09-21 | Issued the same day as the schematic ruling, on its first application: the relabelled `fig:architecture` carried `gm`, `rm,k`, `top-B blocks by gm`, `≤ B² windows`, `ω`, `q`, `1…K`. User: 「gm, rm,k 啥意思,你这就不符合 paper-jargon-pass」. The test is `paper-jargon-pass`'s figure reader, who holds this figure, its caption and the pages before it, nothing after. `fig:stream` keeps its `LoRA φloc` badge because it prints in the appendix, after §3. |
 | **`fig:architecture` is a hand-written SVG under a content lock**, not matplotlib. | 2026-08-17 | Edit `paper/scripts/fig_arch.svg`; any wording change moves in lockstep with `fig_arch_blueprint.json` or the build rejects the drift. |
-| **A figure defines its own symbols where they appear; the caption is not the symbol table.** `fig:architecture`'s caption dropped its `Symbols:` paragraph: each symbol is glossed at the mark that draws it (`M blocks × 600 s` on the edge defines $M$; the badge text `LoRA φloc` says what φ is). Caption = bold title + one clause per panel side, ~300 chars. | 2026-08-30 | "Self-representative" was the user's word. A symbol left undefined in the figure is fixed *in the figure* — widen the badge, extend the label — never by growing the caption back. |
+| **A figure defines its own symbols where they appear; the caption is not the symbol table.** `fig:architecture`'s caption dropped its `Symbols:` paragraph: each symbol is glossed at the mark that draws it (`M blocks × 600 s` on the edge defines $M$; the badge text `LoRA φloc` says what φ is). Caption = bold title + one clause per panel side, ~300 chars. | 2026-08-30 | "Self-representative" was the user's word. A symbol left undefined in the figure is fixed *in the figure* — widen the badge, extend the label — never by growing the caption back. For a symbol whose definition comes *after* the figure's page there is no gloss to widen: it is replaced by the word (2026-09-21, two rows up). |
 | **One hue = one meaning within a figure.** A media/data color may not share hue with the structural accent: audio moved off light blue to teal `#79c9b2` because `C_OURS` (`#c89336` since 2026-09-01, `#2a78d6` when the ruling was made) is the pipeline/selection accent everywhere. A legend chip must be drawn exactly like some mark in the figure — the white-box-with-blue-border `kept` chip matched nothing and died; kept-ness is direct-labelled next to its marks, and magnification marks (zoom outline + cone) are grey dashed so a solid blue outline reads as selection only. | 2026-08-30 | Route side rails (the Question→Stage-I conditioning edge) down the *empty* margin, away from the corner the panel connectors use. |
 | **Lightness before hue.** Two series a reader must tell apart need a *relative-luminance* step, not just a different hue; compute it before choosing. Saturation is not pushed to the maximum, and one figure has one dominant plus one or two accents. | 2026-09-01 | Issued on a shipped figure whose two curves were gold `#c89336` (L 0.334) and grass green `#88B83D` (L 0.399) — different hues, same lightness, 「根本看不出来」. Recipe and worked cases: **Choosing the colours** below. |
 | **No em dashes in figure labels** — the user reads them as AI-generated. Use `·`, a comma, or a colon; sweep the SVG and the blueprint together. | 2026-08-30 | Prose has its own dash rule (two pairs = split); this one is absolute for label text. |
@@ -215,6 +216,10 @@ authority for a caliber that will change. **Strip it; the prose is its home**,
 and config constants are already allowed there. What stays is structure and
 symbols: group names, row names, stage names, axis tick names, a symbol badge
 (`LoRA φloc`), a one-word gloss on a mark that has no other name (`reserved`).
+A symbol, though, only where the reader has already met it: compare the page the
+figure lands on with the page that defines the symbol, in the compiled PDF. A
+figure in §1 carries no §3 notation; its labels are the words its own caption
+and §1 use.
 
 - **The test**: delete the label — is the structure still recognisable? Then it
   goes. What survives the test stays, in the shortest word that works.
@@ -225,6 +230,15 @@ symbols: group names, row names, stage names, axis tick names, a symbol badge
   `block 1`–`4`, `query time`, `Raw archive`, `ASR`, `Transcript index`, the
   three arms' row names, `Localization pass`, `LoRA φloc`, `Answer pass`,
   `reserved`. Everything cut was already in `app:streamarena`, line for line.
+- **Worked case** — `fig:architecture`, 2026-09-21, the same day: the first
+  relabelling swapped the constants for §3's symbols (`gm`, `rm,k`, `top-B blocks
+  by gm`, `≤ B² windows`, `ω`, `q`, `1…K`) on a figure that prints in §1. Second
+  pass, all words the caption or §1 already uses: `block ranking`, `candidate
+  windows`, `retained blocks`, `retained windows`, `outline`, `question`,
+  `localization LoRA` / `answer LoRA`, `last block`. The max is drawn (one framed
+  candidate window), not written; the outline and question slots of the answer
+  sequence wear their nodes' fill and dash. The blueprint's `forbidden_tokens`
+  now rejects `φ`, `ω`, `≤`, `top-B`, `gm`, `rm,k`.
 
 ## Redesign checklist
 

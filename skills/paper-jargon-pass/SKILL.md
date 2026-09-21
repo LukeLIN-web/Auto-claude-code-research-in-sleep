@@ -1,6 +1,6 @@
 ---
 name: paper-jargon-pass
-description: "Use when a paper reads fine to the author but a reviewer would stall on it — 论文术语审查/没定义就用的词和数字/审稿人读不懂/统一术语/undefined notation/jargon audit for papers. Catches terms used before they are defined, lab-internal working vocabulary that leaked into English (考场→\"court\", 口径→\"caliber\"), config numbers that arrive before the thing they configure is named (\"600-second blocks\", \"the top B=3 blocks\"), one word carrying three meanings, and 废话/无中生有 — prose narrating things that do not exist (\"Video-Odyssey publishes no row for this backbone and has no column\"), flagged by the delete-test and deleted or demoted to a table footnote. Three passes: assembly check → blind read of the compiled PDF → verify against code/data and rewrite."
+description: "Use when a paper reads fine to the author but a reviewer would stall on it — 论文术语审查/没定义就用的词和数字/审稿人读不懂/统一术语/undefined notation/jargon audit for papers. Catches terms used before they are defined (including notation drawn on a figure canvas before the section that defines it: g_m on Figure 1 in §1), lab-internal working vocabulary that leaked into English (考场→\"court\", 口径→\"caliber\"), config numbers that arrive before the thing they configure is named (\"600-second blocks\", \"the top B=3 blocks\"), one word carrying three meanings, and 废话/无中生有 — prose narrating things that do not exist (\"Video-Odyssey publishes no row for this backbone and has no column\"), flagged by the delete-test and deleted or demoted to a table footnote. Three passes: assembly check → blind read of the compiled PDF → verify against code/data and rewrite."
 argument-hint: "[paper 目录或 clone 目录,默认自动发现]"
 allowed-tools: Bash(*), Read, Write, Edit, Grep, Glob
 ---
@@ -21,9 +21,15 @@ allowed-tools: Bash(*), Read, Write, Edit, Grep, Glob
 |---|---|---|
 | 摘要读者 | 标题和摘要,别的什么都没有 | 摘要里的每个符号、每个数字、每个自造名词,要么当场定义,要么删掉 |
 | 正文读者 | 读到这一页为止的所有正文 | 定义必须先于首次使用(按页序) |
-| 图表读者 | **只有这张图/表和它的 caption** | caption 里的词若只在正文定义,对它的读者就是没定义 |
+| 图表读者 | **只有这张图/表和它的 caption**,以及它落页之前的正文 | caption 里的词、**画布上画着的每个标签与符号**,若只在后文定义,对它的读者就是没定义 |
 
 caption 和表注是**独立阅读单元**——审稿人翻表格的次数远多于逐行读正文。用了正文才定义的词,算未定义,不算"前文有"。
+
+**图的画布也是阅读单元,而且是最早被撞见的那个**:审稿人先翻图再读正文。方法图/架构图上的符号徽章、边标、轴名
+与 caption 同待遇——`g_m`、`r_{m,k}`、`φloc`、`ω`、`K` 画在 §1 的 Fig 1 上而 §3 才定义,就是未定义记号
+(user 裁定 2026-09-21,「gm, rm,k 啥意思」)。修法在图不在文:换成 caption 或前文已经在用的词
+(`block ranking`、`candidate windows`、`localization LoRA`),**不是**在画布上补 gloss,也不是在 caption 里补定义
+(`paper-figure-craft` 同日裁定)。图落在哪一节,画布上就只能用到那一节为止的词。
 
 ## 第 0 趟:装配检查(先跑,零阅读)
 
@@ -52,7 +58,11 @@ grep -o '\\newlabel{sec:[^}]*}' main.aux
 
 ```bash
 pdftotext -layout main.pdf - | sed -n '1,240p'   # 正文,按页序,一次一段
+for f in figures/*.pdf; do echo "== $f"; pdftotext "$f" -; done   # 每张图画布上的全部文字,按图的落页并入
 ```
+
+手绘 SVG 图的画布文字就是 `scripts/fig_*_blueprint.json` 里锁住的字符串,matplotlib 图的在 `scripts/fig_*.py`
+的硬编码字符串里;`pdftotext` 抓的是排版结果,以它为准。
 
 装成**这个领域的审稿人**:懂 LoRA、bootstrap、greedy decoding、MCQ,但没读过这个仓库、没读过前几轮结果页、不知道这个组内部管什么叫什么。读到第 N 页时**不许**往后翻找定义、不许 grep 代码、不许打开 `scripts/`、不许读 appendix 去救正文。
 
@@ -73,6 +83,9 @@ pdftotext -layout main.pdf - | sed -n '1,240p'   # 正文,按页序,一次一段
 - **内部工作语 / 翻译残留**——组里中文黑话被直译进英文,读起来像正经术语,作者永远看不见:`考场→court`、`口径→caliber`、`臂→arm`、`剂量→dose`、`打底→ground`。检验法只有一条:**这个词在本领域公开文献里,是这个意思吗?** 不是就换。`arm` 有(临床试验),`court` 没有。
 - **一词多义 / 含义漂移**——同一个词在三处指三样东西(`caliber` 一会儿指窗口枚举、一会儿指权重配置、一会儿指 prompt 版本)。同一个词第三次出现时你又得重猜 = 记。
 - **同物异名**——`regime` 与 `régime`、`region` 与 `window`、`benchmark` 与 `court`、`localization-training system` 与 `retrieval-trained system` 与 `localization-only row` 指同一条臂。读者会以为是三个东西。
+- **画布上的记号早于定义**——方法图/架构图上的 `g_m`、`r_{m,k}`、`φloc`、`ω`、`1…K`,图落在 p.2 而定义在 p.4。
+  修法只有一个:换成 caption 或图之前的正文已经在用的词(`block ranking`、`candidate windows`、`retained blocks`、
+  `localization LoRA`);画布上补 gloss 与 caption 里补定义都不算修(user 裁定 2026-09-21)。
 - **宏与上标无图例**——`\newcommand` 定义的东西对读者不存在:`\method`、`$\Tans$`、`\starred`、`\textsuperscript{\ddag}`、`$\circ$`。查的是每个宏**排版后首次出现**的位置,以及图例是否在那之前。
 - **悬空指代**——"the anchor""that régime""both enumerations""the deep benchmark":哪个?哪两个?什么叫 deep?
 - **名不副实**——`coverage` 在三处分别是"证据命中率""音频保留比例""块覆盖",名字一样含义不同。
@@ -194,7 +207,8 @@ done | sort -n
 
 1. **重编译**:`cd paper/scripts && ./compile.sh`,rc=0,新的 `undefined reference` 数不增加(既有的 undefined citation 不管)。
 2. **摘要自足**:摘要里每个符号/自造名词都在摘要内定义或已删。
-3. **页序检查**(可脚本化):对每个被改的术语,`pdftotext` 后定义出现的页 ≤ 首次使用的页。
+3. **页序检查**(可脚本化):对每个被改的术语,`pdftotext` 后定义出现的页 ≤ 首次使用的页。**含图**:每张图画布上的
+   每个符号(`pdftotext figures/<图>.pdf -`),定义页 ≤ 图的落页;Fig 1 落在 §1 ⇒ 画布上一个 §3 记号都不许有。
 4. **验收盲读是强制步骤,且必须派给独立 subagent**——你在第二趟里已经被实现污染第二次了,自己重读绝对发现不了残留。给它新编的 PDF 前两页 + 一张随机 caption,不给任何上下文。新一轮不再产生 `承重` 条目才算过。
 5. 全篇没有新增只有本组懂的词;换掉的词全仓无残留(`grep -rn` 旧词,含 `fig_*.py`)。
 6. 汇报分三块,**顺序不能反**:①装配问题与结构改动(丢节、缺记号小节)②发现的 bug(自相矛盾、数值互斥、数目不自洽)③已删的废话(每条附一行删句测试)与已改的措辞。措辞列表最长但最不重要,放最后。
@@ -207,6 +221,7 @@ done | sort -n
 | 边读边 grep 实现"确认一下" | 盲读就作废了;确认放第二趟 |
 | 后文/附录有定义就放过 | 定义晚于使用照记,把定义搬到首次出现处 |
 | caption 里的词"正文定义过了" | caption 是独立阅读单元,算未定义 |
+| 图上的符号"§3 定义过了"就放过 | 画布标签与 caption 同待遇,且图比正文先被看;Fig 1 落在 §1,§3 的 `g_m`/`φ`/`K` 一个都不许画上去,换成 caption 已用的词 |
 | 每个没见过的名词都记 → 上百条 | 门槛是"必须重读或翻页",不是"不眼熟" |
 | 承重 20+ 还在逐词记 | 那是结构问题,转去写文档级判定(缺记号约定小节) |
 | 把 `LoRA`/`bootstrap`/`prefill` 改成大白话 | 领域读者认得的原样留,进良品名单 |
