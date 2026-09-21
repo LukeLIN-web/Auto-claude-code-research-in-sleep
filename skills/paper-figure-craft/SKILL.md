@@ -51,6 +51,7 @@ is settled — do not re-propose an alternative; reopening it needs the user.**
 | **Numbers come from an SSOT** — `paper/data/*.json` or the per-question artefacts under `outputs/eval/` — and a figure is never hand-edited to change a number. | — | Edit the source, rerun the build. |
 | **WYSIWYG width law**: `figsize` width **is** the printed width — `TEXT_W` (in `paper_plot_style.py`) × the `\textwidth` fraction the figure is included at. | — | Otherwise `\includegraphics` scales the type along with the drawing. |
 | **Every printed glyph in 7.5–11 pt** (body text is 10). Do not shrink type to fit; change the layout. | — | Declared ≠ printed, and the ratio cannot be computed from `figsize` when `savefig.bbox="tight"` crops the canvas. Measurement recipe: memory `paper-figure-and-table-build`. |
+| **A schematic's labels are structure and symbols only** — config constants and explanations live in the prose, never printed on the drawing, and never relocated into the caption. Scopes the 2026-08-03 rule to data plots. | 2026-09-21 | Issued on `fig:stream`, whose canvas was carrying `K = 8`, `keep top B = 3`, the frame and window budgets and the ASR settings that `app:streamarena` already states. See **What a caption is**. |
 | **`fig:architecture` is a hand-written SVG under a content lock**, not matplotlib. | 2026-08-17 | Edit `paper/scripts/fig_arch.svg`; any wording change moves in lockstep with `fig_arch_blueprint.json` or the build rejects the drift. |
 | **A figure defines its own symbols where they appear; the caption is not the symbol table.** `fig:architecture`'s caption dropped its `Symbols:` paragraph: each symbol is glossed at the mark that draws it (`M blocks × 600 s` on the edge defines $M$; the badge text `LoRA φloc` says what φ is). Caption = bold title + one clause per panel side, ~300 chars. | 2026-08-30 | "Self-representative" was the user's word. A symbol left undefined in the figure is fixed *in the figure* — widen the badge, extend the label — never by growing the caption back. |
 | **One hue = one meaning within a figure.** A media/data color may not share hue with the structural accent: audio moved off light blue to teal `#79c9b2` because `C_OURS` (`#c89336` since 2026-09-01, `#2a78d6` when the ruling was made) is the pipeline/selection accent everywhere. A legend chip must be drawn exactly like some mark in the figure — the white-box-with-blue-border `kept` chip matched nothing and died; kept-ness is direct-labelled next to its marks, and magnification marks (zoom outline + cone) are grey dashed so a solid blue outline reads as selection only. | 2026-08-30 | Route side rails (the Question→Stage-I conditioning edge) down the *empty* margin, away from the corner the panel connectors use. |
@@ -197,13 +198,33 @@ caption but a figure whose panels cannot be compared; fix the axes, not the
 sentence.
 
 And the reciprocal rule, which is where the duplication actually shows up
-(`paper/CLAUDE.md`, 2026-08-03): **appendix prose does not repeat a number the
-figure already draws.** Bar-value labels, Δ annotations, flip counts, error
-bars, curve endpoints, a rate in a panel title — the prose gives the direction
-and whether it was decided, and points. An error bar is sufficient; do not
-transcribe the interval into the sentence. Before cutting, open the
-corresponding `fig_*.py` and read what it actually labels — one paragraph
-routinely mixes drawn numbers with numbers that have no other home.
+(`paper/CLAUDE.md`, 2026-08-03): **on a data plot, appendix prose does not
+repeat a number the figure already draws.** Bar-value labels, Δ annotations,
+flip counts, error bars, curve endpoints, a rate in a panel title — the prose
+gives the direction and whether it was decided, and points. An error bar is
+sufficient; do not transcribe the interval into the sentence. Before cutting,
+open the corresponding `fig_*.py` and read what it actually labels — one
+paragraph routinely mixes drawn numbers with numbers that have no other home.
+
+**On a schematic the arrow points the other way** (user, 2026-09-21). A method,
+protocol or architecture figure draws no measurement, so a constant printed on
+it — `600 s blocks, fixed by the clock`, `K = 8 candidate windows`, `keep top
+B = 3 · shortlist 3 windows each`, `32 frames + full audio per 75 s window`, `no
+lookahead · one worker` — is prose copied onto the canvas, and a second
+authority for a caliber that will change. **Strip it; the prose is its home**,
+and config constants are already allowed there. What stays is structure and
+symbols: group names, row names, stage names, axis tick names, a symbol badge
+(`LoRA φloc`), a one-word gloss on a mark that has no other name (`reserved`).
+
+- **The test**: delete the label — is the structure still recognisable? Then it
+  goes. What survives the test stays, in the shortest word that works.
+- **Check the prose has a landing spot before deleting.** If it does not, write
+  the prose first. Do **not** move it into the caption: the caption is the
+  graphic's legend, not a second body text.
+- **Worked case** — `fig:stream`, 2026-09-21: 39 text runs down to 24. Kept
+  `block 1`–`4`, `query time`, `Raw archive`, `ASR`, `Transcript index`, the
+  three arms' row names, `Localization pass`, `LoRA φloc`, `Answer pass`,
+  `reserved`. Everything cut was already in `app:streamarena`, line for line.
 
 ## Redesign checklist
 
