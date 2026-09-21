@@ -38,8 +38,8 @@ ARIS uses an external LLM (GPT-6-Astra via Codex) as a critical reviewer. To ena
    {
      "mcpServers": {
        "codex": {
-         "command": "codex",
-         "args": ["mcp-server"]
+         "command": "python3",
+         "args": ["/ABSOLUTE/PATH/TO/aris_repo/mcp-servers/codex-exec/server.py"]
        }
      }
    }

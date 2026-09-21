@@ -81,8 +81,8 @@ ARIS 使用外部 LLM（GPT-6-Astra via Codex）作为审阅者。在 Antigravit
    {
      "mcpServers": {
        "codex": {
-         "command": "codex",
-         "args": ["mcp-server"]
+         "command": "python3",
+         "args": ["/ABSOLUTE/PATH/TO/aris_repo/mcp-servers/codex-exec/server.py"]
        }
      }
    }
@@ -93,8 +93,8 @@ ARIS 使用外部 LLM（GPT-6-Astra via Codex）作为审阅者。在 Antigravit
    {
      "mcpServers": {
        "codex": {
-         "command": "codex",
-         "args": ["mcp-server"]
+         "command": "python3",
+         "args": ["/ABSOLUTE/PATH/TO/aris_repo/mcp-servers/codex-exec/server.py"]
        }
      }
    }

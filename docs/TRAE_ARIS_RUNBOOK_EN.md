@@ -62,8 +62,8 @@ codex login
 2) Configure MCP in Trae  
 Go to `Settings → MCP → Manual Add`, then add:
 - Name: `codex`
-- Command: `codex`
-- Args: `mcp-server`
+- Command: `python3`
+- Args: `/ABSOLUTE/PATH/TO/aris_repo/mcp-servers/codex-exec/server.py` (ARIS's bridge over `codex exec`; codex-cli 0.154 removed `codex mcp-server`)
 
 If your Trae version supports workspace MCP config files, use:
 
@@ -71,8 +71,8 @@ If your Trae version supports workspace MCP config files, use:
 {
   "mcpServers": {
     "codex": {
-      "command": "codex",
-      "args": ["mcp-server"]
+      "command": "python3",
+      "args": ["/ABSOLUTE/PATH/TO/aris_repo/mcp-servers/codex-exec/server.py"]
     }
   }
 }

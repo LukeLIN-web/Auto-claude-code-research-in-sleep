@@ -43,7 +43,7 @@ def test_codex_skill_set_matches_mainline() -> None:
     local = fork_local_skills()
     main_names = skill_names(MAIN_SKILLS) - local
     codex_names = skill_names(CODEX_SKILLS) - local
-    assert len(main_names) == 82
+    assert len(main_names) == 83
     assert main_names == codex_names
 
 

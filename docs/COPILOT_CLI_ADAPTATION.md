@@ -106,8 +106,8 @@ an Anthropic/Google-executor fallback for `/auto-review-loop`:
    {
      "mcpServers": {
        "codex": {
-         "command": "codex",
-         "args": ["mcp-server"]
+         "command": "python3",
+         "args": ["/ABSOLUTE/PATH/TO/aris_repo/mcp-servers/codex-exec/server.py"]
        }
      }
    }
@@ -118,8 +118,8 @@ an Anthropic/Google-executor fallback for `/auto-review-loop`:
    {
      "mcpServers": {
        "codex": {
-         "command": "codex",
-         "args": ["mcp-server"]
+         "command": "python3",
+         "args": ["/ABSOLUTE/PATH/TO/aris_repo/mcp-servers/codex-exec/server.py"]
        }
      }
    }
