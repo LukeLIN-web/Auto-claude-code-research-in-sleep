@@ -66,7 +66,7 @@ Four ways it stops being that:
   the same rank and attachment points" — three rows of the table, in a sentence.
 - **It becomes a glossary.** A caption defines only what exists nowhere else:
   its own column names, its own axes, its own marks (`\ddag`, bold, `---`), and
-  the symbols drawn on the panels. A term the prose already defines — `comparator`,
+  the symbols drawn on the panels. A term the prose already defines — `baseline`,
   `chain`, `pp`, a paired interval, a block length — gets no clause here, however
   useful one would be to a reader holding the float alone. **A caption is not
   required to be self-contained.** That requirement is the only door a glossary
