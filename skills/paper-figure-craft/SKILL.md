@@ -185,7 +185,7 @@ figure, that appendix section.
 
 *This* graphic is the whole scope. A symbol drawn on a panel is the figure's own
 and gets defined here even when the prose defines it later; a term that only ever
-lives in prose — `comparator`, `pp`, a paired interval — does not, however useful a
+lives in prose — `baseline`, `pp`, a paired interval — does not, however useful a
 definition would be to a reader holding the figure alone. **A caption is not
 required to be self-contained.** That requirement is the only door a glossary
 comes through, and what it buys is one word with N authorities, sitting in the
