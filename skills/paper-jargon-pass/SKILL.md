@@ -80,7 +80,7 @@ for f in figures/*.pdf; do echo "== $f"; pdftotext "$f" -; done   # 每张图画
 **A 组 · 换词/补定义能修的**
 
 - **名字晚于数字**——`600-second blocks` / `eight candidate windows` / `the top $B{=}3$ blocks` / `keep-cap 12` / `max-pos 36{,}864`:配置常数照写没问题(数字是允许的),但**它配置的那个东西必须已经被命名过**。"block""window""readout budget"没定义之前,`B{=}3` 只是一个不知道在数什么的数。修法是在名词首次出现处给一句话定义,不是把数字删掉。
-- **内部工作语 / 翻译残留**——组里中文黑话被直译进英文,读起来像正经术语,作者永远看不见:`考场→court`、`口径→caliber`、`臂→arm`、`剂量→dose`、`打底→ground`。检验法只有一条:**这个词在本领域公开文献里,是这个意思吗?** 不是就换。`court` 没有 ⇒ 换。本仓库另有 user 裁定:`臂→arm` 也整稿禁用,写 `setting`(2026-09-22)。
+- **内部工作语 / 翻译残留**——组里中文黑话被直译进英文,读起来像正经术语,作者永远看不见:`考场→court`、`口径→caliber`、`臂→arm`、`剂量→dose`、`打底→ground`。检验法只有一条:**这个词在本领域公开文献里,是这个意思吗?** 不是就换。`court` 没有 ⇒ 换。本仓库另有 user 裁定:`臂→arm` 也整稿禁用,按语境换 variant / configuration / condition / setting / 对照自己的名字,不一键替换(2026-09-22)。
 - **一词多义 / 含义漂移**——同一个词在三处指三样东西(`caliber` 一会儿指窗口枚举、一会儿指权重配置、一会儿指 prompt 版本)。同一个词第三次出现时你又得重猜 = 记。
 - **同物异名**——`regime` 与 `régime`、`region` 与 `window`、`benchmark` 与 `court`、`localization-training system` 与 `retrieval-trained system` 与 `localization-only row` 指同一条臂。读者会以为是三个东西。
 - **画布上的记号早于定义**——方法图/架构图上的 `g_m`、`r_{m,k}`、`φloc`、`ω`、`1…K`,图落在 p.2 而定义在 p.4。
