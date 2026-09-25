@@ -1,6 +1,6 @@
 ---
 name: paper-jargon-pass
-description: "Use when a paper reads fine to the author but a reviewer would stall on it — 论文术语审查/没定义就用的词和数字/审稿人读不懂/统一术语/undefined notation/jargon audit for papers. Catches terms used before they are defined (including notation drawn on a figure canvas before the section that defines it: g_m on Figure 1 in §1), lab-internal working vocabulary that leaked into English (考场→\"court\", 口径→\"caliber\"), config numbers that arrive before the thing they configure is named (\"600-second blocks\", \"the top B=3 blocks\"), one word carrying three meanings, and 废话/无中生有 — prose narrating things that do not exist (\"Video-Odyssey publishes no row for this backbone and has no column\"), flagged by the delete-test and deleted or demoted to a table footnote. Three passes: assembly check → blind read of the compiled PDF → verify against code/data and rewrite."
+description: "Use when a paper reads fine to the author but a reviewer would stall on it — 论文术语审查/没定义就用的词和数字/审稿人读不懂/统一术语/undefined notation/jargon audit for papers. Catches terms used before they are defined (including notation drawn on a figure canvas before the section that defines it: g_m on Figure 1 in §1), lab-internal working vocabulary that leaked into English (考场→\"court\", 口径→\"caliber\"), config numbers that arrive before the thing they configure is named (\"600-second blocks\", \"the top B=3 blocks\"), one word carrying three meanings, artifact-lineage phrases in plain English that only the outputs/ tree can translate (\"a re-scored copy of the deployed selection\", \"an earlier candidate-window enumeration\", \"a third scan\" — never a stall, so caught by a signal-word grep and the question \"what input difference does this modifier name?\"), and 废话/无中生有 — prose narrating things that do not exist (\"Video-Odyssey publishes no row for this backbone and has no column\"), flagged by the delete-test and deleted or demoted to a table footnote. Three passes: assembly check → blind read of the compiled PDF → verify against code/data and rewrite."
 argument-hint: "[paper 目录或 clone 目录,默认自动发现]"
 allowed-tools: Bash(*), Read, Write, Edit, Grep, Glob
 ---
@@ -72,6 +72,11 @@ for f in figures/*.pdf; do echo "== $f"; pdftotext "$f" -; done   # 每张图画
 
 - **卡住**(A/B 组)——必须停下重读,或必须往回/往后翻页才能继续。能带着一个临时含义按正常速度读下去、且后文没有推翻它的,不记。
 - **空转**(C 组·废话)——读得毫不费力,但读完说不出这句在这干什么:它不定义、不主张、不配置。判据是**删句测试**:把这句删掉重读前后段,若没有任何主张、定义或配置常数失去支撑,记。
+- **血统**(A 组·产物血统词)——**上面两个信号都抓不到它**:它读得顺(不卡),所在的句子又承重(删句测试过不了)。
+  它藏在一个修饰语里:`drawn from a re-scored copy of the deployed selection`、`on an earlier candidate-window enumeration`、
+  `the 30 s-window scan`、`under that same earlier prompt`、`a third scan`。盲读时对每个 *re-* / *earlier* / *stored* /
+  *copy* / *third* 修饰语多问一句:「它告诉我送进前向的输入有什么不同?」答不出就记,置信度写 `no idea`——
+  这一组不靠读感,第二趟还要按信号词 grep 补扫(见 A 组条目)。
 
 卡住的承重条目通常 5–15 条。**超过 20 条就停止逐词记录,直接写文档级判定**——那已经不是措辞问题,而是这篇稿子缺一个记号约定小节或缺一张符号表。空转条目超过 ~15 条同理:那不是几句废话,是整篇在写审计日志,文档级判定里直接建议跑 `/paper-prose-tighten` 做全文清理,本技能只处置盲读撞见的这几条。
 
@@ -89,6 +94,19 @@ for f in figures/*.pdf; do echo "== $f"; pdftotext "$f" -; done   # 每张图画
 - **宏与上标无图例**——`\newcommand` 定义的东西对读者不存在:`\method`、`$\Tans$`、`\starred`、`\textsuperscript{\ddag}`、`$\circ$`。查的是每个宏**排版后首次出现**的位置,以及图例是否在那之前。
 - **悬空指代**——"the anchor""that régime""both enumerations""the deep benchmark":哪个?哪两个?什么叫 deep?
 - **名不副实**——`coverage` 在三处分别是"证据命中率""音频保留比例""块覆盖",名字一样含义不同。
+- **产物血统词**——`a re-scored copy of the deployed selection`、`an earlier candidate-window enumeration`、
+  `the 30 s-window scan`、`under that same earlier prompt`、`a third scan`、`the stored localization passes`。
+  每个词都是普通英文,读者带着临时含义就能按正常速度读过去,所以**「卡住」门槛永远抓不到它**——
+  2026-09-25 `re-scored copy` 出现在附录正文和一张生成表的 caption 里,活过了两轮盲读,正因为它不卡。
+  它是 `outputs/` 目录树的血统(哪一代扫描、哪次重打、哪个枚举)漏进散文:只有手里有产物树的人知道
+  *re-scored* 指的是对保留块重打的定位 pass。判法不是「卡不卡」,是**换一个问题**:
+  「这个修饰语告诉读者送进前向的输入有什么不同?」稿子里没写出那个不同,就是血统词。
+  处置两选一,**按序试**:①删掉修饰语,主句保留(`drawn as in Appendix X` 已经把随机控制说完了);
+  ②它指的输入差别确实改变读数(换了窗枚举 / 换了提示 / 换了 adapter),就把**那个差别**写出来,
+  一个从句,用稿子已有的词(`on a candidate-window grid that predates the deployed one`)。
+  **绝不补定义**——给 `re-scored copy` 下定义等于把产物目录名搬进论文。
+  另外每条都要**同时报 user**:血统词常常是嫁接件的自白(一条臂混两代产物,根 CLAUDE.md §5),
+  「重打到部署扫描上」还是「删这条消融」是 user 的裁定,改词只是遮住它。
 
 **B 组 · 换词修不了的**(盲读者最容易发现,因为你没有先验去替它圆场)
 
@@ -186,6 +204,9 @@ c=paper/<clone>
 for w in "the gate" "the ladder" "the map" "regime"; do
   printf '%3d  %s\n' "$(grep -roiF "$w" $c/sections/*.tex | wc -l)" "$w"
 done | sort -n
+# 血统词候选(读感抓不到,只能 grep):每条命中问「它说的输入差别写出来了吗」;表 caption 改生成器
+grep -rnoiE '\b(re-?scored|re-?struck|re-?run|rerun|re-?answered|earlier|a third|stored|booked|copy of the)\b[^.]{0,70}' \
+  $c/sections/*.tex $c/tables/*.tex
 ```
 
 **"领域通用词"从哪来**(按优先级):**① 稿子里已经在用的更通用的同义词** → ② 公开文献/教材的
@@ -230,6 +251,7 @@ done | sort -n
 | 看不懂的词一律补定义 | 顺序反了:先试删、再试换成稿子已有的词,补定义是第四选择 |
 | 高频词"改起来太多处"就留着补个定义 | 频次不是保留理由(`gate` 29 次照删);判据是"稿子里有没有同义词" |
 | 只出现一次的自造词被放过 | 默认删。全稿只用一次的名词几乎不可能承重 |
+| 修饰语读得顺就放过(`re-scored copy`、`earlier enumeration`、`a third scan`) | 卡住门槛抓不到血统词;第二趟按信号词 grep,逐条问「它说的输入差别写出来了吗」,答不出就删修饰语或写出差别,并报 user 判重打还是删 |
 | 补定义时顺手补一句"但这只在…成立" | 那是 caveat,不是定义;caveat 进 todo 不进正文 |
 | 两处数字打架,顺手改一处对齐 | 这是 bug,先报;信哪个由用户定 |
 | 只改了 `.tex`,图里旧词还在 | 换词要扫 `scripts/fig_*.py` 并重出图 |
