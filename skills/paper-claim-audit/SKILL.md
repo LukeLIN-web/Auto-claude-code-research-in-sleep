@@ -1,6 +1,6 @@
 ---
 name: paper-claim-audit
-description: "Zero-context verification that every number, comparison, and scope claim in the paper matches raw result files — and that every claim about what PRODUCED a number (which weights, which recipe, which arm) and every gloss the paper gives a row, footnote mark or term borrowed from another paper is traceable to its source rather than inferred. Uses a fresh cross-model reviewer with NO prior context to prevent confirmation bias. Use when user says \"审查论文数据\", \"check paper claims\", \"verify numbers\", \"论文数字核对\", \"检查表和图有没有事实错误\", or before submission to ensure paper-to-evidence fidelity."
+description: "Zero-context verification that every number, comparison, and scope claim in the paper matches raw result files — and that every claim about what PRODUCED a number (which weights, which recipe, which arm) and every gloss the paper gives a row, footnote mark or term borrowed from another paper is traceable to its source rather than inferred; that every general method statement (loss, adapter placement, inputs, weights) holds for EVERY configuration the paper reports (each backbone, each protocol), and that no caveat or disclosure contradicts another part of the paper or undermines the configuration it discloses. Uses a fresh cross-model reviewer with NO prior context to prevent confirmation bias. Use when user says \"审查论文数据\", \"check paper claims\", \"verify numbers\", \"论文数字核对\", \"检查表和图有没有事实错误\", \"论文还有哪些 caveat / 奇怪的披露 / 不一致\", or before submission to ensure paper-to-evidence fidelity."
 argument-hint: "[paper-directory]"
 allowed-tools: Bash(*), Read, Write, Edit, Grep, Glob, mcp__codex__codex
 ---
@@ -105,6 +105,20 @@ Without these, failure mode 8 cannot be checked at all: the reviewer has no
 way to tell a transcribed gloss from an invented one. A paper that reprints
 no external row needs none of these.
 
+**Configuration files, one set per reported configuration** (evidence for
+failure mode 12). A paper that runs on more than one backbone, or under more
+than one protocol (offline / streaming, audio on / off, with / without an
+auxiliary input), has one deployed configuration per cell. For EACH one pass
+the training config of every adapter it mounts (yaml / argv) and the `meta.json`
+of one product it produced. Passing only the headline backbone's configs is
+how a second backbone's different loss goes unseen: its departures table cell
+reads "overlap-fraction BCE", nothing numeric to mismatch, and the method
+section's CE equation is never set beside it.
+```
+configs/**/<deployed adapter>.yaml     # per backbone, per adapter
+outputs/**/<one product per config>/meta.json
+```
+
 **Exclude** (no summaries, no interpretations):
 ```
 EXPERIMENT_LOG.md, EXPERIMENT_TRACKER.md, AUTO_REVIEW*.md
@@ -135,6 +149,25 @@ reach: the *prose* of the captions and the *provenance* of the arms (modes
 that a diff already proved, and the caption sentences — the least-scanned text
 in the paper — get the leftovers. A byte-identical table is not a correct
 table: its caption can still misdescribe what the column is.
+
+### Step 1c: Sweep for errata the paper never received (Executor — Claude)
+
+Result pages get corrected after the paper quotes them. An erratum that says
+"the paper's sentence X does not hold" is invisible to a zero-context reviewer
+(it reads raw files, not our notes) and to a delta audit (the paper line did
+not change). Before launching the reviewer:
+
+```bash
+grep -rn -E '稿面|paper|app:|sec:|tab:|fig:' docs/eval_res --include=*.md \
+  | grep -E '不成立|要删|勘误|erratum|does not hold|stale|flagged'
+```
+
+For each hit, grep the clone for the sentence it names. Still there ⇒ a
+confirmed finding of this round, `stale_erratum`, reported without asking the
+reviewer. (2026-09-25: the loc-objpair75 result page recorded that the two
+arms did NOT share a LoRA init; `app:ranking` still said "from the same
+initialization".) Do not pass the erratum text to the reviewer: that would
+break zero-context.
 
 ### Step 2: Fresh Reviewer Audit (GPT-6-Astra — NEW thread, no reply)
 
@@ -245,6 +278,65 @@ mcp__codex__codex:
         Rule: count both directions — every float label against the \ref
         occurrences in the sources, and every \ref against the labels.
 
+    12. **Recipe non-uniformity**: The method section states the recipe in
+        general terms ("the selector is trained with cross-entropy against
+        the best-covering window", "the only trained parameters are
+        rank-16 updates to q, k, v, o", "the answer pass reads the
+        transcript outline", "the answer adapter answers the windows"),
+        but some reported configuration runs something else: a second
+        backbone trained with a different loss, LoRA on extra modules, no
+        outline on some benchmarks, base weights instead of the answer
+        adapter under one protocol.
+        Rule: build a matrix. Rows = every general method statement
+        (objective, supervision grid, adapter placement and rank, training
+        hardware and optimizer, checkpoint selection, answer-pass inputs,
+        answer weights, frame budgets). Columns = every configuration the
+        paper reports a number for (each backbone x each protocol /
+        benchmark group). Fill each cell from that configuration's own
+        config files, not from the prose. Report every cell that differs,
+        and for each say:
+          (a) is the difference listed in a departures table AND is the
+              general statement scoped to exclude it? Listed-but-unscoped
+              is still a finding: the method section claims a uniformity
+              the paper itself contradicts elsewhere.
+          (b) does the claim that the recipe "transfers" / "generalizes" /
+              "runs unchanged" survive once these cells are counted?
+          (c) is the departure one the paper elsewhere reports as WORSE
+              (a second backbone trained with the objective an ablation
+              says ranks worse)? That is a self-undermining disclosure.
+        A departures table is the least-scanned table in a paper; a cell
+        there with no number in it matches nothing and fails nothing unless
+        someone sets it beside the method equation.
+
+    13. **Disclosure ledger**: Every sentence that hedges, discloses or
+        excepts: "an earlier scan", "retrained", "re-scored copy", "cap
+        widened for these questions", "our approximation", "except",
+        "with the base weights", "no transcript outline", "at most N%".
+        Rule: list them all, then classify each:
+          - provenance mix: an ablation or control not run on the deployed
+            system (older prompt, older enumeration, retrained adapter,
+            different cap) while the prose reads it as a test of the
+            deployed system;
+          - contradicted: another sentence or caption describes the same
+            arm without the exception ("the same windows redrawn" vs "as
+            many windows, drawn from a re-scored copy");
+          - self-undermining: the disclosure says the deployed choice is
+            the worse one, or that a component was switched off where it
+            did not help (a config chosen per benchmark on its results);
+          - scope gap: an audit or check whose coverage silently excludes
+            some benchmarks the paper reports.
+        This is the list the author reads to decide what to fix by rerun
+        and what to scope in prose; do not collapse it into a verdict.
+
+    14. **Same fact, different words**: One fact stated in several
+        places (abstract, intro, method, results, conclusion, appendix,
+        captions) with different content: "4.5–16.8%" vs "4.5–16.8
+        points", "each of their widths exactly" vs "as many windows",
+        "never stacked" vs "stays mounted for the answer pass".
+        Rule: for every headline number, every definition of a control
+        arm and every system variant, collect all the places that state it
+        and diff them.
+
     ## Output Format (per claim)
     For each claim, report:
     - claim_id: sequential number
@@ -257,7 +349,10 @@ mcp__codex__codex:
               missing_evidence | config_mismatch | aggregation_mismatch |
               number_mismatch | scope_overclaim | unsupported_claim |
               source_gloss_unsupported | arm_identity_mismatch |
-              cross_float_conflict | orphan_float
+              cross_float_conflict | orphan_float |
+              recipe_nonuniform | disclosure_contradicted |
+              disclosure_self_undermining | provenance_mix |
+              same_fact_divergent
     - details: explanation if not exact_match. For
       source_gloss_unsupported, quote the source's own defining sentence.
 
@@ -293,6 +388,16 @@ Parse the reviewer's response and write `PAPER_CLAIM_AUDIT.md`:
 - **Status**: [status]
 - **Fix**: [specific correction needed]
 
+## Recipe matrix (failure mode 12)
+
+| Method statement (file:line) | Config A | Config B | ... | Scoped in prose? |
+|---|---|---|---|---|
+
+## Disclosure ledger (failure mode 13)
+
+| # | Location | Sentence | Class | Contradicted by / undermines |
+|---|---|---|---|---|
+
 ## All Claims (detailed)
 
 | # | Location | Paper Value | Evidence Value | Status |
@@ -319,6 +424,16 @@ Also write `PAPER_CLAIM_AUDIT.json` for machine consumption.
 
   See PAPER_CLAIM_AUDIT.md for details.
 ```
+
+## Delta rounds do not replace a whole-paper pass
+
+A delta round audits changed lines. Modes 12–14 and Step 1c find facts that
+sit in UNCHANGED lines and go wrong because something else changed: a result
+page's erratum, a second backbone's config, a caption elsewhere. Run them
+over the whole paper on every round, even when the number audit is
+delta-only. (Thirteen rounds, all number-centric and eleven of them delta,
+never set the second backbone's "overlap-fraction BCE" cell beside the method
+section's cross-entropy equation.)
 
 ## When to Run
 
@@ -433,6 +548,10 @@ external `results/` dirs. The verifier resolves relative entries via
 | A gloss of a borrowed row or mark the source does not support | `FAIL`   | `source_gloss_unsupported` |
 | Two floats describing one cell incompatibly            | `FAIL`           | `cross_float_conflict` |
 | A float typeset but never referenced                   | `WARN`           | `orphan_float`        |
+| A general method statement false for a reported configuration | `FAIL`   | `recipe_nonuniform`   |
+| A paper sentence a result-page erratum retracted (Step 1c) | `FAIL`       | `stale_erratum`       |
+| One fact stated incompatibly in two places             | `FAIL`           | `same_fact_divergent` |
+| Disclosures that are only provenance-mix / self-undermining | `WARN`      | `disclosure_ledger`   |
 | Reviewer invocation failed (network / malformed)      | `ERROR`          | `reviewer_error`      |
 
 ### Thread independence
