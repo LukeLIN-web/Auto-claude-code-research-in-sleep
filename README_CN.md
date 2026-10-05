@@ -26,15 +26,17 @@
 
 [![ARIS-Monitor](https://img.shields.io/badge/ARIS--Monitor-built--in-455A64?style=flat&logo=apple&logoColor=white)](aris-monitor/) —— 常驻置顶的 macOS 小窗,哪个会话在等你批准就亮 🔴,点一下跳过去;`cd aris-monitor && ./run.sh`。窗口多的话,[Claude Fleet](https://github.com/tianyilt/claude-fleet)(by [@tianyilt](https://github.com/tianyilt))是完整看板。
 
-🔥 [**ARIS-Code CLI — 独立安装版**](docs/ARIS-Code-README_CN.md) · [English](docs/ARIS-Code-README_EN.md) | [⬇️ 下载](https://github.com/wanshuiyin/Auto-claude-code-research-in-sleep/releases/latest) — **v0.4.27**：启动 REPL 后直接退出不再留下空 session 文件。v0.4.26：`fable` 别名与 `/model` 现指向 Fable 5.1（默认仍是 Opus 5）。v0.4.25：codex-cli ≥ 0.154 上 Codex 审稿恢复可用（内建 `codex exec` 桥接，无需任何注册）；`/since` 回到你上一次输入的地方；`/resume` 按序号列出会话；Windows 多行粘贴修复（待确认）；内置 83 个 skill，reviewer 为 GPT-6-Astra。
+🔥 [**ARIS-Code CLI — 独立安装版**](docs/ARIS-Code-README_CN.md) · [English](docs/ARIS-Code-README_EN.md) | [⬇️ 下载](https://github.com/wanshuiyin/Auto-claude-code-research-in-sleep/releases/latest) — **v0.4.28**：`ARIS_REASONING_EFFORT` 在 Anthropic 通道生效；经 `{}` 占位符中转站的工具调用修复；系统代理直接生效。v0.4.27：启动 REPL 后直接退出不再留下空 session 文件。v0.4.26：`fable` 别名与 `/model` 现指向 Fable 5.1（默认仍是 Opus 5）。v0.4.25：codex-cli ≥ 0.154 上 Codex 审稿恢复可用（内建 `codex exec` 桥接，无需任何注册）；`/since` 回到你上一次输入的地方；`/resume` 按序号列出会话；Windows 多行粘贴修复（待确认）；内置 83 个 skill，reviewer 为 GPT-6-Astra。
 
 <details><summary>ARIS-Code —— 截图、头条、逐版本详情、更早版本</summary>
 
 <p align="center"><img src="docs/aris-code-banner.png" width="100%" alt="ARIS-Code CLI 终端 — Auto Research in Sleep"></p>
 
-📰 **ARIS-Code v0.4.27**（2026-09）—— 最新：启动 REPL 后直接退出不再留下空 session 文件，`/resume` 只列出有消息的会话（[#439](https://github.com/wanshuiyin/Auto-claude-code-research-in-sleep/issues/439) 后续）。v0.4.26 让 **Fable 5.1** 成为 `fable` 别名与 `/model` 菜单的第一项（默认 executor 仍是 Opus 5）。v0.4.25 是 **reviewer 桥接版**：codex-cli 0.154 删掉了 `codex mcp-server`，升级过 codex 的用户从 ARIS-Code 发起的每次 Codex 审稿都会失败；现在审稿走**内建 `codex exec` 桥接**——不需要 `mcpServers.codex` 条目，旧条目在内存里自动迁移，线程记录与 ARIS 的 Python 桥互通。同版还有：**`/since`** 重放你上一次输入之后发生的一切（按现场显示折叠，`/since full` 看完整输出），**`/resume`** 带序号列出会话并显示停在哪（[#439](https://github.com/wanshuiyin/Auto-claude-code-research-in-sleep/issues/439)），Windows 多行粘贴不再逐行提交（[#430](https://github.com/wanshuiyin/Auto-claude-code-research-in-sleep/issues/430)，待确认），Windows shim 报错带上原生安装命令（[#428](https://github.com/wanshuiyin/Auto-claude-code-research-in-sleep/issues/428)），内置 skills 升到 **83 个**、reviewer 为 **GPT-6-Astra**。头牌特性：**v0.4.24 —— Claude 5 模型刷新**（默认 Opus 5、Fable 5 计价档、可用性链）和 **v0.4.23 —— 输出折叠**。收官 23 个 release（v0.4.5 → v0.4.27）；逐版本详情见下。贡献者：[@GetIT-Sunday](https://github.com/GetIT-Sunday)、[@Anduin9527](https://github.com/Anduin9527)、[@GO-player-hhy](https://github.com/GO-player-hhy)、[@Jxy-yxJ](https://github.com/Jxy-yxJ)、[@screw-44](https://github.com/screw-44)、[@StevenUST](https://github.com/StevenUST)、[@opposj](https://github.com/opposj)、[@ShijunLei-cn](https://github.com/ShijunLei-cn)、[@algojogacor](https://github.com/algojogacor)、[@YukinoshitaLove](https://github.com/YukinoshitaLove)、[@jinliye-2026](https://github.com/jinliye-2026)、[@SajimJC](https://github.com/SajimJC)。
+📰 **ARIS-Code v0.4.28**（2026-09）—— 最新：**`ARIS_REASONING_EFFORT` 在 Anthropic 通道生效**（[#446](https://github.com/wanshuiyin/Auto-claude-code-research-in-sleep/issues/446)），经由会先发 `{}` 占位符的中转站时工具调用不再失败（[#444](https://github.com/wanshuiyin/Auto-claude-code-research-in-sleep/issues/444)），Windows / macOS 的系统代理不用导出 `HTTPS_PROXY` 就生效（[#401](https://github.com/wanshuiyin/Auto-claude-code-research-in-sleep/pull/401)）。v0.4.27：启动 REPL 后直接退出不再留下空 session 文件，`/resume` 只列出有消息的会话（[#439](https://github.com/wanshuiyin/Auto-claude-code-research-in-sleep/issues/439) 后续）。v0.4.26 让 **Fable 5.1** 成为 `fable` 别名与 `/model` 菜单的第一项（默认 executor 仍是 Opus 5）。v0.4.25 是 **reviewer 桥接版**：codex-cli 0.154 删掉了 `codex mcp-server`，升级过 codex 的用户从 ARIS-Code 发起的每次 Codex 审稿都会失败；现在审稿走**内建 `codex exec` 桥接**——不需要 `mcpServers.codex` 条目，旧条目在内存里自动迁移，线程记录与 ARIS 的 Python 桥互通。同版还有：**`/since`** 重放你上一次输入之后发生的一切（按现场显示折叠，`/since full` 看完整输出），**`/resume`** 带序号列出会话并显示停在哪（[#439](https://github.com/wanshuiyin/Auto-claude-code-research-in-sleep/issues/439)），Windows 多行粘贴不再逐行提交（[#430](https://github.com/wanshuiyin/Auto-claude-code-research-in-sleep/issues/430)，待确认），Windows shim 报错带上原生安装命令（[#428](https://github.com/wanshuiyin/Auto-claude-code-research-in-sleep/issues/428)），内置 skills 升到 **83 个**、reviewer 为 **GPT-6-Astra**。头牌特性：**v0.4.24 —— Claude 5 模型刷新**（默认 Opus 5、Fable 5 计价档、可用性链）和 **v0.4.23 —— 输出折叠**。收官 24 个 release（v0.4.5 → v0.4.28）；逐版本详情见下。贡献者：[@GetIT-Sunday](https://github.com/GetIT-Sunday)、[@Anduin9527](https://github.com/Anduin9527)、[@GO-player-hhy](https://github.com/GO-player-hhy)、[@Jxy-yxJ](https://github.com/Jxy-yxJ)、[@screw-44](https://github.com/screw-44)、[@StevenUST](https://github.com/StevenUST)、[@opposj](https://github.com/opposj)、[@ShijunLei-cn](https://github.com/ShijunLei-cn)、[@algojogacor](https://github.com/algojogacor)、[@YukinoshitaLove](https://github.com/YukinoshitaLove)、[@jinliye-2026](https://github.com/jinliye-2026)、[@SajimJC](https://github.com/SajimJC)、[@JasmineLCY](https://github.com/JasmineLCY)。
 
-> <details><summary>逐版本详情（v0.4.5 → v0.4.27）</summary>
+> <details><summary>逐版本详情（v0.4.5 → v0.4.28）</summary>
+>
+> **v0.4.28** (2026-09-28) — **`ARIS_REASONING_EFFORT` 在 Anthropic 通道生效**([#446](https://github.com/wanshuiyin/Auto-claude-code-research-in-sleep/issues/446)):`low` / `medium` / `high` / `xhigh` / `max`,主会话和子代理都支持;不设置则请求不变。**`ARIS_MAX_TOKENS`** 调高输出上限,effort 高到撞上限时用。settings 里 **`autoCompactEnabled: false`** 关闭自动压缩。**🐛 [#444](https://github.com/wanshuiyin/Auto-claude-code-research-in-sleep/issues/444)** 经由会先发 `{}` 占位符的中转站时,工具调用不再报 `invalid tool input JSON`。**🌐 系统代理**:Windows / macOS 的系统代理直接生效,不用再导出 `HTTPS_PROXY`([#401](https://github.com/wanshuiyin/Auto-claude-code-research-in-sleep/pull/401),by @JasmineLCY);想照旧直连就设 `NO_PROXY=*`。**升级前看一眼:**已经导出过 `ARIS_REASONING_EFFORT`、系统里配了代理、或 settings 里写过 `autoCompactEnabled: false` 的,见[升级说明](https://github.com/wanshuiyin/Auto-claude-code-research-in-sleep/blob/aris-code/CHANGELOG.md)。
 >
 > **v0.4.27** (2026-09-19) — 启动 REPL 后直接退出不再留下空的 session 文件;`/resume` 只列出有消息的会话([#439](https://github.com/wanshuiyin/Auto-claude-code-research-in-sleep/issues/439) 后续)。
 >
@@ -203,6 +205,8 @@ ARIS 读论文 → 找弱点 → 克隆代码 → 针对*那些*弱点用*那套
 
 > ⚠️ 凡涉及 skill 变更的条目:跑 `bash tools/smart_update.sh --apply` 拉取。
 
+- **2026-10-05** — 🔌 **新增 [Grok](mcp-servers/grok-exec/README.md) 和 [Gemini / Antigravity](mcp-servers/antigravity-exec/README.md) MCP 桥接**：复用已有 CLI 登录，在 Claude Code 或 Codex 中调用，支持文件读取和会话续接。（[#454](https://github.com/wanshuiyin/Auto-claude-code-research-in-sleep/pull/454)）
+- **2026-09-28** — ![FIX](https://img.shields.io/badge/FIX-2ea44f?style=flat-square) 📚 **真论文不再被报成幻觉引用**（[#445](https://github.com/wanshuiyin/Auto-claude-code-research-in-sleep/pull/445)、[#447](https://github.com/wanshuiyin/Auto-claude-code-research-in-sleep/pull/447)、[#450](https://github.com/wanshuiyin/Auto-claude-code-research-in-sleep/pull/450)；感谢 [@ilya-pershin](https://github.com/ilya-pershin) 和 [@AfonsoZhang](https://github.com/AfonsoZhang)）。arXiv 有时会连续几分钟用 406 拒绝 Python 的 HTTP 客户端，而 `curl` 能通；`verify_papers.py` 把这个拒绝当成"查无此文"，有用户在 38 篇真实论文上跑出 47% 的幻觉率。现在 406 会改走 `curl`，被拒绝（406 / 401 / 403）一律标 `verify_pending`，不再标 `unverified`。设了 `SEMANTIC_SCHOLAR_API_KEY` 的话标题核对会用上它。最近见过可疑的幻觉率？带 `--no-cache` 重跑一次。同一轮还有：五个 skill 现在真的能调用正文让它调的子 skill（[#440](https://github.com/wanshuiyin/Auto-claude-code-research-in-sleep/pull/440)，[@Jeremy-xuan](https://github.com/Jeremy-xuan)）；watchdog 并发注册不再互相覆盖（[#443](https://github.com/wanshuiyin/Auto-claude-code-research-in-sleep/pull/443)，[@hiro-nikaitou](https://github.com/hiro-nikaitou)）；`xhigh` 按实际写成审稿常规档（[#442](https://github.com/wanshuiyin/Auto-claude-code-research-in-sleep/pull/442)，[@dreamworld2023](https://github.com/dreamworld2023)）。
 - **2026-09-16** — ![NEW](https://img.shields.io/badge/NEW-red?style=flat-square) 🧩 **ARIS 现在是一个 Claude Code 插件**（[#437](https://github.com/wanshuiyin/Auto-claude-code-research-in-sleep/pull/437)，感谢 [@white-drizzle](https://github.com/white-drizzle)）。`claude plugin marketplace add wanshuiyin/Auto-claude-code-research-in-sleep` → `claude plugin install aris@aris` → 跑一次 `/aris:setup` → 重启。setup 会把插件里自带的 Codex 审稿桥接注册好，codex-cli 0.154+ 上开箱即用。插件 skill 输入时带前缀（`/aris:idea-discovery`），内部互相调用不受影响。Codex CLI 也能把同一个仓库当插件装（`codex plugin marketplace add …` → `codex plugin add aris@aris`），拿到的是 Codex 原生镜像。Cursor、Trae、DeepSeek Harness 各走各的路线。
 - **2026-09-10** — ![FIX](https://img.shields.io/badge/FIX-2ea44f?style=flat-square) 🔌 **codex-cli 0.154 删掉了 `codex mcp-server`,`codex` MCP 要重新注册。** ARIS 所有审阅调用都走这个入口;0.154 起它会打开交互界面,MCP 握手直接失败。ARIS 自带了替身 `mcp-servers/codex-exec/server.py`:工具名、返回形状一模一样,底下跑 `codex exec`,skill 一行不改。跑一次:先在你的 ARIS clone 里 `git pull`(老 clone 里没有这个文件),再 `claude mcp remove codex -s user && claude mcp add codex -s user -- python3 "$HOME/aris_repo/mcp-servers/codex-exec/server.py"`(写你 clone 的绝对路径),然后重启 Claude Code。新装和已装的分步指引见 [快速开始](#quick-start)。0.153 上同样能用,升级前就可以换。OpenAI 官方给的替代是 Claude Code 插件,没有 `ultra` 档、不能按线程续聊,深审 skill 用不了。Cursor / Trae / Antigravity / Copilot CLI 的配置同一个 key,改成 `python3` + 这个路径,见各自适配文档。
 <details>
@@ -361,6 +365,10 @@ claude
 > /research-wiki init                          # 📚 启用持久化研究记忆（一次性）
 > /meta-optimize                               # 元优化：分析使用记录 → 提出技能改进方案
 ```
+
+> **可选 Grok CLI 桥接：** [`grok-exec`](mcp-servers/grok-exec/README.md) 复用已有 CLI 登录，提供 `grok` / `grok-reply`，默认 `grok-4.7` + `xhigh`，支持会话续接、进度与取消。
+
+> **可选 Antigravity CLI 桥接：** [`antigravity-exec`](mcp-servers/antigravity-exec/README.md) 复用已有 CLI 登录，提供 `antigravity` / `antigravity-reply`，默认 Gemini 3.8 Flash（High），支持原生会话续接。两者供用户明确点名时直接调用；安装不会改动现有 skills 的 reviewer 路由，`— reviewer: agy` 仍使用 `gemini-review`。
 
 > 不需要全部 83 个 skill？见下方[选择性安装](#install-skills)按组/按 skill 挑选。
 
@@ -1455,6 +1463,22 @@ cp -r skills/experiment-bridge ~/.claude/skills/
 ## 10. 🎛️ 自定义
 
 Skills 都是纯 Markdown,fork 了随便改。各 skill 的环境变量(GPU 目标、代码审查、reviewer 路由、人工检查点、论文写作开关)和参数透传详见 **[docs/CUSTOMIZATION_CN.md](docs/CUSTOMIZATION_CN.md)**。
+
+<a id="deliberate-starts"></a>
+
+**审稿额度紧张？** 默认配置是为质量选的，不会改：skill 能被自然语言触发，每次审阅都按完整档位交给跨模型审稿人。如果随口一句话启动 skill 让你的额度吃紧，下面这些由你自己选择是否启用：
+
+| 选项 | 省什么 | 代价 |
+|---|---|---|
+| 把下面这段话粘进项目的 `CLAUDE.md` | 只是像触发词的一句话误启动 skill | 要点名 skill 才启动。这是给模型的指引，不是硬保证 |
+| `— reviewer: manual` | 全部审稿调用 | 审稿意见由你自己贴进去，所以做不到过夜无人值守 |
+| `— effort: lite` | 读的论文数、生成的 idea 数、跑的轮次 | 审稿人那边不省：它的档位永远不会被降低 |
+
+```
+Start ARIS skills or external reviewers only when I name an ARIS skill or explicitly
+request an ARIS workflow. That request includes its child skills and reviewers;
+continue under AUTO_PROCEED without asking for confirmation.
+```
 
 <a id="alternative-model-combinations"></a>
 

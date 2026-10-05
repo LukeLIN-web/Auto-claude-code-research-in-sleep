@@ -2,7 +2,7 @@
 name: paper-claim-audit
 description: "Zero-context verification that every number, comparison, and scope claim in the paper matches raw result files — and that every claim about what PRODUCED a number (which weights, which recipe, which arm) and every gloss the paper gives a row, footnote mark or term borrowed from another paper is traceable to its source rather than inferred; that every general method statement (loss, adapter placement, inputs, weights) holds for EVERY configuration the paper reports (each backbone, each protocol), and that no caveat or disclosure contradicts another part of the paper or undermines the configuration it discloses. Uses a fresh cross-model reviewer with NO prior context to prevent confirmation bias. Use when user says \"审查论文数据\", \"check paper claims\", \"verify numbers\", \"论文数字核对\", \"检查表和图有没有事实错误\", \"论文还有哪些 caveat / 奇怪的披露 / 不一致\", or before submission to ensure paper-to-evidence fidelity."
 argument-hint: "[paper-directory]"
-allowed-tools: Bash(*), Read, Write, Edit, Grep, Glob, mcp__codex__codex
+allowed-tools: Bash(*), Read, Write, Edit, Grep, Glob, Skill, mcp__codex__codex
 ---
 
 # Paper Claim Audit: Zero-Context Evidence Verification
