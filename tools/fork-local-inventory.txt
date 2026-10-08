@@ -29,6 +29,7 @@ paper-float-compact
 paper-jargon-pass
 paper-prose-tighten
 paper-table-craft
+peer-review
 remote-tmux
 shared-references/experiment-craft.md
 shared-references/figure-craft.md
