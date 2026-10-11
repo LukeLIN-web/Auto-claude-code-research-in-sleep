@@ -38,10 +38,24 @@ has to say"). Ask once which mode, unless `— mode:` was given:
 - **`assist` (recommended when the venue asks for AI documentation).** The AI
   fills Summary and proposes ratings, and writes a **candidate findings list**
   in the user's language to `NOTES.<lang>.md` — anchored, with suggested
-  wording. In the review file, Critical Weaknesses / Questions For Authors /
+  wording (the suggested English wording follows STYLE: qualitative
+  judgment first, at most one or two numbers; the full numeric evidence goes
+  under the item's 锚点/依据), Tier A (certain, one-anchor) items first and Tier B (inference)
+  items in a trailing "可选（推断类）" section (Step 6, *Certainty tiers*).
+  `NOTES` holds **only candidate findings** (plus a short how-to-annotate
+  line): never a log of edits made to the review file's filled sections, and
+  no rating discussion — users found a "本次改动" section in NOTES very hard
+  to follow. Edits to filled sections go to `CHECKS.md` (one line each: what
+  changed and why) and are summarized in the chat reply. In the review file, Critical Weaknesses / Questions For Authors /
   minor issues stay as placeholders (`[Reviewer: write the critical weaknesses
-  here]`). The reviewer writes them (often as Chinese annotations on the notes),
-  and the AI translates, polishes and fact-checks (Step 8).
+  here]`). The reviewer writes them (often as Chinese annotations on the notes,
+  or a 批改清单 exported from the HTML), and the AI **translates them word for
+  word**: no added sentences, headings, bold titles, anchors, examples or
+  hedges; no dropped items or links; the user's numbering, order and Chinese
+  text kept as written, and no edits to other sections (AI documentation,
+  Soundness, Rating) as a side effect. Fact-check problems (Step 8) and
+  concerns (e.g. citing the reviewer's own paper) are reported to the user
+  separately and applied only if the user says so.
 - **`draft`.** The AI fills every field. The user then edits. In real use,
   users deleted AI-written weaknesses and questions to write their own — offer
   `assist` first.
@@ -66,10 +80,19 @@ has to say"). Ask once which mode, unless `— mode:` was given:
 - **OUTPUT_LANG = `en`** for the submitted file. `— lang: zh` adds a
   line-aligned Chinese twin and the annotatable HTML (Step 9).
 - **STYLE** — each paragraph ≤ 3 sentences; each point 1–2 sentences (users
-  found longer reviews unreadable). Spend words on anchors and numbers.
+  found longer reviews unreadable). **Qualitative first, few numbers.** Lead
+  each point with the qualitative judgment — what is wrong and why it matters
+  for the paper's claim (e.g. "the Task IV score mostly rewards scene
+  description, not mechanism explanation"). Then give the anchor (table /
+  section) so the authors can find it. Cite **at most one or two numbers per
+  point**, only the ones that carry the argument (a below-chance cell, a
+  model count of one); never chains of values, recalls, CIs or per-model
+  lists. Detailed numbers stay in `NOTES` as evidence, not in the review.
 - **OUT_DIR** — the directory holding the PDFs if the user is working there,
   else `peer-review/<slug>/`. Files: `review_<id>_<ShortName>.md`
-  (+ `.zh.md`, `.zh.html`), `NOTES.<lang>.md`, `CHECKS.md`. Never publish any of
+  (+ `.zh.md`, `.zh.html`), `NOTES.<lang>.md` (candidate findings only),
+  `CHECKS.md` (process log: Step 0/2/3 results, backups, every edit to the
+  review file, open items such as an unsupported Soundness). Never publish any of
   them (no Artifact, no gist, no upload): a submission is confidential.
 
 ## Workflow
@@ -200,6 +223,22 @@ Fill the P3 template (`[VENUE]`, `[VENUE FORM]`, paper paths) and read. Check:
    for omitted prior work, but every paper you name must be verified to exist
    and say what you claim
    ([`citation-discipline.md`](../shared-references/citation-discipline.md)).
+   Before calling an omission a weakness:
+   - **Grep the submission** for each candidate (title, short name, first
+     author) — it may already be cited.
+   - **Apply the venue's contemporaneous-work rule** from its *reviewer*
+     guide (the author guide may not state it). ICLR 2027: contemporaneous =
+     published at a peer-reviewed venue within 2 months of the deadline
+     (on/after Jul 17, 2026); **arXiv-only papers never require a
+     comparison**, whatever their age; reviewers may make authors aware of
+     them, but missing comparisons "cannot be a basis for rejection".
+   - **Verify publication status**, never assume it: arXiv `journal_ref` /
+     comments, OpenReview `venueid` (`api2.openreview.net/notes/search?term=`;
+     a `.../Rejected_Submission` venueid means not published), OpenAlex
+     `primary_location`. Drop candidates posted after the submission date.
+   - Missing work that is arXiv-only or contemporaneous goes under minor
+     issues, phrased as "the authors may want to discuss…", marked as not
+     affecting the rating — never under Critical Weaknesses.
 7. **Reproducibility** — Step 3's result, hyperparameters, compute.
 
 Optional cross-family read (`— reviewer: codex|manual`, only if Step 0 allows):
@@ -239,6 +278,29 @@ Optional passes: `— adversarial: on` → `/kill-argument` on the extracted tex
   checked against a source.
 - **Speculation becomes a question.** "Looks copied from another system" is a
   guess; ask how the component actually runs on the paper's data instead.
+- **Certainty tiers — simple and certain first.** Tag every finding:
+  - **Tier A (确定):** a reader can confirm it by opening one anchor in the
+    paper — a sentence, a table cell, a missing section, a below-chance
+    number, an absent protocol. No arithmetic beyond reading off a number.
+  - **Tier B (推断, 可选):** depends on anything else — back-solving numbers
+    across tables, assuming class sizes, reading the released code or data,
+    the reviewer's own runs, or an interpretation of an ambiguous sentence.
+    Strong evidence still counts as Tier B (e.g. "Table 4's F1 is the
+    anomaly class" inferred from one indirect sentence plus a back-solve).
+  Critical Weaknesses and the top of the candidate list use **Tier A only**.
+  Tier B goes in a separate trailing section **"Optional (inference-based)" /
+  "可选（推断类）"**, each item stating its premises, and in the review it is
+  phrased as a Question ("please confirm which class F1 in Table 4 uses"),
+  never as a lead weakness or a rating driver. If a Tier B point is the
+  strongest one, say so to the user and keep it optional anyway; promote it
+  only when the paper itself states it (then it is Tier A) or the user asks.
+- **Small-N human studies.** Say which study the N belongs to (e.g. "an
+  agreement study with three annotators on 120 videos", not "only three
+  annotators") — the paper may not state the total. A small rater count is
+  common and easy to rebut; the stronger points are rater independence from
+  the label/reference authors, agreement with the *released* gold labels
+  (inter-rater κ is not label accuracy), per-class support, a human ceiling
+  on the task the claim rests on, and a missing CI on κ.
 - **Measured language.** Acknowledge a legitimate design choice before the
   criticism ("X is a reasonable controlled comparison, but…"); never
   "absurd" / "离谱".
@@ -249,7 +311,14 @@ Optional passes: `— adversarial: on` → `/kill-argument` on the extracted tex
 ### Step 7: Write the review
 
 In the venue's form, following STYLE. Ratings use the form's exact option
-wording in backticks (`` `2: Weak rejection` ``).
+wording in backticks (`` `2: Weak rejection` ``). **Paper Summary is one
+paragraph** (about 3–5 sentences, no bullet lists or sub-paragraphs): what the
+paper proposes, how it is evaluated, and the main findings, stated
+qualitatively with at most one or two numbers. **Critical Strengths are
+1–2 numbered items, each two or three sentences of prose** — a bold one-line
+claim, then why it matters; no sub-bullets, no evidence lists. Critical Weaknesses lead
+with Tier A findings; Tier B findings appear only as Questions or in an
+optional minor block (Step 6, *Certainty tiers*).
 
 **AI documentation field** (ICLR 2027 and similar): must be true at
 submission time and **re-written whenever the content changes** — who wrote
@@ -286,6 +355,10 @@ exported — Step 9). For each sentence:
 - omitted author-favourable evidence (Step 6 balance check);
 - requests are justified from the paper and feasible ("please report X" —
   why is X needed, and can the authors run it with what they already have?);
+- tiers: any Critical Weakness that rests on a back-solve, code reading or
+  an ambiguous sentence (Tier B) → flag it to move to Questions / optional;
+- number density: a point with more than two numbers, or that opens with a
+  number instead of the qualitative judgment → rewrite qualitatively (STYLE);
 - consistency: Summary / Soundness / Rating vs the current weaknesses;
   references to deleted content ("see Weaknesses" pointing at nothing);
 - mechanics: leftover `[Reviewer: …]` placeholders, stray quotes, double
@@ -294,7 +367,7 @@ exported — Step 9). For each sentence:
 
 Report as: must-fix (factual / rebuttable) → consistency → optional. Propose
 exact replacement sentences; edit the file only when asked, and back it up
-first.
+first. Log each applied edit in `CHECKS.md`, not in `NOTES`.
 
 ### Step 9: Bilingual copy and annotatable HTML (`— lang: zh`)
 
