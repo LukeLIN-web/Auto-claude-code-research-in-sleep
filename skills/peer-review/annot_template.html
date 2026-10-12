@@ -1,0 +1,368 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>__TITLE__</title>
+<style>
+:root {
+  --bg: #f7f5f0; --paper: #fffdf8; --ink: #23211d; --muted: #77716a; --line: #e4ded3;
+  --accent: #b4442c; --accent-soft: #f6e3dc; --hl: #fff0a3; --note-bg: #fff7d6; --note-line: #e9cf6a;
+  --en: #5b6f86; --code-bg: #f0ebe1; --edited: #2f7d5b;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #1b1a18; --paper: #23221f; --ink: #e9e4da; --muted: #9a938a; --line: #3a3732;
+    --accent: #e0775e; --accent-soft: #3e2a24; --hl: #5c5121; --note-bg: #34301f; --note-line: #7d6c2c;
+    --en: #93a8c0; --code-bg: #312f2a; --edited: #5fbf92;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #1b1a18; --paper: #23221f; --ink: #e9e4da; --muted: #9a938a; --line: #3a3732;
+  --accent: #e0775e; --accent-soft: #3e2a24; --hl: #5c5121; --note-bg: #34301f; --note-line: #7d6c2c;
+  --en: #93a8c0; --code-bg: #312f2a; --edited: #5fbf92;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--ink);
+  font: 16px/1.85 "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", system-ui, sans-serif; }
+.bar { position: sticky; top: 0; z-index: 20; background: color-mix(in srgb, var(--bg) 92%, transparent);
+  backdrop-filter: blur(8px); border-bottom: 1px solid var(--line); }
+.bar-in { max-width: 900px; margin: 0 auto; padding: 8px 16px; display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.bar .stat { margin-right: auto; font-size: 13px; color: var(--muted); }
+button { font: inherit; font-size: 13px; color: var(--ink); background: var(--paper); border: 1px solid var(--line);
+  border-radius: 6px; padding: 4px 10px; cursor: pointer; }
+button:hover { border-color: var(--accent); color: var(--accent); }
+button.on { background: var(--accent-soft); border-color: var(--accent); color: var(--accent); }
+main { max-width: 900px; margin: 0 auto; padding: 24px 16px 120px; }
+.paper { background: var(--paper); border: 1px solid var(--line); border-radius: 10px; padding: 28px 40px; }
+@media (max-width: 640px) { .paper { padding: 18px 16px; } }
+.help { font-size: 13px; color: var(--muted); border: 1px dashed var(--line); border-radius: 8px; padding: 10px 14px; margin-bottom: 18px; }
+.help b { color: var(--ink); }
+.blk { position: relative; border-left: 3px solid transparent; padding: 2px 8px 2px 10px; margin: 0 -11px; border-radius: 2px; }
+.blk:hover { border-left-color: var(--line); }
+.blk.edited { border-left-color: var(--edited); }
+.blk.has-note { border-left-color: var(--note-line); }
+.blk.edited.has-note { border-left-color: var(--edited); }
+.zh { outline: none; min-height: 1.4em; }
+.zh:focus { background: color-mix(in srgb, var(--accent-soft) 45%, transparent); }
+.blk.h1 .zh { font-size: 23px; font-weight: 700; line-height: 1.5; margin: 4px 0 10px; }
+.blk.h2 { margin-top: 26px; }
+.blk.h2 .zh { font-size: 19px; font-weight: 700; padding-bottom: 4px; border-bottom: 1px solid var(--line); }
+.blk.h3 { margin-top: 16px; }
+.blk.h3 .zh { font-size: 17px; font-weight: 700; }
+.blk.p { margin: 8px -11px; }
+.blk.li, .blk.ol { margin: 3px -11px; }
+.blk.li .zh, .blk.ol .zh { position: relative; }
+.blk.li .zh::before { content: "•"; position: absolute; left: -16px; color: var(--muted); }
+.blk.ol .zh::before { content: attr(data-num) "."; position: absolute; left: -22px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.blk.ol { margin-top: 10px; }
+.blk.rating .zh { display: inline-block; background: var(--accent-soft); color: var(--accent); font-weight: 600;
+  padding: 2px 12px; border-radius: 999px; font-size: 15px; }
+.en { display: none; font-size: 13.5px; line-height: 1.6; color: var(--en); margin: 2px 0 6px;
+  font-family: Georgia, "Times New Roman", serif; }
+body.show-en .en { display: block; }
+code { font-family: ui-monospace, Menlo, monospace; font-size: .88em; background: var(--code-bg); padding: 1px 5px; border-radius: 4px; }
+mark { background: var(--hl); color: inherit; padding: 0 1px; }
+del { color: var(--accent); text-decoration-thickness: 2px; }
+ins { color: var(--edited); text-decoration: none; border-bottom: 2px solid var(--edited); }
+.tools { position: absolute; right: -4px; top: 2px; display: none; gap: 4px; }
+.blk:hover .tools, .blk:focus-within .tools { display: flex; }
+.tools button { padding: 0 7px; font-size: 12px; line-height: 22px; opacity: .85; }
+@media (hover: none) { .tools { display: flex; position: static; justify-content: flex-end; } }
+.notes { margin: 4px 0 8px; }
+.note { display: flex; gap: 6px; align-items: flex-start; background: var(--note-bg); border: 1px solid var(--note-line);
+  border-radius: 6px; padding: 6px 8px; margin-top: 4px; }
+.note::before { content: "批注"; font-size: 12px; color: var(--muted); white-space: nowrap; padding-top: 3px; }
+.note textarea { flex: 1; font: inherit; font-size: 14px; line-height: 1.6; color: var(--ink); background: transparent;
+  border: 0; outline: none; resize: none; min-height: 1.6em; overflow: hidden; }
+.note button { border: 0; background: transparent; color: var(--muted); padding: 0 4px; font-size: 16px; line-height: 22px; }
+.overall { margin-top: 32px; }
+.overall h2 { font-size: 17px; margin: 0 0 6px; }
+.overall textarea { width: 100%; min-height: 120px; font: inherit; font-size: 14px; color: var(--ink); background: var(--note-bg);
+  border: 1px solid var(--note-line); border-radius: 8px; padding: 10px 12px; outline: none; resize: vertical; }
+#sel { position: absolute; z-index: 30; display: none; gap: 2px; background: var(--ink); border-radius: 8px; padding: 4px; box-shadow: 0 4px 14px rgba(0,0,0,.2); }
+#sel button { background: transparent; border: 0; color: var(--bg); padding: 3px 9px; }
+#sel button:hover { background: color-mix(in srgb, var(--bg) 20%, transparent); }
+body.only-marked .blk:not(.edited):not(.has-note):not(.has-mark) { display: none; }
+.toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: var(--ink); color: var(--bg);
+  padding: 6px 14px; border-radius: 6px; font-size: 13px; opacity: 0; transition: opacity .2s; pointer-events: none; }
+.toast.show { opacity: 1; }
+.blk.hr { margin: 22px -11px 10px; border-top: 1px solid var(--line); }
+.blk.hr .zh, .blk.hr .tools { display: none; }
+body.no-en #b-en { display: none; }
+</style>
+</head>
+<body>
+<div class="bar"><div class="bar-in">
+  <span class="stat" id="stat"></span>
+  <button id="b-en">显示英文原文</button>
+  <button id="b-only">只看已批改</button>
+  <button id="b-list">导出批改清单</button>
+  <button id="b-md">导出修改后中文</button>
+  <button id="b-snap">保存 HTML 快照</button>
+  <button id="b-reset">清空</button>
+  <button id="b-theme" title="切换深浅色">◐</button>
+</div></div>
+<main><div class="paper">
+  <div class="help">
+    __HELP__
+  </div>
+  <div id="doc"></div>
+  <div class="overall">
+    <h2>总体意见</h2>
+    <textarea id="overall" placeholder="__OVERALL_PH__"></textarea>
+  </div>
+</div></main>
+<div id="sel">
+  <button data-act="mark">高亮</button><button data-act="del">删除线</button><button data-act="ins">插入</button><button data-act="note">批注</button><button data-act="clear">清除</button>
+</div>
+<div class="toast" id="toast"></div>
+<script id="embedded-state" type="application/json">null</script>
+<script>
+const BLOCKS = __BLOCKS__;
+const HAS_EN = __HAS_EN__;
+const KEY = "review-markup:__BASE__";
+const LEGACY = __LEGACY__; // layout -> {old line index: new line index | null}, for edits saved under an earlier version
+const LAYOUT = __LAYOUT__;
+const $ = (s, r = document) => r.querySelector(s);
+const doc = $("#doc");
+let state = { edits: {}, notes: {}, overall: "", savedAt: 0 };
+
+function loadState() {
+  let emb = null, loc = null;
+  try { emb = JSON.parse($("#embedded-state").textContent); } catch (e) {}
+  try { loc = JSON.parse(localStorage.getItem(KEY)); } catch (e) {}
+  const pick = [emb, loc].filter(Boolean).sort((a, b) => (b.savedAt || 0) - (a.savedAt || 0))[0];
+  if (pick) state = Object.assign(state, pick);
+  if ((state.v || 1) !== LAYOUT) {
+    const m = LEGACY[state.v || 1] || {};
+    const move = o => Object.fromEntries(Object.entries(o || {}).map(([k, v]) => [k in m ? m[k] : k, v]).filter(([k]) => k !== "null"));
+    state.edits = move(state.edits); state.notes = move(state.notes);
+  }
+  state.v = LAYOUT;
+}
+let saveTimer;
+function save() {
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(() => {
+    state.savedAt = Date.now();
+    try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {}
+    refreshStat();
+  }, 250);
+}
+function toast(msg) { const t = $("#toast"); t.textContent = msg; t.classList.add("show"); setTimeout(() => t.classList.remove("show"), 1600); }
+
+function autosize(ta) { ta.style.height = "auto"; ta.style.height = ta.scrollHeight + "px"; }
+
+function render() {
+  doc.innerHTML = "";
+  for (const b of BLOCKS) {
+    const el = document.createElement("div");
+    el.className = "blk " + b.kind;
+    el.dataset.i = b.i;
+    if (b.level > 1) el.style.paddingLeft = (10 + (b.level - 1) * 22) + "px";
+    if (b.kind === "li" || b.kind === "ol") el.style.paddingLeft = (10 + 20 + (b.level - 1) * 22) + "px";
+    el.innerHTML = `<div class="zh" contenteditable="true" spellcheck="false"></div><div class="en"></div><div class="notes"></div>
+      <div class="tools"><button data-t="note">＋批注</button><button data-t="revert">还原</button></div>`;
+    const zh = $(".zh", el);
+    if (b.kind === "ol") zh.dataset.num = b.num;
+    zh.innerHTML = state.edits[b.i] != null ? state.edits[b.i] : b.zh;
+    $(".en", el).innerHTML = b.en;
+    zh.addEventListener("input", () => { state.edits[b.i] = zh.innerHTML; mark(el, b); save(); });
+    zh.addEventListener("keydown", e => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); } });
+    zh.addEventListener("paste", e => { e.preventDefault(); document.execCommand("insertText", false, e.clipboardData.getData("text/plain")); });
+    $(".tools", el).addEventListener("click", e => {
+      const t = e.target.dataset.t;
+      if (t === "note") addNote(b.i, "", true);
+      if (t === "revert" && confirm("把这一段还原为原文？（批注保留）")) { delete state.edits[b.i]; zh.innerHTML = b.zh; mark(el, b); save(); }
+    });
+    doc.appendChild(el);
+    (state.notes[b.i] || []).forEach((n, k) => drawNote(el, b.i, k));
+    mark(el, b);
+  }
+  $("#overall").value = state.overall || "";
+  refreshStat();
+}
+
+function mark(el, b) {
+  const cur = $(".zh", el).innerHTML;
+  el.classList.toggle("edited", state.edits[b.i] != null && plain(cur) !== plain(b.zh));
+  el.classList.toggle("has-mark", /<(mark|del|ins)\b/.test(cur));
+  el.classList.toggle("has-note", (state.notes[b.i] || []).some(n => n.trim()));
+}
+function plain(h) { const d = document.createElement("div"); d.innerHTML = h; return d.textContent.trim(); }
+
+function blockEl(i) { return doc.querySelector(`.blk[data-i="${i}"]`); }
+function addNote(i, text, focus) {
+  (state.notes[i] = state.notes[i] || []).push(text);
+  const el = blockEl(i);
+  const ta = drawNote(el, i, state.notes[i].length - 1);
+  if (focus) { ta.focus(); ta.setSelectionRange(ta.value.length, ta.value.length); }
+  save();
+}
+function drawNote(el, i, k) {
+  const box = document.createElement("div");
+  box.className = "note";
+  box.innerHTML = `<textarea rows="1" placeholder="写下批注……"></textarea><button title="删除批注">×</button>`;
+  const ta = $("textarea", box);
+  ta.value = state.notes[i][k];
+  ta.addEventListener("input", () => { state.notes[i][k] = ta.value; autosize(ta); mark(el, BLOCKS.find(b => b.i == i)); save(); });
+  $("button", box).addEventListener("click", () => {
+    state.notes[i].splice(k, 1);
+    $(".notes", el).innerHTML = "";
+    state.notes[i].forEach((_, j) => drawNote(el, i, j));
+    mark(el, BLOCKS.find(b => b.i == i)); save();
+  });
+  $(".notes", el).appendChild(box);
+  requestAnimationFrame(() => autosize(ta));
+  return ta;
+}
+
+/* ---------- selection toolbar ---------- */
+const sel = $("#sel");
+let savedRange = null;
+document.addEventListener("selectionchange", () => {
+  const s = getSelection();
+  if (!s.rangeCount || s.isCollapsed) { if (!sel.matches(":hover")) sel.style.display = "none"; return; }
+  const r = s.getRangeAt(0);
+  const zh = (r.commonAncestorContainer.nodeType === 1 ? r.commonAncestorContainer : r.commonAncestorContainer.parentElement).closest(".zh");
+  if (!zh) { sel.style.display = "none"; return; }
+  savedRange = r.cloneRange();
+  const rect = r.getBoundingClientRect();
+  sel.style.display = "flex";
+  const w = sel.offsetWidth;
+  sel.style.left = Math.max(8, Math.min(innerWidth - w - 8, rect.left + rect.width / 2 - w / 2 + scrollX)) + "px";
+  sel.style.top = (rect.top + scrollY - sel.offsetHeight - 8) + "px";
+});
+sel.addEventListener("mousedown", e => e.preventDefault());
+sel.addEventListener("click", e => {
+  const act = e.target.dataset.act;
+  if (!act || !savedRange) return;
+  const r = savedRange;
+  const zh = (r.commonAncestorContainer.nodeType === 1 ? r.commonAncestorContainer : r.commonAncestorContainer.parentElement).closest(".zh");
+  const el = zh.closest(".blk"), i = +el.dataset.i, b = BLOCKS.find(x => x.i === i);
+  const text = r.toString();
+  if (act === "note") {
+    addNote(i, `「${text}」：`, true);
+  } else if (act === "clear") {
+    const frag = r.extractContents();
+    frag.querySelectorAll("mark,del,ins").forEach(n => n.replaceWith(...n.childNodes));
+    r.insertNode(frag);
+    // also unwrap a wrapper fully containing the selection
+    let p = r.commonAncestorContainer; p = p.nodeType === 1 ? p : p.parentElement;
+    const w = p.closest("mark,del,ins");
+    if (w && zh.contains(w)) w.replaceWith(...w.childNodes);
+    zh.normalize();
+  } else {
+    const w = document.createElement(act);
+    w.appendChild(r.extractContents());
+    r.insertNode(w);
+  }
+  if (act !== "note") { state.edits[i] = zh.innerHTML; mark(el, b); save(); }
+  getSelection().removeAllRanges(); sel.style.display = "none";
+});
+
+/* ---------- export ---------- */
+function toMd(node, clean) {
+  let out = "";
+  for (const n of node.childNodes) {
+    if (n.nodeType === 3) { out += n.textContent; continue; }
+    if (n.nodeType !== 1) continue;
+    const t = n.tagName.toLowerCase(), inner = toMd(n, clean);
+    if (t === "strong" || t === "b") out += `**${inner}**`;
+    else if (t === "em" || t === "i") out += `*${inner}*`;
+    else if (t === "code") out += "`" + inner + "`";
+    else if (t === "del" || t === "s" || t === "strike") out += clean ? "" : `~~${inner}~~`;
+    else if (t === "ins") out += clean ? inner : `[+${inner}+]`;
+    else if (t === "mark") out += clean ? inner : `==${inner}==`;
+    else if (t === "br") out += " ";
+    else out += inner;
+  }
+  return out;
+}
+function htmlNode(h) { const d = document.createElement("div"); d.innerHTML = h; return d; }
+function prefix(b) {
+  if (b.kind === "rating") return null;
+  return b.marker;
+}
+function lineMd(b, h, clean) {
+  const body = toMd(htmlNode(h), clean).replace(/\s+/g, " ").trim();
+  return b.kind === "rating" ? "`" + body + "`" : b.marker + body;
+}
+function download(name, text, type = "text/markdown") {
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(new Blob([text], { type: type + ";charset=utf-8" }));
+  a.download = name; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+}
+const base = KEY.split(":")[1];
+
+$("#b-md").onclick = () => {
+  const out = [];
+  let last = -1;
+  for (const b of BLOCKS) {
+    if (last >= 0 && b.i > last + 1) out.push("");
+    const h = state.edits[b.i] != null ? state.edits[b.i] : b.zh;
+    out.push(lineMd(b, h, true));
+    for (const n of state.notes[b.i] || []) if (n.trim()) out.push(`> 【批注】${n.trim()}`);
+    last = b.i;
+  }
+  download(base + ".修改版.md", out.join("\n") + "\n");
+};
+
+$("#b-list").onclick = () => {
+  const out = [`# 批改清单：${document.title}`, "", "标记说明：~~删除~~ 表示建议删除，[+文字+] 表示新增，==文字== 表示高亮。", ""];
+  let section = "", count = 0;
+  for (const b of BLOCKS) {
+    if (b.kind === "h1" || b.kind === "h2" || b.kind === "h3") section = plain(HAS_EN ? b.en : b.zh);
+    const el = blockEl(b.i);
+    if (!el.classList.contains("edited") && !el.classList.contains("has-note") && !el.classList.contains("has-mark")) continue;
+    count++;
+    const cur = state.edits[b.i] != null ? state.edits[b.i] : b.zh;
+    out.push(`## ${count}. [${section}] 第 ${b.i + 1} 行`, "");
+    if (HAS_EN) out.push(`- **英文原文**：${toMd(htmlNode(b.en), true).trim()}`);
+    out.push(`- **${HAS_EN ? "原译文" : "原文"}**：${toMd(htmlNode(b.zh), true).trim()}`);
+    if (el.classList.contains("edited") || el.classList.contains("has-mark")) out.push(`- **批改后**：${toMd(htmlNode(cur), false).trim()}`);
+    for (const n of state.notes[b.i] || []) if (n.trim()) out.push(`- **批注**：${n.trim()}`);
+    out.push("");
+  }
+  if ((state.overall || "").trim()) out.push("## 总体意见", "", state.overall.trim(), "");
+  if (!count && !(state.overall || "").trim()) return toast("还没有任何批改");
+  download(base + ".批改清单.md", out.join("\n"));
+};
+
+$("#b-snap").onclick = () => {
+  state.savedAt = Date.now();
+  const clone = document.documentElement.cloneNode(true);
+  clone.querySelector("#doc").innerHTML = "";
+  clone.querySelector("#embedded-state").textContent = JSON.stringify(state).replace(/</g, "\\u003c");
+  clone.querySelector("#sel").style.display = "none";
+  clone.querySelector("body").className = "";
+  download(base + ".批改快照.html", "<!doctype html>\n" + clone.outerHTML, "text/html");
+};
+
+$("#b-reset").onclick = () => {
+  if (!confirm("清空本页所有修改、批注和总体意见？此操作不可撤销。")) return;
+  state = { edits: {}, notes: {}, overall: "", savedAt: Date.now(), v: LAYOUT };
+  try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {}
+  render();
+};
+$("#b-en").onclick = e => { document.body.classList.toggle("show-en"); e.target.classList.toggle("on"); };
+$("#b-only").onclick = e => { document.body.classList.toggle("only-marked"); e.target.classList.toggle("on"); };
+$("#b-theme").onclick = () => {
+  const r = document.documentElement, dark = matchMedia("(prefers-color-scheme: dark)").matches;
+  const cur = r.dataset.theme || (dark ? "dark" : "light");
+  r.dataset.theme = cur === "dark" ? "light" : "dark";
+};
+$("#overall").addEventListener("input", e => { state.overall = e.target.value; save(); });
+
+function refreshStat() {
+  const n = doc.querySelectorAll(".blk.edited, .blk.has-note, .blk.has-mark").length;
+  $("#stat").textContent = n ? `已批改 ${n} 处 · 自动保存` : "尚未批改";
+}
+
+if (!HAS_EN) document.body.classList.add("no-en");
+loadState();
+render();
+</script>
+</body>
+</html>

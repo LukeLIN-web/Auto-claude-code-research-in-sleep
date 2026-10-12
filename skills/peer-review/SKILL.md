@@ -37,7 +37,7 @@ has to say"). Ask once which mode, unless `— mode:` was given:
 
 - **`assist` (recommended when the venue asks for AI documentation).** The AI
   fills Summary and proposes ratings, and writes a **candidate findings list**
-  in the user's language to `NOTES.<lang>.md` — anchored, with suggested
+  in the user's language to `NOTES.<lang>.html` — anchored, with suggested
   wording (the suggested English wording follows STYLE: qualitative
   judgment first, at most one or two numbers; the full numeric evidence goes
   under the item's 锚点/依据), Tier A (certain, one-anchor) items first and Tier B (inference)
@@ -48,8 +48,8 @@ has to say"). Ask once which mode, unless `— mode:` was given:
   to follow. Edits to filled sections go to `CHECKS.md` (one line each: what
   changed and why) and are summarized in the chat reply. In the review file, Critical Weaknesses / Questions For Authors /
   minor issues stay as placeholders (`[Reviewer: write the critical weaknesses
-  here]`). The reviewer writes them (often as Chinese annotations on the notes,
-  or a 批改清单 exported from the HTML), and the AI **translates them word for
+  here]`). The reviewer writes them (as notes on `NOTES.<lang>.html`, exported
+  as a 批改清单, or a 批改清单 exported from the review HTML), and the AI **translates them word for
   word**: no added sentences, headings, bold titles, anchors, examples or
   hedges; no dropped items or links; the user's numbering, order and Chinese
   text kept as written, and no edits to other sections (AI documentation,
@@ -90,7 +90,8 @@ has to say"). Ask once which mode, unless `— mode:` was given:
   lists. Detailed numbers stay in `NOTES` as evidence, not in the review.
 - **OUT_DIR** — the directory holding the PDFs if the user is working there,
   else `peer-review/<slug>/`. Files: `review_<id>_<ShortName>.md`
-  (+ `.zh.md`, `.zh.html`), `NOTES.<lang>.md` (candidate findings only),
+  (+ `.zh.md`, `.zh.html`), `NOTES.<lang>.html` (candidate findings only;
+  an annotatable page, **not** a `.md` the user has to edit by hand — Step 9),
   `CHECKS.md` (process log: Step 0/2/3 results, backups, every edit to the
   review file, open items such as an unsupported Soundness). Never publish any of
   them (no Artifact, no gist, no upload): a submission is confidential.
@@ -380,13 +381,27 @@ first. Log each applied edit in `CHECKS.md`, not in `NOTES`.
   autosave to localStorage keyed by paragraph index, and three exports:
   **批改清单** (per edited paragraph: English, original zh, edited zh, note),
   clean zh, and a self-contained HTML snapshot with state embedded.
+- Build it with the bundled script, never by hand:
+  `python3 <skill>/md_to_annot_html.py review_X.zh.md review_X.zh.html --en review_X.md`
+  (template: `annot_template.html`). Regenerating after edits: add
+  `--legacy <old.html>` (back up the old file first) — the script keeps the
+  localStorage key, maps saved annotations by line text and prints the ones lost.
+- **`NOTES` is delivered the same way, as HTML only.** Draft the findings in a
+  scratch `.md` (same layout as before: `##` tiers, `###` per item, `-` bullets),
+  then `md_to_annot_html.py NOTES_X.zh.md NOTES_X.zh.html` (no `--en`: the
+  English toggle is hidden and 批改清单 lists 原文 + 批注). Keep only the
+  `.html` in OUT_DIR — move the scratch `.md` to the backup folder. Users asked
+  for this: annotating a `.md` in an editor was clumsy. To revise NOTES later,
+  edit the scratch `.md` and rebuild with `--legacy`.
 - When lines are inserted or deleted later, regenerate the HTML **and migrate
   saved annotations** to the new paragraph indices; tell the user which
   annotations are lost (those on deleted paragraphs).
 - Tell the user: browser "Save As" does **not** keep annotations — use the
   page's export buttons, in the same browser profile.
 - Test once in a headless browser (edit, mark, note, reload, export) before
-  handing over.
+  handing over; 导出修改后中文 with no edits must reproduce the source `.md`
+  line for line. Playwright blocks `file:` — serve OUT_DIR with
+  `python3 -m http.server --bind 127.0.0.1` and stop it afterwards.
 
 ## Venue Forms
 
