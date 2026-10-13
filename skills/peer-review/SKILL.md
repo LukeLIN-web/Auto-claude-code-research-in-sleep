@@ -444,21 +444,25 @@ order); facts, numbers and Tier tags do not change. Log each pass in
   saved annotations** to the new paragraph indices; tell the user which
   annotations are lost (those on deleted paragraphs).
 - **Reading the user's annotations.** Autosave goes to the browser's
-  localStorage only; it is never written back to the file, so Claude cannot
-  see it, and the user may believe it is "saved" (user report 2026-10-13).
-  When the user says 我批注了 / 更新一下: look in `~/Downloads` and OUT_DIR
-  for the newest `*.批改快照.html`, `*.批改清单.md`, or a page the user saved
-  with the browser's Save As, then run
-  `python3 <skill>/read_annot.py <page.html>` (prints line number, original
-  zh, English, edited text and notes). Only if none exists, ask for 导出批改清单
-  or 保存 HTML 快照 — never ask the user to edit a `.md`. The page keeps its
-  state in the DOM as well, so a browser Save As (complete page / single
-  file) also carries the annotations; "HTML only" does not.
+  localStorage only, which Claude cannot read. The page's 保存到文件 button
+  writes the annotations back **into the page's own file**: with the File
+  System Access API (Chrome, Edge) the first click asks the user to pick the
+  page file, the handle is kept in IndexedDB, and later clicks overwrite it in
+  place (user request 2026-10-13: snapshots landing in Downloads were
+  confusing). Safari / Firefox fall back to downloading `*.批改快照.html`.
+  When the user says 我批注了 / 更新一下: run
+  `python3 <skill>/read_annot.py <page.html>` on the page in OUT_DIR first
+  (prints line number, original zh, English, edited text and notes); if it has
+  no embedded state, look in `~/Downloads` for the newest `*.批改快照.html`,
+  `*.批改清单.md`, or a browser Save As copy (complete page / single file
+  also carries the state; "HTML only" does not). Only if none exists, ask
+  for 保存到文件 — never ask the user to edit a `.md`.
+- Before rebuilding a page in place, read its embedded annotations
+  (`read_annot.py`) and keep a backup copy: the rebuild overwrites the file
+  and with it the state the user saved there.
 - **After applying annotations**, rebuild with `--applied` (not `--legacy`):
   the page gets a new localStorage key and opens clean, so the applied edits
   do not show again as pending. Keep the snapshot in the backup folder.
-- Tell the user: browser "Save As" does **not** keep annotations — use the
-  page's export buttons, in the same browser profile.
 - Test once in a headless browser (edit, mark, note, reload, export) before
   handing over; 导出修改后中文 with no edits must reproduce the source `.md`
   line for line. Playwright blocks `file:` — serve OUT_DIR with

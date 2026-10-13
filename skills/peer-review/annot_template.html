@@ -99,7 +99,7 @@ body.no-en #b-en { display: none; }
   <button id="b-only">只看已批改</button>
   <button id="b-list">导出批改清单</button>
   <button id="b-md">导出修改后中文</button>
-  <button id="b-snap">保存 HTML 快照</button>
+  <button id="b-snap">保存到文件</button>
   <button id="b-reset">清空</button>
   <button id="b-theme" title="切换深浅色">◐</button>
 </div></div>
@@ -333,14 +333,53 @@ $("#b-list").onclick = () => {
   download(base + ".批改清单.md", out.join("\n"));
 };
 
-$("#b-snap").onclick = () => {
+function snapshot() {
   state.savedAt = Date.now();
   const clone = document.documentElement.cloneNode(true);
   clone.querySelector("#doc").innerHTML = "";
   clone.querySelector("#embedded-state").textContent = JSON.stringify(state).replace(/</g, "\\u003c");
   clone.querySelector("#sel").style.display = "none";
   clone.querySelector("body").className = "";
-  download(base + ".批改快照.html", "<!doctype html>\n" + clone.outerHTML, "text/html");
+  return "<!doctype html>\n" + clone.outerHTML;
+}
+// The page cannot write to its own file:// path. Where the browser has the
+// File System Access API (Chrome, Edge), the first save asks once for the
+// target file (pick this page itself), keeps the handle in IndexedDB, and later
+// saves overwrite it in place. Other browsers fall back to a download.
+const PAGE = decodeURIComponent(location.pathname.split("/").pop() || base + ".html");
+function idb(mode, fn) {
+  return new Promise((ok, bad) => {
+    const r = indexedDB.open("review-markup", 1);
+    r.onupgradeneeded = () => r.result.createObjectStore("handles");
+    r.onerror = () => bad(r.error);
+    r.onsuccess = () => {
+      try {
+        const tx = r.result.transaction("handles", mode), q = fn(tx.objectStore("handles"));
+        tx.oncomplete = () => ok(q && q.result); tx.onerror = () => bad(tx.error);
+      } catch (e) { bad(e); }
+    };
+  });
+}
+let fileHandle = null;
+$("#b-snap").onclick = async () => {
+  const text = snapshot();
+  if (!window.showSaveFilePicker) {
+    download(base + ".批改快照.html", text, "text/html");
+    return toast("此浏览器不能原地保存，已下载快照");
+  }
+  try {
+    if (!fileHandle) fileHandle = await idb("readonly", st => st.get(location.pathname)).catch(() => null);
+    if (fileHandle && (await fileHandle.requestPermission({ mode: "readwrite" })) !== "granted") fileHandle = null;
+    if (!fileHandle) {
+      fileHandle = await showSaveFilePicker({ suggestedName: PAGE, types: [{ description: "HTML", accept: { "text/html": [".html"] } }] });
+      await idb("readwrite", st => st.put(fileHandle, location.pathname)).catch(() => {});
+    }
+    const w = await fileHandle.createWritable();
+    await w.write(text); await w.close();
+    toast("已保存到 " + fileHandle.name);
+  } catch (e) {
+    if (e.name !== "AbortError") { fileHandle = null; toast("保存失败：" + e.message); }
+  }
 };
 
 $("#b-reset").onclick = () => {
@@ -360,7 +399,7 @@ $("#overall").addEventListener("input", e => { state.overall = e.target.value; s
 
 function refreshStat() {
   const n = doc.querySelectorAll(".blk.edited, .blk.has-note, .blk.has-mark").length;
-  $("#stat").textContent = n ? `已批改 ${n} 处 · 已存在本浏览器（导出或存快照后 Claude 才能读到）` : "尚未批改";
+  $("#stat").textContent = n ? `已批改 ${n} 处 · 已存在本浏览器（点“保存到文件”或导出后 Claude 才能读到）` : "尚未批改";
 }
 
 if (!HAS_EN) document.body.classList.add("no-en");
