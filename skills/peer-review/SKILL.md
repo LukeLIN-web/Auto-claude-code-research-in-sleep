@@ -447,7 +447,9 @@ order); facts, numbers and Tier tags do not change. Log each pass in
   localStorage only, which Claude cannot read. The page's 保存到文件 button
   writes the annotations back **into the page's own file**: with the File
   System Access API (Chrome, Edge) the first click asks the user to pick the
-  page file, the handle is kept in IndexedDB, and later clicks overwrite it in
+  page file (the dialog cannot open in the page's folder and starts on the
+  Desktop, so the page shows the folder path while it is open; users mistook
+  the dialog for a download), the handle is kept in IndexedDB, and later clicks overwrite it in
   place (user request 2026-10-13: snapshots landing in Downloads were
   confusing). Safari / Firefox fall back to downloading `*.批改快照.html`.
   When the user says 我批注了 / 更新一下: run
