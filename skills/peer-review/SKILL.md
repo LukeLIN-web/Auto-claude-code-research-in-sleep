@@ -274,6 +274,17 @@ Optional passes: `— adversarial: on` → `/kill-argument` on the extracted tex
   cuts the other way (a dataset where the method *does* win on the strict
   metric; failure cases where the paper's mechanism behaves correctly). Either
   include it, or weaken the claim. Authors will quote any omitted number back.
+- **Main text first.** Look for problems in the main text, and anchor each
+  finding there: what the main text claims, which main-text table shows it,
+  what the main text leaves out. Readers judge the paper by its main text,
+  and reviewers do not have to read the appendix. An appendix detail is only
+  supporting evidence. It goes under 锚点/依据 after the main-text anchor, as
+  "the main text does not say X (it appears only in App. B)". Never open a
+  conclusion or suggested wording with 「附录定义了…」/「附录 B 明确说…」/
+  "The appendix defines…" (user ruling 2026-10-12). If a finding cannot be
+  stated from the main text at all, say so and demote it to minor or a
+  Question. Do not use emphatic wording such as 明确/clearly to make an
+  appendix point look stronger.
 - **Facts not from the paper** (a baseline's backbone, model generations, a
   benchmark's original numbers) are marked "not in the paper — verify" until
   checked against a source.
@@ -356,6 +367,9 @@ exported — Step 9). For each sentence:
 - omitted author-favourable evidence (Step 6 balance check);
 - requests are justified from the paper and feasible ("please report X" —
   why is X needed, and can the authors run it with what they already have?);
+- main text first: a point whose first anchor is the appendix (「附录…」,
+  "App. C defines…") → re-anchor it on the main-text claim or omission,
+  and move the appendix detail into the evidence (Step 6);
 - tiers: any Critical Weakness that rests on a back-solve, code reading or
   an ambiguous sentence (Tier B) → flag it to move to Questions / optional;
 - number density: a point with more than two numbers, or that opens with a
@@ -369,6 +383,39 @@ exported — Step 9). For each sentence:
 Report as: must-fix (factual / rebuttable) → consistency → optional. Propose
 exact replacement sentences; edit the file only when asked, and back it up
 first. Log each applied edit in `CHECKS.md`, not in `NOTES`.
+
+### Step 8.5: Jargon pass on NOTES and the review (always)
+
+Run `/docs-jargon-pass` on every file the user will read — `NOTES` (its
+scratch `.md`) and the review — **before** building the HTML (Step 9), and
+again after any large rewrite. This session has read the paper and the repo,
+so it is contaminated: the blind read goes to one fresh subagent per file
+(given only that file and the skill), ledgers under
+`OUT_DIR/.humanize/jargon/<UTC>/`. Readers to give the subagent:
+
+- **NOTES** — the reviewer: knows the field, has read the paper's main text
+  once, does **not** remember appendix section names, prompt labels or
+  condition names, has not seen the repo.
+- **Review** — the authors and AC: know the paper, see only the review.
+
+What it most often catches (user complaint 2026-10-12, 「看不懂 blind/oracle
+列，No-context 是啥」):
+
+- **Condition and prompt labels borrowed from the paper's appendix** (`No-context`,
+  `Oracle`, `fully blind floor`, `+Goal+Actions`, `grounded distractor`)
+  used as if self-explanatory. Write what the model is given instead —
+  「只给题目和选项、不给视频（附录 C.3.3）」, "question and options only, no
+  video (App. C.3.3)" — and keep the paper's label at most once, in
+  parentheses, for the authors to find it.
+- **Columns or rows that do not exist** ("no blind/oracle columns"): say what
+  result is missing, not the name of an imaginary column.
+- **Reviewer-made Chinese terms** for standard ideas (答案键 → 正确答案,
+  反推, 锚点) and repo paths / file names in a conclusion line (keep them in
+  锚点/依据 only).
+
+Apply fixes per the skill (delete → reuse an existing word → define, in that
+order); facts, numbers and Tier tags do not change. Log each pass in
+`CHECKS.md`.
 
 ### Step 9: Bilingual copy and annotatable HTML (`— lang: zh`)
 
@@ -396,6 +443,20 @@ first. Log each applied edit in `CHECKS.md`, not in `NOTES`.
 - When lines are inserted or deleted later, regenerate the HTML **and migrate
   saved annotations** to the new paragraph indices; tell the user which
   annotations are lost (those on deleted paragraphs).
+- **Reading the user's annotations.** Autosave goes to the browser's
+  localStorage only; it is never written back to the file, so Claude cannot
+  see it, and the user may believe it is "saved" (user report 2026-10-13).
+  When the user says 我批注了 / 更新一下: look in `~/Downloads` and OUT_DIR
+  for the newest `*.批改快照.html`, `*.批改清单.md`, or a page the user saved
+  with the browser's Save As, then run
+  `python3 <skill>/read_annot.py <page.html>` (prints line number, original
+  zh, English, edited text and notes). Only if none exists, ask for 导出批改清单
+  or 保存 HTML 快照 — never ask the user to edit a `.md`. The page keeps its
+  state in the DOM as well, so a browser Save As (complete page / single
+  file) also carries the annotations; "HTML only" does not.
+- **After applying annotations**, rebuild with `--applied` (not `--legacy`):
+  the page gets a new localStorage key and opens clean, so the applied edits
+  do not show again as pending. Keep the snapshot in the backup folder.
 - Tell the user: browser "Save As" does **not** keep annotations — use the
   page's export buttons, in the same browser profile.
 - Test once in a headless browser (edit, mark, note, reload, export) before

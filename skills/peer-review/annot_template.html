@@ -147,6 +147,9 @@ function save() {
   saveTimer = setTimeout(() => {
     state.savedAt = Date.now();
     try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {}
+    // keep the state in the live DOM too, so the browser's own "Save Page As"
+    // (complete page / single file) carries the annotations
+    $("#embedded-state").textContent = JSON.stringify(state).replace(/</g, "\\u003c");
     refreshStat();
   }, 250);
 }
@@ -357,7 +360,7 @@ $("#overall").addEventListener("input", e => { state.overall = e.target.value; s
 
 function refreshStat() {
   const n = doc.querySelectorAll(".blk.edited, .blk.has-note, .blk.has-mark").length;
-  $("#stat").textContent = n ? `已批改 ${n} 处 · 自动保存` : "尚未批改";
+  $("#stat").textContent = n ? `已批改 ${n} 处 · 已存在本浏览器（导出或存快照后 Claude 才能读到）` : "尚未批改";
 }
 
 if (!HAS_EN) document.body.classList.add("no-en");
