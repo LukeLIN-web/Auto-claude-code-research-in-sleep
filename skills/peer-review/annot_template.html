@@ -371,13 +371,17 @@ $("#b-snap").onclick = async () => {
     if (!fileHandle) fileHandle = await idb("readonly", st => st.get(location.pathname)).catch(() => null);
     if (fileHandle && (await fileHandle.requestPermission({ mode: "readwrite" })) !== "granted") fileHandle = null;
     if (!fileHandle) {
-      fileHandle = await showSaveFilePicker({ suggestedName: PAGE, types: [{ description: "HTML", accept: { "text/html": [".html"] } }] });
+      // the dialog cannot open in this page's folder; say where to go
+      $("#stat").textContent = "第一次保存：在弹窗里进入 " + decodeURIComponent(location.pathname.replace(/[^/]*$/, "")) + "，选中 " + PAGE + " 并点“替换”";
+      fileHandle = await showSaveFilePicker({ suggestedName: PAGE, startIn: "desktop", types: [{ description: "HTML", accept: { "text/html": [".html"] } }] });
+      if (fileHandle.name !== PAGE && !confirm("选中的是 " + fileHandle.name + "，不是本页文件 " + PAGE + "。仍然保存到它？")) { fileHandle = null; return refreshStat(); }
       await idb("readwrite", st => st.put(fileHandle, location.pathname)).catch(() => {});
     }
     const w = await fileHandle.createWritable();
     await w.write(text); await w.close();
-    toast("已保存到 " + fileHandle.name);
+    refreshStat(); toast("已保存到 " + fileHandle.name);
   } catch (e) {
+    refreshStat();
     if (e.name !== "AbortError") { fileHandle = null; toast("保存失败：" + e.message); }
   }
 };
