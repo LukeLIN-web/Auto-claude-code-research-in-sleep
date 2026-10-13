@@ -425,9 +425,10 @@ order); facts, numbers and Tier tags do not change. Log each pass in
 - `review_*.zh.html`: a single local file (inline CSS/JS, no CDN) where each
   zh paragraph is editable, with highlight / strikethrough (suggest delete) /
   insert / note, a toggle to show the English line, an overall-comments box,
-  autosave to localStorage keyed by paragraph index, and three exports:
-  **批改清单** (per edited paragraph: English, original zh, edited zh, note),
-  clean zh, and a self-contained HTML snapshot with state embedded.
+  autosave to localStorage keyed by paragraph index, and two ways out:
+  **批改清单** (per edited paragraph: English, original zh, edited zh, note)
+  and **保存到文件** (writes the state back into the page). No whole-text
+  "edited zh" export: it shows no diff and no English (user, 2026-10-13).
 - Build it with the bundled script, never by hand:
   `python3 <skill>/md_to_annot_html.py review_X.zh.md review_X.zh.html --en review_X.md`
   (template: `annot_template.html`). Regenerating after edits: add
@@ -466,8 +467,8 @@ order); facts, numbers and Tier tags do not change. Log each pass in
   the page gets a new localStorage key and opens clean, so the applied edits
   do not show again as pending. Keep the snapshot in the backup folder.
 - Test once in a headless browser (edit, mark, note, reload, export) before
-  handing over; 导出修改后中文 with no edits must reproduce the source `.md`
-  line for line. Playwright blocks `file:` — serve OUT_DIR with
+  handing over; an untouched page must report no saved state in
+  `read_annot.py` and 导出批改清单 must say there is nothing to export. Playwright blocks `file:` — serve OUT_DIR with
   `python3 -m http.server --bind 127.0.0.1` and stop it afterwards.
 
 ## Venue Forms
