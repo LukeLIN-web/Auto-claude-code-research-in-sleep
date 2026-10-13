@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Build the annotatable HTML page (Step 9) from a Markdown file.
 
-  md_to_annot_html.py ZH.md OUT.html [--en EN.md] [--legacy OLD.html]
+  md_to_annot_html.py ZH.md OUT.html [--en EN.md] [--legacy OLD.html | --applied]
 
 ZH.md      the text the user annotates (review_*.zh.md or NOTES_*.zh.md)
 --en       line-aligned English file; adds the "显示英文原文" toggle and the
@@ -9,8 +9,10 @@ ZH.md      the text the user annotates (review_*.zh.md or NOTES_*.zh.md)
 --legacy   the previous HTML for the same file: keeps its localStorage key and
            maps saved edits/notes to the new line indices by exact text match
            (lines whose text changed are reported as lost).
+--applied  use after applying the user's annotations: the page starts clean
+           (new localStorage key) instead of showing the applied edits again.
 """
-import argparse, html, json, re, sys
+import argparse, html, json, re, sys, time
 from pathlib import Path
 
 TEMPLATE = Path(__file__).with_name("annot_template.html")
@@ -52,6 +54,8 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("zh"); ap.add_argument("out")
     ap.add_argument("--en"); ap.add_argument("--legacy")
+    ap.add_argument("--applied", action="store_true",
+                    help="the saved annotations have been applied: start the page clean instead of migrating them")
     a = ap.parse_args()
     zl = Path(a.zh).read_text(encoding="utf-8").splitlines()
     blocks = parse(zl)
@@ -67,7 +71,10 @@ def main():
             b["en"] = ""
     base = Path(a.out).name.removesuffix(".html")
     legacy, layout = {}, 1
-    if a.legacy:
+    if a.applied:
+        # a new localStorage key, so the browser does not reload annotations Claude already applied
+        base = f"{base}:{int(time.time())}"
+    elif a.legacy:
         old = Path(a.legacy).read_text(encoding="utf-8")
         base = re.search(r'const KEY = "review-markup:(.*?)";', old).group(1)
         legacy = json.loads(re.search(r"const LEGACY = (\{.*?\});", old).group(1))
@@ -87,11 +94,11 @@ def main():
     title = re.sub(r"<[^>]+>", "", next((b["zh"] for b in blocks if b["kind"] == "h1"), base))
     if a.en:
         help_ = ('<b>怎么批改：</b>直接点击任意段落即可修改文字（左侧绿线 = 已改）。选中一段文字会弹出工具条：<b>高亮</b>、<b>删除线</b>（建议删除）、<b>插入</b>（标为新增）、<b>批注</b>、<b>清除</b>。\n'
-                 '    鼠标悬停在段落上，右侧有 <b>＋批注</b> 和 <b>还原</b>。所有改动自动保存在本浏览器；<b>导出批改清单</b>会生成一份含英文原文、原译文、修改后文本与批注的 Markdown，可直接发回给 Claude 改英文稿。')
+                 '    鼠标悬停在段落上，右侧有 <b>＋批注</b> 和 <b>还原</b>。改动会自动存在<b>这个浏览器</b>里，但不会写回文件，Claude 读不到；<b>导出批改清单</b>会生成一份含英文原文、原译文、修改后文本与批注的 Markdown，可直接发回给 Claude 改英文稿；也可以点 <b>保存 HTML 快照</b>，把下载的文件告诉 Claude。')
         ph = "对这份审稿意见的整体看法、要加强或删掉的论点、分数是否要调整……"
     else:
         help_ = ('<b>怎么批注：</b>鼠标悬停在任意一条上，点右侧 <b>＋批注</b> 写“采纳 / 删 / 改成什么”；也可以直接点击文字修改（左侧绿线 = 已改），或选中文字用 <b>高亮</b>、<b>删除线</b>、<b>插入</b>、<b>批注</b>。\n'
-                 '    所有改动自动保存在本浏览器；写完点 <b>导出批改清单</b>，把生成的 Markdown 发回给 Claude 即可。浏览器“另存为”不会保留批注，请用 <b>保存 HTML 快照</b>。')
+                 '    改动会自动存在<b>这个浏览器</b>里，但不会写回文件，Claude 读不到；写完点 <b>导出批改清单</b>，把生成的 Markdown 发回给 Claude 即可。交给 Claude 时点 <b>导出批改清单</b> 或 <b>保存 HTML 快照</b>，放到下载文件夹并告诉 Claude 即可。')
         ph = "总体意见：比如哪几条作为主要缺点、哪些放进问题、评分是否要调整……"
     s = TEMPLATE.read_text(encoding="utf-8")
     js = lambda o: json.dumps(o, ensure_ascii=False).replace("</", "<\\/")
