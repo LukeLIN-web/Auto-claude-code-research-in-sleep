@@ -98,7 +98,6 @@ body.no-en #b-en { display: none; }
   <button id="b-en">显示英文原文</button>
   <button id="b-only">只看已批改</button>
   <button id="b-list">导出批改清单</button>
-  <button id="b-md">导出修改后中文</button>
   <button id="b-snap">保存到文件</button>
   <button id="b-reset">清空</button>
   <button id="b-theme" title="切换深浅色">◐</button>
@@ -284,33 +283,12 @@ function toMd(node, clean) {
   return out;
 }
 function htmlNode(h) { const d = document.createElement("div"); d.innerHTML = h; return d; }
-function prefix(b) {
-  if (b.kind === "rating") return null;
-  return b.marker;
-}
-function lineMd(b, h, clean) {
-  const body = toMd(htmlNode(h), clean).replace(/\s+/g, " ").trim();
-  return b.kind === "rating" ? "`" + body + "`" : b.marker + body;
-}
 function download(name, text, type = "text/markdown") {
   const a = document.createElement("a");
   a.href = URL.createObjectURL(new Blob([text], { type: type + ";charset=utf-8" }));
   a.download = name; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 1000);
 }
 const base = KEY.split(":")[1];
-
-$("#b-md").onclick = () => {
-  const out = [];
-  let last = -1;
-  for (const b of BLOCKS) {
-    if (last >= 0 && b.i > last + 1) out.push("");
-    const h = state.edits[b.i] != null ? state.edits[b.i] : b.zh;
-    out.push(lineMd(b, h, true));
-    for (const n of state.notes[b.i] || []) if (n.trim()) out.push(`> 【批注】${n.trim()}`);
-    last = b.i;
-  }
-  download(base + ".修改版.md", out.join("\n") + "\n");
-};
 
 $("#b-list").onclick = () => {
   const out = [`# 批改清单：${document.title}`, "", "标记说明：~~删除~~ 表示建议删除，[+文字+] 表示新增，==文字== 表示高亮。", ""];
