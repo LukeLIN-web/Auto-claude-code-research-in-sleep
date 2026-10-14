@@ -33,6 +33,13 @@ Given a method description, systematically verify its novelty:
      tuning, demos, CAD / digital twin, privileged simulator state, a closed
      frontier API at inference, training compute);
    - what one episode costs (wall-clock, API spend).
+4. Fix the prior-art cutoff from the target venue's concurrent-work rule.
+   Take the venue and its cutoff from the project (its CLAUDE.md or memory)
+   when it names them; otherwise read the venue's call for papers or reviewer
+   guidelines (e.g. CVPR 2027: work first public after 2026-09-15 is
+   concurrent). Write down the venue, the cutoff date and the rule's own
+   wording for the boundary. If no venue is known, say so in the report and
+   treat every paper as prior work until the user names one.
 
 ### Phase B: Multi-Source Literature Search
 For EACH core claim, search using ALL available sources:
@@ -68,6 +75,15 @@ For EACH core claim, search using ALL available sources:
    or section). The axis a close paper fails on is often where the proposed
    method can win.
 
+5. **Date every overlapping paper** against the Phase-A cutoff. The date is
+   when the overlapping content first went public: arXiv v1 `published` from
+   the arXiv API (`https://export.arxiv.org/api/query?id_list=<id>`), or the
+   later version where that content first appears; for a paper not on arXiv,
+   its first public date. Never guess the day from the arXiv id's month. Tag
+   it **Prior** (public before the cutoff) or **Concurrent** (inside the
+   venue's concurrent window). Keep searching up to today: concurrent work is
+   still reported, cited and discussed.
+
 ### Phase C: Cross-Model Verification
 Call REVIEWER_MODEL via Codex MCP (`mcp__codex__codex`) with xhigh reasoning.
 When the method description plus the Phase-B paper list is more than a short
@@ -85,7 +101,9 @@ mcp__codex__codex:
 ```
 Dossier contents should include:
 - The proposed method description
-- All papers found in Phase B
+- All papers found in Phase B, each with its first-public date and its
+  Prior / Concurrent tag, plus the target venue, its cutoff and the rule's
+  wording
 - Ask: "Is this method novel? What is the closest prior work? What is the delta?"
 - The Phase-A practicality targets and the Phase-B practicality read, and ask:
   "Is the proposed method practical, easy to use, and high-success compared
@@ -106,15 +124,19 @@ passing an idea a published paper already contains, and killing a viable idea
 because the territory has neighbors.
 1. Proximity is information, not a verdict. Someone working nearby goes in the
    report; it is not by itself a reason to reject.
-2. ABANDON has exactly one qualification: a specific published paper already
-   contains this result — name that paper. No named paper, no ABANDON.
-3. Crowded-but-deltaed is PROCEED: state the delta in one sentence a reviewer
-   could verify. Thin or contested delta is PROCEED WITH CAUTION — say what
+2. ABANDON has exactly one qualification: a specific prior paper, public
+   before the target venue's concurrent-work cutoff, already contains this
+   result — name that paper and its first-public date. No named prior paper,
+   no ABANDON.
+3. Crowded-but-deltaed is PROCEED: state the delta over prior work in one
+   sentence a reviewer could verify. Thin or contested delta is PROCEED WITH CAUTION — say what
    would make it carry, not why it should die. CAUTION is not a safe middle:
    if you cannot name the specific thing that makes the delta thin, the
    verdict is PROCEED.
-4. Concurrent or competing work is not a veto. That is a race — report it and
-   let the user decide whether to run it.
+4. Concurrent work, public inside the venue's concurrent window, is never a
+   veto and never lowers the score, even when its contribution is identical
+   to this idea. That is a race — report it as work the paper must cite and
+   discuss, and let the user decide whether to run it.
 5. A direct attack on a central problem is legitimate novelty when nobody has
    executed it well. "This area is hot" does not mean "this area is taken."
 6. This check is an early gate, never the last one — more triage, pilots, or
@@ -134,22 +156,31 @@ Output a structured report:
 ### Proposed Method
 [1-2 sentence description]
 
+### Target Venue and Cutoff
+[venue] — prior work is public before [date]; [the rule's wording, source]
+
 ### Core Claims
-1. [Claim 1] — Closest: [paper] — What stays unknown or different: [delta]
-2. [Claim 2] — Closest: [paper] — What stays unknown or different: [delta]
+1. [Claim 1] — Closest prior: [paper] — What stays unknown or different: [delta] — Concurrent: [paper], if any
+2. [Claim 2] — Closest prior: [paper] — What stays unknown or different: [delta] — Concurrent: [paper], if any
 ...
 
 ### Closest Prior Work
-| Paper | Year | Venue | Overlap | Key Difference |
-|-------|------|-------|---------|----------------|
+| Paper | First public | Venue | Overlap | Key Difference |
+|-------|--------------|-------|---------|----------------|
+
+### Concurrent Work (cite and discuss; costs no novelty)
+| Paper | First public | Overlap | Compare where possible |
+|-------|--------------|---------|------------------------|
 
 ### Overall Novelty Assessment
 - Score: X/10 (anchor: 5/10 = has clear neighbors but a defensible delta worth
-  a pilot; reserve 1-3 for results a named published paper already contains)
+  a pilot; reserve 1-3 for results a named prior paper already contains)
 - Recommendation: PROCEED / PROCEED WITH CAUTION / ABANDON (per the verdict
-  limits: crowded-but-deltaed ground is PROCEED; ABANDON must name the paper)
-- Key differentiator: [what makes this unique, if anything]
-- Risk: [what a reviewer would cite as prior work]
+  limits: crowded-but-deltaed ground is PROCEED; ABANDON must name a prior
+  paper)
+- Key differentiator: [what makes this unique over prior work, if anything]
+- Risk: [what a reviewer would cite as prior work; what the venue rule still
+  asks for concurrent work]
 
 ### Practicality (实用 / 好用 / 成功率高)
 | Work | 成功率高 (vs simplest strong baseline) | 好用 (what a new task needs) | 实用 (cost, real robot, unseen) |
@@ -163,7 +194,8 @@ Output a structured report:
   method can close with same-protocol numbers
 
 ### Suggested Positioning
-[State the delta honestly in one sentence a reviewer could verify]
+[State the delta over prior work honestly in one sentence a reviewer could
+verify; name concurrent work as concurrent]
 ```
 
 ### Important Rules
@@ -174,6 +206,10 @@ Output a structured report:
   state, or minutes per episode, is reported as such in the Practicality
   section, however clean its delta. Practicality does not change the novelty
   verdict rules (ABANDON still needs a named paper); it is its own verdict.
+- **Prior art ends at the target venue's concurrent-work cutoff** (user
+  ruling 2026-10-14). Only prior work can make an idea not novel. Concurrent
+  work may contain exactly the same contribution; that costs no novelty, but
+  the paper still cites and discusses it, and compares where possible.
 - Making a known but impractical method practical is a legitimate delta when
   shown with same-protocol numbers: success no lower, a named dependency
   removed, measured seconds or dollars saved per episode.
@@ -188,8 +224,9 @@ Output a structured report:
   the template.
 - Check both the method AND the experimental setting for novelty
 - If the method is not novel but the FINDING would be, say so explicitly
-- Always check the most recent 6 months of arXiv — the field moves fast
-- **Anti-hallucination for Closest Prior Work.** Every paper in the prior-work table must pass pre-search verification via `verify_papers.py` (canonical name resolved per [`shared-references/integration-contract.md`](../shared-references/integration-contract.md) §2; 3-layer arXiv / CrossRef / Semantic Scholar fallback inside the helper itself). Policy D1 (primary + degraded-output fallback): if the helper is unresolved **or** its invocation fails, tag candidate entries `[UNVERIFIED]` and surface the uncertainty rather than dropping them. Never fabricate arXiv IDs, DOIs, or titles from memory. Full protocol in [`shared-references/citation-discipline.md`](../shared-references/citation-discipline.md) § Pre-Search Verification Protocol.
+- Always check the most recent 6 months of arXiv, up to today and past the
+  cutoff — the field moves fast
+- **Anti-hallucination for Closest Prior Work.** Every paper in the prior-work and concurrent-work tables must pass pre-search verification via `verify_papers.py` (canonical name resolved per [`shared-references/integration-contract.md`](../shared-references/integration-contract.md) §2; 3-layer arXiv / CrossRef / Semantic Scholar fallback inside the helper itself). Policy D1 (primary + degraded-output fallback): if the helper is unresolved **or** its invocation fails, tag candidate entries `[UNVERIFIED]` and surface the uncertainty rather than dropping them. Never fabricate arXiv IDs, DOIs, or titles from memory. Full protocol in [`shared-references/citation-discipline.md`](../shared-references/citation-discipline.md) § Pre-Search Verification Protocol.
 
 ## Review Tracing
 
