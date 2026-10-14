@@ -1,6 +1,6 @@
 ---
 name: novelty-check
-description: Verify research idea novelty against recent literature. Use when user says "查新", "novelty check", "有没有人做过", "check novelty", or wants to verify a research idea is novel before implementing.
+description: Verify research idea novelty against recent literature, and read the idea and its closest prior work for 实用、好用、成功率高 (practical, easy to use, high success rate). Use when user says "查新", "novelty check", "有没有人做过", "check novelty", or wants to verify a research idea is novel before implementing.
 argument-hint: "[method-or-idea-description]"
 allowed-tools: WebSearch, WebFetch, Grep, Read, Glob, mcp__codex__codex
 ---
@@ -24,6 +24,15 @@ Given a method description, systematically verify its novelty:
    - What problem does it solve?
    - What is the mechanism?
    - What makes it different from obvious baselines?
+3. Write down what the idea must deliver in practice (the user's top priority:
+   实用、好用、成功率高 — practical, easy to use, high success rate):
+   - which success rate it must beat, against which **simplest strong
+     baseline** (e.g. the underlying policy run alone, the best off-the-shelf
+     method on that benchmark), under the same protocol;
+   - what it needs at deployment on a new task (per-task exploration or
+     tuning, demos, CAD / digital twin, privileged simulator state, a closed
+     frontier API at inference, training compute);
+   - what one episode costs (wall-clock, API spend).
 
 ### Phase B: Multi-Source Literature Search
 For EACH core claim, search using ALL available sources:
@@ -39,6 +48,25 @@ For EACH core claim, search using ALL available sources:
    - Recent arXiv preprints (2025-2026)
 
 3. **Read abstracts**: For each potentially overlapping paper, WebFetch its abstract and related work section
+
+4. **Practicality read** (实用 / 好用 / 成功率高): for each paper that makes the
+   Closest Prior Work table, read its results and setup sections (not just
+   the abstract) and record, only from what the paper states (write "not
+   reported" otherwise, never estimate):
+   - **成功率高 / high success** — headline success and setting; margin over
+     the simplest strong baseline under the same protocol, or "not compared";
+     a system whose added orchestrator / tools do worse than its own base
+     policy alone fails this axis.
+   - **好用 / easy to use** — what a new task needs: per-task exploration,
+     prompt tuning or demos; CAD or a digital twin; privileged simulator
+     state (ground-truth poses, segmentation, rendered depth); a closed
+     frontier API at inference; training data and compute; released code
+     and weights.
+   - **实用 / practical** — wall-clock and API cost per episode; real-robot
+     evidence; unseen tasks / scenes / perturbations.
+   Give each axis Yes / Partial / No with one reason and its source (table
+   or section). The axis a close paper fails on is often where the proposed
+   method can win.
 
 ### Phase C: Cross-Model Verification
 Call REVIEWER_MODEL via Codex MCP (`mcp__codex__codex`) with xhigh reasoning.
@@ -59,6 +87,11 @@ Dossier contents should include:
 - The proposed method description
 - All papers found in Phase B
 - Ask: "Is this method novel? What is the closest prior work? What is the delta?"
+- The Phase-A practicality targets and the Phase-B practicality read, and ask:
+  "Is the proposed method practical, easy to use, and high-success compared
+  with the closest work and with the simplest strong baseline? Correct any
+  practicality cell you can check against the paper. What is the single
+  biggest obstacle to it being practical, easy to use, or high-success?"
 - The NOVELTY VERDICT LIMITS block below, verbatim — the reviewer judges under it
 
 ### The verdict limits
@@ -118,11 +151,32 @@ Output a structured report:
 - Key differentiator: [what makes this unique, if anything]
 - Risk: [what a reviewer would cite as prior work]
 
+### Practicality (实用 / 好用 / 成功率高)
+| Work | 成功率高 (vs simplest strong baseline) | 好用 (what a new task needs) | 实用 (cost, real robot, unseen) |
+|------|------|------|------|
+| [closest paper] | Yes/Partial/No — reason, source | ... | ... |
+| **Proposed method** | ... | ... | ... |
+
+- Verdict for the proposed method: PRACTICAL / NEEDS WORK / IMPRACTICAL,
+  with the single biggest obstacle
+- Where the neighbors fall short, and which of those gaps the proposed
+  method can close with same-protocol numbers
+
 ### Suggested Positioning
 [State the delta honestly in one sentence a reviewer could verify]
 ```
 
 ### Important Rules
+- **实用、好用、成功率高 matters most** (user ruling 2026-10-14: "实用、好用、
+  成功率高最重要。我们必须要做实用、好用、成功率高的方法"). Novelty is a gate,
+  not the goal: a novel idea that loses to the simplest strong baseline, or
+  only works with per-task exploration, a digital twin, privileged simulator
+  state, or minutes per episode, is reported as such in the Practicality
+  section, however clean its delta. Practicality does not change the novelty
+  verdict rules (ABANDON still needs a named paper); it is its own verdict.
+- Making a known but impractical method practical is a legitimate delta when
+  shown with same-protocol numbers: success no lower, a named dependency
+  removed, measured seconds or dollars saved per episode.
 - Two failures waste months equally: a false novelty claim, and a viable idea
   abandoned because the territory has neighbors. Be brutally honest in both
   directions — and when an idea clears the check, say so plainly.
