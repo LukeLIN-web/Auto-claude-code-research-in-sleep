@@ -31,7 +31,7 @@ for path in sys.argv[1:]:
           + ("" if state.get("v", 1) == layout else "  (MISMATCH: indices may refer to an older page)"))
     for k in sorted(set(state.get("edits", {})) | set(state.get("notes", {})), key=int):
         b = blocks.get(k, {})
-        print(f"\n## line {int(k) + 1} (block i={k})")
+        print(f"\n## {'NOTES ' if b.get('src') == 'notes' else ''}line {b.get('ln', int(k) + 1)} (block i={k})")
         print("原文:", text(b.get("zh", "?")))
         if b.get("en"): print("英文:", text(b["en"]))
         if k in state.get("edits", {}): print("修改为:", text(state["edits"][k]))
