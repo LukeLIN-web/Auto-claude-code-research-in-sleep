@@ -1,11 +1,13 @@
 #!/usr/bin/env python3
 """Build the annotatable HTML page (Step 9) from a Markdown file.
 
-  md_to_annot_html.py ZH.md OUT.html [--en EN.md] [--legacy OLD.html | --applied]
+  md_to_annot_html.py ZH.md OUT.html [--en EN.md] [--notes NOTES.md] [--legacy OLD.html | --applied]
 
-ZH.md      the text the user annotates (review_*.zh.md or NOTES_*.zh.md)
+ZH.md      the text the user annotates (review_*.zh.md, or NOTES_*.zh.md alone)
 --en       line-aligned English file; adds the "显示英文原文" toggle and the
-           英文原文 line in 批改清单. Omit for NOTES (no English twin).
+           英文原文 line in 批改清单.
+--notes    candidate-findings Markdown appended after the review on the same
+           page (no English twin); its lines are reported as "NOTES 第 n 行".
 --legacy   the previous HTML for the same file: keeps its localStorage key and
            maps saved edits/notes to the new line indices by exact text match
            (lines whose text changed are reported as lost).
@@ -53,7 +55,7 @@ def parse(lines):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("zh"); ap.add_argument("out")
-    ap.add_argument("--en"); ap.add_argument("--legacy")
+    ap.add_argument("--en"); ap.add_argument("--notes"); ap.add_argument("--legacy")
     ap.add_argument("--applied", action="store_true",
                     help="the saved annotations have been applied: start the page clean instead of migrating them")
     a = ap.parse_args()
@@ -69,6 +71,14 @@ def main():
     else:
         for b in blocks:
             b["en"] = ""
+    for b in blocks:
+        b["src"], b["ln"] = "review", b["i"] + 1
+    if a.notes:
+        nl = Path(a.notes).read_text(encoding="utf-8").splitlines()
+        off = len(zl) + 1
+        for b in parse(nl):
+            b.update(en="", src="notes", ln=b["i"] + 1, i=b["i"] + off)
+            blocks.append(b)
     base = Path(a.out).name.removesuffix(".html")
     legacy, layout = {}, 1
     if a.applied:
@@ -92,7 +102,11 @@ def main():
         if lost:
             print("annotations on these old line indices will be lost:", ", ".join(lost), file=sys.stderr)
     title = re.sub(r"<[^>]+>", "", next((b["zh"] for b in blocks if b["kind"] == "h1"), base))
-    if a.en:
+    if a.en and a.notes:
+        help_ = ('<b>怎么用：</b>上半部分是审稿意见（中文，可切换显示英文），下半部分是候选问题清单。直接点击任意段落即可修改（左侧绿线 = 已改）；悬停在一条上点右侧 <b>＋批注</b> 写“采纳 / 删 / 改成什么”；选中文字可用 <b>高亮</b>、<b>删除线</b>、<b>插入</b>、<b>批注</b>。\n'
+                 '    改动会自动存在<b>这个浏览器</b>里，Claude 读不到；写完点 <b>保存到文件</b> 写回这个 HTML 文件（Chrome / Edge：第一次选中本页文件，之后直接覆盖；其他浏览器会下载一份快照），或点 <b>导出批改清单</b>。')
+        ph = "总体意见：哪几条作为主要缺点、哪些放进问题、分数是否要调整……"
+    elif a.en:
         help_ = ('<b>怎么批改：</b>直接点击任意段落即可修改文字（左侧绿线 = 已改）。选中一段文字会弹出工具条：<b>高亮</b>、<b>删除线</b>（建议删除）、<b>插入</b>（标为新增）、<b>批注</b>、<b>清除</b>。\n'
                  '    鼠标悬停在段落上，右侧有 <b>＋批注</b> 和 <b>还原</b>。改动会自动存在<b>这个浏览器</b>里，Claude 读不到；点 <b>保存到文件</b> 写回这个 HTML 文件（Chrome / Edge：第一次选中本页文件，之后直接覆盖；其他浏览器会下载一份快照），Claude 就能读到。<b>导出批改清单</b>会生成一份含英文原文、原译文、修改后文本与批注的 Markdown。')
         ph = "对这份审稿意见的整体看法、要加强或删掉的论点、分数是否要调整……"

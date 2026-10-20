@@ -1,6 +1,6 @@
 ---
 name: peer-review
-description: "Draft or check a referee report on SOMEONE ELSE's paper — a submission you were assigned to review, or a published/arXiv paper — in the target venue's review-form shape (e.g. ICLR 2027: AI Documentation / Summary / Presentation / Informativeness / Soundness / Critical Strengths / Critical Weaknesses / Questions / Ethics / Rating / Confidence). Independent reads, anchor-checked findings, benchmark and code-availability checks, a hidden-prompt-injection scan, a fact-check of the reviewer's own text, line-aligned EN/ZH copies and a local annotatable HTML. Use when user says \"审稿\", \"帮我审这篇\", \"写审稿意见\", \"给4个审稿\", \"打几分\", \"检查缺点有没有事实错误\", \"peer review\", \"referee report\", \"review this submission\", \"I was assigned to review\", or hands over PDFs / arXiv IDs they did not write. For reviewing your OWN paper use /research-review or /auto-review-loop instead."
+description: "Draft or check a referee report on SOMEONE ELSE's paper — a submission you were assigned to review, or a published/arXiv paper — in the target venue's review-form shape (e.g. ICLR 2027: AI Documentation / Summary / Presentation / Informativeness / Soundness / Critical Strengths / Critical Weaknesses / Questions / Ethics / Rating / Confidence). Independent reads, anchor-checked findings, benchmark and code-availability checks, a hidden-prompt-injection scan, a fact-check of the reviewer's own text, and local annotatable Chinese HTML pages (review + candidate findings). Use when user says \"审稿\", \"帮我审这篇\", \"写审稿意见\", \"给4个审稿\", \"打几分\", \"检查缺点有没有事实错误\", \"peer review\", \"referee report\", \"review this submission\", \"I was assigned to review\", or hands over PDFs / arXiv IDs they did not write. For reviewing your OWN paper use /research-review or /auto-review-loop instead."
 argument-hint: "<paper.pdf ... | arXiv-id | latex-dir> [— venue: ICLR] [— mode: assist|draft|check] [— lang: zh] [— reviewer: claude|codex|manual] [— adversarial: on] [— citations: on]"
 allowed-tools: Bash(*), Read, Write, Edit, Grep, Glob, WebFetch, Agent, Skill, mcp__codex__codex, mcp__codex__codex-reply, mcp__manual_review__review, mcp__manual_review__review_reply
 ---
@@ -28,6 +28,36 @@ rewrite strategy (P1) or a fix list (P2). A referee's job is different:
 | Author of record | you | **the human reviewer** — the AI drafts, checks and translates |
 | Confidentiality | your own work | **someone else's unpublished work** — see Step 0 |
 
+## The Judgment: One Question, Three Calls
+
+A review answers one question: **if this paper is published now, does the
+community gain or lose?** Three calls decide the scores; every other check in
+this skill is evidence for one of them.
+
+1. **Claim.** Can the paper's claim be stated in one sentence that the authors
+   would read and agree with? Write that sentence first (top of `CHECKS.md`,
+   and it opens Paper Summary). If no such sentence exists — the contribution
+   shifts between abstract, intro and experiments, or is a list of components
+   with no stated effect — that is itself the first finding, and the other two
+   calls are judged against the strongest claim the paper does make.
+2. **Evidence.** Can the gain be attributed cleanly to the claimed method —
+   a comparison at the **same backbone, same data, same compute** — and does
+   the ablation remove the claimed mechanism while holding the rest fixed? A
+   gain that could come from a bigger backbone, extra or cleaner data, more
+   training / inference compute, or a different protocol is not yet evidence
+   for the method, however large it is.
+3. **Significance.** Would anyone change what they do or what they believe
+   because of this paper? **Novelty is not a separate axis; it counts here.**
+   A new idea that nobody would adopt is low significance; a known idea shown
+   decisively to work (or to fail) where people assumed otherwise can be high.
+
+Map onto the venue form: Claim → Presentation (clarity) · Evidence → Soundness
+· Significance → Informativeness (ICLR) / Significance (NeurIPS) / Excitement
+(ARR). A form that has its own Originality / Novelty field still gets one,
+but scored consistently with the Significance call, never as an independent
+reason to move the Rating. The Rating is the answer to the one question
+(Step 7, *Rating calibration*).
+
 ## Modes
 
 The person submitting the review is the reviewer of record, and venues
@@ -36,26 +66,31 @@ authors, are much more interested in your unedited thoughts than what an LLM
 has to say"). Ask once which mode, unless `— mode:` was given:
 
 - **`assist` (recommended when the venue asks for AI documentation).** The AI
-  fills Summary and proposes ratings, and writes a **candidate findings list**
-  in the user's language to `NOTES.<lang>.html` — anchored, with suggested
-  wording (the suggested English wording follows STYLE: qualitative
-  judgment first, at most one or two numbers; the full numeric evidence goes
-  under the item's 锚点/依据), Tier A (certain, one-anchor) items first and Tier B (inference)
-  items in a trailing "可选（推断类）" section (Step 6, *Certainty tiers*).
-  `NOTES` holds **only candidate findings** (plus a short how-to-annotate
-  line): never a log of edits made to the review file's filled sections, and
-  no rating discussion — users found a "本次改动" section in NOTES very hard
-  to follow. Edits to filled sections go to `CHECKS.md` (one line each: what
-  changed and why) and are summarized in the chat reply. In the review file, Critical Weaknesses / Questions For Authors /
-  minor issues stay as placeholders (`[Reviewer: write the critical weaknesses
-  here]`). The reviewer writes them (as notes on `NOTES.<lang>.html`, exported
-  as a 批改清单, or a 批改清单 exported from the review HTML), and the AI **translates them word for
-  word**: no added sentences, headings, bold titles, anchors, examples or
-  hedges; no dropped items or links; the user's numbering, order and Chinese
-  text kept as written, and no edits to other sections (AI documentation,
-  Soundness, Rating) as a side effect. Fact-check problems (Step 8) and
-  concerns (e.g. citing the reviewer's own paper) are reported to the user
-  separately and applied only if the user says so.
+  fills Summary, proposes ratings and writes the **candidate findings**,
+  shown below the review on the same page (Step 9); Critical Weaknesses / Questions / minor issues
+  stay as placeholders (`[Reviewer: write the critical weaknesses here]`).
+  - **NOTES item format — each fact once** (user, 2026-10-20: too much
+    repetition). Heading `### A1 <中文结论标题>（Evidence）` carries the tier and
+    the call; then at most four bullets: **结论** (1–2 sentences, plain
+    Chinese), **依据** (main-text anchor first, all numbers here),
+    **反方证据**, **建议英文措辞** (STYLE; write it as a weakness *or* as a
+    question, whichever the item is — not both, and do not restate the
+    结论). No separate "可转为的问题" bullet. Tier A first, Tier B in a trailing
+    「可选（推断类）」 section (Step 6). A short `## 先看` glossary of the
+    paper's conditions is allowed once at the top; items refer to it instead
+    of re-explaining.
+  - NOTES holds **only** findings plus one how-to-annotate line: no edit log,
+    no rating discussion, no trailing 「需要你人工判断」 / process section
+    (hidden-text, code, unverified-facts and rating notes live in
+    `CHECKS.md` only). Edits to filled sections go to `CHECKS.md` (one line
+    each) and the chat reply.
+  - The reviewer writes the weaknesses (notes on the page — on the review
+    part or on the findings below it — saved to the file or exported as a 批改清单), and the AI **translates them word for
+    word**: no added sentences, headings, bold titles, anchors, examples or
+    hedges; no dropped items or links; the user's numbering and order kept;
+    no side edits to other sections. Fact-check problems (Step 8) and
+    concerns (e.g. citing the reviewer's own paper) are reported separately
+    and applied only if the user says so.
 - **`draft`.** The AI fills every field. The user then edits. In real use,
   users deleted AI-written weaknesses and questions to write their own — offer
   `assist` first.
@@ -89,12 +124,19 @@ has to say"). Ask once which mode, unless `— mode:` was given:
   model count of one); never chains of values, recalls, CIs or per-model
   lists. Detailed numbers stay in `NOTES` as evidence, not in the review.
 - **OUT_DIR** — the directory holding the PDFs if the user is working there,
-  else `peer-review/<slug>/`. Files: `review_<id>_<ShortName>.md`
-  (+ `.zh.md`, `.zh.html`), `NOTES.<lang>.html` (candidate findings only;
-  an annotatable page, **not** a `.md` the user has to edit by hand — Step 9),
-  `CHECKS.md` (process log: Step 0/2/3 results, backups, every edit to the
-  review file, open items such as an unsupported Soundness). Never publish any of
-  them (no Artifact, no gist, no upload): a submission is confidential.
+  else `peer-review/<slug>/`. **One file per purpose, no duplicates** (user,
+  2026-10-20: 「太多重复」「一开就一个 html」): until the review is final, each
+  paper has **one page**, `review_<id>_<ShortName>.zh.html` — the Chinese
+  review (English toggle) with the candidate findings appended below it — plus
+  one `CHECKS.md` for the batch (Step 0/2/3 results, the three calls, every
+  edit to a review, open items). The English `review_<id>_<ShortName>.md`
+  is written to the top level **only when the review is final** (the
+  reviewer's weaknesses / questions are in and Step 8 has passed, or the user
+  asks for the text to submit); until then it is a build input. All build
+  inputs (`review_X.md`, `review_X.zh.md`, `NOTES_X.zh.md`) live in
+  `OUT_DIR/.src/`, backups in `OUT_DIR/.backup/<date>/`, never at the top
+  level. Never publish any of them (no Artifact, no gist, no upload): a
+  submission is confidential.
 
 ## Workflow
 
@@ -132,7 +174,7 @@ makes two table rows incomparable).
 given only its own paper text, the venue form, the P3 template and the
 code-availability result for that paper (Tier-2 static fan-out per
 [`fan-out-pattern.md`](../shared-references/fan-out-pattern.md); without the
-Agent tool, run them sequentially). Each writes its own review file and
+Agent tool, run them sequentially). Each writes its own `.src/review_X.md` and `.src/NOTES_X.zh.md` and
 reports scores + top issues + anything it took from memory rather than the
 paper. Then spot-check each subagent's key numbers against the text yourself.
 
@@ -204,14 +246,20 @@ paper's description of it:
 
 ### Step 5: Independent read(s) under P3
 
-Fill the P3 template (`[VENUE]`, `[VENUE FORM]`, paper paths) and read. Check:
+Fill the P3 template (`[VENUE]`, `[VENUE FORM]`, paper paths) and read. The
+checks below are grouped by the call they feed (*The Judgment*): item 1 →
+Claim; items 2–5 and 7 → Evidence; item 6 → Significance (including novelty).
 
-1. **Claims ledger** — each contribution in the abstract/intro → where it is
-   supported. A claim with no support is a weakness anchored where it is made.
+1. **Claims ledger** — first the one-sentence claim; then each contribution
+   in the abstract/intro → where it is supported. A claim with no support is
+   a weakness anchored where it is made.
 2. **Metric validity** — does the headline metric measure the claimed ability?
    Is training optimising the same lenient criterion it is evaluated on? Do
    stricter / standard metrics tell the same story?
-3. **Experimental fairness** — baselines current and comparably adapted
+3. **Experimental fairness** — the attribution test: for the headline
+   comparison, does the method row share the baselines' backbone, training
+   data and compute (parameters, training steps, inference samples / tokens)?
+   If not, is there a row that does? Baselines current and comparably adapted
    (format, prompts, fine-tuning on the same output format); same inference
    protocol across rows of one table; seeds / variance, not only per-question
    bootstrap; is the headline gain within noise?
@@ -270,6 +318,10 @@ Optional passes: `— adversarial: on` → `/kill-argument` on the extracted tex
 - Open **every** anchor (page / section / table / equation) and confirm it says
   what the finding claims. Failed anchor → drop
   ([`reviewer-personas.md`](../shared-references/reviewer-personas.md) §4).
+- **Tag each finding with the call it moves** (Claim / Evidence /
+  Significance). A finding that moves none of the three — a typo, a missing
+  citation that changes nothing, a presentation nit — is a minor issue, never
+  a Critical Weakness or a rating driver.
 - **Balance check.** For each weakness, look for evidence in the paper that
   cuts the other way (a dataset where the method *does* win on the strict
   metric; failure cases where the paper's mechanism behaves correctly). Either
@@ -324,8 +376,9 @@ Optional passes: `— adversarial: on` → `/kill-argument` on the extracted tex
 
 In the venue's form, following STYLE. Ratings use the form's exact option
 wording in backticks (`` `2: Weak rejection` ``). **Paper Summary is one
-paragraph** (about 3–5 sentences, no bullet lists or sub-paragraphs): what the
-paper proposes, how it is evaluated, and the main findings, stated
+paragraph** (about 3–5 sentences, no bullet lists or sub-paragraphs): it
+opens with the one-sentence claim (*The Judgment*, call 1), then how it is
+evaluated and the main findings, stated
 qualitatively with at most one or two numbers. **Critical Strengths are
 1–2 numbered items, each two or three sentences of prose** — a bold one-line
 claim, then why it matters; no sub-bullets, no evidence lists. Critical Weaknesses lead
@@ -340,7 +393,17 @@ polished it. It is visible to ACs/SACs, so it must not identify the reviewer:
 no repo URLs, project names, or the user's own prompts if they reveal their
 work — ask before including the user's prompts.
 
-**Rating calibration.**
+**Rating calibration.** Record the three calls in `CHECKS.md` (claim
+sentence; evidence: attributable / partly / not; significance: who would
+change what) and derive the Rating from them:
+- Evidence is the gate: if the gain cannot be attributed to the method, the
+  paper is on the reject side however significant the claim would be — the
+  community would adopt something that may not work.
+- Evidence holds, significance low (correct but nobody would change anything)
+  → the weak side of the bar; evidence holds and significance is real → the
+  accept side. Novelty moves the Rating only through significance.
+- An unclear claim lowers Presentation; it lowers the Rating only when it
+  makes the evidence impossible to judge.
 - The 1-vs-2 boundary (on a 1–4 reject/accept scale) is trust: *numbers that
   cannot be trusted* (mock tables, leakage, empty artifacts) → clear reject;
   *trustworthy numbers that do not support the claims* → weak reject.
@@ -353,8 +416,8 @@ work — ask before including the user's prompts.
 ### Step 8: Fact-check the reviewer's text (also `— mode: check`)
 
 Run every time the user says "写好了" / "看看还有啥问题" / "检查事实错误".
-Re-read the file from disk (edits made in a browser live in localStorage until
-exported — Step 9). For each sentence:
+Re-read the files from disk (`.src/review_X.md`, or the top-level copy once
+final; edits made in a browser live in localStorage until exported — Step 9). For each sentence:
 
 - every number, table/figure/section reference and quoted phrase matches the
   paper;
@@ -367,13 +430,10 @@ exported — Step 9). For each sentence:
 - omitted author-favourable evidence (Step 6 balance check);
 - requests are justified from the paper and feasible ("please report X" —
   why is X needed, and can the authors run it with what they already have?);
-- main text first: a point whose first anchor is the appendix (「附录…」,
-  "App. C defines…") → re-anchor it on the main-text claim or omission,
-  and move the appendix detail into the evidence (Step 6);
-- tiers: any Critical Weakness that rests on a back-solve, code reading or
-  an ambiguous sentence (Tier B) → flag it to move to Questions / optional;
-- number density: a point with more than two numbers, or that opens with a
-  number instead of the qualitative judgment → rewrite qualitatively (STYLE);
+- the Step 6–7 rules still hold: main text anchored first, no Tier B
+  point as a Critical Weakness, at most two numbers per point and judgment
+  first (STYLE), Summary opens with the claim, each Critical Weakness moves
+  one of the three calls, and the Rating follows the calls in `CHECKS.md`;
 - consistency: Summary / Soundness / Rating vs the current weaknesses;
   references to deleted content ("see Weaknesses" pointing at nothing);
 - mechanics: leftover `[Reviewer: …]` placeholders, stray quotes, double
@@ -387,7 +447,7 @@ first. Log each applied edit in `CHECKS.md`, not in `NOTES`.
 ### Step 8.5: Jargon pass on NOTES and the review (always)
 
 Run `/docs-jargon-pass` on every file the user will read — `NOTES` (its
-scratch `.md`) and the review — **before** building the HTML (Step 9), and
+`.src` `.md`) and the review — **before** building the HTML (Step 9), and
 again after any large rewrite. This session has read the paper and the repo,
 so it is contaminated: the blind read goes to one fresh subagent per file
 (given only that file and the skill), ledgers under
@@ -417,58 +477,43 @@ Apply fixes per the skill (delete → reuse an existing word → define, in that
 order); facts, numbers and Tier tags do not change. Log each pass in
 `CHECKS.md`.
 
-### Step 9: Bilingual copy and annotatable HTML (`— lang: zh`)
+### Step 9: Annotatable HTML (`— lang: zh`)
 
-- `review_*.zh.md` is a **line-aligned** translation: same line count, blank
-  lines and list markers on the same lines as the English file. Every later
-  edit is applied to both files line-for-line, so the pair stays aligned.
-- `review_*.zh.html`: a single local file (inline CSS/JS, no CDN) where each
-  zh paragraph is editable, with highlight / strikethrough (suggest delete) /
-  insert / note, a toggle to show the English line, an overall-comments box,
-  autosave to localStorage keyed by paragraph index, and two ways out:
+The user reads and annotates **one HTML page per paper**: the review on top,
+the candidate findings below (OUT_DIR, *Constants*).
+
+- **Sources in `OUT_DIR/.src/`.** `review_X.md` (English) and its
+  **line-aligned** translation `review_X.zh.md` (same line count; blank lines
+  and list markers on the same lines); `NOTES_X.zh.md` holds the findings
+  (`##` tiers, `###` per item, `-` bullets). Every later edit to
+  `review_X.md` is applied to its zh twin line-for-line, then the page is
+  rebuilt.
+- **Build with the bundled script, never by hand** (template
+  `annot_template.html`; single local file, inline CSS/JS):
+  `python3 <skill>/md_to_annot_html.py .src/review_X.zh.md review_X.zh.html --en .src/review_X.md --notes .src/NOTES_X.zh.md`.
+  Findings lines carry no English and are reported as "NOTES 第 n 行" in
+  批改清单 and `read_annot.py`. Each paragraph is editable with highlight /
+  strikethrough / insert / note, autosave to localStorage, and two exits:
   **批改清单** (per edited paragraph: English, original zh, edited zh, note)
   and **保存到文件** (writes the state back into the page). No whole-text
-  "edited zh" export: it shows no diff and no English (user, 2026-10-13).
-- Build it with the bundled script, never by hand:
-  `python3 <skill>/md_to_annot_html.py review_X.zh.md review_X.zh.html --en review_X.md`
-  (template: `annot_template.html`). Regenerating after edits: add
-  `--legacy <old.html>` (back up the old file first) — the script keeps the
-  localStorage key, maps saved annotations by line text and prints the ones lost.
-- **`NOTES` is delivered the same way, as HTML only.** Draft the findings in a
-  scratch `.md` (same layout as before: `##` tiers, `###` per item, `-` bullets),
-  then `md_to_annot_html.py NOTES_X.zh.md NOTES_X.zh.html` (no `--en`: the
-  English toggle is hidden and 批改清单 lists 原文 + 批注). Keep only the
-  `.html` in OUT_DIR — move the scratch `.md` to the backup folder. Users asked
-  for this: annotating a `.md` in an editor was clumsy. To revise NOTES later,
-  edit the scratch `.md` and rebuild with `--legacy`.
-- When lines are inserted or deleted later, regenerate the HTML **and migrate
-  saved annotations** to the new paragraph indices; tell the user which
-  annotations are lost (those on deleted paragraphs).
-- **Reading the user's annotations.** Autosave goes to the browser's
-  localStorage only, which Claude cannot read. The page's 保存到文件 button
-  writes the annotations back **into the page's own file**: with the File
-  System Access API (Chrome, Edge) the first click asks the user to pick the
-  page file (the dialog cannot open in the page's folder and starts on the
-  Desktop, so the page shows the folder path while it is open; users mistook
-  the dialog for a download), the handle is kept in IndexedDB, and later clicks overwrite it in
-  place (user request 2026-10-13: snapshots landing in Downloads were
-  confusing). Safari / Firefox fall back to downloading `*.批改快照.html`.
-  When the user says 我批注了 / 更新一下: run
-  `python3 <skill>/read_annot.py <page.html>` on the page in OUT_DIR first
-  (prints line number, original zh, English, edited text and notes); if it has
-  no embedded state, look in `~/Downloads` for the newest `*.批改快照.html`,
-  `*.批改清单.md`, or a browser Save As copy (complete page / single file
-  also carries the state; "HTML only" does not). Only if none exists, ask
-  for 保存到文件 — never ask the user to edit a `.md`.
-- Before rebuilding a page in place, read its embedded annotations
-  (`read_annot.py`) and keep a backup copy: the rebuild overwrites the file
-  and with it the state the user saved there.
-- **After applying annotations**, rebuild with `--applied` (not `--legacy`):
-  the page gets a new localStorage key and opens clean, so the applied edits
-  do not show again as pending. Keep the snapshot in the backup folder.
-- Test once in a headless browser (edit, mark, note, reload, export) before
-  handing over; an untouched page must report no saved state in
-  `read_annot.py` and 导出批改清单 must say there is nothing to export. Playwright blocks `file:` — serve OUT_DIR with
+  export (user, 2026-10-13).
+- **Rebuilding.** First read the page's embedded annotations
+  (`read_annot.py`) and back the page up to `.backup/<date>/` — the rebuild
+  overwrites the state saved in it. Use `--legacy <old.html>` to keep pending
+  annotations (mapped by line text; the script prints the ones lost — tell the
+  user), or `--applied` after their annotations have been applied (new
+  localStorage key, page opens clean).
+- **Reading the user's annotations** (我批注了 / 更新一下). Claude cannot read
+  localStorage; 保存到文件 writes into the page's own file (Chrome / Edge: the
+  first click asks for the page file — the dialog starts on the Desktop, so
+  the page shows its folder path; later clicks overwrite in place; Safari /
+  Firefox download `*.批改快照.html`). Run `python3 <skill>/read_annot.py
+  <page.html>` on the page in OUT_DIR; if empty, look in `~/Downloads` for the
+  newest `*.批改快照.html`, `*.批改清单.md` or a full-page Save As copy. Only if
+  none exists, ask for 保存到文件 — never ask the user to edit a `.md`.
+- **Test once** in a headless browser before handing over (edit, reload,
+  export; clear the test state after). An untouched page must report no state
+  in `read_annot.py`. Playwright blocks `file:` — serve OUT_DIR with
   `python3 -m http.server --bind 127.0.0.1` and stop it afterwards.
 
 ## Venue Forms

@@ -294,14 +294,14 @@ $("#b-list").onclick = () => {
   const out = [`# 批改清单：${document.title}`, "", "标记说明：~~删除~~ 表示建议删除，[+文字+] 表示新增，==文字== 表示高亮。", ""];
   let section = "", count = 0;
   for (const b of BLOCKS) {
-    if (b.kind === "h1" || b.kind === "h2" || b.kind === "h3") section = plain(HAS_EN ? b.en : b.zh);
+    if (b.kind === "h1" || b.kind === "h2" || b.kind === "h3") section = plain(HAS_EN && b.en ? b.en : b.zh);
     const el = blockEl(b.i);
     if (!el.classList.contains("edited") && !el.classList.contains("has-note") && !el.classList.contains("has-mark")) continue;
     count++;
     const cur = state.edits[b.i] != null ? state.edits[b.i] : b.zh;
-    out.push(`## ${count}. [${section}] 第 ${b.i + 1} 行`, "");
-    if (HAS_EN) out.push(`- **英文原文**：${toMd(htmlNode(b.en), true).trim()}`);
-    out.push(`- **${HAS_EN ? "原译文" : "原文"}**：${toMd(htmlNode(b.zh), true).trim()}`);
+    out.push(`## ${count}. [${section}] ${b.src === "notes" ? "NOTES " : ""}第 ${b.ln || b.i + 1} 行`, "");
+    if (HAS_EN && b.en) out.push(`- **英文原文**：${toMd(htmlNode(b.en), true).trim()}`);
+    out.push(`- **${HAS_EN && b.en ? "原译文" : "原文"}**：${toMd(htmlNode(b.zh), true).trim()}`);
     if (el.classList.contains("edited") || el.classList.contains("has-mark")) out.push(`- **批改后**：${toMd(htmlNode(cur), false).trim()}`);
     for (const n of state.notes[b.i] || []) if (n.trim()) out.push(`- **批注**：${n.trim()}`);
     out.push("");
