@@ -137,7 +137,6 @@ Save a trace for every `spawn_agent`, `send_input`, or `oracle-pro` review call 
 - ALWAYS use `model: gpt-6-astra` + `reasoning_effort: max` for reviews (deep-audit tier; capability fallback per `reviewer-routing.md`, never below `xhigh`)
 - Send comprehensive context in Round 1 — the external model cannot read your files
 - Be honest about weaknesses — hiding them leads to worse feedback
-- Push back on criticisms you disagree with, but accept valid ones
 - Focus on ACTIONABLE feedback — "what experiment would fix this?"
 - Document the agent id for potential future resumption
 - The review document should be self-contained (readable without the conversation)
