@@ -44,7 +44,10 @@ Given a method description, systematically verify its novelty:
    guidelines (e.g. CVPR 2027: work first public after 2026-09-15 is
    concurrent). Write down the venue, the cutoff date and the rule's own
    wording for the boundary. If no venue is known, say so in the report and
-   treat every paper as prior work until the user names one.
+   treat every paper as prior work until the user names one. Take the
+   neighbour scope from the project the same way (e.g. robotics and
+   embodied work only, not phone-GUI, web, math, code or text-only
+   agents); a paper outside it is neither prior nor concurrent work.
 
 ### Phase B: Multi-Source Literature Search
 For EACH core claim, search using ALL available sources:
@@ -56,7 +59,8 @@ For EACH core claim, search using ALL available sources:
    - Include year filters for 2024-2026
 
 2. **Known paper databases**: Check against:
-   - ICLR 2025/2026, NeurIPS 2025, ICML 2025/2026
+   - ICLR 2025/2026, NeurIPS 2025/2026, ICML 2025/2026
+   - CoRL 2025/2026, RSS 2025/2026, ICRA 2025/2026, IROS 2025/2026
    - Recent arXiv preprints (2025-2026)
 
 3. **Read abstracts**: For each potentially overlapping paper, WebFetch its abstract and related work section
@@ -81,9 +85,10 @@ For EACH core claim, search using ALL available sources:
    method can win.
 
 5. **Date every overlapping paper** against the Phase-A cutoff. The date is
-   when the overlapping content first went public: arXiv v1 `published` from
-   the arXiv API (`https://export.arxiv.org/api/query?id_list=<id>`), or the
-   later version where that content first appears; for a paper not on arXiv,
+   when the overlapping content first went public: arXiv v1's date, which
+   `verify_papers.py` (the anti-hallucination check below, run on every
+   listed paper anyway) prints as `arxiv_v1_date`, or the date of the later
+   version where that content first appears; for a paper not on arXiv,
    its first public date. Never guess the day from the arXiv id's month. Tag
    it **Prior** (public before the cutoff) or **Concurrent** (inside the
    venue's concurrent window). Keep searching up to today: concurrent work is
@@ -107,8 +112,8 @@ mcp__codex__codex:
 Dossier contents should include:
 - The proposed method description and the frozen core-delta sentence
 - All papers found in Phase B, each with its first-public date and its
-  Prior / Concurrent tag, plus the target venue, its cutoff and the rule's
-  wording
+  Prior / Concurrent tag, plus the target venue, its cutoff, the rule's
+  wording and the neighbour scope
 - Ask: "Is this method novel? What is the closest prior work? What is the delta?"
 - The Phase-A practicality targets and the Phase-B practicality read, and ask:
   "Is the proposed method practical, easy to use, and high-success compared
