@@ -41,6 +41,25 @@ The dangerous citation problems are **not** wildly fake citations — those are 
 - **Phantom DOIs**: DOI looks real but does not resolve.
 - **Self-citation drift**: your own prior work cited with year off by one.
 
+## Bibliography is read-only (fork rule)
+
+User ruling: the bibliography belongs to the user. No mode of this skill
+creates, edits or deletes a `.bib` entry — not in the repo, not in an Overleaf
+clone's `references.bib`, not even when the corrected metadata is verified.
+
+- **FIX** (metadata wrong): the key and its verified metadata (title, authors,
+  venue, year, arXiv id or DOI, with the URL that verified it) go on the
+  report's list for the user, who corrects the entry in Overleaf.
+- **REPLACE** (wrong-context): rewrite the citing sentence so it claims only
+  what the cited paper establishes. When another paper genuinely supports the
+  claim, the rewrite may cite it: an in-bib key as is, or a new key written in
+  the `.tex` whose verified metadata goes on the same list for the user to add.
+- **REMOVE** (hallucinated): drop the `\cite{X}` in the body and rewrite the
+  sentence so it no longer leans on it; the entry stays in the bib for the user.
+- An undefined-citation warning or a `(?)` in the PDF is existing state, not a
+  defect to fix, and never a reason to write an entry.
+- Every `.tex` edit still waits for the user's approval (Step 6).
+
 ## Constants
 
 - **REVIEWER_MODEL = `gpt-6-astra`** — Fresh Codex reviewer with web access; same-family provisional in the base mirror.
@@ -48,7 +67,8 @@ The dangerous citation problems are **not** wildly fake citations — those are 
 - **WEB_SEARCH = required** — The reviewer must perform real web/DBLP/arXiv lookups, not pattern-match from memory.
 - **OUTPUT = `CITATION_AUDIT.md`** — Human-readable per-entry verdict report.
 - **STATE = `CITATION_AUDIT.json`** — Machine-readable verdict ledger consumable by downstream tools.
-- **SOFT_ONLY = `false`** — When true (set via `— soft-only` / `— soft_only` flag), the audit runs all three layers normally but **forbids any `.bib` file mutation**. Findings that would otherwise mutate the bib (FIX / REPLACE / REMOVE) are translated into per-occurrence sentence-rewrite proposals against the citing `*.tex` files. Used by `/resubmit-pipeline` Phase 1 to honor the user's hard "freeze the bib" constraint.
+- **BIB = read-only** — Fork rule (user ruling): no mode writes a `.bib` file; see **Bibliography is read-only** above.
+- **SOFT_ONLY = `false`** — When true (set via `— soft-only` / `— soft_only` flag), the audit runs all three layers normally and additionally **forbids adding or changing any `\cite` key**: a wrong-context cite is only softened. Findings (FIX / REPLACE / REMOVE) are translated into per-occurrence sentence-rewrite proposals against the citing `*.tex` files. Used by `/resubmit-pipeline` Phase 1 to honor the user's hard "freeze the bib" constraint.
 - **RENDER_HTML = true** — When `true` (default), auto-render `CITATION_AUDIT.md` to HTML after writing the report. Uses **full review gate** (audit-class artifact). Set `false` to skip, or pass `— render html: false`. **Non-blocking**: failures don't invalidate the audit verdict.
 
 ## Workflow
@@ -185,7 +205,7 @@ Write `CITATION_AUDIT.md`:
 ### REMOVE: anon2025placeholder
 - Author listed as "Anonymous" — canonical record exists with real authors and full title
 - Title is incomplete
-- ACTION: Replace key with the canonical citekey, update authors and title
+- ACTION: the canonical metadata goes on the list below for the user; the body keeps the key
 
 ### REPLACE-CONTEXT: example2023priorwork in sec/2.overview.tex:42
 - Cited to support a specific technical claim
@@ -193,6 +213,11 @@ Write `CITATION_AUDIT.md`:
 - ACTION: Rewrite the sentence; cite the prior work for what it actually establishes
 
 [... continues for each entry ...]
+
+## Bib Entries for the User (the bib is read-only)
+
+| Key | Fix / Add | Verified metadata | Verifying URL |
+|-----|-----------|-------------------|---------------|
 
 ## All-Clean Entries (no action needed)
 
@@ -215,16 +240,16 @@ This section is detect-only; it does not change the top-level verdict.
 
 ### Step 6: Apply fixes (interactive)
 
-For each FIX/REPLACE/REMOVE verdict, prompt the user:
+For each REPLACE/REMOVE occurrence, prompt the user with the proposed sentence rewrite:
 
 ```
-Fix [key]?
-  Change: <description of change>
-  Files affected: references.bib + sec/X.tex:Y
+Rewrite sec/X.tex:Y?
+  Current:  <sentence>
+  Proposed: <sentence>
 [Apply / Skip / Defer]
 ```
 
-If `AUTO_APPLY = true`, apply all FIX-level changes (metadata corrections only). REPLACE and REMOVE always require human approval — they involve content changes.
+FIX verdicts touch no file: they go on the report's list of bib entries for the user. The bib itself is never edited (see **Bibliography is read-only**), and nothing is auto-applied.
 
 ### Step 7: Recompile and verify
 
@@ -233,7 +258,7 @@ latexmk -C && latexmk -pdf -interaction=nonstopmode main.tex
 ```
 
 Confirm:
-- No new `Citation undefined` warnings
+- No new `Citation undefined` warnings, except for new keys handed to the user
 - No `Reference undefined` warnings
 - Page count unchanged or only minimally affected by metadata fixes
 
@@ -278,6 +303,7 @@ If the bib file cannot be read well enough to audit even the cited entries, fall
 - **Web access required** — the reviewer must do real lookups, not memory pattern-match
 - **Wrong-context > metadata** — a real paper used to support a wrong claim is more dangerous than a typo in author name
 - **REPLACE/REMOVE require human approval** — never auto-modify content claims
+- **The bib is read-only** (fork rule) — metadata fixes and new entries go to the user as a list, never into a `.bib` file
 - **Always emit, never block** — this skill always writes `CITATION_AUDIT.json` with a verdict; the decision to block finalization lives in `paper-writing` Phase 6 + `verify_paper_audits.sh`, driven by the `assurance` level. See "Submission Artifact Emission" below.
 - **Run once per submission** — the audit is wall-clock expensive (web lookups for each entry); not for every save
 - **Uncited detection is opt-in only** — never auto-enable; never block on uncited entries; existing callers must observe identical output if they do not pass `--uncited`
@@ -310,13 +336,13 @@ After each reviewer agent call, save the trace following `shared-references/revi
 - `CITATION_AUDIT.md` (human-readable report) at paper root
 - `CITATION_AUDIT.json` (machine-readable ledger; schema below) at paper root
 - `.aris/traces/citation-audit/<date>_runNN/` (per-entry review traces)
-- Optional: applied fixes to `references.bib` + `sec/*.tex` (with `--apply` flag)
+- Optional: user-approved sentence rewrites in `sec/*.tex` (Step 6); never `references.bib`
 - Optional: `details.uncited_entries` field in JSON + `## Uncited Entries (opt-in)` MD section (with `--uncited` flag; field absent and section omitted when flag is unset)
 - `CITATION_AUDIT.html` (when `RENDER_HTML = true`, default) — auto-rendered single-file HTML view via `/render-html "CITATION_AUDIT.md" --json "CITATION_AUDIT.json"`. Full review gate. Sidecar `.review.json` carries render-fidelity verdict. **Non-blocking**: failures are logged and the audit MD + JSON remain the canonical outputs.
 
 ## Optional: Soft-Only Mode (— soft-only)
 
-**Default**: disabled. The audit emits the standard `KEEP / FIX / REPLACE / REMOVE` per-entry verdicts and a downstream caller (or the `--apply` path of Step 6) is free to mutate the bib.
+**Default**: disabled. The bib is read-only either way (see **Bibliography is read-only**); what soft-only adds is that no `\cite` key is added or changed.
 
 **Opt-in**: pass `— soft-only` (also accepts `— soft_only`) on invocation. This mode is designed for callers — notably `/resubmit-pipeline` Phase 1 — that operate under a **hard "freeze the bib" constraint**: if a citation is wrong-context, soften the surrounding sentence; do **not** change, add, or remove the cite itself.
 
