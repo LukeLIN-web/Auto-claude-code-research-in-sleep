@@ -1,6 +1,6 @@
 ---
 name: paper-figure-craft
-description: "What a paper figure is allowed to say and how it has to look in print — one figure states one conclusion, every quantity a reader compares gets its own visual channel (never a downgrade to an annotation), and every printed glyph lands in 7.5–11 pt at the width it is actually included at. Carries this repo's frozen figure rulings (caption below the graphic, no numbers and no cross-float pointers in captions, n never printed on a figure, numbers only from an SSOT, the WYSIWYG width law, the settled fig:loc_conversion design and its rejected alternatives, fig:architecture is a hand-written SVG under a content lock). Use when the user says 这个图怎么画, 换个画法, 图太挤, 字太小, caption 写什么, 加一个面板, 'redesign this figure', 'the labels collide', 'can we plot X instead'. Not for running the build: commands, paths and font-measurement live in paper/CLAUDE.md and the paper-figure-and-table-build memory."
+description: "What a paper figure is allowed to say and how it has to look in print — one figure states one conclusion, every quantity a reader compares gets its own visual channel (never a downgrade to an annotation), and every printed glyph lands in 7.5–11 pt at the width it is actually included at (\\columnwidth or \\textwidth in a two-column venue). Carries the user's figure rulings that hold for every paper (caption below the graphic, no numbers and no cross-float pointers in captions, n never printed on a figure, numbers only from an SSOT, the WYSIWYG width law, no Δ over two drawn levels, nothing drawn over an error bar, no symbol before its definition's page). A paper's own settled designs, palette and hand-drawn figures live in its repo. Use when the user says 这个图怎么画, 换个画法, 图太挤, 字太小, caption 写什么, 加一个面板, 'redesign this figure', 'the labels collide', 'can we plot X instead'. Not for running the build: commands and paths live in the project's paper CLAUDE.md."
 argument-hint: "[figure-label-or-script]"
 allowed-tools: Bash(*), Read, Write, Edit, Grep, Glob
 ---
@@ -11,16 +11,30 @@ Working on: **$ARGUMENTS**
 
 ## Why this exists
 
-The prose carries no results numbers (`paper/CLAUDE.md`, 2026-08-01), so a
+The prose carries no results numbers (memory `paper-prose-rules` §1), so a
 figure is a number-of-record and has to stand alone. Two failures follow, and
 they are independent — a figure can pass one and fail the other:
 
 - **A figure asked to say two things** demotes one of them. The second quantity
   becomes a text annotation on top of the first, and a reader who is scanning
   never reads it.
-- **A figure that looks right on screen** is included at a `\textwidth`
-  fraction and shrinks its type with it. 8 pt drawn at 9.71 in wide, included
-  at `\textwidth`, printed at 4.6 pt. That happened here.
+- **A figure that looks right on screen** is included at a fraction of the page
+  and shrinks its type with it. 8 pt drawn at 9.71 in wide, included at
+  `\textwidth`, printed at 4.6 pt. That happened on an earlier paper.
+
+## Where the rulings live
+
+- **This skill**: the user's rulings that hold for every paper.
+- **The paper's repo** (its paper / figures CLAUDE.md, or its memory): that
+  paper's settled designs and the alternatives already rejected for them, its
+  palette, its hand-drawn figures under a content lock, its build. Read it
+  before redesigning a figure there. A design it records as settled is not
+  re-proposed; reopening it needs the user. (qwen3omni: `paper/figures/CLAUDE.md`
+  and memory `paper-figure-palette`; agent-harness: `paperwriting/scripts/CLAUDE.md`.)
+- qwen3omni's `paper/` tree has been read-only since 2026-10-01. The
+  settled designs this skill used to carry for it (`fig:loc_conversion`'s
+  rejected alternatives, `fig:architecture`'s content lock and forbidden tokens)
+  are in `git show 9d700a3:skills/paper-figure-craft/SKILL.md`.
 
 ## The one test
 
@@ -28,71 +42,44 @@ they are independent — a figure can pass one and fail the other:
 > the reader is asked to compare gets its own visual channel — position, length,
 > or thickness. Never an annotation.**
 
-This is the ruling behind `fig:loc_conversion` (user, 2026-08-01): an alluvial
-row where ribbon thickness is the *flow* (share of questions that moved) over a
-paired Δ-accuracy bar row for the *effect*, on a shared ± axis. Two quantities,
-two channels.
+The ruling that set this (user, 2026-08-01) was made on an alluvial figure:
+ribbon thickness carries the *flow* (share of questions that moved), a paired
+Δ-accuracy bar row on a shared ± axis carries the *effect*. Two quantities, two
+channels. Every alternative compared for it — side-by-side bars, Δ printed onto
+the ribbons, a 2×2 transition matrix, a 2×2 heatmap — either merged the two
+quantities into one channel or turned the effect into an annotation.
 
-Compared and **rejected** for that figure: four side-by-side bars; Δ printed
-onto the ribbons; adding Both-hit / Both-miss bars to the lower row; a 2×2
-transition matrix; a 2×2 heatmap. Every one of them either merges the two
-quantities into one channel or turns the effect into an annotation. **The design
-is settled — do not re-propose an alternative; reopening it needs the user.**
-
-## Frozen rulings (do not relitigate; cite the date if asked to reverse)
+## Rulings (do not relitigate; cite the date if asked to reverse)
 
 | Ruling | Date | Note |
 |---|---|---|
 | **Caption below the graphic** — `\caption` after `\includegraphics`. (Tables and algorithms take it on top.) | 2026-08-05 | The user issued the opposite instruction once, watched the sweep land, and withdrew it the same day. Say this before acting on a repeat. |
-| **Caption carries no numbers and no pointer at another float.** Banned: `\ref{}`, `\S`, Appendix, `Table~`, `Figure~`, "the text". 1200 chars. | — | Figure captions are hand-written in `sections/`, so nothing sees them until compile: `check_captions.py` applies `tab_common.check_caption` to every `\caption{}` in every clone. One predicate, two firing points. |
+| **Caption carries no numbers and no pointer at another float.** Banned: `\ref{}`, `\S`, Appendix, `Table~`, `Figure~`, "the text". 1200 chars. | — | Figure captions are usually hand-written in `sections/`, so nothing sees them until compile: run the project's caption checker over every `\caption{}` if it has one. |
 | **A fired caption gate means rewrite the caption whole.** | — | Never raise the cap, never patch the tail. |
-| **No Δ where the figure already draws both compared levels.** A bar-top `Δ +4.2`, or a `net +190` that subtracts two labelled bars, is the table's banned Δ column in figure clothing — delete it, the reader subtracts. Δ stays only when it is a *plotted* quantity with its own axis and error bars (`fig:loc_conversion`'s bottom row, the paired-difference rows of `fig_montage_coverage` / `fig_selection_topb`): there it is the figure's one significance channel, a case tables cannot have because tables may not print intervals at all. | 2026-08-23 | Bold-if-significant rides on the Δ label, so it dies with it — significance moves to the prose words *significant* / *directional*. Keep the Δ computation and its SSOT assertions in the generator: what is deleted is the presentation, not the evidence. And `Δ` already means the 600 s block length in this paper. |
-| **An error bar is a quantity; nothing is drawn over it.** A value label that lands on a whisker — above all one wearing a white `bbox` to punch through it — deletes the figure's second quantity. The label clears the *whisker cap*, not the bar top, and needs no white box once it does. Raising the whisker's z-order is **not** the fix: it only redraws the line through the digits. | 2026-09-21 | `fig:stream_latency` printed each stage median at `median + 0.35` behind a white box, cutting a gap in every median→p95 stem and swallowing the transcript arm's localization whisker whole. User: 误差棒是不是要放最前面,现在条形挡住了 — the bar was never the occluder (bars `zorder=3`, whiskers `zorder=4`); the label at `zorder=5` was. `fig_loc_conversion.py` has carried the rule as a code comment since it was written ("the label clears the whisker, not the bar: the interval is this row's significance channel and must not be written over") — it is a repo rule now, and it holds for any interval mark: CI cap, percentile whisker, band edge. |
-| **`n` is never printed on a figure, subset or not.** A subset is named in words (`long-clip bucket only`, in the caption or a label), never sized. | 2026-09-09 | Same day as the table ruling. `fig:selection` carried a `*long-clip bucket, n=1291` footnote under the older reading ("marked, with the reason, for a subset"); user: 图的规则不允许标子集. The footnote and the `*` on the TraceAV labels went; the caption's `TraceAV runs on its long-clip bucket only` is the whole disclosure. |
-| **Numbers come from an SSOT** — `paper/data/*.json` or the per-question artefacts under `outputs/eval/` — and a figure is never hand-edited to change a number. | — | Edit the source, rerun the build. |
-| **WYSIWYG width law**: `figsize` width **is** the printed width — `TEXT_W` (in `paper_plot_style.py`) × the `\textwidth` fraction the figure is included at. | — | Otherwise `\includegraphics` scales the type along with the drawing. |
-| **Every printed glyph in 7.5–11 pt** (body text is 10). Do not shrink type to fit; change the layout. | — | Declared ≠ printed, and the ratio cannot be computed from `figsize` when `savefig.bbox="tight"` crops the canvas. Measurement recipe: memory `paper-figure-and-table-build`. |
-| **A schematic's labels are structure and symbols only** — config constants and explanations live in the prose, never printed on the drawing, and never relocated into the caption. Scopes the 2026-08-03 rule to data plots. | 2026-09-21 | Issued on `fig:stream`, whose canvas was carrying `K = 8`, `keep top B = 3`, the frame and window budgets and the ASR settings that `app:streamarena` already states. See **What a caption is**. |
-| **A symbol may be drawn on a figure only if the reader has met its definition by the page the figure lands on.** Reading order is the compiled PDF's, not the `.tex` order. `fig:architecture` prints in §1, so none of §3's notation ($g_m$, $r_{m,k}$, $\phi_{\mathrm{loc}}$, $\omega$, $q$, $K$, $B$, $M$) may appear on it: the label is the word the caption or the preceding prose already uses (`block ranking`, `candidate windows`, `retained blocks`, `localization LoRA`, `outline`). Neither a gloss on the canvas nor a definition in the caption repairs an early symbol; only the word does. | 2026-09-21 | Issued the same day as the schematic ruling, on its first application: the relabelled `fig:architecture` carried `gm`, `rm,k`, `top-B blocks by gm`, `≤ B² windows`, `ω`, `q`, `1…K`. User: 「gm, rm,k 啥意思,你这就不符合 paper-jargon-pass」. The test is `paper-jargon-pass`'s figure reader, who holds this figure, its caption and the pages before it, nothing after. `fig:stream` keeps its `LoRA φloc` badge because it prints in the appendix, after §3. |
-| **`fig:architecture` is a hand-written SVG under a content lock**, not matplotlib. | 2026-08-17 | Edit `paper/scripts/fig_arch.svg`; any wording change moves in lockstep with `fig_arch_blueprint.json` or the build rejects the drift. |
-| **A figure defines its own symbols where they appear; the caption is not the symbol table.** `fig:architecture`'s caption dropped its `Symbols:` paragraph: each symbol is glossed at the mark that draws it (`M blocks × 600 s` on the edge defines $M$; the badge text `LoRA φloc` says what φ is). Caption = bold title + one clause per panel side, ~300 chars. | 2026-08-30 | "Self-representative" was the user's word. A symbol left undefined in the figure is fixed *in the figure* — widen the badge, extend the label — never by growing the caption back. For a symbol whose definition comes *after* the figure's page there is no gloss to widen: it is replaced by the word (2026-09-21, two rows up). |
-| **One hue = one meaning within a figure.** A media/data color may not share hue with the structural accent: audio moved off light blue to teal `#79c9b2` because `C_OURS` (`#c89336` since 2026-09-01, `#2a78d6` when the ruling was made) is the pipeline/selection accent everywhere. A legend chip must be drawn exactly like some mark in the figure — the white-box-with-blue-border `kept` chip matched nothing and died; kept-ness is direct-labelled next to its marks, and magnification marks (zoom outline + cone) are grey dashed so a solid blue outline reads as selection only. | 2026-08-30 | Route side rails (the Question→Stage-I conditioning edge) down the *empty* margin, away from the corner the panel connectors use. |
-| **Lightness before hue.** Two series a reader must tell apart need a *relative-luminance* step, not just a different hue; compute it before choosing. Saturation is not pushed to the maximum, and one figure has one dominant plus one or two accents. | 2026-09-01 | Issued on a shipped figure whose two curves were gold `#c89336` (L 0.334) and grass green `#88B83D` (L 0.399) — different hues, same lightness, 「根本看不出来」. Recipe and worked cases: **Choosing the colours** below. |
-| **No em dashes in figure labels** — the user reads them as AI-generated. Use `·`, a comma, or a colon; sweep the SVG and the blueprint together. | 2026-08-30 | Prose has its own dash rule (two pairs = split); this one is absolute for label text. |
+| **No Δ where the figure already draws both compared levels.** A bar-top `Δ +4.2`, or a `net +190` that subtracts two labelled bars, is the table's banned Δ column in figure clothing — delete it, the reader subtracts. Δ stays only when it is a *plotted* quantity with its own axis and error bars: there it is the figure's one significance channel, a case tables cannot have because tables may not print intervals at all. | 2026-08-23 | Bold-if-significant rides on the Δ label, so it dies with it; how the prose then words significance is memory `paper-prose-rules` §1. Keep the Δ computation and its SSOT assertions in the generator: what is deleted is the presentation, not the evidence. Check the paper does not already use Δ for something else. |
+| **An error bar is a quantity; nothing is drawn over it.** A value label that lands on a whisker — above all one wearing a white `bbox` to punch through it — deletes the figure's second quantity. The label clears the *whisker cap*, not the bar top, and needs no white box once it does. Raising the whisker's z-order is **not** the fix: it only redraws the line through the digits. | 2026-09-21 | Found on a latency figure whose stage medians sat at `median + 0.35` behind a white box, cutting a gap in every median→p95 stem. The user read it as the bars covering the whiskers; the label was the occluder. Holds for any interval mark: CI cap, percentile whisker, band edge. |
+| **`n` is never printed on a figure, subset or not.** A subset is named in words (`long-clip bucket only`, in the caption or a label), never sized. | 2026-09-09 | User: 图的规则不允许标子集. Same day as the table ruling. |
+| **Numbers come from an SSOT** — the paper's data files or per-item result artifacts — and a figure is never hand-edited to change a number. | — | Edit the source, rerun the build. |
+| **WYSIWYG width law**: `figsize` width **is** the printed width — the include fraction × the width the float occupies: `\columnwidth` for a column float in a two-column venue, `\textwidth` for `figure*` or in a one-column venue. | — | Otherwise `\includegraphics` scales the type along with the drawing. Take both widths from the compiled document (recipe below), never from memory of another venue. |
+| **Every printed glyph in 7.5–11 pt** (body text is 10). Do not shrink type to fit; change the layout. | — | Declared ≠ printed, and the ratio cannot be computed from `figsize` when `savefig.bbox="tight"` crops the canvas. |
+| **A schematic's labels are structure and symbols only** — config constants and explanations live in the prose, never printed on the drawing, and never relocated into the caption. Scopes the 2026-08-03 rule to data plots. | 2026-09-21 | See **What a caption is**. |
+| **A symbol may be drawn on a figure only if the reader has met its definition by the page the figure lands on.** Reading order is the compiled PDF's, not the `.tex` order. A figure that prints in §1 carries none of §3's notation: the label is the word the caption or the preceding prose already uses (`block ranking`, `candidate windows`, `localization LoRA`). Neither a gloss on the canvas nor a definition in the caption repairs an early symbol; only the word does. | 2026-09-21 | User: 「gm, rm,k 啥意思,你这就不符合 paper-jargon-pass」. The test is `paper-jargon-pass`'s figure reader, who holds this figure, its caption and the pages before it, nothing after. A figure in an appendix may use what the body defined. |
+| **A figure defines its own symbols where they appear; the caption is not the symbol table.** Each symbol is glossed at the mark that draws it (an edge labelled `M blocks × 600 s` defines $M$; a badge `LoRA φloc` says what φ is). Caption = bold title + one clause per panel side, ~300 chars. | 2026-08-30 | "Self-representative" was the user's word. A symbol left undefined in the figure is fixed *in the figure* — widen the badge, extend the label — never by growing the caption back. For a symbol whose definition comes *after* the figure's page there is no gloss to widen: it is replaced by the word (row above). |
+| **One hue = one meaning within a figure, across panels too.** A data colour may not share hue with the structural accent. A legend chip must be drawn exactly like some mark in the figure; magnification marks (zoom outline + cone) are grey dashed so a solid accent outline reads as selection only. | 2026-08-30 | A panel that draws one series in the hue that means *our method* in the next panel reads as our method. Recolour it in its own role's hue and direct-label it at the curve end. |
+| **No em dashes in figure labels** — the user reads them as AI-generated. Use `·`, a comma, or a colon; sweep the SVG and its blueprint together. | 2026-08-30 | Prose has its own dash rule (two pairs = split); this one is absolute for label text. |
 
-## Choosing the colours: lightness first
+## Colour
 
-The palette is the user's, not derived from anything (memory
-`paper-figure-palette`): three hues — `C_OURS` gold `#c89336` for our method,
-`C_BASE` brick red `#C1272D`, `C_ALT` olive/grass green `#88B83D` — plus, since
-2026-09-01, the neutrals and the light tints that make a **lightness ladder**
-possible: 深黑/灰黑, 中灰, 浅嫩绿, 浅粉红/珊瑚红. Reach for the neutrals whenever a
-figure has more series than the three hues can separate; that is what they are
-for. This is how to pick inside it (user, 2026-09-01):
+The palette is the project's, and colour preferences are not rulings of this
+skill (user, 2026-09-01, deleting two such "rulings"). Read it where the project
+keeps it — qwen3omni: memory `paper-figure-palette` (its 2026-09-24 palette
+replaced the gold / brick / olive set and that set's lightness ladder);
+agent-harness: role in `paper_data.ROLE`, colour in the figure template.
 
-1. **明度关系 > 色相关系.** Establish the layers first: dominant, secondary and
-   background must carry a clear **lightness** difference. Whether the colour is
-   pretty is second.
-2. **Do not run the saturation to the maximum.** Pure blue `#0000FF` + pure red
-   `#FF0000` reads badly because both sit at full chroma and high visual energy.
-   Brick red and olive green *are* the desaturated forms — `#FF0000` → `#A94F45`,
-   `#00FF00` → `#68734A`, `#0000FF` → `#526B82`. Pressed toward grey and black,
-   colours stop stealing from each other.
-3. **Warm/cool contrast is allowed; a hard collision is not.** Blue+red is the
-   most direct warm/cool collision and both are bright and pure, so the boundary
-   detonates. Brick red + olive green is dark-warm-red + dark-yellow-green: the
-   hue and temperature difference survives at a fraction of the energy.
-4. **Do not let several colours all play lead.** The shape that works is
-   off-white background + **one dominant** + **one or two accents** + auxiliary
-   greys/greyed hues — not red, blue, green and yellow all at 100%.
-5. Low-saturation dark colours hold up across print, projector and screen alike,
-   which is why the academic look lives on brick red + olive green on white.
-
-> **"鲜艳" ≠ "好看"; "高对比" ≠ "高级".** The polished look is moderate contrast
-> + reduced saturation + controlled lightness + a small amount of accent.
-
-**Compute the luminance; do not eyeball it.** Two hues can sit far apart on the
-wheel and still be the same lightness, which is exactly the failure that shipped:
+Two things hold whatever the palette: one hue = one meaning (above), and two
+series a reader must tell apart inside one panel get a second channel — marker
+or line style — when their colours sit close in lightness. Compute the lightness
+instead of eyeballing it, then settle it with `pdftoppm` at print size:
 
 ```python
 import matplotlib.colors as mc
@@ -102,76 +89,47 @@ def L(h):                                     # WCAG relative luminance
 cr = lambda a, b: round((max(L(a), L(b))+0.05)/(min(L(a), L(b))+0.05), 2)
 ```
 
-Luminances of the pieces, so a candidate can be placed without recomputing:
-灰黑 `#292827` **0.021**, brick `#C1272D` **0.130**, 中灰 `#8a8984` **0.250**,
-珊瑚红 `#d9797d` **0.299**, gold `#c89336` **0.334**, olive `#88B83D` **0.399**,
-浅嫩绿 `#bad68e` **0.605**. Gold-vs-olive is a ratio of **1.15** — that is the
-pair the user rejected; gold-vs-brick is **2.13** and reads cleanly. Aim for
-**≥2.1 on every pair a reader must separate inside one panel**, and derive tints
-and steps with `blend` so each hue keeps one authority; never type a second hex.
-
-**The move that makes room is not a fourth hue — it is roles.** Three hues cannot
-separate five series, and every attempt to squeeze another step out of the gold
-fails: the band a line can live in on white is roughly L 0.02–0.35, and gold
-already sits at the top of it. `fig_bench_length` (2026-09-01, the worked case)
-carries five series and resolves to **three levels**:
-
-| role | mark | L |
-|---|---|---|
-| the deployed system — **the one dominant** | gold `C_OURS`, thickest line, filled marker, CI band | 0.334 |
-| its ablation tier (localization only) | 灰黑 `blend(INK1, 0.42, INK2)`, thinner | 0.021 |
-| the single-forward comparator | brick `C_BASE`, open marker | 0.130 |
-
-Two devices did that, and they generalise:
-
-- **One role, one hue; realisations differ by marker.** The whole-clip baseline
-  and the always-fits montage are the same role and are **never in the same
-  panel**, so they share `C_BASE` and separate on open square vs open triangle
-  plus the legend text. Collapsing them freed a whole hue.
-- **The non-hero series go neutral.** An ablation tier is auxiliary; a near-black
-  neutral separates from everything (5.38 against gold, 2.52 against brick) and
-  cannot compete for the lead the way a second saturated colour does. Hold its
-  line weight below the hero's so the darkest mark is not also the heaviest.
-
-Two failed attempts worth not repeating: a second gold one step darker
-(`#795a24`) lands on brick red's lightness (1.09), and a desaturated tan scores
-better against brick on paper but is illegible against gold on the page. Settle
-it with `pdftoppm` at print size and look — not with more arithmetic.
-
-**A hue may not mean two things in one figure, and that includes across panels.**
-`fig_keepcap_sweep`'s third panel drew one of the port's own benchmarks in gold
-while gold meant *main backbone* in the other two; both of that panel's curves
-now sit in the port's own hue (brick + 珊瑚红 `blend(C_BASE, 0.38, white)`, ratio
-1.66) with the identity direct-labelled at the curve end.
+Derive tints with a `blend` from the palette's constants so each hue keeps one
+authority; never type a second hex in a figure script.
 
 ## Measuring the printed size (do this, do not estimate)
 
-The WYSIWYG law is checked with one number: `scale = frac × TEXT_W / pdf_width_in`,
-where `frac` is the `\textwidth` fraction the figure is included at.
+Read the two widths off the compiled document once per venue:
+
+```latex
+% after \begin{document}; then: grep -E 'COLW=' main.log   (pt; /72.27 for inches)
+\typeout{COLW=\the\columnwidth\space TEXTW=\the\textwidth}
+```
+
+(CVPR's author kit measured 6.875 in / 3.28 in on 2026-10-15; ICLR's `\textwidth`
+is 5.5 in.) Then the WYSIWYG law is checked with one number:
+`scale = frac × W / pdf_width_in`, where `W` is the width the float occupies and
+`frac` the fraction it is included at.
 
 ```python
-import fitz                                   # pymupdf env
-p = fitz.open("figures/keepcap_sweep.pdf")[0]
-s = frac * 5.5 / (p.rect.width / 72)          # TEXT_W from paper_plot_style (5.5 in, iclr2027)
+import fitz                                   # pymupdf
+p = fitz.open("figures/<figure>.pdf")[0]
+s = frac * W_in / (p.rect.width / 72)         # W_in: \columnwidth or \textwidth, in inches
 sz = [sp["size"] * s for b in p.get_text("dict")["blocks"]
       for l in b.get("lines", []) for sp in l["spans"] if sp["text"].strip()]
 print(round(p.rect.width / 72, 2), round(s, 3), round(min(sz), 2), round(max(sz), 2))
 ```
 
-Four things this catches that nothing else does:
+Five things this catches that nothing else does:
 
 - **`frac` is not always what the `\includegraphics` line says.** A figure inside
   a `minipage` is included at the *minipage's* width — `width=\linewidth` in a
   `0.52\textwidth` minipage is `frac = 0.52`.
+- **In a two-column venue, `\linewidth` in a `figure` is the column.** A figure
+  drawn for the full text width and dropped into a column float prints at about
+  half its type size. Decide column float or `figure*` before drawing, and draw
+  at that width.
 - **`savefig.bbox="tight"` crops the canvas**, so the PDF is narrower than
   `figsize` and the scale must come from the *PDF*, never from `figsize`.
-- **The failure signature is `pdf_width_in ≠ frac × TEXT_W`.** Two live cases,
-  both invisible on screen: a 6.78 in canvas included at 6.175 in (0.91×, tick
-  labels at 6.92 pt) and a 6.54 in canvas at 5.98 in (0.914×, in-bar numbers at
-  7.32 pt). The fix was to draw at the width the page uses and let
-  `paper_plot_style`'s `declared_pt` / `PT_TITLE…PT_ANN` ladder set the type —
-  **both figures had hardcoded `fontsize=6.0` / `6.5` / `8` instead of using it.**
-  `grep -n 'fontsize=[0-9]' fig_*.py` is the whole audit.
+- **The failure signature is `pdf_width_in ≠ frac × W`.** Both live cases found
+  on one sweep (0.91× and 0.914×, tick labels and in-bar numbers near 7 pt) had
+  hardcoded `fontsize=6.0` / `6.5` / `8` instead of using the project's style
+  module's type ladder. `grep -n 'fontsize=[0-9]' fig_*.py` is the whole audit.
 - **Read the second-smallest size, not the smallest.** Superscript markers and
   subscripts (`*`, `‡`, `A$_1$`) legitimately sit near 6 pt and produced three
   false alarms out of five on the first sweep.
@@ -189,7 +147,7 @@ lives in prose — `baseline`, `pp`, a paired interval — does not, however use
 definition would be to a reader holding the figure alone. **A caption is not
 required to be self-contained.** That requirement is the only door a glossary
 comes through, and what it buys is one word with N authorities, sitting in the
-least-scanned strings in the paper. (Repo ruling, 2026-08-26: "the body explains
+least-scanned strings in the paper. (User ruling, 2026-08-26: "the body explains
 it, so do not define it in the caption.")
 
 The 1200-char gate is a backstop, not a target. **Aim at ~600.** What overflows
@@ -200,46 +158,33 @@ caption but a figure whose panels cannot be compared; fix the axes, not the
 sentence.
 
 And the reciprocal rule, which is where the duplication actually shows up
-(`paper/CLAUDE.md`, 2026-08-03): **on a data plot, appendix prose does not
-repeat a number the figure already draws.** Bar-value labels, Δ annotations,
-flip counts, error bars, curve endpoints, a rate in a panel title — the prose
-gives the direction and whether it was decided, and points. An error bar is
-sufficient; do not transcribe the interval into the sentence. Before cutting,
-open the corresponding `fig_*.py` and read what it actually labels — one
-paragraph routinely mixes drawn numbers with numbers that have no other home.
+(user ruling, 2026-08-03): **on a data plot, appendix prose does not repeat a
+number the figure already draws.** Bar-value labels, Δ annotations, flip counts,
+error bars, curve endpoints, a rate in a panel title — the prose gives the
+direction and whether it was decided, and points. An error bar is sufficient; do
+not transcribe the interval into the sentence. Before cutting, open the
+corresponding `fig_*.py` and read what it actually labels — one paragraph
+routinely mixes drawn numbers with numbers that have no other home.
 
 **On a schematic the arrow points the other way** (user, 2026-09-21). A method,
 protocol or architecture figure draws no measurement, so a constant printed on
 it — `600 s blocks, fixed by the clock`, `K = 8 candidate windows`, `keep top
-B = 3 · shortlist 3 windows each`, `32 frames + full audio per 75 s window`, `no
-lookahead · one worker` — is prose copied onto the canvas, and a second
-authority for a caliber that will change. **Strip it; the prose is its home**,
-and config constants are already allowed there. What stays is structure and
-symbols: group names, row names, stage names, axis tick names, a symbol badge
-(`LoRA φloc`), a one-word gloss on a mark that has no other name (`reserved`).
-A symbol, though, only where the reader has already met it: compare the page the
-figure lands on with the page that defines the symbol, in the compiled PDF. A
-figure in §1 carries no §3 notation; its labels are the words its own caption
-and §1 use.
+B = 3`, `32 frames + full audio per 75 s window`, `no lookahead · one worker` —
+is prose copied onto the canvas, and a second authority for a value that will
+change. **Strip it; the prose is its home**, and config constants are already
+allowed there. What stays is structure and symbols: group names, row names,
+stage names, axis tick names, a symbol badge (`LoRA φloc`), a one-word gloss on a
+mark that has no other name (`reserved`). A symbol, though, only where the reader
+has already met it (rulings table).
 
 - **The test**: delete the label — is the structure still recognisable? Then it
   goes. What survives the test stays, in the shortest word that works.
 - **Check the prose has a landing spot before deleting.** If it does not, write
   the prose first. Do **not** move it into the caption: the caption is the
   graphic's legend, not a second body text.
-- **Worked case** — `fig:stream`, 2026-09-21: 39 text runs down to 24. Kept
-  `block 1`–`4`, `query time`, `Raw archive`, `ASR`, `Transcript index`, the
-  three arms' row names, `Localization pass`, `LoRA φloc`, `Answer pass`,
-  `reserved`. Everything cut was already in `app:streamarena`, line for line.
-- **Worked case** — `fig:architecture`, 2026-09-21, the same day: the first
-  relabelling swapped the constants for §3's symbols (`gm`, `rm,k`, `top-B blocks
-  by gm`, `≤ B² windows`, `ω`, `q`, `1…K`) on a figure that prints in §1. Second
-  pass, all words the caption or §1 already uses: `block ranking`, `candidate
-  windows`, `retained blocks`, `retained windows`, `outline`, `question`,
-  `localization LoRA` / `answer LoRA`, `last block`. The max is drawn (one framed
-  candidate window), not written; the outline and question slots of the answer
-  sequence wear their nodes' fill and dash. The blueprint's `forbidden_tokens`
-  now rejects `φ`, `ω`, `≤`, `top-B`, `gm`, `rm,k`.
+- **Worked case** (2026-09-21): a streaming-pipeline schematic went from 39 text
+  runs to 24 — block numbers, row names, stage names, the badge and `reserved`
+  stayed; everything cut was already in its appendix section, line for line.
 
 ## Redesign checklist
 
@@ -249,9 +194,9 @@ Reach for these in order; the first two fix most complaints.
    two rows on a shared axis — not one panel with an annotation layer.
 2. **Count the channels.** One quantity per channel. If a quantity is currently
    text on top of another quantity's mark, that is the bug.
-3. **Then fix legibility**, in this order: increase the panel, shorten the
-   labels, rotate or stagger ticks, drop a redundant series — **not** reduce the
-   font size.
+3. **Then fix legibility**, in this order: increase the panel (in a two-column
+   venue, consider `figure*`), shorten the labels, rotate or stagger ticks, drop
+   a redundant series — **not** reduce the font size.
 4. **Render at print size and look**: `pdftoppm -scale-to-x $(printed_inches ×
    200)`. The three failures that survive every other check are colliding x-tick
    labels, a long annotation overflowing its panel, and an auto tick locator
@@ -259,32 +204,26 @@ Reach for these in order; the first two fix most complaints.
 
 ## Hard stops
 
-- **Never edit a PDF in a clone's `figures/`.** Edit the generator, rerun the
-  build; the clone copy is what compiles and it is overwritten.
-- **Never hardcode a clone's hex directory** in a script — clones are discovered
-  by `paper_paths.py` and their number changes.
-- **`paper/figures/` is a derived Chinese-captioned preview for humans.** It is
-  not what the paper compiles, and it must never reach a clone: a figure that is
-  suddenly ~28 MB when its neighbours are ~20 KB is a preview that leaked into
-  the compile directory (CJK font, unsubsettable). Fix by rerunning that
-  figure's generator only.
-- **An asset nothing references is a live defect.** `teaser.pdf` was rebuilt
-  and pushed to Overleaf on every build with no `\includegraphics` anywhere in
-  the paper. Check with
-  `ls figures/*.pdf` against `grep -rho 'figures/[a-z_0-9]*\.pdf' sections/`.
+- **Never edit a compiled figure PDF** (a clone's `figures/`, a preview).
+  Edit the generator, rerun the build; the compiled copy is overwritten.
+- **Never hardcode a clone's directory** in a script — discover it, as the
+  project's path helper does.
+- **An asset nothing references is a live defect** — it is rebuilt and pushed on
+  every build. Check with `ls figures/*.pdf` against
+  `grep -rho 'figures/[a-z_0-9]*\.pdf' sections/`.
 - **Never delete a scope qualifier from a caption to make it fit.** Rewrite it;
-  if the caliber genuinely does not fit, it was prose to begin with.
+  if the qualifier genuinely does not fit, it was prose to begin with.
 
-## Mechanics live elsewhere — point, do not copy
+## Mechanics live in the project — point, do not copy
 
 | Need | Owner |
 |---|---|
-| build commands, which python, output paths | `paper/CLAUDE.md` (出图), `paper/scripts/build_figs.sh` |
-| width/font measurement, `save_fig`, `TEXT_W`, `declared_pt` | `paper/scripts/paper_plot_style.py`, memory `paper-figure-and-table-build` |
-| caption rules as executable predicate | `paper/scripts/tab_common.py` + `check_captions.py` |
+| build commands, which python, output paths, the style module (`TEXT_W`, type ladder) | the project's paper CLAUDE.md |
+| caption rules as an executable predicate | the project's caption checker, if it has one |
 | caption position, `.bib`, co-author macros | memory `paper-layout-and-citation-rules` |
-| what the prose may say about a figure | skill `paper-prose-tighten`, `paper/CLAUDE.md` |
+| what the prose may say about a figure | skill `paper-prose-tighten`, memory `paper-prose-rules` |
 | tables | skill `paper-table-craft` |
+| where a float lands, two-column placement | skill `paper-float-compact` |
 
 Sweep across figures, not just within one: one benchmark, one spelling; one
 convention per mark in every figure that uses it; and no number a figure already

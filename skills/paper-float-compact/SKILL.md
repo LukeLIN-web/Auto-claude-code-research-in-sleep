@@ -1,6 +1,6 @@
 ---
 name: paper-float-compact
-description: "Use when a paper's figures/tables sprawl across half-empty pages or the user asks to merge floats (合并表图 / 两个 subfigure / minipage 并排 / 大砍 caption). Consolidates related floats, cuts bloated captions, and repacks pages — verified by rendering the compiled PDF."
+description: "Use when a paper's figures/tables sprawl across half-empty pages or the user asks to merge floats (合并表图 / 两个 subfigure / minipage 并排 / 大砍 caption). Consolidates related floats, cuts bloated captions, and repacks pages, one- or two-column (CVPR, ICRA, IROS, RSS) — verified by rendering the compiled PDF."
 argument-hint: "[paper-dir-or-main.tex] [optional: which sections/floats]"
 allowed-tools: Bash(*), Read, Grep, Glob, Write, Edit
 ---
@@ -20,7 +20,44 @@ grep -n "textwidth\|textheight\|fraction" <style>.sty main.tex
 
 Record `\textwidth` and `\textheight` in pt (TMLR: 468pt x 650pt), and the float
 fractions (`\topfraction`, `\bottomfraction`, `\floatpagefraction`). Every
-decision below is "does image-height + caption-height fit the budget".
+decision below is "does image-height + caption-height fit the budget". In a
+two-column venue also record `\columnwidth`, `\dbltopfraction`,
+`\dblfloatpagefraction` and `dbltopnumber`, and read the next section first.
+
+## Two-column venues (CVPR, ICCV, ICRA, IROS, RSS)
+
+The CVPR author kit's `cvpr.sty`: `\textwidth` 6.875 in, `\columnsep` 0.3125 in
+(a 3.28 in column), `\textheight` 8.875 in; every float fraction is set to 0.99,
+`topnumber` / `bottomnumber` / `totalnumber` to 99, and `dbltopnumber` stays at
+article's 2. Check the venue's own class rather than assuming these. What
+changes against a one-column layout:
+
+- **Two kinds of float.** `figure` / `table` sit in one column at
+  `\columnwidth`; `figure*` / `table*` span both columns at `\textwidth`. Pick
+  one before drawing: a full-width figure dropped into a column prints at about
+  half its type size (`paper-figure-craft`, WYSIWYG law).
+- **A `*` float goes only at a page top or on a float page.** `h` is ignored and
+  `b` needs `stfloats` / `dblfloatfix`. It never lands on the page where its
+  source sits — the top of the next page at the earliest. To land it on the page
+  that first cites it, move its source up into the text of the page before, then
+  re-check the `.aux` map (Step 1).
+- **At most `dbltopnumber` `*` floats at one page top** (2 under the CVPR kit); a
+  third waits a page.
+- **Under 0.99 fractions the one-column signature is rare.** A float page forms
+  only when it is all but full and a text page may be 99% floats, so instead of a
+  half-empty float page you see a page of stacked floats with a line or two of
+  text, or floats drifting pages past their first citation. Fix it by moving the
+  source and by splitting or shrinking floats, not by fractions — the kit's own
+  comment says it trusts the author to move figures.
+- **Merges.** Two narrow figures side by side need no minipage: the two columns
+  already sit side by side, so make each a column float. The minipage pair
+  (figure + table with `\captionof`, Step 3) is for inside a `*` float. A
+  half-empty `figure*` is usually a column figure: redraw it at `\columnwidth`
+  and re-measure its type.
+- **Caption height** at `\small` in a 3.28 in column is about half the
+  full-width count per line (~48 characters, against ~95).
+- **`\resizebox{\columnwidth}{!}`** magnifies a narrow table exactly as the
+  full-width one does; a table wider than a column goes to `table*`.
 
 ## Step 1: Inventory — map every float to its page, then look at the pages
 
@@ -100,7 +137,7 @@ pdfinfo figures/<f>.pdf | grep "Page size"   # natural size in pt
 
 - printed image height = chosen width x (h/w of the PDF)
 - caption height ≈ (chars / chars-per-line) x ~11.5pt; ~95 chars/line at
-  \small full width
+  \small full width, ~48 in a two-column venue's column
 - Two floats share one float page only if sum + `\floatsep` ≤ `\textheight`.
 - Top-float stacking is capped by `\topfraction` x `\textheight`, which is
   *stricter* than a float page.
