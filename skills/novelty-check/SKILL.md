@@ -263,16 +263,19 @@ concurrent work as concurrent]
 - Two failures waste months equally: a false novelty claim, and a viable idea
   abandoned because the territory has neighbors. Be brutally honest in both
   directions — and when an idea clears the check, say so plainly.
-- Novelty can live in the combination or the finding even when every
-  individual claim rates LOW — judge the idea, not each claim in isolation.
-  Known parts arranged to reveal something unknown are novel.
-- "Applying X to Y" earns novelty by what the application reveals — a
-  non-obvious interaction, failure mode, or insight. Judge the revelation, not
-  the template.
+- Novelty can live in the combination or in a positive finding (X works) even
+  when every individual claim rates LOW — judge the idea, not each claim in
+  isolation.
+- "Applying X to Y" earns novelty by what had to change in the method to work
+  in Y, or by a positive finding the application reveals. Judge that, not the
+  template.
 - Check both the method AND the experimental setting for novelty
-- Report what remains as the method's delta. Do not recommend reframing a
-  method contribution as a finding; contribution framing is the user's call
-  (user ruling 2026-10-22: "不行, 你就作为新方法,")
+- **"We find X works" may be written; "we find X does not work" never is**
+  (user ruling 2026-10-22: "「我们发现 X 有用」 可以写, 永远不写 我们发现 X
+  没用"). A negative finding is never offered as the contribution; a failure
+  mode is only motivation. Report what remains as the method's delta, and do
+  not recommend downgrading a method contribution to a finding (user ruling
+  2026-10-22: "不行, 你就作为新方法,").
 - Always check the most recent 6 months of arXiv, up to today and past the
   cutoff — the field moves fast
 - **Anti-hallucination for Closest Prior Work.** Every paper in the prior-work and concurrent-work tables must pass pre-search verification via `verify_papers.py` (canonical name resolved per [`shared-references/integration-contract.md`](../shared-references/integration-contract.md) §2; 3-layer arXiv / CrossRef / Semantic Scholar fallback inside the helper itself). Policy D1 (primary + degraded-output fallback): if the helper is unresolved **or** its invocation fails, tag candidate entries `[UNVERIFIED]` and surface the uncertainty rather than dropping them. Never fabricate arXiv IDs, DOIs, or titles from memory. Full protocol in [`shared-references/citation-discipline.md`](../shared-references/citation-discipline.md) § Pre-Search Verification Protocol.
