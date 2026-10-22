@@ -51,7 +51,8 @@ Output schema (verified.json):
     "pending_rate": 0.0,
     "warnings": ["high_hallucination_rate"],
     "papers": [
-      {"id": "p1", "status": "verified",       "method": "arxiv",    "confidence": "high"},
+      {"id": "p1", "status": "verified",       "method": "arxiv",    "confidence": "high",
+       "arxiv_v1_date": "2023-07-06"},
       {"id": "p2", "status": "verified",       "method": "crossref", "confidence": "high"},
       {"id": "p3", "status": "unverified",     "method": null,       "reason": "no_arxiv_no_doi_no_s2_match"},
       {"id": "p4", "status": "verify_pending", "method": null,       "reason": "transient_api_failure"}
@@ -65,6 +66,11 @@ Status semantics:
   verify_pending  — any layer hit transient failure (5xx, timeout, rate-limit) and
                     no earlier layer verified; do NOT count against hallucination rate
   error           — input malformed for this entry; rare
+
+arxiv_v1_date: the day v1 went public (the arXiv API's `published`, which stays
+v1's date whatever version the entry shows), for papers the arXiv layer
+verified; null otherwise. Prior / concurrent dating reads it instead of
+guessing the day from the id's month.
 
 Top-level verdict:
 
@@ -128,6 +134,9 @@ def _arxiv_user_agent() -> str:
 
 
 ARXIV_VERSION_RE = re.compile(r"v\d+$")
+ARXIV_ENTRY_RE = re.compile(r"<entry>(.*?)</entry>", re.DOTALL)
+ARXIV_ENTRY_ID_RE = re.compile(r"<id>http://arxiv\.org/abs/(.+?)(?:v\d+)?</id>")
+ARXIV_PUBLISHED_RE = re.compile(r"<published>(\d{4}-\d{2}-\d{2})")
 TITLE_NORMALIZE_RE = re.compile(r"[^\w\s]", re.UNICODE)
 WHITESPACE_RE = re.compile(r"\s+")
 
@@ -152,6 +161,7 @@ class PaperResult:
     confidence: str | None = None  # high | medium | low
     reason: str | None = None
     identifiers: dict[str, str] = field(default_factory=dict)
+    arxiv_v1_date: str | None = None  # YYYY-MM-DD, arXiv layer only
 
 
 # ──────────────────────────────────────────────────────────────────────────
@@ -295,18 +305,36 @@ def backoff(attempt: int) -> float:
 # Layer 1: arXiv batch verification
 # ──────────────────────────────────────────────────────────────────────────
 
-def verify_arxiv_batch(ids: list[str], batch_size: int = DEFAULT_BATCH_SIZE) -> dict[str, str]:
-    """Return {arxiv_id: status} where status in {verified, unverified, verify_pending}."""
+def verify_arxiv_batch(
+    ids: list[str], batch_size: int = DEFAULT_BATCH_SIZE, dates: dict[str, str] | None = None
+) -> dict[str, str]:
+    """Return {arxiv_id: status} where status in {verified, unverified, verify_pending}.
+
+    `dates`, when given, receives {base_id: v1 date} for every verified id.
+    """
     if not ids:
         return {}
     result: dict[str, str] = {}
     for i in range(0, len(ids), batch_size):
         batch = ids[i : i + batch_size]
-        result.update(_verify_arxiv_batch_with_retry(batch))
+        result.update(_verify_arxiv_batch_with_retry(batch, dates))
     return result
 
 
-def _verify_arxiv_batch_with_retry(batch: list[str]) -> dict[str, str]:
+def arxiv_v1_dates(body: str) -> dict[str, str]:
+    """{base_id: YYYY-MM-DD} from an arXiv API feed; `published` is v1's date."""
+    out: dict[str, str] = {}
+    for entry in ARXIV_ENTRY_RE.findall(body):
+        m_id = ARXIV_ENTRY_ID_RE.search(entry)
+        m_pub = ARXIV_PUBLISHED_RE.search(entry)
+        if m_id and m_pub:
+            out[m_id.group(1)] = m_pub.group(1)
+    return out
+
+
+def _verify_arxiv_batch_with_retry(
+    batch: list[str], dates: dict[str, str] | None = None
+) -> dict[str, str]:
     """3 retries with exponential backoff. On persistent failure split batch in half."""
     base_ids = [normalize_arxiv_id(x)[0] for x in batch]
     url = f"{ARXIV_API}?id_list={','.join(base_ids)}&max_results={len(base_ids)}"
@@ -317,6 +345,8 @@ def _verify_arxiv_batch_with_retry(batch: list[str]) -> dict[str, str]:
             for bid in base_ids:
                 if f"<id>http://arxiv.org/abs/{bid}" in body:
                     found.add(bid)
+            if dates is not None:
+                dates.update({k: v for k, v in arxiv_v1_dates(body).items() if k in found})
             return {
                 orig: "verified" if normalize_arxiv_id(orig)[0] in found else "unverified"
                 for orig in batch
@@ -334,8 +364,8 @@ def _verify_arxiv_batch_with_retry(batch: list[str]) -> dict[str, str]:
     # Persistent failure — split & retry
     if len(batch) > 1:
         mid = len(batch) // 2
-        left = _verify_arxiv_batch_with_retry(batch[:mid])
-        right = _verify_arxiv_batch_with_retry(batch[mid:])
+        left = _verify_arxiv_batch_with_retry(batch[:mid], dates)
+        right = _verify_arxiv_batch_with_retry(batch[mid:], dates)
         return {**left, **right}
     return {batch[0]: "verify_pending"}
 
@@ -450,9 +480,12 @@ def verify_papers(
 
     for p in papers:
         key = cache_key_for(p)
-        # a cached verify_pending is a past outage, not an answer — ask again
-        if cache is not None and key and key in cache and cache[key].get("status") != "verify_pending":
-            cached = cache[key]
+        cached = cache.get(key) if cache is not None and key else None
+        # a cached verify_pending is a past outage, not an answer — ask again;
+        # so is an arXiv hit cached before the v1 date was recorded
+        if cached and cached.get("status") != "verify_pending" and not (
+            cached.get("method") == "arxiv" and not cached.get("arxiv_v1_date")
+        ):
             results[p.id] = PaperResult(
                 id=p.id,
                 status=cached["status"],
@@ -460,6 +493,7 @@ def verify_papers(
                 confidence=cached.get("confidence"),
                 reason=cached.get("reason"),
                 identifiers=cached.get("identifiers", {}),
+                arxiv_v1_date=cached.get("arxiv_v1_date"),
             )
             continue
         if p.arxiv_id:
@@ -476,7 +510,8 @@ def verify_papers(
 
     # Layer 1: arXiv batch
     if to_verify_arxiv:
-        arxiv_results = verify_arxiv_batch(list(to_verify_arxiv.keys()), arxiv_batch_size)
+        v1_dates: dict[str, str] = {}
+        arxiv_results = verify_arxiv_batch(list(to_verify_arxiv.keys()), arxiv_batch_size, v1_dates)
         for base_id, paper_ids in to_verify_arxiv.items():
             status = arxiv_results.get(base_id, "verify_pending")
             for pid in paper_ids:
@@ -487,6 +522,7 @@ def verify_papers(
                     confidence="high" if status == "verified" else None,
                     reason=None if status == "verified" else f"arxiv_{status}",
                     identifiers={"arxiv_id": base_id},
+                    arxiv_v1_date=v1_dates.get(base_id),
                 )
                 if cache is not None:
                     cache[f"arxiv:{base_id}"] = {
@@ -495,6 +531,7 @@ def verify_papers(
                         "confidence": "high" if status == "verified" else None,
                         "reason": None if status == "verified" else f"arxiv_{status}",
                         "identifiers": {"arxiv_id": base_id},
+                        "arxiv_v1_date": v1_dates.get(base_id),
                         "ts": now,
                     }
 

@@ -178,3 +178,46 @@ def test_cached_pending_is_asked_again(monkeypatch):
     assert calls["n"] == 1
     assert result.status == "verified"
     assert cache["arxiv:1706.03762"]["status"] == "verified"
+
+
+# ---- arXiv v1 date --------------------------------------------------------
+
+DATED_FEED = (
+    "<feed><updated>2026-10-22T21:54:57Z</updated>"
+    "<entry><id>http://arxiv.org/abs/1706.03762v7</id>"
+    "<updated>2023-08-02T00:41:18Z</updated>"
+    "<published>2017-06-12T17:57:34Z</published></entry></feed>"
+)
+
+
+def test_verified_arxiv_paper_carries_its_v1_date(monkeypatch):
+    """`published` is v1's day even when the entry shows v7; `updated` is not it."""
+    mod = load_module()
+    _counting_http_get(monkeypatch, mod, 200, DATED_FEED)
+    cache = {}
+    papers = [mod.PaperInput(id="p1", arxiv_id="1706.03762v3"),
+              mod.PaperInput(id="p2", arxiv_id=MISSING_ID)]
+
+    found, missing = mod.verify_papers(papers, arxiv_batch_size=40, fuzzy_threshold=0.6,
+                                       user_email="a@b.c", cache=cache)
+
+    assert (found.status, found.arxiv_v1_date) == ("verified", "2017-06-12")
+    assert (missing.status, missing.arxiv_v1_date) == ("unverified", None)
+    assert cache["arxiv:1706.03762"]["arxiv_v1_date"] == "2017-06-12"
+
+
+def test_cached_arxiv_hit_without_a_date_is_asked_again(monkeypatch):
+    """A hit cached before dates were recorded must not hide the date for 30 days."""
+    mod = load_module()
+    calls = _counting_http_get(monkeypatch, mod, 200, DATED_FEED)
+    cache = {"arxiv:1706.03762": {"status": "verified", "method": "arxiv", "ts": 0,
+                                  "identifiers": {"arxiv_id": "1706.03762"}}}
+    paper = mod.PaperInput(id="p1", arxiv_id="1706.03762")
+
+    (result,) = mod.verify_papers([paper], arxiv_batch_size=40, fuzzy_threshold=0.6,
+                                  user_email="a@b.c", cache=cache)
+    (again,) = mod.verify_papers([paper], arxiv_batch_size=40, fuzzy_threshold=0.6,
+                                 user_email="a@b.c", cache=cache)
+
+    assert calls["n"] == 1
+    assert result.arxiv_v1_date == again.arxiv_v1_date == "2017-06-12"
