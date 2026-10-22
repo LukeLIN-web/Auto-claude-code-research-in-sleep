@@ -30,7 +30,6 @@ paper-jargon-pass
 paper-prose-tighten
 paper-table-craft
 peer-review
-remote-tmux
 shared-references/experiment-craft.md
 shared-references/figure-craft.md
 shared-references/manuscript-craft.md
