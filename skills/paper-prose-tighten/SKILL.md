@@ -1,6 +1,6 @@
 ---
 name: paper-prose-tighten
-description: "Cut filler from paper prose: bookkeeping-count enumerations (\"abstained blocks 569 → 551\", \"32 of the 39\", \"discordant pairs 166:103\"), defensive meta-narration (\"we report this rather than claim X\", \"a reader is entitled to know\"), narrated absences / 无中生有 (\"Video-Odyssey publishes no row for this backbone and has no column\"), false pivots / 错误的转折 (\"X rather than Y\", \"the advantage is not reducible to Z\" — delete the negated alternative, state the claim directly), value series across conditions / 罗列 (\"96.7 / 90.0 / 91.3 / 80.8% across the four distance layers\", \"+0.82pp on TraceAV, +0.69 on LVOmniBench, -1.60 on OmniVideoBench\" — one quantity at three or more conditions is a table row read aloud; keep the shape word, delete the ladder), cross-section duplication / 跨节重复 (an intro contribution bullet that pre-plays a whole results subsection; the same result in a subsection and again in the conclusion bullets), artifact-provenance assurance (\"the deployed checkpoint is fixed without reference to any evaluation signal\", \"held-out accuracy is flat from step 300 through 900\"), process/engineering vocabulary / 流程工程术语 (\"a preregistered two-benchmark ablation\", \"criteria frozen before any readout\", \"the frozen margin\", \"early-kill gate\" — delete the modifier, keep the noun), and self-referential audit trail that no reviewer reads. Also carries the escalation rule: when a claim only survives behind a pile of caveats, delete the claim. Use when user says \"论文废话太多\", \"caveat 太多\", \"越讲越乱\", \"别解释了\", \"不要罗列数量\", \"严格禁止罗列\", \"清理这种罗列\", \"清理废话\", \"无中生有\", \"错误的转折\", \"每一段都在讲啥\", \"我要删减文字\", \"preregistered 都删了\", \"不该出现这种工程的术语\", \"tighten the prose\", \"cut the filler\", \"too wordy\", or before submission when sections read like an audit log instead of an argument."
+description: "Cut filler from paper prose while holding every claim constant: bookkeeping counts (\"569 → 551\", \"32 of the 39\"), defensive meta-narration (\"we report this rather than claim X\"), narrated absences / 无中生有, false pivots / 错误的转折 (\"X rather than Y\"), value series / 罗列 (one quantity read out at three or more conditions), cross-section duplication / 跨节重复, artifact-provenance assurance, process vocabulary / 流程工程术语 (\"preregistered\", \"frozen before any readout\"), and the escalation rule: a claim that survives only behind a pile of caveats is deleted. Use when user says \"论文废话太多\", \"caveat 太多\", \"越讲越乱\", \"别解释了\", \"不要罗列数量\", \"严格禁止罗列\", \"清理废话\", \"无中生有\", \"错误的转折\", \"每一段都在讲啥\", \"我要删减文字\", \"preregistered 都删了\", \"不该出现这种工程的术语\", \"tighten the prose\", \"cut the filler\", \"too wordy\", or before submission when sections read like an audit log."
 argument-hint: "[paper-directory-or-section-files]"
 allowed-tools: Bash(*), Read, Write, Edit, Grep, Glob
 ---
@@ -360,11 +360,12 @@ only depress. Run that test before retiring any verification apparatus —
 *does a reported number depend on the thing being verified?* — and if the answer
 is yes, it is scope, not process, and it stays.
 
-**Sweep note.** Do not sweep this class with one big `-E` alternation. Under
-`ugrep` (aliased to `grep` on some machines here) a pattern like
-`pre-?regist|pre-?specif|…` returned **zero hits on files that held eight**.
-Count each term separately as a fixed string and treat a zero from a compound
-regex as unproven, not as absence. Then sweep the copies outside `sections/`:
+**Sweep note.** Count each term separately (the per-term counts are what you
+report), and call GNU grep as `command grep`: in Claude Code's Bash, `grep` is a
+function that runs ugrep with `--ignore-files`, so a recursive grep from a
+parent directory silently skips every gitignored file. (The 2026-08 note that a
+compound `-E` alternation returned zero under ugrep did not reproduce on
+2026-10-22; the gitignore skip does.) Then sweep the copies outside `sections/`:
 figure/table generator strings in `paper/scripts/*.py` and `label` fields in
 `paper/data/*.json` render into the PDF too.
 
@@ -411,13 +412,16 @@ series and wrote 「严格禁止」. Class 1 walks past these: they are not coun
 denominators or pair splits but *results*, each individually a number the paper
 is entitled to report. The defect is the enumeration, not the digit.
 
-Deleting text must never upgrade a claim. Hard stops:
+## Hard stops
+
+Deleting text must never upgrade a claim.
 
 - **Never let a deletion turn a null into a win.** State which cells were
-  resolved and stop there: delete the whole null-labelling clause
-  (`undetermined`, `directional`, `not significant` — this repo prints none of
-  them) rather than swapping it for `no difference` / `unaffected` / `flat`,
-  which asserts the null instead of declining to name it. `descriptive` and
+  resolved and stop there: by default delete the whole null-labelling clause
+  rather than swapping it for `no difference` / `unaffected` / `flat`, which
+  asserts the null instead of declining to name it. Which words a null may
+  still carry, and when, is the project's ruling (memory `paper-prose-rules`
+  §1), not this skill's. `descriptive` and
   `post-hoc` scope a claim rather than label a null, and stay.
 - **Never delete a denominator that scopes the claim** (full-denominator rules,
   subset sizes that bound generality).
@@ -467,28 +471,26 @@ Rule of thumb: cut what proves *diligence*; keep what bounds *scope*.
 
 ## Procedure
 
-1. **Map every paragraph before reading for style.** Classes 1–6 and 8 are found
-   by grep; class 7 and oversized paragraphs are found only here. Emit one row per
+1. **Map every paragraph before reading for style.** Classes 1–6 and 8–10 are
+   found by grep; class 7 and oversized paragraphs are found only here. Emit one row per
    paragraph — file, line span, word count, and **one line saying what it
    claims**:
 
    ```bash
-   python - <<'PY'
-   import re
-   for f in ['01_intro.tex','02_related.tex','03_method.tex','04_results.tex']:
-       print('='*8, f)
-       buf, start = [], 0
-       def flush(buf, start, end):
-           t = '\n'.join(buf).strip()
-           if not t: return
-           w = len(re.findall(r"[A-Za-z][A-Za-z'\-]*", t))
-           print(f"  L{start}-{end}\t{w:4d}w\t{re.sub(r'\\s+',' ',t)[:70]}")
-       for i, l in enumerate(open('sections/'+f).read().split('\n'), 1):
-           if l.strip() == '': flush(buf, start, i-1); buf, start = [], i+1
-           else:
-               if not buf: start = i
-               buf.append(l)
-       flush(buf, start, i)
+   python3 - <<'PY'
+   import glob, re
+   WORD, SPACE = re.compile(r"[A-Za-z][A-Za-z'\-]*"), re.compile(r"\s+")
+   for f in sorted(glob.glob('sections/*.tex')):  # numbered names sort into \input order
+       print('=' * 8, f)
+       lines = open(f, encoding='utf-8').read().split('\n')
+       start = None
+       for i, l in enumerate(lines + [''], 1):
+           if l.strip() and start is None:
+               start = i
+           elif not l.strip() and start is not None:
+               t = SPACE.sub(' ', ' '.join(lines[start - 1:i - 1])).strip()
+               print(f"  L{start}-{i - 1}\t{len(WORD.findall(t)):4d}w\t{t[:70]}")
+               start = None
    PY
    ```
 
@@ -513,27 +515,26 @@ Rule of thumb: cut what proves *diligence*; keep what bounds *scope*.
 
    ```bash
    # numbers-in-prose density, per section
-   grep -o '\$[0-9][0-9,{}.\\]*\$' sections/*.tex | sort | uniq -c | sort -rn | head -40
+   command grep -o '\$[0-9][0-9,{}.\\]*\$' sections/*.tex | sort | uniq -c | sort -rn | head -40
    # bookkeeping shapes: "N of M", "N:M", "N -> M"
-   grep -nE '[0-9]+ of [0-9]|[0-9]\{?:\}?[0-9]|\\to [0-9]' sections/*.tex
+   command grep -nE '[0-9]+ of [0-9]|[0-9]\{?:\}?[0-9]|\\to [0-9]' sections/*.tex
    # class 10 value series: slash-strung readings, and "x on A, y on B, z on C"
-   grep -nE '\$[0-9.]+\$ ?/ ?\$[0-9.]+\$' sections/*.tex | grep -v '&'
-   grep -nE '(on|at) [A-Z][A-Za-z-]+, \$?[-+0-9]' sections/*.tex | grep -v '&'
+   command grep -nE '\$[0-9.]+\$ ?/ ?\$[0-9.]+\$' sections/*.tex | command grep -v '&'
+   command grep -nE '(on|at) [A-Z][A-Za-z-]+, \$?[-+0-9]' sections/*.tex | command grep -v '&'
    # meta-narration stems
-   grep -niE 'we (report|claim|make|state|note|stress|log) (this|it|none|them)|rather than (claim|letting|running|averag)|net (it|this|that) away|averag\w* away|entitled to know|guard(ing)? against|we count it as such' sections/*.tex
+   command grep -niE 'we (report|claim|make|state|note|stress|log) (this|it|none|them)|rather than (claim|letting|running|averag)|net (it|this|that) away|averag\w* away|entitled to know|guard(ing)? against|we count it as such' sections/*.tex
    # narrated absences: sentences about things that don't exist
-   grep -niE 'publishes no|has no (row|column|entry)|does not (report|publish|evaluate|include|provide)|no official|not (available|reported) (in|for)' sections/*.tex
+   command grep -niE 'publishes no|has no (row|column|entry)|does not (report|publish|evaluate|include|provide)|no official|not (available|reported) (in|for)' sections/*.tex
    # false pivots: negated-alternative claims (high recall — classify by hand;
    # headers, caption titles, and section titles need an eye pass on top)
-   grep -niE 'rather than|instead of|not reducible|, not |; it is|\bnor is|not by itself|not only|is not|are not' sections/*.tex tables/*.tex
+   command grep -niE 'rather than|instead of|not reducible|, not |; it is|\bnor is|not by itself|not only|is not|are not' sections/*.tex tables/*.tex
    # artifact provenance / hygiene assurance (sweep tables/ too: it hides in config cells)
-   grep -niE 'without reference to|pre-?specified|pre-?registered stopping|deployed checkpoint|the run.s endpoint|held-out (accuracy|acc) is flat|chosen by (benchmark|evaluation)|frozen (evaluation |)subset|seed' sections/*.tex tables/*.tex
-   # process vocabulary (class 9) -- count each term separately; one big -E
-   # alternation silently returns zero under ugrep (see class 9's sweep note)
+   command grep -niE 'without reference to|pre-?specified|pre-?registered stopping|deployed checkpoint|the run.s endpoint|held-out (accuracy|acc) is flat|chosen by (benchmark|evaluation)|frozen (evaluation |)subset|seed' sections/*.tex tables/*.tex
+   # process vocabulary (class 9) -- count each term separately (class 9's sweep note)
    for t in preregistered pre-registered pre-specified prespecified \
             "criteria frozen" "frozen before" "frozen margin" \
             "frozen evaluation" "stopping rule" "kill gate" "acceptance gate"; do
-     n=$(grep -ric -- "$t" sections/*.tex tables/*.tex 2>/dev/null | awk -F: '{s+=$NF} END{print s+0}')
+     n=$(command grep -ric -- "$t" sections/*.tex tables/*.tex 2>/dev/null | awk -F: '{s+=$NF} END{print s+0}')
      [ "$n" != 0 ] && printf '%4s  %s\n' "$n" "$t"
    done
    ```
@@ -571,7 +572,7 @@ estimate.
 
 ## Reporting
 
-Report as: sections touched, what was cut by class (1–9), and explicitly
+Report as: sections touched, what was cut by class (1–10), and explicitly
 **what was kept and why** — the kept-list is the evidence that tightening did
 not become overclaiming. Do not report a "% reduction" as the headline; the
 headline is that the argument reads straight through.
@@ -582,7 +583,7 @@ Do not run this skill twice on the same text expecting further gain. The second
 pass finds nothing safe to cut and starts eating scope qualifiers to justify
 itself. One pass, then stop.
 
-The exception is a **class-7-only** pass. Classes 1–6 and 8 are sentence-local and
+The exception is a **class-7-only** pass. Classes 1–6 and 8–10 are sentence-local and
 are genuinely exhausted in one run; class 7 is not, because it is created fresh
 every time a section is rewritten — tightening §4 to point at a table leaves the
 intro bullet that pre-plays §4 untouched. After any round of section rewriting,
