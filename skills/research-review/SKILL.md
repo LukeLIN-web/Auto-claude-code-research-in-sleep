@@ -194,7 +194,6 @@ Update project memory/notes with key review conclusions.
   when you pass an absolute path; manual reviewers usually cannot, so attach or
   paste the same brief there.
 - Be honest about weaknesses — hiding them leads to worse feedback
-- Push back on criticisms you disagree with, but accept valid ones
 - Focus on ACTIONABLE feedback — "what experiment would fix this?"
 - Every weakness must carry an evidence anchor; spot-check anchors before acting, and drop findings whose anchor does not check out
 - Document the threadId for potential future resumption

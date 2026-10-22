@@ -154,7 +154,6 @@ Save a trace for every `mcp__claude-review__review_start`, `mcp__claude-review__
 - **Always ask the Claude reviewer for strict, high-rigor feedback** in every review round.
 - Send comprehensive context in Round 1 — the external model cannot read your files
 - Be honest about weaknesses — hiding them leads to worse feedback
-- Push back on criticisms you disagree with, but accept valid ones
 - Focus on ACTIONABLE feedback — "what experiment would fix this?"
 - Document the completed `threadId` for potential future resumption
 - The review document should be self-contained (readable without the conversation)
