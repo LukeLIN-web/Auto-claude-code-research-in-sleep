@@ -24,7 +24,12 @@ Given a method description, systematically verify its novelty:
    - What problem does it solve?
    - What is the mechanism?
    - What makes it different from obvious baselines?
-3. Write down what the idea must deliver in practice (the user's top priority:
+3. Freeze the **core delta** before any search: the one or two design choices
+   that define the method, i.e. what it does differently at training or
+   deployment (what is trained, on which data, with which labels or inputs,
+   which components run at deployment). Write it as one sentence. The score is
+   judged on this sentence, and it is not redefined after a paper turns up.
+4. Write down what the idea must deliver in practice (the user's top priority:
    实用、好用、成功率高 — practical, easy to use, high success rate):
    - which success rate it must beat, against which **simplest strong
      baseline** (e.g. the underlying policy run alone, the best off-the-shelf
@@ -33,7 +38,7 @@ Given a method description, systematically verify its novelty:
      tuning, demos, CAD / digital twin, privileged simulator state, a closed
      frontier API at inference, training compute);
    - what one episode costs (wall-clock, API spend).
-4. Fix the prior-art cutoff from the target venue's concurrent-work rule.
+5. Fix the prior-art cutoff from the target venue's concurrent-work rule.
    Take the venue and its cutoff from the project (its CLAUDE.md or memory)
    when it names them; otherwise read the venue's call for papers or reviewer
    guidelines (e.g. CVPR 2027: work first public after 2026-09-15 is
@@ -100,7 +105,7 @@ mcp__codex__codex:
     follow all instructions in it.
 ```
 Dossier contents should include:
-- The proposed method description
+- The proposed method description and the frozen core-delta sentence
 - All papers found in Phase B, each with its first-public date and its
   Prior / Concurrent tag, plus the target venue, its cutoff and the rule's
   wording
@@ -129,10 +134,10 @@ because the territory has neighbors.
    result — name that paper and its first-public date. No named prior paper,
    no ABANDON.
 3. Crowded-but-deltaed is PROCEED: state the delta over prior work in one
-   sentence a reviewer could verify. Thin or contested delta is PROCEED WITH CAUTION — say what
-   would make it carry, not why it should die. CAUTION is not a safe middle:
-   if you cannot name the specific thing that makes the delta thin, the
-   verdict is PROCEED.
+   sentence a reviewer could verify. A thin delta, meaning a named prior paper
+   contains the core delta in a narrower form, is PROCEED WITH CAUTION: say
+   what would make it carry, not why it should die. CAUTION is not a safe
+   middle: if you cannot name that paper, the verdict is PROCEED.
 4. Concurrent work, public inside the venue's concurrent window, is never a
    veto and never lowers the score, even when its contribution is identical
    to this idea. That is a race — report it as work the paper must cite and
@@ -144,6 +149,30 @@ because the territory has neighbors.
    this run uses. A wrongly passed idea dies cheaply at one of them; a wrongly
    killed idea is never seen again. When torn between two verdicts, choose the
    more permissive one.
+7. Judge the frozen core delta, not each component. A prior paper lowers the
+   score only when it contains the core delta. A paper that shares components,
+   the paradigm, the benchmark or the evaluation setting but lacks the core
+   delta costs no novelty. List it under "Shares components" in one line,
+   with no deduction. "Every component has a prior" is true of almost every
+   method, so it is never by itself a reason to call the delta thin.
+8. A difference that changes what the system does at training or deployment
+   (what is trained, on which data, with which labels or inputs, which
+   components run at deployment) is a method difference. Only a difference in
+   where it runs (sim or real, robot, benchmark, task set, scale) is a setting
+   difference. Do not relabel method differences as setting differences.
+9. Evidence gaps are not novelty: whether the current experiments isolate a
+   component, or whether the data exercises it. Report them under "Evidence
+   the paper needs". They never lower the score.
+Score on the core delta:
+   8-10  no prior paper contains the core delta (neighbours sharing
+         components are normal)                                  -> PROCEED
+   6-7   a prior paper contains part of the core delta; the rest is new
+                                                                  -> PROCEED
+   4-5   a prior paper contains the core delta in a narrower form (per task
+         instead of pooled, one modality); the delta is that extension
+                                                     -> PROCEED WITH CAUTION
+   1-3   a prior paper contains the core delta and differs only in setting
+                                      -> ABANDON candidate; name the paper
 Say plainly when an idea clears the check. Do not manufacture overlap.
 ```
 
@@ -156,6 +185,9 @@ Output a structured report:
 ### Proposed Method
 [1-2 sentence description]
 
+### Core Delta (frozen in Phase A)
+[one sentence]
+
 ### Target Venue and Cutoff
 [venue] — prior work is public before [date]; [the rule's wording, source]
 
@@ -165,16 +197,19 @@ Output a structured report:
 ...
 
 ### Closest Prior Work
-| Paper | First public | Venue | Overlap | Key Difference |
-|-------|--------------|-------|---------|----------------|
+Only papers that contain all, part, or a narrower form of the core delta.
+| Paper | First public | Venue | Core delta: all / part / narrower | Overlap | Key Difference |
+|-------|--------------|-------|-----------------------------------|---------|----------------|
+
+### Shares Components (no deduction; whether to cite is the user's call)
+- [paper, first public]: [the component it shares; the core-delta piece it lacks]
 
 ### Concurrent Work (cite and discuss; costs no novelty)
 | Paper | First public | Overlap | Compare where possible |
 |-------|--------------|---------|------------------------|
 
 ### Overall Novelty Assessment
-- Score: X/10 (anchor: 5/10 = has clear neighbors but a defensible delta worth
-  a pilot; reserve 1-3 for results a named prior paper already contains)
+- Score: X/10 on the core delta (scale in the verdict limits)
 - Recommendation: PROCEED / PROCEED WITH CAUTION / ABANDON (per the verdict
   limits: crowded-but-deltaed ground is PROCEED; ABANDON must name a prior
   paper)
@@ -193,9 +228,15 @@ Output a structured report:
 - Where the neighbors fall short, and which of those gaps the proposed
   method can close with same-protocol numbers
 
+### Evidence the Paper Needs (not novelty)
+[experiments that would show the core delta is what helps; data that does not
+yet exercise it]
+
 ### Suggested Positioning
-[State the delta over prior work honestly in one sentence a reviewer could
-verify; name concurrent work as concurrent]
+[State the method by its core delta in one sentence a reviewer could verify.
+Prior work goes in related work with the piece each lacks; frame the method as
+an extension of a paper only when that paper contains the core delta. Name
+concurrent work as concurrent]
 ```
 
 ### Important Rules
@@ -206,6 +247,12 @@ verify; name concurrent work as concurrent]
   state, or minutes per episode, is reported as such in the Practicality
   section, however clean its delta. Practicality does not change the novelty
   verdict rules (ABANDON still needs a named paper); it is its own verdict.
+- **Score the core delta, not the parts** (user ruling 2026-10-22: "感觉每次都
+  分数太低"). Reports kept saying no prior paper did the whole thing and still
+  scored 4-6, because "every component has a prior" read as a thin delta and
+  papers lacking the defining mechanism were counted as deductions. The
+  core-delta sentence is frozen before the search so it cannot be bent around
+  a paper found later; a paper that contains it still costs the score.
 - **Prior art ends at the target venue's concurrent-work cutoff** (user
   ruling 2026-10-14). Only prior work can make an idea not novel. Concurrent
   work may contain exactly the same contribution; that costs no novelty, but
@@ -223,7 +270,9 @@ verify; name concurrent work as concurrent]
   non-obvious interaction, failure mode, or insight. Judge the revelation, not
   the template.
 - Check both the method AND the experimental setting for novelty
-- If the method is not novel but the FINDING would be, say so explicitly
+- Report what remains as the method's delta. Do not recommend reframing a
+  method contribution as a finding; contribution framing is the user's call
+  (user ruling 2026-10-22: "不行, 你就作为新方法,")
 - Always check the most recent 6 months of arXiv, up to today and past the
   cutoff — the field moves fast
 - **Anti-hallucination for Closest Prior Work.** Every paper in the prior-work and concurrent-work tables must pass pre-search verification via `verify_papers.py` (canonical name resolved per [`shared-references/integration-contract.md`](../shared-references/integration-contract.md) §2; 3-layer arXiv / CrossRef / Semantic Scholar fallback inside the helper itself). Policy D1 (primary + degraded-output fallback): if the helper is unresolved **or** its invocation fails, tag candidate entries `[UNVERIFIED]` and surface the uncertainty rather than dropping them. Never fabricate arXiv IDs, DOIs, or titles from memory. Full protocol in [`shared-references/citation-discipline.md`](../shared-references/citation-discipline.md) § Pre-Search Verification Protocol.
