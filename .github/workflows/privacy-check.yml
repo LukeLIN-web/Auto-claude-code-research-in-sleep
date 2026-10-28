@@ -1,0 +1,28 @@
+name: Privacy check
+
+# Blocks personal paths and private-repo details in pushed diffs and commit messages.
+# Generic patterns live in tools/privacy_check.py; real private strings come from the
+# PRIVATE_PATTERNS repository secret (newline-separated) so they are never committed.
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  privacy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Scan added lines and commit messages
+        env:
+          PRIVATE_PATTERNS: ${{ secrets.PRIVATE_PATTERNS }}
+          BEFORE: ${{ github.event.before }}
+          PR_BASE: ${{ github.event.pull_request.base.sha }}
+        run: |
+          if [ -n "$PR_BASE" ]; then BASE="$PR_BASE";
+          elif [ -n "$BEFORE" ] && [ "$BEFORE" != "0000000000000000000000000000000000000000" ] && git cat-file -e "$BEFORE" 2>/dev/null; then BASE="$BEFORE";
+          else BASE="$(git rev-parse HEAD~1)"; fi
+          python3 tools/privacy_check.py --range "$BASE" HEAD
