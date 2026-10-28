@@ -51,6 +51,27 @@ All outputs (`<slug>_tutorial.md`, `.html`, `.review.json`) go in the user's own
 | Not too mathematical: no step-by-step derivations, no proofs, no Bayes / score manipulations; at most 1-2 display formulas per section | the reader is preparing to answer out loud — a chain of equations is skipped, and only the result plus its intuition gets said in an interview | CFG: give $\hat\epsilon = \epsilon_\varnothing + w(\epsilon_c - \epsilon_\varnothing)$, then 「用有条件减无条件得到'条件的方向'，再放大 w 倍」 — not the Bayes derivation |
 | Language: Chinese primary, English technical terms in-place | matches established cheat-sheet style | "softmax 饱和", "vector field" |
 
+### Diagrams — draw the mechanisms
+
+A cheat sheet must carry **3-5 diagrams**, one per core mechanism a reader would otherwise have to imagine: the overall pipeline or loop, the key formula's geometry (e.g. CFG as vector extrapolation), a timeline / grid for anything sequential (which tokens see which, per-step noise levels), and the step-by-step data flow of the main system. A diagram replaces prose — after adding one, cut the paragraph it makes redundant.
+
+How (render_html passes `<figure>` blocks through verbatim, minus `<style>`/`<script>`):
+
+```html
+<figure>
+<svg viewBox="0 0 720 260" style="width:100%;max-width:720px;height:auto" role="img" aria-label="one-line description">
+  <rect x="20" y="40" width="160" height="56" rx="8" style="fill:var(--info-bg);stroke:var(--primary)"/>
+  <text x="100" y="74" text-anchor="middle" style="font-size:15px;fill:var(--ink)">模块名</text>
+</svg>
+<figcaption>一句话说这张图要读出什么。</figcaption>
+</figure>
+```
+
+- Inline SVG only (no image files, no Mermaid, no external JS). Colors via the template tokens in `style=` (`--primary`, `--accent`, `--ink`, `--ink-muted`, `--info-bg`, `--good-bg`, `--warn-bg`, `--bad-bg`, `--border`); `var()` does not work in presentation attributes.
+- Text ≥ 13px at a 720px-wide viewBox, Chinese labels, at most ~6 words per box; arrows via a `<marker>` inside `<defs>`.
+- Keep the `<figure>` block free of blank lines; put it right after the heading or sentence that introduces it.
+- Every label must match the surrounding text's terms and notation.
+
 ### Eyebrow / subtitle / title naming
 
 | Field | Pattern |
@@ -103,7 +124,7 @@ You are reviewing a long-form Chinese interview-prep tutorial on <TOPIC> for mat
 5. table_pipe_escape — Any markdown table cell containing `|x|` math (not `\lvert x \rvert`)? Cite line.
 6. callout_list_collision — Any line matching the pattern `^> (?:💡|⚠️|✅|❌) \*\*[^*]+\*\* — (?:- |\d+\. )`? That swallows the list.
 7. heading_consistency — All `## §N` and `### N.M` follow style guide (space after §N, no glued chars).
-8. section_completeness — Sections §0..§10 present and non-trivial; there must be NO reference list / bibliography section (citations stay inline).
+8. section_completeness — Sections §0..§10 present and non-trivial; 3-5 inline-SVG `<figure>` diagrams present, each matching the text it illustrates (labels, arrows, notation) and not merely decorative; there must be NO reference list / bibliography section (citations stay inline).
 9. length_target — Within ±20% of target (600 for balanced, 1000 for max).
 10. personal_info_leak — None of: the owner's institution / lab / center names, degree-program affiliations, private server aliases, job-search or recruitment context, absolute `/Users/...` paths. (Keep the concrete string banlist in local untracked notes — the public SKILL defines only the CATEGORIES; listing the real values here would itself be the leak.)
 
@@ -144,7 +165,7 @@ python3 ~/.claude/skills/render-html/scripts/render_html.py <OUT>/<slug>_tutoria
   --lang zh-CN
 ```
 
-The installed `render_html.py` does not run a review itself. Run a separate fresh-thread codex render-stage review comparing the HTML to the MD (headings/TOC, table column counts, callouts and the lists after them, §0 list, math not mangled by emphasis parsing, code blocks complete, all 25 details bodies, no `/Users/` paths, CDN tags). If it FAILs, fix the MD (often a table-pipe or callout-list issue the math/code reviewer missed) and re-render.
+The installed `render_html.py` does not run a review itself. Run a separate fresh-thread codex render-stage review comparing the HTML to the MD (headings/TOC, table column counts, callouts and the lists after them, §0 list, math not mangled by emphasis parsing, code blocks complete, all 25 details bodies, every `<figure>` SVG present with labels readable and nothing clipped, no `/Users/` paths, CDN tags). If it FAILs, fix the MD (often a table-pipe or callout-list issue the math/code reviewer missed) and re-render.
 
 ### Step 6 — Combine audit trail
 
