@@ -1,20 +1,24 @@
 ---
 name: interview-cheatsheet
-description: "Generate a long-form Chinese interview-prep cheat sheet on a specific ML/LLM topic — formulas with derivations, from-scratch PyTorch code, comparison tables, and 25 高频面试题 (L1 必会 / L2 进阶 / L3 顶级 lab). Use when the user says '写面试 cheat sheet', '写一份 X 教程', '帮我准备 Y 面试题', '出一份 X 速查', or wants a 600-1000 line Chinese tutorial on a specific ML topic."
+description: "Generate a long-form Chinese interview-prep cheat sheet on a specific ML/LLM topic — the few key formulas explained in plain words, from-scratch PyTorch code, comparison tables, and 25 高频面试题 (L1 必会 / L2 进阶 / L3 顶级 lab). Use when the user says '写面试 cheat sheet', '写一份 X 教程', '帮我准备 Y 面试题', '出一份 X 速查', or wants a 600-1000 line Chinese tutorial on a specific ML topic."
 argument-hint: '<topic> [--effort balanced|max] [--byline "Name (姓名), Affiliation"] [--commit false]'
 allowed-tools: Bash(*), Read, Write, Edit, mcp__codex__codex
 ---
 
 # /interview-cheatsheet — long-form Chinese ML/LLM interview prep
 
-Generate one comprehensive Chinese cheat sheet per invocation: formulas + derivations + from-scratch code + 25 高频题. Output passes cross-model math/code review before rendering. **Detect-only by default: never auto-commits.**
+Generate one comprehensive Chinese cheat sheet per invocation: key formulas in plain words + from-scratch code + 25 高频题. Output passes cross-model math/code review before rendering. **Detect-only by default: never auto-commits.**
 
 ## Inputs
 
 - **`<topic>`** (required) — narrow enough for one 600-1000 line tutorial. Good: "RLHF / DPO / PPO", "MoE", "KV Cache + Speculative Decoding". Bad (too broad): "all of LLM training", "diffusion" (split into Forward Process / Sampling / CFG separately).
-- **`--effort`** (default `balanced`) — `balanced` ≈ 600 lines, `max` ≈ 1000 lines with deeper proofs and more L3 questions.
+- **`--effort`** (default `balanced`) — `balanced` ≈ 600 lines, `max` ≈ 1000 lines with more variants, engineering detail and L3 questions (not more math).
 - **`--byline`** (default `"<Your Name>, <Affiliation>"`) — passed to `/render-html --author`.
 - **`--commit`** (default `false`) — if `false` (default), stop after rendering; user reviews and commits. Never push without explicit user approval.
+
+## Output location
+
+All outputs (`<slug>_tutorial.md`, `.html`, `.review.json`) go in the user's own output directory, written `<OUT>` below. Take it from the user's private memory or local untracked notes; if none is configured, ask. Do not write outputs into this repo's `docs/tutorials/` and do not add rows to its README — those tutorials are read-only style references. This file is public: never write `<OUT>`'s real path, repo name, or what it is for into it.
 
 ## Style guide — STRICT (read `docs/tutorials/attention_tutorial.md` as canonical reference)
 
@@ -23,13 +27,13 @@ Generate one comprehensive Chinese cheat sheet per invocation: formulas + deriva
 ```
 ## §0 TL;DR — callout intro line + numbered list of 5-7 takeaways
 ## §1 直觉 — why this matters; analogy; one-paragraph mental model
-## §2 核心公式 — main formula + derivation (variance / scaling / boundary)
+## §2 核心公式 — only the formulas you would actually write on a whiteboard, each followed by what every term means in plain words
 ## §3 实现细节 — 50-80 line from-scratch PyTorch
 ## §4-7 变体 / 工程实践 / 常见 bug — variants, comparison tables, footguns
 ## §8 复杂度 / 资源 — time + memory complexity
 ## §9 与相关方法对比 — placement in the ecosystem
 ## §10 25 高频面试题 — L1 (10 必会) + L2 (10 进阶) + L3 (5 顶级 lab), all with <details><summary> collapsible answers
-## §A 附录 (optional) — sanity-check output, reference list
+## §A 附录 (optional) — e.g. a full from-scratch skeleton; NO reference list
 ```
 
 ### Conventions — bake the established lessons in
@@ -43,6 +47,8 @@ Generate one comprehensive Chinese cheat sheet per invocation: formulas + deriva
 | Math: `$...$` inline, `$$...$$` display, `$$\boxed{...}$$` for key boxes | MathJax CDN; literal in source | — |
 | Code: ```python fences, **real PyTorch that would run** | reviewer will check executability | — |
 | Personal-info banlist: owner's institution/lab/center names, degree-program affiliations, private server aliases, job-search context, `/Users/...` paths, specific lab/company names | reviewer flags as FAIL | byline goes via `--author` at render time, not in body |
+| No reference list / bibliography section | the page is for reading before an interview, not a paper; a trailing list is never read and duplicates the inline citations | cite inline where the method appears: `Diffusion Forcing（Chen et al., NeurIPS 2024）` |
+| Not too mathematical: no step-by-step derivations, no proofs, no Bayes / score manipulations; at most 1-2 display formulas per section | the reader is preparing to answer out loud — a chain of equations is skipped, and only the result plus its intuition gets said in an interview | CFG: give $\hat\epsilon = \epsilon_\varnothing + w(\epsilon_c - \epsilon_\varnothing)$, then 「用有条件减无条件得到'条件的方向'，再放大 w 倍」 — not the Bayes derivation |
 | Language: Chinese primary, English technical terms in-place | matches established cheat-sheet style | "softmax 饱和", "vector field" |
 
 ### Eyebrow / subtitle / title naming
@@ -63,7 +69,7 @@ Generate one comprehensive Chinese cheat sheet per invocation: formulas + deriva
 
 Internally sketch:
 - 12-14 section titles
-- List of major formulas (with derivation outline for each)
+- List of the 2-4 formulas worth memorizing (and what each term means)
 - List of code blocks (skeleton + what it demonstrates)
 - 25 interview questions sorted by L1 / L2 / L3 difficulty (each with one-line expected answer)
 - Comparison table topics (e.g., "RLHF vs DPO vs IPO vs SimPO")
@@ -72,7 +78,7 @@ If the topic is too broad to fit in one cheat sheet, **stop and ask the user to 
 
 ### Step 2 — Draft MD
 
-Write directly to `docs/tutorials/<slug>_tutorial.md`. Follow the style guide. Length target: 600 lines (balanced) or 1000 lines (max), ±20%.
+Write directly to `<OUT>/<slug>_tutorial.md`. Follow the style guide. Length target: 600 lines (balanced) or 1000 lines (max), ±20%.
 
 ### Step 3 — Cross-model math/code review (codex gpt-6-astra xhigh, FRESH thread)
 
@@ -90,14 +96,14 @@ You are reviewing a long-form Chinese interview-prep tutorial on <TOPIC> for mat
 
 ## Return JSON with these 10 checks
 
-1. formula_correctness — Independently re-derive each $$ display formula. Flag any error with file:line.
+1. formula_correctness — Independently re-derive each $$ display formula. Flag any error with file:line. ALSO flag as fail: step-by-step derivations / proofs, or more than 2 display formulas in one section — the style is "result + plain-words meaning", not math.
 2. code_correctness — For each python block: would it run? Does it implement the stated math? Imports / shapes / device handling consistent?
 3. interview_answer_correctness — Each L1/L2/L3 question's <details> answer. Specifically flag wrong year / wrong paper / wrong author / off-by-one indexing / inverted comparison.
 4. historical_citations — Paper authors + year + venue. Flag wrong attributions (e.g., "DPO: Rafailov 2023 NeurIPS" must be checkable).
 5. table_pipe_escape — Any markdown table cell containing `|x|` math (not `\lvert x \rvert`)? Cite line.
 6. callout_list_collision — Any line matching the pattern `^> (?:💡|⚠️|✅|❌) \*\*[^*]+\*\* — (?:- |\d+\. )`? That swallows the list.
 7. heading_consistency — All `## §N` and `### N.M` follow style guide (space after §N, no glued chars).
-8. section_completeness — Sections §0..§10 (and §A if effort=max) present and non-trivial.
+8. section_completeness — Sections §0..§10 present and non-trivial; there must be NO reference list / bibliography section (citations stay inline).
 9. length_target — Within ±20% of target (600 for balanced, 1000 for max).
 10. personal_info_leak — None of: the owner's institution / lab / center names, degree-program affiliations, private server aliases, job-search or recruitment context, absolute `/Users/...` paths. (Keep the concrete string banlist in local untracked notes — the public SKILL defines only the CATEGORIES; listing the real values here would itself be the leak.)
 
@@ -128,9 +134,9 @@ Most tutorials converge in 3-5 rounds. Going to 5-6 rounds is fine if substantiv
 Call directly (do not invoke `/render-html` as a sub-skill; call its python script — gives clear control):
 
 ```bash
-python3 skills/render-html/scripts/render_html.py docs/tutorials/<slug>_tutorial.md \
+python3 ~/.claude/skills/render-html/scripts/render_html.py <OUT>/<slug>_tutorial.md \
   --template academic \
-  --out docs/tutorials/<slug>_tutorial.html \
+  --out <OUT>/<slug>_tutorial.html \
   --title "<Topic> 面试 Cheat Sheet" \
   --subtitle "<one-line scope summary>" \
   --eyebrow "Interview Prep · <Topic>" \
@@ -138,18 +144,18 @@ python3 skills/render-html/scripts/render_html.py docs/tutorials/<slug>_tutorial
   --lang zh-CN
 ```
 
-`render_html.py` runs its own 13-check codex review automatically. If that FAILs, fix the MD (often a table-pipe or callout-list issue the math/code reviewer missed) and re-render. Note that `render_html.py` itself writes `<slug>_tutorial.review.json` for the render-stage audit.
+The installed `render_html.py` does not run a review itself. Run a separate fresh-thread codex render-stage review comparing the HTML to the MD (headings/TOC, table column counts, callouts and the lists after them, §0 list, math not mangled by emphasis parsing, code blocks complete, all 25 details bodies, no `/Users/` paths, CDN tags). If it FAILs, fix the MD (often a table-pipe or callout-list issue the math/code reviewer missed) and re-render.
 
 ### Step 6 — Combine audit trail
 
-After both reviews pass, merge math/code review history + render review history into one `docs/tutorials/<slug>_tutorial.review.json`:
+After both reviews pass, merge math/code review history + render review history into one `<OUT>/<slug>_tutorial.review.json`:
 
 ```json
 {
   "skill": "interview-cheatsheet",
-  "source": "docs/tutorials/<slug>_tutorial.md",
+  "source": "<OUT>/<slug>_tutorial.md",
   "source_sha256_prefix": "<16-char prefix>",
-  "output": "docs/tutorials/<slug>_tutorial.html",
+  "output": "<OUT>/<slug>_tutorial.html",
   "topic": "<TOPIC>",
   "effort": "balanced | max",
   "byline": "<author string>",
@@ -177,9 +183,9 @@ Do **NOT** `git add` / `git commit` / `git push`. Report:
 ✅ /interview-cheatsheet "<TOPIC>" complete.
 
   Files:
-    docs/tutorials/<slug>_tutorial.md          (<lines> lines, <bytes> bytes)
-    docs/tutorials/<slug>_tutorial.html        (<bytes> bytes, <TOC> TOC entries)
-    docs/tutorials/<slug>_tutorial.review.json
+    <OUT>/<slug>_tutorial.md          (<lines> lines, <bytes> bytes)
+    <OUT>/<slug>_tutorial.html        (<bytes> bytes, <TOC> TOC entries)
+    <OUT>/<slug>_tutorial.review.json
 
   Math/code review:  PASS after <N> rounds (<thread IDs>)
   Render review:     PASS after <M> rounds
@@ -189,21 +195,10 @@ Do **NOT** `git add` / `git commit` / `git push`. Report:
     - <one line per non-trivial fix>
 
   Suggested commit message:
-    docs(tutorials): add <Topic> cheat sheet (rendered via /render-html)
+    interview: 加 <Topic> cheat sheet（md + html + 审阅记录）
 
   ⚠️ Did NOT auto-commit — user reviews and pushes manually.
-  Also update docs/tutorials/README.md to add the new row.
 ```
-
-## Update the index
-
-After the tutorial passes, optionally append a row to `docs/tutorials/README.md`:
-
-```
-| **<Topic> 面试 Cheat Sheet** | [`<slug>_tutorial.md`](<slug>_tutorial.md) | [`<slug>_tutorial.html`](https://wanshuiyin.github.io/Auto-claude-code-research-in-sleep/tutorials/<slug>_tutorial.html) | <one-line topic list> |
-```
-
-Suggest the row to the user but let them edit it in themselves if they want to curate.
 
 ## Key invariants (the ARIS rules baked in)
 
