@@ -10,7 +10,9 @@ allowed-tools: Bash(*), Read, Grep, Glob, Write, Edit
 Merge related floats, cut bloated captions, and repack LaTeX pages — driven by
 measurement (pdfinfo + page renders), not guesswork. A merge that "looks nice"
 but exceeds `\textheight` silently produces an overflowing float or a lonely
-float page, so every step below is budget-first.
+float page, so every step below is budget-first. Repacking keeps the main
+(hero) figure and the main results table on the pages
+`../shared-references/manuscript-craft.md` §4 assigns them.
 
 ## Step 0: Establish the page budget
 
@@ -40,7 +42,9 @@ changes against a one-column layout:
   `b` needs `stfloats` / `dblfloatfix`. It never lands on the page where its
   source sits — the top of the next page at the earliest. To land it on the page
   that first cites it, move its source up into the text of the page before, then
-  re-check the `.aux` map (Step 1).
+  re-check the `.aux` map (Step 1). A page-tall `*` float needs `p`: under
+  `[t]` alone it waits for the next `\clearpage`, and every later float of its
+  kind waits behind it.
 - **At most `dbltopnumber` `*` floats at one page top** (2 under the CVPR kit); a
   third waits a page.
 - **Under 0.99 fractions the one-column signature is rare.** A float page forms

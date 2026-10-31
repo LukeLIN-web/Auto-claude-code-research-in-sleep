@@ -232,7 +232,7 @@ Before drafting the front matter, re-read the one-sentence contribution from `PA
 - List 2-4 specific, falsifiable contributions as a numbered or bulleted list
 - Preview the strongest result early instead of saving it for the experiments section
 - End with a brief roadmap ("The rest of this paper is organized as...")
-- Include the main result figure if space allows
+- Cite the main (hero) figure and the main results table here; the pages they land on are set in `../shared-references/manuscript-craft.md` §4
 - Target: 1-1.5 pages
 - Methods should begin by page 2-3 at the latest
 
