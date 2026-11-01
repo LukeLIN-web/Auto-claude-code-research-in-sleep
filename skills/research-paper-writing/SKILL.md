@@ -1,8 +1,22 @@
 ---
 name: research-paper-writing
-description: Improve academic paper writing quality for ML/CV/NLP-style papers with clear section structure, paragraph flow, and reviewer-facing presentation. Use when drafting or revising Abstract, Introduction, Related Work, Method, Experiments, or Conclusion; polishing figures/tables; checking claim-support alignment; or performing self-review before submission.
+description: Structure an ML/CV paper's Introduction, write its Experiments section, and plan and polish its figures, following Peng Sida's writing notes (technical challenge = limitation + reason, claim-evidence alignment). Use when planning the introduction's paragraph structure, drafting or revising Experiments, or improving figures. Never for the title, Abstract or contribution list (the authors write those), nor Method, Related Work or Conclusion.
 ---
 # Research Paper Writing
+
+## Scope in this fork (user ruling 2026-11-01)
+
+Use this skill **only** for three things:
+
+1. **Introduction structure**: the paragraph plan, the order of motivation, gap / technical challenge, insight and
+   results, and how each paragraph opens. Not the contribution list.
+2. **The Experiments section**: setup, results per benchmark, ablations, analysis.
+3. **Figures**: the figure plan, Figure 1 / teaser / showcase choice, overview and result figures, captions.
+
+Never draft or rewrite the **title, Abstract or contribution list**: the authors write those themselves, and an
+agent only transcribes them verbatim. Steps or references below that target the title, Abstract, contributions,
+Method, Related Work or Conclusion do not apply. Where this skill conflicts with the project's own paper rules
+(its paper `CLAUDE.md`, memory, or the `paper-*` skills), the project wins.
 
 ## Overview
 

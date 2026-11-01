@@ -1,9 +1,23 @@
 ---
 name: bestpaper-writing
-description: Draft or rewrite the title, Abstract, Introduction, Method and Experiments of an ML/CV paper in the style of CVPR/ICCV/NeurIPS best papers, distilled from 60 award papers, and plan and draw its figures (Figure 1, method overview, result figures) with award-paper layout and style. Use when the user either (A) fills in the intake form (assets/intake_form.html JSON) or describes problem, idea, method and results, or (B) pastes an existing abstract (or abstract plus introduction) to make it more convincing. Can write directly into a LaTeX template such as the CVPR author kit. Not for related-work surveys, rebuttals or plain proofreading.
+description: Structure an ML/CV paper's Introduction, write its Experiments section, and plan and draw its figures (Figure 1 / teaser / showcase, overview, result figures) in the style of CVPR/ICCV/NeurIPS best papers, distilled from 60 award papers. Use when planning the introduction's paragraph structure, drafting or revising Experiments, choosing or redesigning a figure, or packaging a showcase figure. Never for the title, Abstract or contribution list (the authors write those), nor Method, related-work surveys, rebuttals or proofreading.
 ---
 
 # Best-Paper Writing (v1.2): Abstract, Introduction, Method, Experiments, Figures
+
+## Scope in this fork (user ruling 2026-11-01)
+
+Use this skill **only** for three things:
+
+1. **Introduction structure**: the paragraph plan, the order of motivation, gap / technical challenge, insight and
+   results, and how each paragraph opens. Not the contribution list.
+2. **The Experiments section**: setup, results per benchmark, ablations, analysis.
+3. **Figures**: the figure plan, Figure 1 / teaser / showcase choice, overview and result figures, captions.
+
+Never draft or rewrite the **title, Abstract or contribution list**: the authors write those themselves, and an
+agent only transcribes them verbatim. Steps or references below that target the title, Abstract, contributions,
+Method, Related Work or Conclusion do not apply. Where this skill conflicts with the project's own paper rules
+(its paper `CLAUDE.md`, memory, or the `paper-*` skills), the project wins.
 
 Turn a description of a research project (or a draft abstract) into an Abstract and Introduction that read like a recent CVPR/ICCV/NeurIPS award paper.
 
