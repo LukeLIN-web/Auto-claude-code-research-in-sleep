@@ -1,6 +1,6 @@
 ---
 name: paper-prose-tighten
-description: "Cut filler from paper prose while holding every claim constant: bookkeeping counts (\"569 → 551\", \"32 of the 39\"), defensive meta-narration (\"we report this rather than claim X\"), narrated absences / 无中生有, false pivots / 错误的转折 (\"X rather than Y\"), value series / 罗列 (one quantity read out at three or more conditions), cross-section duplication / 跨节重复, artifact-provenance assurance, process vocabulary / 流程工程术语 (\"preregistered\", \"frozen before any readout\"), and the escalation rule: a claim that survives only behind a pile of caveats is deleted. Use when user says \"论文废话太多\", \"caveat 太多\", \"越讲越乱\", \"别解释了\", \"不要罗列数量\", \"严格禁止罗列\", \"清理废话\", \"无中生有\", \"错误的转折\", \"每一段都在讲啥\", \"我要删减文字\", \"preregistered 都删了\", \"不该出现这种工程的术语\", \"tighten the prose\", \"cut the filler\", \"too wordy\", or before submission when sections read like an audit log."
+description: "Cut filler from paper prose while holding every claim constant: bookkeeping counts (\"569 → 551\", \"32 of the 39\"), defensive meta-narration (\"we report this rather than claim X\"), narrated absences / 无中生有, false pivots / 错误的转折 (\"X rather than Y\"), value series / 罗列 (one quantity read out at three or more conditions), cross-section duplication / 跨节重复, related-work sprawl / 相关工作写太多 (two paragraphs is the norm), artifact-provenance assurance, process vocabulary / 流程工程术语 (\"preregistered\", \"frozen before any readout\"), and the escalation rule: a claim that survives only behind a pile of caveats is deleted. Use when user says \"论文废话太多\", \"caveat 太多\", \"越讲越乱\", \"别解释了\", \"不要罗列数量\", \"严格禁止罗列\", \"清理废话\", \"无中生有\", \"错误的转折\", \"每一段都在讲啥\", \"我要删减文字\", \"preregistered 都删了\", \"不该出现这种工程的术语\", \"related work 太长\", \"相关工作写太多\", \"tighten the prose\", \"cut the filler\", \"too wordy\", or before submission when sections read like an audit log."
 argument-hint: "[paper-directory-or-section-files]"
 allowed-tools: Bash(*), Read, Write, Edit, Grep, Glob
 ---
@@ -82,7 +82,7 @@ the paragraph is unreadable in defence of a claim that never earned a paragraph.
 When an author says the explanation itself is the problem, they are exercising
 this rule — do not answer it with a better-worded explanation.
 
-## The Ten Cut Classes
+## The Eleven Cut Classes
 
 ### 1. Bookkeeping enumerations
 
@@ -412,6 +412,40 @@ series and wrote 「严格禁止」. Class 1 walks past these: they are not coun
 denominators or pair splits but *results*, each individually a number the paper
 is entitled to report. The defect is the enumeration, not the digit.
 
+### 11. Related-work sprawl (相关工作写太多)
+
+The rule lives in `../shared-references/manuscript-craft.md` (Background /
+Related Work): two paragraphs, one per line of prior work. Related work outgrows
+it the way the audit log does. Every paper a novelty search turns up earns its
+own sentence, every near neighbour earns its own paragraph, and every paragraph
+closes on how we differ.
+
+| Cut | Why |
+|-----|-----|
+| a paragraph for a family the method answers the same way as another (executors that take a target position, split off from orchestrated systems) | one line of work; its works join the paragraph whose gap they share |
+| `X does A. Y does B. Z does C.`, one sentence per work | one clause per work inside a cluster: `train the executor on other executors' data~\cite{x,y,z}` |
+| a closing sentence on how our method differs | belongs in the method's Advantages paragraph |
+
+**Rewrite pattern:** name the lines of work the method answers (usually two: the
+systems it builds on and the training it changes). For each, write one
+paragraph: the line's shared design in a sentence, its variants as cite
+clusters with one clause each, and the gap they all share as the last sentence.
+Then diff the cite-key set, which must come back empty:
+
+```bash
+keys() { grep -o '\\cite[a-z]*{[^}]*}' | sed 's/^[^{]*{//; s/}$//' | tr ',' '\n' | tr -d ' ' | sort -u; }
+diff <(git show HEAD:sec/2_related.tex | keys) <(keys < sec/2_related.tex)
+```
+
+Every key stays (Hard stops). A work that shrinks to one key in a cluster is
+still cited, and concurrent work is still cited and discussed.
+
+**Field note (2026-11-01, the ruling that created this class).** After a
+motivation pass added a paragraph for each newly found family, the project-b
+draft's related work reached six paragraphs, about 1,800 tokens and 51 cite keys.
+The author wrote 「一般 related work 两段就行了, 你写的也太多了」. The source was
+`paper-write`'s "minimum one full page, 3–4 paragraphs", replaced the same day.
+
 ## Hard stops
 
 Deleting text must never upgrade a claim.
@@ -472,7 +506,7 @@ Rule of thumb: cut what proves *diligence*; keep what bounds *scope*.
 ## Procedure
 
 1. **Map every paragraph before reading for style.** Classes 1–6 and 8–10 are
-   found by grep; class 7 and oversized paragraphs are found only here. Emit one row per
+   found by grep; classes 7 and 11 and oversized paragraphs are found only here. Emit one row per
    paragraph — file, line span, word count, and **one line saying what it
    claims**:
 

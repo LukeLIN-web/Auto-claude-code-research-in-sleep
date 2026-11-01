@@ -237,12 +237,11 @@ Before drafting the front matter, re-read the one-sentence contribution from `PA
 - Methods should begin by page 2-3 at the latest
 
 **§2 Related Work:**
-- **MINIMUM 1 full page** (3-4 substantive paragraphs). Short related work sections are a common reviewer complaint.
+- **Two paragraphs**, one per line of prior work; the rule is in `../shared-references/manuscript-craft.md` (Background / Related Work).
 - Organize by category using `\paragraph{Category Name.}`
 - Organize methodologically, by assumption class, or by research question; do not write paper-by-paper mini-summaries
-- Each category: 1 paragraph summarizing the line of work + 1-2 sentences positioning this paper
 - Do NOT just list papers — synthesize and compare
-- End each paragraph with how this paper relates/differs
+- End each paragraph with the gap that line of work shares; how this paper differs goes in the method's Advantages paragraph
 
 **§3 Method / Preliminaries / Setup:**
 - Define notation early (reference math_commands.tex)
@@ -543,7 +542,7 @@ mcp__codex__codex:
     2. Is the writing clear, concise, and free of AI-isms?
     3. Any logical gaps or unclear explanations?
     4. Does it fit within [MAX_PAGES] pages (to end of Conclusion)?
-    5. Is related work sufficiently comprehensive (≥1 page)?
+    5. Is related work two paragraphs, one per line of prior work, with every cited work still cited?
     6. For theory papers: are proof sketches adequate?
     7. Are figures/tables clearly described and properly referenced?
     8. Would a skim reader understand the contribution from the title, abstract, introduction, and Figure 1?
@@ -578,7 +577,7 @@ Before declaring done:
 - [ ] No `[VERIFY]` markers left unchecked
 - [ ] Abstract is self-contained (understandable without reading the paper)
 - [ ] Title is specific and informative (not generic)
-- [ ] Related work is ≥1 full page
+- [ ] Related work is two paragraphs (manuscript-craft, Background / Related Work)
 - [ ] references.bib contains ONLY cited entries (no bloat)
 - [ ] **No stale section files** — every .tex in `sections/` is `\input`ed by `main.tex`
 - [ ] **Section files match main.tex** — file numbering and `\input` paths are consistent
