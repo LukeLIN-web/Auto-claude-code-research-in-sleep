@@ -164,10 +164,13 @@ Five things this catches that nothing else does:
 
 ## What a caption is
 
-The legend for *this* graphic: the title, the symbols, the axes, what a panel
-is. Not how to read the conclusion, not the reservations on that reading —
-those are the prose of the section the figure sits in, and for an appendix
-figure, that appendix section.
+**The first sentence is the takeaway** (user, 2026-11-01, replacing the earlier
+"no conclusion in the caption"): the bold opening states the one conclusion the
+figure carries, in the prose's own words and strength (`significant`, a
+direction), never stronger than the text that cites the figure and never a
+number. A schematic's takeaway is what the method changes. Then the legend for
+*this* graphic: what is measured, the symbols, the axes, what a panel is. The
+reservations on that reading are prose of the section the figure sits in.
 
 *This* graphic is the whole scope. A symbol drawn on a panel is the figure's own
 and gets defined here even when the prose defines it later; a term that only ever
