@@ -1,6 +1,6 @@
 ---
 name: paper-figure-craft
-description: "What a paper figure may say and how it must look in print — one figure states one conclusion, every quantity a reader compares gets its own visual channel, and every printed glyph lands in 7.5–11 pt at the width it is actually included at. Carries the user's figure rulings that hold for every paper (captions, numbers only from an SSOT, no Δ over two drawn levels, nothing drawn over an error bar). Use when the user says 这个图怎么画, 换个画法, 图太挤, 字太小, caption 写什么, 加一个面板, 'redesign this figure', 'the labels collide', 'can we plot X instead'. Not for running the build (the project's paper CLAUDE.md)."
+description: "What a paper figure may say and how it must look in print — one figure states one conclusion, every quantity a reader compares gets its own visual channel, and every printed glyph lands in 7.5–11 pt at the width it is actually included at. Carries the user's figure rulings that hold for every paper (captions, numbers only from an SSOT, no Δ over two drawn levels, nothing drawn over an error bar). Use when the user says 这个图怎么画, 换个画法, 图太挤, 字太小, 看不出任务区别, 包装, teaser / showcase 图, caption 写什么, 加一个面板, 'redesign this figure', 'the labels collide', 'can we plot X instead'. Not for running the build (the project's paper CLAUDE.md)."
 argument-hint: "[figure-label-or-script]"
 allowed-tools: Bash(*), Read, Write, Edit, Grep, Glob
 ---
@@ -48,6 +48,34 @@ ribbon thickness carries the *flow* (share of questions that moved), a paired
 channels. Every alternative compared for it — side-by-side bars, Δ printed onto
 the ribbons, a 2×2 transition matrix, a 2×2 heatmap — either merged the two
 quantities into one channel or turned the effect into an annotation.
+
+## A showcase figure is packaging (user, 2026-11-01)
+
+A gallery of tasks, scenes or inputs (a benchmark overview, a teaser) exists to
+**sell the breadth**: the reader should see at a glance how the panels differ and
+why each one is hard. A grid of scenes labelled only by dataset name fails that.
+The user's model: ScheduleGen (arXiv 2610.39429) Figure 1, whose caption claims
+it "can handle long-horizon contact manipulation, challenging reset
+distributions, cluttered layouts, and multi-arm scenarios", one panel each.
+
+- **Each panel's headline names its challenge** in the field's own vocabulary:
+  a short noun phrase such as *long-horizon sequencing*, *contact-rich
+  manipulation*, *cluttered layouts*, *challenging reset distributions*,
+  *multi-arm coordination*, *distribution shift*, *mid-episode scene change*,
+  *vague / world-knowledge / common-sense instructions*. The dataset name drops
+  to a small chip on the image.
+- **The caption's first sentence lists the challenges as one span** ("Our
+  evaluation spans A, B, C and D"), then says what a panel is.
+- **Pick the instance that shows the challenge, and show it the way it
+  happens.** A temporal challenge (a change during execution, a recovery) gets a
+  before / after pair from the same episode, not a start frame. Take inputs that
+  stress the claim (gulucaptain/Best-Paper-Writing-Skill `references/figures.md`,
+  showcase type).
+- **Packaging never outruns the evidence.** Each headline must be true of the
+  instance drawn: check its suite, perturbation type or track in the benchmark's
+  own definition and in the episode's metadata. A control episode cannot carry
+  *mid-episode change*; a background-texture case is *perturbed backgrounds*,
+  not *visual perturbations* in general.
 
 ## Rulings (do not relitigate; cite the date if asked to reverse)
 
