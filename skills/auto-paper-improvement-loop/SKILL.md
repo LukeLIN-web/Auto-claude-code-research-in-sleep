@@ -2,10 +2,22 @@
 name: auto-paper-improvement-loop
 description: "Autonomously improve a generated paper via GPT-6-Astra xhigh review → implement fixes → recompile, for 2 rounds. Use when user says \"改论文\", \"improve paper\", \"论文润色循环\", \"auto improve\", or wants to iteratively polish a generated paper."
 argument-hint: "[paper-directory] [— style-ref: <source>] [— edit-whitelist <path>]"
-allowed-tools: Bash(*), Read, Write, Edit, Grep, Glob, Skill, mcp__codex__codex, mcp__codex__codex-reply
+allowed-tools: Bash(*), Read, Write, Edit, Grep, Glob, Skill, mcp__codex__codex, mcp__codex__codex-reply, mcp__antigravity__antigravity, mcp__antigravity__antigravity-reply, mcp__grok__grok, mcp__grok__grok-reply, mcp__claude-review__review, mcp__claude-review__review_reply, mcp__claude-review__review_start, mcp__claude-review__review_reply_start, mcp__claude-review__review_status, mcp__model-worker__worker, mcp__model-worker__worker_reply
 ---
 
 # Auto Paper Improvement Loop: Review → Fix → Recompile
+
+> **Before each reviewer slot**, follow [Selectable Reviewers](../shared-references/reviewer-backends.md):
+> resolve invocation → `.aris/reviewer.json` → Claude Code default (Codex MCP)
+> with `reviewer_route.py` through the canonical helper resolver, preserving this
+> slot's tier, fresh contexts, source/image inputs and deterministic gates.
+> Codex examples/pins below apply only to `backend=codex`; other routes use their
+> own first-call/reply contract. Save the route and actual returned identity;
+> unavailable selections are `REVIEW_UNAVAILABLE`. Classify acceptance from actual
+> families/completion/scope. Forward invocation reviewer/model/effort overrides
+> to reviewer-bearing children. Writer selection is separate; follow the
+> writing-worker guidance below when drafting or revising prose.
+
 
 > 🔒 **Do not wrap this skill in `/loop`, `/schedule`, or `CronCreate`.** It
 > already loops internally (review → fix → recompile) with its own round
@@ -248,6 +260,8 @@ done > /tmp/paper_full_text.txt
 
 Send the full paper text AND compiled PDF to GPT-6-Astra xhigh:
 
+> Resolve this reviewer slot first; the following is the `backend=codex` example.
+
 ```
 mcp__codex__codex:
   model: gpt-6-astra
@@ -322,6 +336,8 @@ Reply "go" to implement all fixes, give custom instructions, "skip 2" to skip sp
 Parse user response same as `/auto-review-loop`: approve / custom instructions / skip / stop.
 
 ### Step 3: Implement Round 1 Fixes
+
+Follow the Launch Mindset and Optional Writing Worker guidance in `../shared-references/writing-principles.md`. For prose fixes, continue the configured writer with `worker_reply` (or start it with `worker`) under any active edit-whitelist constraints; otherwise revise directly. Pass the accepted fixes, source facts, and target files. Root checks technical accuracy while preserving strong prose; existing reviews, audits, and recompilation still apply.
 
 Parse the review and implement fixes by severity:
 
@@ -411,6 +427,8 @@ This is advisory only — the inline Step 4.5 check remains the default and cont
 ### Step 5: Round 2 Review
 
 If `REVIEWER_BIAS_GUARD = true` (default), use a **fresh** `mcp__codex__codex` thread for Round 2. Do not reuse the Round 1 threadId for prompting. Save the returned threadId only for recovery bookkeeping.
+
+> Resolve this reviewer slot first; the following is the `backend=codex` example.
 
 ```
 mcp__codex__codex:
