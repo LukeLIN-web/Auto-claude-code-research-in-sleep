@@ -165,6 +165,8 @@ def parse_claude_json(raw_stdout: str) -> tuple[dict[str, Any] | None, str | Non
         except json.JSONDecodeError:
             continue
         if isinstance(line_payload, dict):
+            if line_payload.get("type") not in {None, "result"}:
+                continue
             if saw_array_without_result and line_payload.get("type") != "result":
                 continue
             return line_payload, None
@@ -228,6 +230,10 @@ def serialize_job(job: dict[str, Any]) -> dict[str, Any]:
         "threadId": result.get("threadId"),
         "response": result.get("response"),
         "model": result.get("model"),
+        "requestedModel": result.get("requestedModel"),
+        "modelSource": result.get("modelSource"),
+        "reportedModels": result.get("reportedModels"),
+        "cwd": result.get("cwd") or (job.get("request") or {}).get("cwd"),
         "duration_ms": result.get("duration_ms"),
         "stop_reason": result.get("stop_reason"),
         "error": job.get("error"),
@@ -254,7 +260,12 @@ def build_command(
     # reads the prompt from stdin when no positional prompt is given). Large
     # review prompts on argv hit the kernel's MAX_ARG_STRLEN (~128KiB) and make
     # the launch fail with E2BIG.
-    cmd = [bin_path, "-p", "--output-format", "json", "--permission-mode", "plan"]
+    cmd = [
+        bin_path, "-p", "--output-format", "json", "--permission-mode", "plan",
+        # --tools controls built-ins only. Do not inherit the executor's MCPs
+        # (in particular Codex), which would let the reviewer delegate back.
+        "--strict-mcp-config", "--mcp-config", '{"mcpServers":{}}',
+    ]
 
     if session_id:
         cmd.extend(["--resume", session_id])
@@ -278,6 +289,27 @@ def build_command(
     return cmd
 
 
+def resolve_cwd(cwd: str | None) -> str:
+    if cwd is not None and (not isinstance(cwd, str) or not cwd.strip()):
+        raise ValueError("cwd must be a nonempty directory path")
+    path = Path(cwd or os.getcwd()).expanduser().resolve()
+    if not path.is_dir():
+        raise ValueError(f"cwd must be an existing directory: {path}")
+    return str(path)
+
+
+def reported_model(payload: dict[str, Any]) -> tuple[str | None, str | None, list[str]]:
+    """Report CLI evidence separately from the requested alias/provider config."""
+    usage = payload.get("modelUsage")
+    models = sorted(usage) if isinstance(usage, dict) else []
+    model = payload.get("model")
+    if isinstance(model, str) and model:
+        return model, "cli_result", models or [model]
+    if len(models) == 1:
+        return models[0], "cli_model_usage", models
+    return None, None, models
+
+
 # Error signatures worth retrying: upstream API throttling/overload/transient
 # network failures surfaced through the CLI's error text. Timeouts and other
 # failures return immediately.
@@ -294,6 +326,7 @@ def run_claude_once(
     prompt: str,
     *,
     model: str | None = None,
+    cwd: str,
 ) -> tuple[dict[str, Any] | None, str | None]:
     try:
         result = subprocess.run(
@@ -303,13 +336,14 @@ def run_claude_once(
             encoding='utf-8',
             errors='replace',
             input=prompt,
+            cwd=cwd,
             timeout=DEFAULT_TIMEOUT_SEC,
             check=False,
         )
     except subprocess.TimeoutExpired:
         return None, f"Claude review timed out after {DEFAULT_TIMEOUT_SEC} seconds"
     except OSError as exc:
-        return None, f"failed to launch Claude CLI: {exc}"
+        return None, f"Failed to launch Claude CLI: {exc}"
 
     payload, parse_error = parse_claude_json(result.stdout or "")
     if parse_error:
@@ -319,7 +353,8 @@ def run_claude_once(
 
     if payload is None:
         return None, "Failed to parse Claude CLI output"
-    if result.returncode != 0 or payload.get("is_error"):
+    subtype = payload.get("subtype", "")
+    if result.returncode != 0 or payload.get("is_error") or str(subtype).startswith("error"):
         # Claude CLI 2.x emits structured error events without `result` / `error`
         # fields — the diagnostic text lives in an `errors` list (e.g.
         # subtype="error_max_budget_usd", errors=["Reached maximum budget ..."]).
@@ -341,13 +376,24 @@ def run_claude_once(
         )
         return None, message
 
+    if payload.get("type") not in {None, "result"}:
+        return None, "Claude CLI did not return a terminal result event"
+    response_text = payload.get("result")
+    if not isinstance(response_text, str) or not response_text.strip():
+        return None, "Claude CLI returned an empty review"
+    if payload.get("stop_reason") in {"max_tokens", "tool_use", "pause_turn"}:
+        return None, f"Claude review did not finish: stop_reason={payload['stop_reason']}"
+
     thread_id = payload.get("session_id")
-    response_text = str(payload.get("result", "")).strip()
-    model_name = payload.get("model", "") or model or DEFAULT_MODEL
+    model_name, model_source, reported_models = reported_model(payload)
     return {
         "threadId": thread_id,
-        "response": response_text,
+        "response": response_text.strip(),
         "model": model_name,
+        "requestedModel": model or DEFAULT_MODEL or None,
+        "modelSource": model_source,
+        "reportedModels": reported_models,
+        "cwd": cwd,
         "duration_ms": payload.get("duration_ms"),
         "stop_reason": payload.get("stop_reason"),
     }, None
@@ -360,15 +406,17 @@ def run_claude_review(
     model: str | None = None,
     system: str | None = None,
     tools: str | None = None,
+    cwd: str | None = None,
 ) -> tuple[dict[str, Any] | None, str | None]:
     try:
+        working_dir = resolve_cwd(cwd)
         cmd = build_command(
             session_id=session_id,
             model=model,
             system=system,
             tools=tools,
         )
-    except FileNotFoundError as exc:
+    except (OSError, ValueError) as exc:
         return None, str(exc)
 
     debug_log(f"RUN {' '.join(cmd)} prompt_chars={len(prompt)}")
@@ -380,7 +428,7 @@ def run_claude_review(
                 f"RETRY attempt={attempt + 1}/{MAX_ATTEMPTS} sleep={delay:.1f}s reason={last_error}"
             )
             time.sleep(delay)
-        payload, error = run_claude_once(cmd, prompt, model=model)
+        payload, error = run_claude_once(cmd, prompt, model=model, cwd=working_dir)
         if not error:
             return payload, None
         last_error = error
@@ -396,7 +444,12 @@ def start_async_review(
     model: str | None = None,
     system: str | None = None,
     tools: str | None = None,
+    cwd: str | None = None,
 ) -> tuple[dict[str, Any] | None, str | None]:
+    try:
+        working_dir = resolve_cwd(cwd)
+    except (OSError, ValueError) as exc:
+        return None, str(exc)
     job_id = uuid.uuid4().hex
     created_at = utc_now()
     job = {
@@ -415,6 +468,7 @@ def start_async_review(
             "model": model,
             "system": system,
             "tools": tools,
+            "cwd": working_dir,
         },
     }
 
@@ -507,6 +561,7 @@ def run_async_job(job_id: str) -> int:
             model=request.get("model"),
             system=request.get("system"),
             tools=request.get("tools"),
+            cwd=request.get("cwd"),
         )
     except Exception as exc:
         payload = None
@@ -601,6 +656,7 @@ def handle_request(request: dict[str, Any]) -> dict[str, Any] | None:
                             "type": "object",
                             "properties": {
                                 "prompt": {"type": "string", "description": "Reviewer prompt"},
+                                "cwd": {"type": "string", "description": "Working directory; defaults to the MCP server directory. Repeat on replies."},
                                 "system": {"type": "string", "description": "Optional system prompt"},
                                 "model": {"type": "string", "description": "Optional Claude model override"},
                                 "tools": {"type": "string", "description": "Optional Claude tools override, empty string disables tools"},
@@ -617,6 +673,7 @@ def handle_request(request: dict[str, Any]) -> dict[str, Any] | None:
                                 "threadId": {"type": "string", "description": "Claude session id from a previous review call"},
                                 "thread_id": {"type": "string", "description": "Alias of threadId"},
                                 "prompt": {"type": "string", "description": "Follow-up reviewer prompt"},
+                                "cwd": {"type": "string", "description": "Use the same working directory as the first review; not inherited by threadId."},
                                 "system": {"type": "string", "description": "Optional system prompt override"},
                                 "model": {"type": "string", "description": "Optional Claude model override"},
                                 "tools": {"type": "string", "description": "Optional Claude tools override, empty string disables tools"},
@@ -631,6 +688,7 @@ def handle_request(request: dict[str, Any]) -> dict[str, Any] | None:
                             "type": "object",
                             "properties": {
                                 "prompt": {"type": "string", "description": "Reviewer prompt"},
+                                "cwd": {"type": "string", "description": "Working directory; defaults to the MCP server directory. Repeat on replies."},
                                 "system": {"type": "string", "description": "Optional system prompt"},
                                 "model": {"type": "string", "description": "Optional Claude model override"},
                                 "tools": {"type": "string", "description": "Optional Claude tools override, empty string disables tools"},
@@ -647,6 +705,7 @@ def handle_request(request: dict[str, Any]) -> dict[str, Any] | None:
                                 "threadId": {"type": "string", "description": "Claude session id from a previous review call"},
                                 "thread_id": {"type": "string", "description": "Alias of threadId"},
                                 "prompt": {"type": "string", "description": "Follow-up reviewer prompt"},
+                                "cwd": {"type": "string", "description": "Use the same working directory as the first review; not inherited by threadId."},
                                 "system": {"type": "string", "description": "Optional system prompt override"},
                                 "model": {"type": "string", "description": "Optional Claude model override"},
                                 "tools": {"type": "string", "description": "Optional Claude tools override, empty string disables tools"},
@@ -681,6 +740,7 @@ def handle_request(request: dict[str, Any]) -> dict[str, Any] | None:
                 model=args.get("model"),
                 system=args.get("system"),
                 tools=args.get("tools"),
+                cwd=args.get("cwd"),
             )
             return tool_error(request_id, error) if error else tool_success(request_id, payload or {})
 
@@ -694,6 +754,7 @@ def handle_request(request: dict[str, Any]) -> dict[str, Any] | None:
                 model=args.get("model"),
                 system=args.get("system"),
                 tools=args.get("tools"),
+                cwd=args.get("cwd"),
             )
             return tool_error(request_id, error) if error else tool_success(request_id, payload or {})
 
@@ -703,6 +764,7 @@ def handle_request(request: dict[str, Any]) -> dict[str, Any] | None:
                 model=args.get("model"),
                 system=args.get("system"),
                 tools=args.get("tools"),
+                cwd=args.get("cwd"),
             )
             return tool_error(request_id, error) if error else tool_success(request_id, payload or {})
 
@@ -716,6 +778,7 @@ def handle_request(request: dict[str, Any]) -> dict[str, Any] | None:
                 model=args.get("model"),
                 system=args.get("system"),
                 tools=args.get("tools"),
+                cwd=args.get("cwd"),
             )
             return tool_error(request_id, error) if error else tool_success(request_id, payload or {})
 

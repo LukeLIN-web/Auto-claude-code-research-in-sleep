@@ -294,44 +294,6 @@ class TestCallLlmRetry(unittest.TestCase):
         self.assertEqual(mock_client.post.call_count, 1)
 
 
-class TestTokenParamDowngrade(unittest.TestCase):
-    """max_completion_tokens is sent first; a 400 naming the parameter
-    downgrades to max_tokens (sticky for the process)."""
-
-    def setUp(self):
-        import tests._llm_chat_helpers as helpers
-        self._helpers = helpers
-        self._orig = helpers._token_param
-        helpers._token_param = "max_completion_tokens"
-
-    def tearDown(self):
-        self._helpers._token_param = self._orig
-
-    @patch("tests._llm_chat_helpers.API_KEY", "test-key")
-    @patch("tests._llm_chat_helpers.DEFAULT_MODEL", "gpt-4o")
-    @patch("httpx.Client")
-    def test_400_on_max_completion_tokens_downgrades(self, mock_client_cls):
-        mock_client = _mock_client(
-            mock_client_cls,
-            [
-                _resp(400, text="Unsupported parameter: max_completion_tokens"),
-                _resp(200, "OK"),
-            ],
-        )
-
-        from tests._llm_chat_helpers import call_llm
-        content, error = call_llm([{"role": "user", "content": "test"}])
-
-        self.assertIsNone(error)
-        self.assertEqual(content, "OK")
-        first = mock_client.post.call_args_list[0][1]["json"]
-        second = mock_client.post.call_args_list[1][1]["json"]
-        self.assertIn("max_completion_tokens", first)
-        self.assertIn("max_tokens", second)
-        self.assertNotIn("max_completion_tokens", second)
-        self.assertEqual(self._helpers._token_param, "max_tokens")
-
-
 class TestToolCallFullFlow(unittest.TestCase):
     """Test the complete tools/call path through handle_request."""
 
@@ -424,11 +386,31 @@ class TestDefaultConfig(unittest.TestCase):
         )
 
     def test_default_model(self):
-        """Default model should be gpt-4o."""
-        self.assertEqual(
-            os.environ.get("LLM_MODEL", "gpt-4o"),
-            "gpt-4o"
+        """The real server should default to gpt-6.1-sol when LLM_MODEL is unset."""
+        import importlib.util
+        from pathlib import Path
+
+        server_path = (
+            Path(__file__).resolve().parents[1]
+            / "mcp-servers"
+            / "llm-chat"
+            / "server.py"
         )
+        clean_env = {
+            key: value
+            for key, value in os.environ.items()
+            if not key.startswith("LLM_")
+        }
+        with patch.dict(os.environ, clean_env, clear=True):
+            spec = importlib.util.spec_from_file_location(
+                "llm_chat_server_default_config", server_path
+            )
+            module = importlib.util.module_from_spec(spec)
+            self.assertIsNotNone(spec.loader)
+            spec.loader.exec_module(module)
+
+        self.assertEqual(module.DEFAULT_MODEL, "gpt-6.1-sol")
+        self.assertEqual(module.FALLBACK_MODEL, "gpt-6.1-sol")
 
     def test_default_server_name(self):
         """Default server name should be llm-chat."""

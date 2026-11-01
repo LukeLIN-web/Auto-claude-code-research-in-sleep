@@ -43,7 +43,7 @@ def test_codex_skill_set_matches_mainline() -> None:
     local = fork_local_skills()
     main_names = skill_names(MAIN_SKILLS) - local
     codex_names = skill_names(CODEX_SKILLS) - local
-    assert len(main_names) == 83
+    assert len(main_names) == 87
     assert main_names == codex_names
 
 
@@ -51,7 +51,7 @@ def test_codex_shared_reference_set_matches_mainline() -> None:
     local = fork_local_references()
     main_refs = {p.name for p in (MAIN_SKILLS / "shared-references").glob("*.md")} - local
     codex_refs = {p.name for p in (CODEX_SKILLS / "shared-references").glob("*.md")} - local
-    assert len(main_refs) == 31
+    assert len(main_refs) == 32
     assert codex_refs == main_refs
 
 

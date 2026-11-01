@@ -2,10 +2,21 @@
 name: figure-spec
 description: "Generate publication-quality method / architecture / workflow / pipeline figures as editable vector SVG under a blueprint content lock: every label is frozen upfront, the rendered SVG is hard-diffed against the lock, and a print-size gate enforces readable type at the final printed width. Two render paths: deterministic JSON (FigureSpec) → SVG renderer for quick figures, or hand-authored SVG for Figure-1-grade layouts. Use when user says \"方法图\", \"架构图\", \"method figure\", \"Figure 1\", \"workflow 图\", \"pipeline 图\", \"确定性矢量图\", \"figure spec\", \"draw architecture\". Preferred over AI illustration for formal method/architecture figures."
 argument-hint: "[description-of-diagram]"
-allowed-tools: Bash(*), Read, Write, Edit, mcp__codex__codex
+allowed-tools: Bash(*), Read, Write, Edit, mcp__codex__codex, mcp__antigravity__antigravity, mcp__antigravity__antigravity-reply, mcp__grok__grok, mcp__grok__grok-reply, mcp__claude-review__review, mcp__claude-review__review_reply, mcp__claude-review__review_start, mcp__claude-review__review_reply_start, mcp__claude-review__review_status
 ---
 
 # FigureSpec: Blueprint-Locked Vector Figures
+
+> **Before each reviewer slot**, follow [Selectable Reviewers](../shared-references/reviewer-backends.md):
+> resolve invocation → `.aris/reviewer.json` → Claude Code default (Codex MCP)
+> with `reviewer_route.py` through the canonical helper resolver, preserving this
+> slot's tier, fresh contexts, source/image inputs and deterministic gates.
+> Codex examples/pins below apply only to `backend=codex`; other routes use their
+> own first-call/reply contract. Save the route and actual returned identity;
+> unavailable selections are `REVIEW_UNAVAILABLE`. Classify acceptance from actual
+> families/completion/scope. Forward invocation reviewer/model/effort overrides
+> to reviewer-bearing children. Generation workers are unchanged.
+
 
 Generate publication-quality **method / Figure-1 overviews**, **architecture diagrams**, **workflow pipelines**, **audit cascades**, and **system topology** figures as editable SVG vector graphics — under a **content lock**: the figure's text is frozen in a `blueprint.json` before any drawing, the rendered SVG is hard-diffed against it, and a print-size gate rejects type that would print below readable size.
 
@@ -280,6 +291,8 @@ introduce content drift; the verifier is cheap).
 ### Step 6: Iterate with Codex Review (Optional, for High-Stakes Figures)
 
 For paper architecture figures, invoke cross-model review:
+
+> Resolve this reviewer slot first; the following is the `backend=codex` example.
 
 ```
 mcp__codex__codex:
