@@ -442,9 +442,10 @@ still cited, and concurrent work is still cited and discussed.
 
 **Field note (2026-11-01, the ruling that created this class).** After a
 motivation pass added a paragraph for each newly found family, the agent-harness
-draft's related work reached six paragraphs, about 1,800 tokens and 51 cite keys.
+draft's related work reached six paragraphs, about 1,800 words and 51 cite keys.
 The author wrote 「一般 related work 两段就行了, 你写的也太多了」. The source was
 `paper-write`'s "minimum one full page, 3–4 paragraphs", replaced the same day.
+The rewrite came to two paragraphs of about 430 words with all 51 keys kept.
 
 ## Hard stops
 
