@@ -56,6 +56,14 @@ table, not to re-narrate it. Time saved here goes into figures.
 
 - Related Work is read by almost nobody; do not spend the page budget defending
   it. Keep it organized by method family, not paper-by-paper.
+- **Two paragraphs, one per line of prior work** (user ruling 2026-11-01:
+  「一般 related work 两段就行了」). Works enter as cite clusters, at most one
+  clause per work; a paragraph may end with the gap that whole line shares.
+  How *our* method differs goes in the method's Advantages paragraph (above),
+  not here. A third paragraph needs a third line of work the method answers,
+  never a family split out for room. Cutting to two paragraphs keeps every
+  `\cite` key, concurrent work included; the procedure is cut class 11 of
+  `paper-prose-tighten`.
 - Anything that a reader needs in order to follow the method belongs **in the
   method**, not in Background. Material buried in Background is material nobody
   reads.
