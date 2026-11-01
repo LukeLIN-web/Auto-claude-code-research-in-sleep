@@ -1,6 +1,6 @@
 ---
 name: figure-spec
-description: "Generate publication-quality method / architecture / workflow / pipeline figures as editable vector SVG under a blueprint content lock: every label is frozen upfront, the rendered SVG is hard-diffed against the lock, and a print-size gate enforces readable type at the final printed width. Two render paths: deterministic JSON (FigureSpec) → SVG renderer for quick figures, or hand-authored SVG for Figure-1-grade layouts. Use when user says \"方法图\", \"架构图\", \"method figure\", \"Figure 1\", \"workflow 图\", \"pipeline 图\", \"确定性矢量图\", \"figure spec\", \"draw architecture\". Preferred over AI illustration for formal method/architecture figures."
+description: "Generate publication-quality method / architecture / workflow / pipeline figures as editable vector SVG, every label frozen upfront and type checked at the final printed width. Use when user says \"方法图\", \"架构图\", \"method figure\", \"Figure 1\", \"workflow 图\", \"pipeline 图\", \"确定性矢量图\", \"figure spec\", \"draw architecture\". Preferred over AI illustration for formal method/architecture figures."
 argument-hint: "[description-of-diagram]"
 allowed-tools: Bash(*), Read, Write, Edit, mcp__codex__codex, mcp__antigravity__antigravity, mcp__antigravity__antigravity-reply, mcp__grok__grok, mcp__grok__grok-reply, mcp__claude-review__review, mcp__claude-review__review_reply, mcp__claude-review__review_start, mcp__claude-review__review_reply_start, mcp__claude-review__review_status
 ---
