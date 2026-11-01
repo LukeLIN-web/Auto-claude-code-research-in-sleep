@@ -1,6 +1,6 @@
 ---
 name: paper-table-craft
-description: "What belongs in a paper table — a cell is a value, never a sentence; a caption is the table's own legend, never a glossary or a restatement of its rows. Carries the user's table rulings that hold for every paper (no CIs or p-values, no Δ column beside both compared levels, caption above, no n column) and the cut classes for a table that has grown prose. Use when the user says 表太啰嗦, 删减表格, 这个表怎么写, caption 太长, 表里能不能写 CI, 这行要不要留, 加一列, 'trim this table', 'what goes in the caption', or when table cells have turned into sentences. Not for building the table (the project's paper CLAUDE.md)."
+description: "What belongs in a paper table — a cell is a value, never a sentence; a caption opens with the takeaway, then is the table's own legend, never a glossary or a restatement of its rows. Carries the user's table rulings that hold for every paper (no CIs or p-values, no Δ column beside both compared levels, caption above, no n column) and the cut classes for a table that has grown prose. Use when the user says 表太啰嗦, 删减表格, 这个表怎么写, caption 太长, 表里能不能写 CI, 这行要不要留, 加一列, 'trim this table', 'what goes in the caption', or when table cells have turned into sentences. Not for building the table (the project's paper CLAUDE.md)."
 argument-hint: "[table-label-or-file]"
 allowed-tools: Bash(*), Read, Write, Edit, Grep, Glob
 ---
@@ -64,8 +64,10 @@ fact are one row.
 
 ## What a caption is
 
-The legend for *this* float: the title, the symbols, the definition of each
-column. Nothing that defers to prose, nothing a row already shows.
+**First sentence: the takeaway** (user, 2026-11-01), the table's one conclusion in
+the prose's own words, no number. Then the legend for *this* float: what is
+measured, the symbols, the definition of each column. Nothing that defers to
+prose; a takeaway is not a restatement of rows, but a row-by-row recital is.
 
 Four ways it stops being that:
 
