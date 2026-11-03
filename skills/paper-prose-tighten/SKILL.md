@@ -1,6 +1,6 @@
 ---
 name: paper-prose-tighten
-description: "Cut filler from paper prose while holding every claim constant — bookkeeping counts, defensive meta-narration, narrated absences / 无中生有, false pivots / 错误的转折, value series / 罗列, cross-section duplication, related-work sprawl, process vocabulary (\"preregistered\"), and claims that survive only behind a pile of caveats. Use when user says \"论文废话太多\", \"caveat 太多\", \"越讲越乱\", \"别解释了\", \"不要罗列数量\", \"清理废话\", \"无中生有\", \"错误的转折\", \"我要删减文字\", \"不该出现这种工程的术语\", \"related work 太长\", \"tighten the prose\", \"cut the filler\", \"too wordy\", or before submission when sections read like an audit log."
+description: "Cut filler from paper prose while holding every claim constant — bookkeeping counts, defensive meta-narration, narrated absences / 无中生有, false pivots / 错误的转折, value series / 罗列, cross-section duplication, related-work sprawl, wordy phrases where one word does, process vocabulary (\"preregistered\"), and claims that survive only behind a pile of caveats. Use when user says \"论文废话太多\", \"caveat 太多\", \"越讲越乱\", \"别解释了\", \"不要罗列数量\", \"清理废话\", \"无中生有\", \"错误的转折\", \"我要删减文字\", \"不该出现这种工程的术语\", \"related work 太长\", \"能用少词就不用多词\", \"tighten the prose\", \"cut the filler\", \"too wordy\", or before submission when sections read like an audit log."
 argument-hint: "[paper-directory-or-section-files]"
 allowed-tools: Bash(*), Read, Write, Edit, Grep, Glob
 ---
@@ -82,7 +82,7 @@ the paragraph is unreadable in defence of a claim that never earned a paragraph.
 When an author says the explanation itself is the problem, they are exercising
 this rule — do not answer it with a better-worded explanation.
 
-## The Eleven Cut Classes
+## The Twelve Cut Classes
 
 ### 1. Bookkeeping enumerations
 
@@ -447,6 +447,32 @@ The author wrote 「一般 related work 两段就行了, 你写的也太多了�
 `paper-write`'s "minimum one full page, 3–4 paragraphs", replaced the same day.
 The rewrite came to two paragraphs of about 430 words with all 51 keys kept.
 
+### 12. Wordy phrases (能用少词就不用多词)
+
+Several words where one word the reader already knows says the same thing.
+Drafting from notes, the agent describes a property instead of naming it.
+
+| Cut | Write |
+|-----|-------|
+| `loosely worded instructions` | `vague instructions` |
+| `in order to` | `to` |
+| `is able to` | `can` |
+| `a large number of` | `many` |
+| `due to the fact that` | `because` |
+
+**Rewrite pattern:** first look for a word the paper already uses (`vague` is
+in the benchmark name Robolab-Vague), then for the field's usual word. Only
+swap when the short word means the same thing. If it is stronger or weaker
+(`fails` for `succeeds less often`), the claim has changed: keep the phrase.
+
+**Not this class:** a qualifier that is the claim or bounds it (`significantly`,
+`new tasks from the same generator`), a term the paper defines
+(`executor self-bootstrapping`), and official benchmark and model names.
+
+**Field note (2026-11-03, the ruling that created this class).** On the
+agent-harness abstract's `loosely worded instructions`, the author wrote
+「论文应该能用少词的就不要用多个词, 比如 loose worded 就应该写成 vague」.
+
 ## Hard stops
 
 Deleting text must never upgrade a claim.
@@ -506,8 +532,8 @@ Rule of thumb: cut what proves *diligence*; keep what bounds *scope*.
 
 ## Procedure
 
-1. **Map every paragraph before reading for style.** Classes 1–6 and 8–10 are
-   found by grep; classes 7 and 11 and oversized paragraphs are found only here. Emit one row per
+1. **Map every paragraph before reading for style.** Classes 1–6, 8–10 and 12
+   are found by grep; classes 7 and 11 and oversized paragraphs are found only here. Emit one row per
    paragraph — file, line span, word count, and **one line saying what it
    claims**:
 
@@ -556,6 +582,8 @@ Rule of thumb: cut what proves *diligence*; keep what bounds *scope*.
    # class 10 value series: slash-strung readings, and "x on A, y on B, z on C"
    command grep -nE '\$[0-9.]+\$ ?/ ?\$[0-9.]+\$' sections/*.tex | command grep -v '&'
    command grep -nE '(on|at) [A-Z][A-Za-z-]+, \$?[-+0-9]' sections/*.tex | command grep -v '&'
+   # class 12 wordy phrases (classify by hand; the short word must mean the same)
+   command grep -niE 'in order to|(is|are) able to|a (large )?number of|the majority of|due to the fact|at the time of|make use of|loosely worded' sections/*.tex
    # meta-narration stems
    command grep -niE 'we (report|claim|make|state|note|stress|log) (this|it|none|them)|rather than (claim|letting|running|averag)|net (it|this|that) away|averag\w* away|entitled to know|guard(ing)? against|we count it as such' sections/*.tex
    # narrated absences: sentences about things that don't exist
@@ -607,7 +635,7 @@ estimate.
 
 ## Reporting
 
-Report as: sections touched, what was cut by class (1–10), and explicitly
+Report as: sections touched, what was cut by class (1–12), and explicitly
 **what was kept and why** — the kept-list is the evidence that tightening did
 not become overclaiming. Do not report a "% reduction" as the headline; the
 headline is that the argument reads straight through.
@@ -618,7 +646,7 @@ Do not run this skill twice on the same text expecting further gain. The second
 pass finds nothing safe to cut and starts eating scope qualifiers to justify
 itself. One pass, then stop.
 
-The exception is a **class-7-only** pass. Classes 1–6 and 8–10 are sentence-local and
+The exception is a **class-7-only** pass. Classes 1–6, 8–10 and 12 are sentence-local and
 are genuinely exhausted in one run; class 7 is not, because it is created fresh
 every time a section is rewritten — tightening §4 to point at a table leaves the
 intro bullet that pre-plays §4 untouched. After any round of section rewriting,
