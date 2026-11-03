@@ -184,6 +184,22 @@ grep -rnE '\\textcolor\{(red|blue|green|orange)\}' --include=*.tex .
 grep -nE 'Overfull \\hbox' compile.log | head -20
 ```
 
+**Gates (this skill's `scripts/`; each exits 1 and lists every hit):**
+
+```bash
+S="${CLAUDE_SKILL_DIR:-$ARIS_REPO/skills/paper-compile}/scripts"   # needs pymupdf
+python3 "$S/check_tex.py" main.tex --leak '(docs/|outputs/|/shared/|/home/|[A-Za-z_]+\.py\b|<project hosts>)'
+python3 "$S/check_runts.py" main.pdf
+```
+
+- `check_tex.py` reads `main.tex` and every file it `\input`s. It enforces the caption rule owned by
+  `paper-table-craft` / `paper-figure-craft` (no pointer at another float, 1200 chars) on generated and
+  hand-written captions alike, and rejects any line, comments included, that names a repo-internal
+  path: the `.tex` ships to Overleaf, co-authors and the submission source as is.
+- `check_runts.py` flags a paragraph whose last line is shorter than half its column (one- or
+  two-column layouts). Fix by cutting words until the line is absorbed into the one above, holding
+  every claim; never `\looseness`, `\vspace` or spacing tricks.
+
 ### Step 6: Page Count Verification
 
 **CRITICAL**: Verify paper fits within MAX_PAGES.

@@ -39,6 +39,17 @@ The `paper-overleaf/` directory is a **git clone of the Overleaf project**. The 
 
 **Single-source-of-truth rule**: at any given time, treat *one* of them as authoritative for active editing. Switch directions explicitly with `pull` or `push`, and run a `status` check before either to surface unexpected divergence.
 
+### Shared-clone layout: the clone is the paper
+
+When the Overleaf clone itself is the paper directory and several sessions write into it (generators
+regenerating tables and figures, agents editing sections), there is no `paper/` mirror and no rsync, and
+`git add -A` would push other sessions' half-finished work. Each author adds and commits only their own
+files, then syncs with `scripts/overleaf_sync.sh <clone>...`: fetch, autostash rebase over web edits,
+push, then fetch again and compare trees. It never adds or commits, refuses to run while something is
+staged but uncommitted, and confirms a push only by the remote tree (with a token URL "ahead N" is
+stale, and Overleaf can accept a push whose reply never arrives). Auth is `OVERLEAF_TOKEN_FILE` or the
+credential helper above.
+
 ## Sub-commands
 
 ### `setup <project-id>` — one-time
