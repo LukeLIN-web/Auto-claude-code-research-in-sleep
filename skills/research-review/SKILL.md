@@ -97,7 +97,8 @@ Before calling the external reviewer, compile a comprehensive briefing:
 3. Identify: core claims, methodology, key results, known weaknesses
 4. For a manuscript, give the entry `.tex` file and the directories that hold its
    figures and tables. Do not write down what each float shows or which argument
-   it serves: the reviewer builds that map itself (*Float map* below).
+   it serves: the reviewer builds that map itself
+   ([`review-float-map.md`](../shared-references/review-float-map.md)).
 
 ### Step 2: Initial Review (Round 1)
 Send a detailed prompt with max reasoning, using the selected backend. For
@@ -120,7 +121,7 @@ mcp__codex__codex:
 
     [SCOPE LIMITS block, verbatim from shared-references/review-scope-limits.md]
 
-    [FLOAT MAP block, verbatim from *Float map* below — manuscripts only]
+    [FLOAT MAP block, verbatim from shared-references/review-float-map.md — manuscripts only]
 ```
 
 For Antigravity, Grok, or Claude Code, send the same prompt through its selected
@@ -204,48 +205,6 @@ Update project memory/notes with key review conclusions.
 > mode from a report file merely existing. Full rules:
 > [`shared-references/output-composition.md`](../shared-references/output-composition.md).
 
-## Float map (manuscripts)
-
-User ruling, 2026-11-03: 「每个图表都应该服务论点」. Every figure and every table
-in a paper must serve an argument the paper makes. When the artifact is a
-manuscript, append the block below verbatim after SCOPE LIMITS in the first-round
-prompt and in every follow-up brief, so each round rebuilds the map against the
-current files.
-
-The reviewer builds the map. The executor does not pass on its own map or its
-reading of what a float shows: that is a summary of file contents, which
-[`reviewer-independence.md`](../shared-references/reviewer-independence.md)
-forbids. Spot-check the returned entries' anchors as you would any other finding.
-
-```text
-=== FLOAT MAP (manuscripts; a required named field at the end of your reply) ===
-Every figure and every table must serve an argument the paper makes: a
-contribution, a motivation, or a stated advantage of the method. Build the map
-yourself from the manuscript. Output a field named "Float map" with one line per
-figure and per table, main text and appendix, numbered as the compiled PDF
-prints them:
-  <Figure/Table N> — what it shows, with its decisive numbers — the argument it
-  serves (quote that sentence and give its location) — the sections that cite
-  it, or "cited only in its own appendix section".
-Setup and protocol tables serve reproducibility; say so instead of forcing a
-claim onto them. Under "Flagged", list with its anchor every float that:
-  1. serves no argument (a result no claim rests on);
-  2. is cited only in its own appendix section;
-  3. does not support the sentence that cites it, e.g. a baseline or an
-     undeployed variant holds the decisive cell of the column that sentence
-     leans on;
-  4. is the only evidence for a main-text argument yet sits in the appendix.
-A flagged float is a Critical Weakness only if it would sink the paper.
-```
-
-Field note (2026-11-03, the first pass of this map on a CVPR draft): two appendix
-tables were cited only in their own appendix sections, one of them a negative
-result no claim rested on; a baseline deployed without the orchestrator held the
-best cell of a table cited for the advantage of keeping the orchestrator; the
-deployed variant was not the best row on the training-distribution columns of its
-own ablation, so the case for deploying it rested on the other columns alone; and
-the introduction's motivation rested only on an appendix figure.
-
 ## Key Rules
 
 - For the default Codex route, pin `model: gpt-6-astra` + `config: {"model_reasoning_effort": "max"}` (deep-audit tier; capability fallback per `reviewer-routing.md`, never below `xhigh`). Other selected routes use their resolved model/effort.
@@ -256,7 +215,7 @@ the introduction's motivation rested only on an appendix figure.
 - Be honest about weaknesses — hiding them leads to worse feedback
 - Focus on ACTIONABLE feedback — "what experiment would fix this?"
 - Every weakness must carry an evidence anchor; spot-check anchors before acting, and drop findings whose anchor does not check out
-- In a manuscript, every figure and table must serve an argument (user 2026-11-03); the reviewer builds the float map (*Float map*)
+- In a manuscript, every figure and table must serve an argument (user 2026-11-03): send the FLOAT MAP block of `shared-references/review-float-map.md` in the first-round prompt and every follow-up brief; the reviewer builds the map
 - Document the threadId for potential future resumption
 - The review document should be self-contained (readable without the conversation)
 

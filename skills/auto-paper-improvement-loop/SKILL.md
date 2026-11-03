@@ -311,6 +311,8 @@ mcp__codex__codex:
 
     Focus on: theoretical rigor, claims vs evidence alignment, writing clarity,
     self-containedness, notation consistency, AND visual presentation quality.
+
+    [FLOAT MAP block, verbatim from shared-references/review-float-map.md]
 ```
 
 Save the threadId for Round 2.
@@ -362,6 +364,7 @@ never manuscript content; tone edits never change what the paper knows.
 | Scattered generic caveats | Consolidate into Limitations and delete the duplicates |
 | Story built on a losing metric, or results narrated as defeats | Reframe around the contest the paper wins; explain the gap as a goal difference or tradeoff when the evidence supports that, otherwise state it neutrally and narrow the claim; keep every number in the table |
 | Experiment with no argumentative duty | Cut, shorten, move to the appendix, or redesign it so it proves the method, the mechanism, the target-scenario value, or rules out an alternative |
+| Float flagged by the float map | Follow *Acting on a flagged float* in `shared-references/review-float-map.md` |
 | Missing metrics | Add quantitative table with honest parameter counts and caveats |
 | Theorem not self-contained | Add "Interpretation" paragraph listing all dependencies |
 | Notation confusion | Rename conflicting symbols globally, add Notation paragraph |
@@ -481,6 +484,8 @@ mcp__codex__codex:
 
     Focus on: theoretical rigor, claims vs evidence alignment, writing clarity,
     self-containedness, notation consistency, and visual presentation quality.
+
+    [FLOAT MAP block, verbatim from shared-references/review-float-map.md]
 ```
 
 If `REVIEWER_BIAS_GUARD = false` (legacy debugging only), use `mcp__codex__codex-reply` with the saved threadId; this is **not** the recommended path.
@@ -663,6 +668,7 @@ Report to user:
 - Number of CRITICAL/MAJOR/MINOR issues fixed per round
 - Final page count
 - Remaining issues (if any)
+- Floats flagged in the final round's float map, and those left for the author
 
 ### Feishu Notification (if configured)
 

@@ -33,4 +33,5 @@ peer-review
 shared-references/experiment-craft.md
 shared-references/figure-craft.md
 shared-references/manuscript-craft.md
+shared-references/review-float-map.md
 shared-references/reviewer-personas.md
