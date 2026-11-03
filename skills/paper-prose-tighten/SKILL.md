@@ -450,28 +450,59 @@ The rewrite came to two paragraphs of about 430 words with all 51 keys kept.
 ### 12. Wordy phrases (能用少词就不用多词)
 
 Several words where one word the reader already knows says the same thing.
-Drafting from notes, the agent describes a property instead of naming it.
+Drafting from notes, the agent describes a property instead of naming it. Each
+cut saves a word or two, so the class is many small edits, not one big one.
 
 | Cut | Write |
 |-----|-------|
-| `loosely worded instructions` | `vague instructions` |
-| `in order to` | `to` |
-| `is able to` | `can` |
-| `a large number of` | `many` |
-| `due to the fact that` | `because` |
+| `can carry out long-horizon and loosely worded instructions` | `can follow long-horizon and vague instructions` |
+| `We refer to the orchestrator together with the VLA and the tools it calls as the agent` | `We call the orchestrator, VLA and tools the agent` |
+| `It meets the orchestrator's subgoals ... for the first time at deployment` | `It first meets the orchestrator's subgoals ... at deployment` |
+| `trains on its positive episodes together with those collected on ...` | `trains on its positive episodes and those collected on ...` |
+| `none of them in LIBERO-Plus's evaluation set` | `none in LIBERO-Plus's evaluation set` |
+| `calls grasping or placing tools` | `calls grasp or place tools` (the method section's name for them) |
 
 **Rewrite pattern:** first look for a word the paper already uses (`vague` is
-in the benchmark name Bench-2), then for the field's usual word. Only
-swap when the short word means the same thing. If it is stronger or weaker
-(`fails` for `succeeds less often`), the claim has changed: keep the phrase.
+in the benchmark name Bench-2; `grasp and place tools` is the method
+section's term), then for the field's usual word. Swap only when the short word
+means the same thing.
 
-**Not this class:** a qualifier that is the claim or bounds it (`significantly`,
+**Not this class** (all from the same draft, all kept):
+
+| Kept | Why |
+|------|-----|
+| `succeeds significantly less often` | `fails` is a different claim |
+| `The VLA's own successful episodes are what make fine-tuning help` | the cleft says *these and nothing else*; dropping `are what` loses that |
+| `is not significantly different from` | the project's allowed wording for a null that matters |
+| `half and half with DROID` | no single word says it |
+| `leaves the orchestrator in place` | `unchanged` says something else |
+
+Also kept: a qualifier that is the claim or bounds it (`significantly`,
 `new tasks from the same generator`), a term the paper defines
 (`executor self-bootstrapping`), and official benchmark and model names.
 
+**Read every sentence; grep only helps with recall.** A stock list (`in order
+to`, `is able to`, `a number of`, `due to the fact`) found nothing in a
+4,800-word draft. All six hits came from reading. The step-3 grep lists the
+phrases that did turn up, for the next draft.
+
+**Captions too.** One hit was in the Figure 1 caption (`fine-tuned on them
+together with DROID`). If captions are generated, change the source in the build
+script and rebuild; an edit to the generated `.tex` is overwritten.
+
+**Re-run the short-last-line gate after the pass.** Cutting words reflows the
+paragraph, and two of the six edits left a last line under half the column. The
+fix is more cuts from this class in the same paragraph (`the VLA and the tools`
+→ `VLA and tools`, `20,000 training steps` → `20,000 steps` where the sentence
+already says training). Recompile until `paper-compile`'s `check_runts.py`
+reads 0.
+
 **Field note (2026-11-03, the ruling that created this class).** On the
 project-b abstract's `loosely worded instructions`, the author wrote
-「论文应该能用少词的就不要用多个词, 比如 loose worded 就应该写成 vague」.
+「论文应该能用少词的就不要用多个词, 比如 loose worded 就应该写成 vague」. They also
+made that edit themselves on Overleaf. After reading every sentence of the
+draft, the agent changed six more phrases, and four more to fix short last lines.
+The other multi-word phrases carried a claim or had no one-word equivalent.
 
 ## Hard stops
 
@@ -569,7 +600,7 @@ Rule of thumb: cut what proves *diligence*; keep what bounds *scope*.
 
 2. **Scope.** Main text first (`\section` bodies), appendix second. Tables,
    captions and figure code belong to `paper-table-craft` / `paper-figure-craft`;
-   touch them here only to sweep class 5, 6, 8 and 9 leakage, and never to decide
+   touch them here only to sweep class 5, 6, 8, 9 and 12 leakage, and never to decide
    what a caption should contain.
 
 3. **Inventory.** Pull every candidate to a scratch list before editing:
@@ -582,8 +613,8 @@ Rule of thumb: cut what proves *diligence*; keep what bounds *scope*.
    # class 10 value series: slash-strung readings, and "x on A, y on B, z on C"
    command grep -nE '\$[0-9.]+\$ ?/ ?\$[0-9.]+\$' sections/*.tex | command grep -v '&'
    command grep -nE '(on|at) [A-Z][A-Za-z-]+, \$?[-+0-9]' sections/*.tex | command grep -v '&'
-   # class 12 wordy phrases (classify by hand; the short word must mean the same)
-   command grep -niE 'in order to|(is|are) able to|a (large )?number of|the majority of|due to the fact|at the time of|make use of|loosely worded' sections/*.tex
+   # class 12 wordy phrases: recall aid only, read every sentence (class 12)
+   command grep -niE 'carr(y|ies|ied) out|refer(s|red)? to .* as|for the first time|together with|none of them|loosely worded|in order to' sections/*.tex
    # meta-narration stems
    command grep -niE 'we (report|claim|make|state|note|stress|log) (this|it|none|them)|rather than (claim|letting|running|averag)|net (it|this|that) away|averag\w* away|entitled to know|guard(ing)? against|we count it as such' sections/*.tex
    # narrated absences: sentences about things that don't exist
