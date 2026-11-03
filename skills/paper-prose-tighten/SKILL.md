@@ -1,6 +1,6 @@
 ---
 name: paper-prose-tighten
-description: "Cut filler from paper prose while holding every claim constant — bookkeeping counts, defensive meta-narration, narrated absences / 无中生有, false pivots / 错误的转折, value series / 罗列, cross-section duplication, related-work sprawl, wordy phrases where one word does, process vocabulary (\"preregistered\"), and claims that survive only behind a pile of caveats. Use when user says \"论文废话太多\", \"caveat 太多\", \"越讲越乱\", \"别解释了\", \"不要罗列数量\", \"清理废话\", \"无中生有\", \"错误的转折\", \"我要删减文字\", \"不该出现这种工程的术语\", \"related work 太长\", \"能用少词就不用多词\", \"tighten the prose\", \"cut the filler\", \"too wordy\", or before submission when sections read like an audit log."
+description: "Cut filler from paper prose while holding every claim constant — bookkeeping counts, defensive meta-narration, narrated absences / 无中生有, false pivots / 错误的转折, value series / 罗列, cross-section duplication, related-work sprawl, wordy phrases where one word does, process vocabulary (\"preregistered\"), one comparison split across sentences and copies of it that disagree, and claims that survive only behind a pile of caveats. Use when user says \"论文废话太多\", \"caveat 太多\", \"越讲越乱\", \"别解释了\", \"不要罗列数量\", \"清理废话\", \"无中生有\", \"错误的转折\", \"我要删减文字\", \"不该出现这种工程的术语\", \"related work 太长\", \"能用少词就不用多词\", \"重复也太多了\", \"说一次就行\", \"前后对不上\", \"tighten the prose\", \"cut the filler\", \"too wordy\", or before submission when sections read like an audit log."
 argument-hint: "[paper-directory-or-section-files]"
 allowed-tools: Bash(*), Read, Write, Edit, Grep, Glob
 ---
@@ -82,7 +82,7 @@ the paragraph is unreadable in defence of a claim that never earned a paragraph.
 When an author says the explanation itself is the problem, they are exercising
 this rule — do not answer it with a better-worded explanation.
 
-## The Twelve Cut Classes
+## The Thirteen Cut Classes
 
 ### 1. Bookkeeping enumerations
 
@@ -504,6 +504,61 @@ made that edit themselves on Overleaf. After reading every sentence of the
 draft, the agent changed six more phrases, and four more to fix short last lines.
 The other multi-word phrases carried a claim or had no one-word equivalent.
 
+### 13. One comparison split across sentences, and copies that disagree (同一个比较说好几遍、各处副本对不上)
+
+The same verb against the same baseline, repeated sentence after sentence, each
+time with one or two new conditions. This happens when results are added one at
+a time as runs finish: each new benchmark gets its own sentence with an `also`.
+Class 4 misses it because each sentence states a different fact. Class 12 misses
+it because each sentence is short.
+
+| Cut | Write |
+|-----|-------|
+| `Our method significantly outperforms $\pi_{0.5}$ alone on RoboVoLo and on Robolab-Vague, …` / `On RoboLab-120 our method also significantly outperforms $\pi_{0.5}$ alone.` / `Our method also significantly outperforms $\pi_{0.5}$ alone on RoboLab-Long, and lies clearly above it on MolmoSpaces.` | `Our method significantly outperforms $\pi_{0.5}$ alone on RoboVoLo, Robolab-Vague, RoboLab-120 and RoboLab-Long, and lies clearly above it on MolmoSpaces (Table~\ref{tab:volo}).` |
+| `on RoboVoLo, on Robolab-Vague, on RoboLab-Long and on LIBERO-MAX Lite` | `on RoboVoLo, Robolab-Vague, RoboLab-Long and LIBERO-MAX Lite` (the same repetition at word scale) |
+
+**Rewrite pattern:** write one sentence per baseline. The significant conditions
+go in one list. Point-estimate leads (`lies above`) follow as a second clause
+with `it`, so the baseline is named once. A scope that holds for only some
+conditions (the held-out 87 tasks on two of the benchmarks) becomes its own
+short sentence after the list; do not nest it inside the list. A different table
+is no reason to keep a separate sentence: cite both tables. After merging,
+re-read every later `both benchmarks`, `either`, `there` in the paragraph,
+because the merge changes what they refer to.
+
+**Keep separate:** a different baseline, or a different metric (success rate
+against successes with every action from the VLA). A different metric is a
+different claim, even when the verb is the same.
+
+**The inventory doubles as the copy check.** A comparison stated in Results
+usually has copies in the intro, the method's advantages, the conclusion and the
+abstract. A result added later tends to reach one copy and miss the others. For
+each baseline, list every sentence in the paper that compares against it (step 3
+command): section, verb (`significantly outperforms` / `lies above` /
+`completes significantly more tasks with every action its own`), metric, and
+conditions. The Results sentence owns the claim. Every copy is a derived form
+(SSOT), so a copy that disagrees with Results is a bug in the copy. Fixing it
+does not change what the paper claims.
+
+| Mismatch | Fix |
+|----------|-----|
+| A copy lists fewer conditions than Results (the conclusion omits RoboLab-120) | Add the missing ones to the copy. A copy that enumerates must enumerate all of them, or use a summary word that is true for all |
+| A copy's verb or metric is stronger than the one in Results (`significantly outperforms` where Results has significance only on every-action-own completions) | Weaken the copy to the Results wording |
+| A copy states a condition Results never states (`lies above it on LIBERO-Plus` in the intro and conclusion only) | If the table shows it at the copy's strength (a point-estimate `lies above` only needs the table), add it to Results. A significance claim with no Results owner goes to `/paper-claim-audit`, not into Results |
+| The mismatch is in the abstract or contribution list | Do not edit: the authors write those. Report it |
+
+**Field note (2026-11-03, the ruling that created this class).** On the
+agent-harness Main Results, the author wrote 「这重复也太多了 … 明明可以就说一次
+π0.5 单跑」. Merging three sentences into one showed that the conclusion's list
+lacked RoboLab-120. RoboLab-120 had become significant on 11-01, and that edit
+reached the intro and Results but not the conclusion. The author's reply was
+「补进结论, 这只是个例子, paper prose tighten 能发现这种错误吗?」. The copy check then found two
+more: the intro and method claimed a significant success gain over frame-level
+RECAP-style conditioning, while Results (on the 30 s-capped table) is
+significant only on every-action-own completions; and the intro and conclusion
+said our method lies above $\pi_{0.5}$ alone on LIBERO-Plus, which no Results
+sentence said.
+
 ## Hard stops
 
 Deleting text must never upgrade a claim.
@@ -564,7 +619,7 @@ Rule of thumb: cut what proves *diligence*; keep what bounds *scope*.
 ## Procedure
 
 1. **Map every paragraph before reading for style.** Classes 1–6, 8–10 and 12
-   are found by grep; classes 7 and 11 and oversized paragraphs are found only here. Emit one row per
+   are found by grep; class 13 by the per-baseline listing in step 3; classes 7 and 11 and oversized paragraphs are found only here. Emit one row per
    paragraph — file, line span, word count, and **one line saying what it
    claims**:
 
@@ -615,6 +670,18 @@ Rule of thumb: cut what proves *diligence*; keep what bounds *scope*.
    command grep -nE '(on|at) [A-Z][A-Za-z-]+, \$?[-+0-9]' sections/*.tex | command grep -v '&'
    # class 12 wordy phrases: recall aid only, read every sentence (class 12)
    command grep -niE 'carr(y|ies|ied) out|refer(s|red)? to .* as|for the first time|together with|none of them|loosely worded|in order to' sections/*.tex
+   # class 13: every sentence that compares against one baseline, across all sections
+   # (run once per baseline noun; read the list for split sentences and for copies that disagree)
+   for b in 'alone' 'frozen' 'EXIMO-style' 'zero-shot' 'RECAP'; do
+     echo "== $b"; python3 - "$b" <<'PY'
+   import glob, re, sys
+   for f in sorted(glob.glob('sections/*.tex')):
+       for n, line in enumerate(open(f, encoding='utf-8'), 1):
+           if line.lstrip().startswith('%'): continue
+           for s in re.split(r'(?<=[.;])\s+', line.strip()):
+               if sys.argv[1] in s: print(f"{f}:{n}\t{s[:180]}")
+   PY
+   done
    # meta-narration stems
    command grep -niE 'we (report|claim|make|state|note|stress|log) (this|it|none|them)|rather than (claim|letting|running|averag)|net (it|this|that) away|averag\w* away|entitled to know|guard(ing)? against|we count it as such' sections/*.tex
    # narrated absences: sentences about things that don't exist
@@ -666,7 +733,7 @@ estimate.
 
 ## Reporting
 
-Report as: sections touched, what was cut by class (1–12), and explicitly
+Report as: sections touched, what was cut by class (1–13), and explicitly
 **what was kept and why** — the kept-list is the evidence that tightening did
 not become overclaiming. Do not report a "% reduction" as the headline; the
 headline is that the argument reads straight through.
@@ -677,9 +744,10 @@ Do not run this skill twice on the same text expecting further gain. The second
 pass finds nothing safe to cut and starts eating scope qualifiers to justify
 itself. One pass, then stop.
 
-The exception is a **class-7-only** pass. Classes 1–6, 8–10 and 12 are sentence-local and
-are genuinely exhausted in one run; class 7 is not, because it is created fresh
-every time a section is rewritten — tightening §4 to point at a table leaves the
-intro bullet that pre-plays §4 untouched. After any round of section rewriting,
-re-emit the paragraph map (step 1) and diff the one-line summaries. Nothing
-else.
+The exception is a **class-7 and class-13** pass. Classes 1–6, 8–10 and 12 are sentence-local and
+are genuinely exhausted in one run; classes 7 and 13 are not, because they are created fresh
+every time a section is rewritten or a result changes — tightening §4 to point at a table leaves the
+intro bullet that pre-plays §4 untouched, and a result added to §4 leaves the
+conclusion's copy of the list one item short. After any round of section rewriting,
+re-emit the paragraph map (step 1) and diff the one-line summaries, and re-run the
+class-13 per-baseline listing. Nothing else.
