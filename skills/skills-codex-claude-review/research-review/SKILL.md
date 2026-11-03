@@ -43,6 +43,9 @@ Before calling the external reviewer, compile a comprehensive briefing:
 1. Read project narrative documents (e.g., STORY.md, README.md, paper drafts)
 2. Read any memory/notes files for key findings and experiment history
 3. Identify: core claims, methodology, key results, known weaknesses
+4. For a manuscript, give the entry `.tex` file and the directories that hold its
+   figures and tables. Do not write down what each float shows or which argument
+   it serves: the reviewer builds that map itself (FLOAT MAP block, Step 2).
 
 ### Step 2: Initial Review (Round 1)
 Send a detailed prompt with max reasoning:
@@ -85,6 +88,25 @@ mcp__claude-review__review_start:
     Say plainly when something is correct. Do not manufacture findings.
     Be brutally honest. If, after genuinely trying to break it, the work
     holds up and is ready, say so clearly.
+
+    === FLOAT MAP (manuscripts; a required named field at the end of your reply) ===
+    Every figure and every table must serve an argument the paper makes: a
+    contribution, a motivation, or a stated advantage of the method. Build the map
+    yourself from the manuscript. Output a field named "Float map" with one line per
+    figure and per table, main text and appendix, numbered as the compiled PDF
+    prints them:
+      <Figure/Table N> — what it shows, with its decisive numbers — the argument it
+      serves (quote that sentence and give its location) — the sections that cite
+      it, or "cited only in its own appendix section".
+    Setup and protocol tables serve reproducibility; say so instead of forcing a
+    claim onto them. Under "Flagged", list with its anchor every float that:
+      1. serves no argument (a result no claim rests on);
+      2. is cited only in its own appendix section;
+      3. does not support the sentence that cites it, e.g. a baseline or an
+         undeployed variant holds the decisive cell of the column that sentence
+         leans on;
+      4. is the only evidence for a main-text argument yet sits in the appendix.
+    A flagged float is a Critical Weakness only if it would sink the paper.
 ```
 
 After this start call, immediately save the returned `jobId` and poll `mcp__claude-review__review_status` with a bounded `waitSeconds` until `done=true`. Treat the completed status payload's `response` as the reviewer output, and save the completed `threadId` for any follow-up round.
@@ -133,6 +155,7 @@ Save the full interaction and conclusions to a review document in the project ro
 - Round-by-round summary of criticisms and responses
 - Final consensus on claims, narrative, and experiments
 - Claims matrix (what claims are allowed under each possible outcome)
+- For a manuscript, the reviewer's float map and every float it flagged
 - Prioritized TODO list with estimated compute costs
 - Paper outline if discussed
 
@@ -156,6 +179,10 @@ Save a trace for every `mcp__claude-review__review_start`, `mcp__claude-review__
 - Be honest about weaknesses — hiding them leads to worse feedback
 - Focus on ACTIONABLE feedback — "what experiment would fix this?"
 - Document the completed `threadId` for potential future resumption
+- In a manuscript, every figure and table must serve an argument (user 2026-11-03,
+  「每个图表都应该服务论点」): send the FLOAT MAP block, manuscripts only, in the
+  first-round prompt and in every follow-up brief. The reviewer builds the map; do
+  not pass on your own map or reading of what a float shows (reviewer-independence.md).
 - The review document should be self-contained (readable without the conversation)
 
 ## Prompt Templates
