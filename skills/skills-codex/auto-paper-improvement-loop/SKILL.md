@@ -256,6 +256,25 @@ spawn_agent:
 
     Focus on: theoretical rigor, claims vs evidence alignment, writing clarity,
     self-containedness, notation consistency, AND visual presentation quality.
+
+    === FLOAT MAP (manuscripts; a required named field at the end of your reply) ===
+    Every figure and every table must serve an argument the paper makes: a
+    contribution, a motivation, or a stated advantage of the method. Build the map
+    yourself from the manuscript. Output a field named "Float map" with one line per
+    figure and per table, main text and appendix, numbered as the compiled PDF
+    prints them:
+      <Figure/Table N> — what it shows, with its decisive numbers — the argument it
+      serves (quote that sentence and give its location) — the sections that cite
+      it, or "cited only in its own appendix section".
+    Setup and protocol tables serve reproducibility; say so instead of forcing a
+    claim onto them. Under "Flagged", list with its anchor every float that:
+      1. serves no argument (a result no claim rests on);
+      2. is cited only in its own appendix section;
+      3. does not support the sentence that cites it, e.g. a baseline or an
+         undeployed variant holds the decisive cell of the column that sentence
+         leans on;
+      4. is the only evidence for a main-text argument yet sits in the appendix.
+    A flagged float is a Critical Weakness only if it would sink the paper.
 ```
 
 Save the agent_id for Round 2.
@@ -307,6 +326,7 @@ never manuscript content; tone edits never change what the paper knows.
 | Scattered generic caveats | Consolidate into Limitations and delete the duplicates |
 | Story built on a losing metric, or results narrated as defeats | Reframe around the contest the paper wins; explain the gap as a goal difference or tradeoff when the evidence supports that, otherwise state it neutrally and narrow the claim; keep every number in the table |
 | Experiment with no argumentative duty | Cut, shorten, move to the appendix, or redesign it so it proves the method, the mechanism, the target-scenario value, or rules out an alternative |
+| Float flagged by the float map | Tie it to its argument: cite it from the sentence that makes the argument, open its caption with that argument, or move it next to that sentence; a float no argument needs follows the row above. Never cut a float holding unfavorable numbers: list it for the author |
 | Missing metrics | Add quantitative table with honest parameter counts and caveats |
 | Theorem not self-contained | Add "Interpretation" paragraph listing all dependencies |
 | Notation confusion | Rename conflicting symbols globally, add Notation paragraph |
@@ -416,6 +436,25 @@ spawn_agent:
 
     Focus on: theoretical rigor, claims vs evidence alignment, writing clarity,
     self-containedness, notation consistency, and visual presentation quality.
+
+    === FLOAT MAP (manuscripts; a required named field at the end of your reply) ===
+    Every figure and every table must serve an argument the paper makes: a
+    contribution, a motivation, or a stated advantage of the method. Build the map
+    yourself from the manuscript. Output a field named "Float map" with one line per
+    figure and per table, main text and appendix, numbered as the compiled PDF
+    prints them:
+      <Figure/Table N> — what it shows, with its decisive numbers — the argument it
+      serves (quote that sentence and give its location) — the sections that cite
+      it, or "cited only in its own appendix section".
+    Setup and protocol tables serve reproducibility; say so instead of forcing a
+    claim onto them. Under "Flagged", list with its anchor every float that:
+      1. serves no argument (a result no claim rests on);
+      2. is cited only in its own appendix section;
+      3. does not support the sentence that cites it, e.g. a baseline or an
+         undeployed variant holds the decisive cell of the column that sentence
+         leans on;
+      4. is the only evidence for a main-text argument yet sits in the appendix.
+    A flagged float is a Critical Weakness only if it would sink the paper.
 ```
 
 If `REVIEWER_BIAS_GUARD = false` (legacy debugging only), use `send_input` with the saved reviewer id; this is **not** the recommended path.
@@ -586,6 +625,7 @@ Report to user:
 - Number of CRITICAL/MAJOR/MINOR issues fixed per round
 - Final page count
 - Remaining issues (if any)
+- Floats flagged in the final round's float map, and those left for the author
 
 ### Feishu Notification (if configured)
 
