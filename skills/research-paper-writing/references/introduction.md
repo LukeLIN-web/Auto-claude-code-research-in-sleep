@@ -200,7 +200,7 @@ Important warning :
 Writing structure:
 
 1. Start with a general challenge statement for this task.
-2. Briefly summarize traditional methods and their limitation. If traditional methods exist, discuss them: it shows the authors know the field.
+2. Briefly summarize traditional methods and their limitation.
 3. Briefly summarize recent methods (1) and their limitation with technical reason.
 4. Briefly summarize recent methods (2) and their limitation with technical reason.
 5. Ensure the final limitation is exactly the challenge your method solves.
