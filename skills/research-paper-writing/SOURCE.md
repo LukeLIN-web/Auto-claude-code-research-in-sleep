@@ -23,7 +23,9 @@ shows them).
      its entries in both example indexes.
    - `references/experiments.md`: variants as baselines for a new task; demos aimed at the downstream community
      (「怎么做吸引人的demo和application」); the reason for the ablation package and its sensitivity tables.
-   - `references/figures.md`, new (「论文画图」 callout and the first-impression callout).
+   - `references/figures.md`, new (「论文画图」 callout and the first-impression callout). Its section "What the
+     Group's Published Figures Do" is not from the notes: it was read off the Figure 1 and method figure of ten of
+     the group's arXiv papers and the notes' two good examples (user 2026-11-03, in place of the private template).
    - `references/paper-review.md`: rejection signal 1.3 (「怎么改论文」).
 
 Not ported: the deadline timeline and lab progress table, the Copilot/GPT prompting screenshots, the private figure
