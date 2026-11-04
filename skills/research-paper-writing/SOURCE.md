@@ -17,8 +17,7 @@ shows them).
      abrupt-noun questions and the encode -> analyze -> improve -> decode step (「如何改一篇论文的写作」); a Figures
      entry in Section Guides; the Introduction outline in Output Contract.
    - `references/introduction.md`: "From story to sentence plan" (「如何使用copilot和gpt辅助英语写作」, section on
-     planning granularity); the traditional-methods note in Technical-Challenge Version 1; the loose-contributions
-     note in Pipeline Version 2.
+     planning granularity); the loose-contributions note in Pipeline Version 2.
    - `references/examples/introduction/writing-plan-manhattansdf.md`, new (「写作思路典例」, Introduction part), and
      its entries in both example indexes.
    - `references/experiments.md`: variants as baselines for a new task; demos aimed at the downstream community
@@ -29,5 +28,6 @@ shows them).
    - `references/paper-review.md`: rejection signal 1.3 (「怎么改论文」).
 
 Not ported: the deadline timeline and lab progress table, the Copilot/GPT prompting screenshots, the private figure
-template, the linked PDFs (Bill Freeman, SIGGRAPH paper chairs, Writing Science), and the Related Work and Method
-parts of 「写作思路典例」.
+template, the linked PDFs (Bill Freeman, SIGGRAPH paper chairs, Writing Science), the Related Work and Method
+parts of 「写作思路典例」, and the notes' call to discuss traditional methods in the Introduction (ported 2026-11-03,
+removed the same day: the user does not want it).
