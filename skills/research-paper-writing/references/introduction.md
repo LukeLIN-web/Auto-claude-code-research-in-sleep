@@ -6,7 +6,7 @@ Write a strong introduction in three steps:
 
 1. Think through the introduction logic.
 2. Apply a suitable template below.
-3. Revise the introduction repeatedly.
+3. Revise the introduction repeatedly, at the plan level (step 3 of the Paragraph Clarity Check in `SKILL.md`).
 
 ## Introduction Logic Map
 
@@ -62,6 +62,18 @@ graph LR
 2. Use prior methods to lead to the technical challenge we solve.
 3. Present xx contributions to solve this technical challenge.
 4. Explain technical advantages of our contributions and explicitly express our new insight. (important)
+
+### From story to sentence plan
+
+Before writing English, refine the forward story coarse to fine until you know what every sentence says:
+
+1. Paragraph-level plan: one line per paragraph, written as a chain such as `what methods do -> what they achieve -> limitation -> technical reason`. One message per paragraph.
+2. Sentence-level plan: under each paragraph, one line per sentence.
+3. Keep refining the paragraph-level plan while writing its sentences; this is what makes a paragraph clear.
+
+Plan the Introduction together with the comparison experiments and ablation studies the story needs (writing order in `SKILL.md`, step 2; `references/experiments.md` maps each claim to its experiment).
+
+Worked example (ManhattanSDF, paragraph and sentence plans): `references/examples/introduction/writing-plan-manhattansdf.md`
 
 ## Section Skeleton
 
@@ -188,7 +200,7 @@ Important warning :
 Writing structure:
 
 1. Start with a general challenge statement for this task.
-2. Briefly summarize traditional methods and their limitation.
+2. Briefly summarize traditional methods and their limitation. If traditional methods exist, discuss them: it shows the authors know the field.
 3. Briefly summarize recent methods (1) and their limitation with technical reason.
 4. Briefly summarize recent methods (2) and their limitation with technical reason.
 5. Ensure the final limitation is exactly the challenge your method solves.
@@ -300,7 +312,7 @@ Writing structure:
 1. Introduce framework and key novelty sentence.
 2. Point to teaser figure.
 3. Explain contribution 1 and its advantage.
-4. Introduce a remaining challenge.
+4. Introduce a remaining challenge, usually one that contribution 1 itself faces; otherwise the two contributions read as loosely connected.
 5. Explain contribution 2 as the response to that challenge.
 
 Sentence skeleton:
@@ -398,6 +410,7 @@ Local cite:
 11. `references/examples/introduction/pipeline-version-3-new-module-on-existing-pipeline.md`
 12. `references/examples/introduction/pipeline-version-4-observation-driven.md`
 13. `references/examples/introduction/pipeline-not-recommended-abstract-only.md`
+14. `references/examples/introduction/writing-plan-manhattansdf.md`
 
 ## Quick Quality Checklist
 
