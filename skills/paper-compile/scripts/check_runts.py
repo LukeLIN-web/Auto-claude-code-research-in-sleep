@@ -56,8 +56,9 @@ def columns_of(page, body):
         r[0], r[1] = min(r[0], x0), max(r[1], x1)
         r[2] += "".join(s["text"] for s in spans)
         r[3] = r[3] and all(s["flags"] & 16 for s in spans)
-    return {c: [(y, *rows[y]) for y in sorted(rows) if not rows[y][2].strip().isdigit()]  # page number
-            for c, rows in cols.items()}
+    out = {c: [(y, *rows[y]) for y in sorted(rows) if not rows[y][2].strip().isdigit()]  # page number
+           for c, rows in cols.items()}
+    return {c: rows for c, rows in out.items() if rows}  # a column holding only the page number has no margins
 
 
 def main(pdf):
