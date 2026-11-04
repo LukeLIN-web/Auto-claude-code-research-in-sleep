@@ -106,8 +106,11 @@ left alone it will paraphrase the same term three different ways.
   its source goes in the Introduction text of the page before the one it should
   land on. Read the page from the compiled float→page map (`paper-float-compact`
   Step 1), not the `.tex`.
-- The main results table is first cited, and placed, in the Experiments:
-  neither the Introduction nor the Method cites it (user ruling 2026-11-04).
+- **Result tables and figures are first cited, and placed, in the
+  Experiments** (user ruling 2026-11-04): the main results table, ablations
+  and analyses alike. Neither the Introduction nor the Method cites them; a
+  claim there that they back carries no pointer. The main (hero) figure above
+  is the one exception.
 - Place each figure/table on the page where it is **first discussed**, or the
   following page. Never group floats at the end.
 - Numbering must follow discussion order; if a table appears out of order, move
@@ -171,8 +174,8 @@ Additional rules:
 - [ ] Exactly one Experiments section; speedups reported as ratios.
 - [ ] Every appendix section is referenced from the main text.
 - [ ] Every float sits on/next to the page of first discussion, in order.
-- [ ] Main (hero) figure on page 2; the main results table first cited in the
-      Experiments.
+- [ ] Main (hero) figure on page 2; no other result table or figure cited
+      before the Experiments.
 - [ ] No `\cite`/`\ref` without a preceding `~`.
 - [ ] `$\times$` everywhere a multiplier appears; `\mathcal` only on uppercase.
 - [ ] All co-author color macros and draft comments removed.
