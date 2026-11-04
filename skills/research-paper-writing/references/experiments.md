@@ -11,12 +11,14 @@ Convince reviewers with complete evidence on effectiveness, causality, and pract
    - Report standard metrics on the main benchmark(s).
    - Include SOTA or strongest public methods, not only weak baselines.
    - Keep protocol fair (same data split, preprocessing, and evaluation settings).
+   - If the task is new and no directly related baseline exists, construct baselines from variants of our method (the notes' example: NeRF in the Wild, arXiv 2008.02268).
 2. Which modules/design choices make the gain?
    - Run ablation studies for each key module/design choice.
    - Use remove/replace/disable variants and report delta to full model.
    - Include component interaction ablations when modules are coupled.
 3. How far can the method generalize under harder settings?
-   - Run demos/evaluations on harder or out-of-distribution settings.
+   - Once the method works on the target data, run demos/evaluations on newer, harder or out-of-distribution data to find its limit. Readers want to see how far a method goes; showing it is a contribution in itself.
+   - Aim demos and applications at the downstream research community: work out what that community wants to see. This strongly affects the paper's impact.
    - Add stress-test scenarios (more complex scenes, rarer cases, noisier inputs, or stricter constraints).
    - Report both gains and failure modes to show realistic boundaries.
 
@@ -89,8 +91,10 @@ flowchart TB
 
 ## Recommended Ablation Package
 
-1. One core ablation table for all major contributions.
-2. Several focused mini-ablations for module-level design choices.
+Readers care most about how the core contributions affect performance, and wonder whether each design choice really helps. Hence:
+
+1. One core ablation table for all major contributions and the most important components.
+2. Several focused mini-ablations, one per pipeline module, for its design choices: removing a design choice, sensitivity to hyperparameters, and sensitivity to input data quality.
 3. Matching qualitative visual results for each important ablation.
 
 ## Experimental Rigor Checklist

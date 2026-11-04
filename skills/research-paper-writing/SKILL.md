@@ -32,6 +32,22 @@ Prioritize first-impression quality (figures/tables/layout), logical flow, and e
 5. Check every major claim in Abstract/Introduction against experimental evidence.
 6. Run final-paper adversarial review with `references/paper-review.md`.
 
+## Writing Order
+
+The order in Peng Sida's notes, for context on what exists when each part is written:
+
+1. Sketch a clear pipeline figure.
+2. Settle the paper story, write the Introduction plan, and list the comparison experiments and ablation studies.
+3. Plan and write Method while running experiments.
+4. Revise Introduction and Method while running experiments.
+5. Once experiments are mostly done, plan and write Experiments.
+6. Polish the pipeline figure and draw the teaser.
+7. Plan and write Related Work.
+8. Review the paper; revise Introduction, Method and Experiments.
+9. Plan and write the Abstract.
+10. Choose the title.
+11. Review and revise repeatedly.
+
 ## Global Principles
 
 1. Keep one paragraph for one message only.
@@ -52,14 +68,19 @@ Use this quick test whenever the user asks whether a paragraph "flows" or is cle
    - Does this paragraph have one explicit message?
    - Does the first sentence state what this paragraph will do?
    - Are all key nouns/terms readable without hidden context?
-   - Does each sentence connect to the previous one with a clear relation (cause, contrast, consequence, refinement, example)?
+   - Does each sentence connect to the previous one with a clear relation (cause, contrast, consequence, refinement, example)? If it does not continue the previous sentence, is there a transition?
+   - Does a sentence introduce a new noun abruptly?
 2. Run reverse outlining for the current section:
    - Write down thesis/main claim.
    - Write down each paragraph topic sentence.
    - Write down the evidence/explanation points under each paragraph.
    - Check mapping: topic sentence -> thesis, and evidence -> topic sentence.
    - Revise or remove any paragraph that cannot be mapped cleanly.
-3. If flow is still weak, add temporary section headers and explicit transition phrases during revision, then remove unnecessary headers before finalizing.
+3. Revise at the plan level (encode -> analyze -> improve -> decode):
+   - Encode: turn the raw text into its high-level plan, one line per sentence.
+   - Analyze: first list what the text must convey (for a method paragraph, e.g., the module's design and its motivation); then ask whether the plan conveys each item and whether its logic flows.
+   - Improve the plan where it fails, then decode: rewrite the text from the improved plan.
+4. If flow is still weak, add temporary section headers and explicit transition phrases during revision, then remove unnecessary headers before finalizing.
 
 Source reference for this check:
 
@@ -74,6 +95,7 @@ Load only the needed section file:
 - Related Work: `references/related-work.md`
 - Method: `references/method.md`
 - Experiments: `references/experiments.md`
+- Figures: `references/figures.md`
 - Conclusion: `references/conclusion.md`
 - Paper review (Paper Review): `references/paper-review.md`
 - Paragraph clarity source: `references/does-my-writing-flow-source.md`
@@ -107,7 +129,7 @@ Use `references/paper-review.md` for the full checklist and workflow.
 
 When asked to rewrite or draft sections, return:
 
-1. A compact section outline (3-7 bullets).
+1. A compact section outline (3-7 bullets). For the Introduction, the outline is the answers to the four backward questions, the four-step forward story and the paragraph-level plan (`references/introduction.md`). Take the contributions for backward question (2) from the authors' contribution list; never draft them.
 2. Revised paragraphs with explicit paragraph roles (opening/challenge/method/advantage/evidence/limitation).
 3. A short self-review checklist covering clarity, flow, terminology consistency, unsupported claims, and missing evidence.
 4. A claim-evidence map for each major claim in the revised text using `Claim: ... | Evidence: ... | Status: supported/needs evidence`.

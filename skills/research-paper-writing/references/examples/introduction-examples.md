@@ -23,3 +23,7 @@ All introduction example cites should point to the local files below.
 3. Version 3: `references/examples/introduction/pipeline-version-3-new-module-on-existing-pipeline.md`
 4. Version 4: `references/examples/introduction/pipeline-version-4-observation-driven.md`
 5. Not recommended pattern: `references/examples/introduction/pipeline-not-recommended-abstract-only.md`
+
+## D. Writing Plan
+
+1. ManhattanSDF paragraph- and sentence-level plan: `references/examples/introduction/writing-plan-manhattansdf.md`
