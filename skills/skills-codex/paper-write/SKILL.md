@@ -176,7 +176,7 @@ Before drafting the front matter, re-read the one-sentence contribution from `PA
 - State the gap clearly ("However, ...")
 - List contributions as a numbered or bulleted list
 - End with a brief roadmap ("The rest of this paper is organized as...")
-- Cite the main (hero) figure and the main results table here; the pages they land on are set in `../shared-references/manuscript-craft.md` §4
+- Cite the main (hero) figure here; the page it lands on is set in `../shared-references/manuscript-craft.md` §4
 - Target: 1.5 pages
 
 **§2 Related Work:**

@@ -11,8 +11,8 @@ Merge related floats, cut bloated captions, and repack LaTeX pages — driven by
 measurement (pdfinfo + page renders), not guesswork. A merge that "looks nice"
 but exceeds `\textheight` silently produces an overflowing float or a lonely
 float page, so every step below is budget-first. Repacking keeps the main
-(hero) figure and the main results table on the pages
-`../shared-references/manuscript-craft.md` §4 assigns them.
+(hero) figure on the page `../shared-references/manuscript-craft.md` §4
+assigns it.
 
 ## Step 0: Establish the page budget
 

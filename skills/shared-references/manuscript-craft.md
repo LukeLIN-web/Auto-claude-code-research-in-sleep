@@ -101,13 +101,14 @@ left alone it will paraphrase the same term three different ways.
 
 ## 4. Floats: placement and typesetting
 
-- **The main (hero) figure lands on page 2; the main results table on page 2
-  or 3** (user ruling 2026-10-31). Cite both from the Introduction, so the rule
-  below holds for them too: the main table does not wait for Experiments. A
-  `figure*` / `table*` lands on the next page at the earliest, so its source
-  goes in the Introduction text of the page before the one it should land on.
-  Read the page from the compiled float→page map (`paper-float-compact` Step
-  1), not the `.tex`.
+- **The main (hero) figure lands on page 2** (user ruling 2026-10-31). Cite it
+  from the Introduction. A `figure*` lands on the next page at the earliest, so
+  its source goes in the Introduction text of the page before the one it should
+  land on. Read the page from the compiled float→page map (`paper-float-compact`
+  Step 1), not the `.tex`.
+- The main results table need not land early: it may sit with the Experiments
+  that discuss it even when the Introduction cites it first (user ruling
+  2026-11-04).
 - Place each figure/table on the page where it is **first discussed**, or the
   following page. Never group floats at the end.
 - Numbering must follow discussion order; if a table appears out of order, move
@@ -171,7 +172,7 @@ Additional rules:
 - [ ] Exactly one Experiments section; speedups reported as ratios.
 - [ ] Every appendix section is referenced from the main text.
 - [ ] Every float sits on/next to the page of first discussion, in order.
-- [ ] Main (hero) figure on page 2, the main results table on page 2 or 3.
+- [ ] Main (hero) figure on page 2.
 - [ ] No `\cite`/`\ref` without a preceding `~`.
 - [ ] `$\times$` everywhere a multiplier appears; `\mathcal` only on uppercase.
 - [ ] All co-author color macros and draft comments removed.
