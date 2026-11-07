@@ -90,7 +90,7 @@ The response text is **authored in exactly one file**: `REBUTTAL_DRAFT.md`. Ever
 | `REVIEWS_RAW.md`, `FOLLOWUP_LOG.md` | canonical — verbatim reviewer text |
 | `ISSUE_BOARD.md` | canonical — atomized concerns |
 | `STRATEGY_PLAN.md` | canonical — themes, response modes, budgets |
-| `REVISION_PLAN.md` | canonical — promised paper edits (checklist) |
+| `REVISION_PLAN.md` | canonical — promised paper edits (checklist) and the internal log of errors no reviewer raised |
 | `REBUTTAL_DRAFT.md` | **canonical response text** — the only authored copy; over-limit material inline, marked `[OPTIONAL — cut if over limit]` |
 | `PASTE_READY.txt` | derived — `REBUTTAL_DRAFT.md` minus `[OPTIONAL]` blocks, markdown stripped, exact character count |
 | `MCP_STRESS_TEST.md` | canonical — verbatim stress-test transcript (Phase 6) |
@@ -223,11 +223,14 @@ Structure:
 
 4. **Out-of-scope log** — reviewer concerns that will **not** trigger a paper revision (e.g. `deferred_intentionally`, `narrow_concession` with no edit), with a one-line reason each. This keeps the checklist honest: nothing silently disappears.
 
+5. **Unraised errors (internal)** — errors and inconsistencies in the paper that no reviewer raised, including those found while making the promised edits: location, what is wrong, evidence pointer, one line each. The revised PDF does not fix them and no response file mentions them ("Never expose a weakness"); the user decides whether they go into the camera-ready.
+
 Rules for `REVISION_PLAN.md`:
 - Every checklist item must map to at least one `issue_id` from `ISSUE_BOARD.md`.
 - Every promise in `REBUTTAL_DRAFT.md` that implies a paper edit must appear as a checklist item — if it is not in the plan, it is a commitment-gate violation.
 - Never add items that are not backed by the draft or by user-confirmed evidence.
 - On rerun / follow-up rounds, update checkbox state in place rather than regenerating from scratch.
+- **A revised PDF edits only what a reviewer raised** (user 2026-11-07: 「论文不要乱改, 只改 reviewer 提出的. 没提的错误就写到内部文档」). Every change between the submitted version and the revised PDF traces to a checklist item, and through it to an `issue_id`. An error no reviewer raised goes to the Unraised errors section, not into the paper, even when the fix is one word and sits next to an edit being made. Before the revised PDF goes to the user, diff it against the submitted version and match every hunk to an item.
 
 ### Phase 5: Safety Validation
 
@@ -317,6 +320,7 @@ Skip if `RENDER_HTML = false`.
 - **Evidence > rhetoric.** Derivations and numbers over prose.
 - **Concede selectively.** Narrow honest concessions > broad denials — and every concession needs the user's approval.
 - **Never expose a weakness.** Losing comparisons, negative results, self-found errors, unrequested caveats and dropped variants never appear in the response. If the reviewer explicitly asked for one, the user decides how (or whether) it is reported.
+- **Revised PDF = reviewer-raised edits only.** Errors no reviewer raised are logged in `REVISION_PLAN.md` § Unraised errors and left in the paper for the user's camera-ready call.
 - **Don't waste space on unwinnable arguments.** Answer once, move on.
 - **Respect the limit.** Character budget is a hard constraint.
 - **Resume cleanly.** Continue from REBUTTAL_STATE.md on rerun.
