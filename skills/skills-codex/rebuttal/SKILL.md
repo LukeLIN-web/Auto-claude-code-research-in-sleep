@@ -121,7 +121,7 @@ For each atomic concern:
 - `issue_type`: assumptions / theorem_rigor / novelty / empirical_support / baseline_comparison / complexity / practical_significance / clarity / reproducibility / other
 - `severity`: critical / major / minor
 - `reviewer_stance`: positive / swing / negative / unknown
-- `response_mode`: direct_clarification / grounded_evidence / nearest_work_delta / assumption_hierarchy / narrow_concession / future_work_boundary
+- `response_mode`: direct_clarification / grounded_evidence / nearest_work_delta / assumption_hierarchy
 - `status`: open / answered / deferred / needs_user_input
 
 ### Phase 3: Build Strategy Plan
@@ -162,7 +162,7 @@ If the strategy plan identifies issues that require new empirical evidence (tagg
 
 4. If experiments fail or are inconclusive:
    - Do NOT fabricate positive results
-   - The result exposes a weakness, so it stays out of the response ("Never expose a weakness" below); answer the concern on the evidence we have. If the reviewer explicitly asked for this experiment, mark the issue `needs_user_input` and let the user decide whether and how to report it (`narrow_concession` or `future_work_boundary` only with the user's approval)
+   - The result exposes a weakness, so it stays out of the response ("Never expose a weakness" below); answer the concern on the evidence we have. If the reviewer explicitly asked for this experiment, mark the issue `needs_user_input` and let the user decide whether and how to report it (answered without any concession, "Never concede")
 
 5. Save experiment results to `rebuttal/REBUTTAL_EXPERIMENTS.md` for provenance tracking.
 
@@ -189,12 +189,13 @@ Heuristics from 5 successful rebuttals:
 - Global narrative first, per-reviewer detail second
 - Concrete numbers for counter-intuitive points
 - Name closest prior work + exact delta for novelty disputes
-- Concede narrowly when reviewer is right, and only once the user has approved the concession
+- Never concede ("Never concede" below)
 - For theory: separate core vs technical assumptions
 - Answer friendly reviewers too
 
 Hard rules:
 - **Never expose a weakness** (user 2026-11-07: 「所有暴露缺点的都不提. 如果 reviewer 明确要了, 那给 user 定」). Nothing in the response reveals a weakness of our work unless the reviewer explicitly asked for that exact thing: a metric or comparison a baseline (or a trivial reference such as a constant predictor) wins, a failed, inconclusive or negative rebuttal experiment, an error we found in our own paper, data or prompts, a caveat or limitation the reviewer did not raise, a model or variant we tried and dropped. Leave it out entirely — no figures AND no qualitative acknowledgment ("trails", "lower than", "however", "one limitation is"); claim only what we win, in positive scope terms. If the reviewer explicitly asked for it, do not decide alone: mark the issue `needs_user_input` and write it only the way the user rules, including whether to concede at all.
+- **Never concede** (user 2026-11-07: 「不能有任何让步」). No sentence in a response file, and no edit in a revised PDF, agrees that a criticism of our work is right, retracts or narrows one of our claims, adopts the reviewer's deflating term for it, credits our design to prior work, or admits a limitation, an error or an unfinished part. This holds even when the reviewer is right on a local point, and for the words alone ("we agree", "we accept", "correct", "the reviewer is right", "we concede"). Answer with what holds: the evidence we win on, stated in positive scope terms. A missing citation is answered with "we will cite X" and nothing more (「漏引的就说会引用就好了」): no admission that it was missing, no credit of our design to it. Revision promises that add material (a table, a citation, a new result) stay; a promise that retracts or qualifies a claim is a concession and is not made. When the reviewer explicitly asked for a result that goes against us, the user still decides whether it is reported ("Never expose a weakness"), and the reply never frames it as a concession.
 - NEVER invent experiments, numbers, derivations, citations, or links
 - NEVER promise what user hasn't approved
 - If no strong evidence exists, say less not more
@@ -221,7 +222,7 @@ Structure:
 
 3. **Commitment summary** — counts of `already_done` / `approved_for_rebuttal` / `future_work_only`, plus any blocking `needs_user_input` items.
 
-4. **Out-of-scope log** — reviewer concerns that will **not** trigger a paper revision (e.g. `deferred_intentionally`, `narrow_concession` with no edit), with a one-line reason each. This keeps the checklist honest: nothing silently disappears.
+4. **Out-of-scope log** — reviewer concerns that will **not** trigger a paper revision (e.g. `deferred_intentionally`, a point answered by argument with no edit), with a one-line reason each. This keeps the checklist honest: nothing silently disappears.
 
 5. **Unraised errors (internal)** — errors and inconsistencies in the paper that no reviewer raised, including those found while making the promised edits: location, what is wrong, evidence pointer, one line each. The revised PDF does not fix them and no response file mentions them ("Never expose a weakness"); the user decides whether they go into the camera-ready.
 
@@ -241,7 +242,7 @@ Run all lints:
 4. **Tone** — flag aggressive/submissive/evasive phrases
 5. **Consistency** — no contradictions across reviewer replies
 6. **Limit** — exact character count on the freshly derived `PASTE_READY.txt`. Compress if over (redundancy → friendly → opener → wording, never drop critical answers)
-7. **Weakness scan** — flag every sentence or table that exposes a weakness (a baseline or trivial reference beating ours, a negative or inconclusive experiment, a self-found error, an unrequested caveat or limitation, a dropped variant), in numbers OR in words. Fix: delete it and restate the claim on what we win (Phase 4 "Never expose a weakness"); if the reviewer explicitly asked for that exact thing and the user has not ruled on it, escalate to the user.
+7. **Weakness scan** — flag every sentence or table that exposes a weakness (a baseline or trivial reference beating ours, a negative or inconclusive experiment, a self-found error, an unrequested caveat or limitation, a dropped variant), in numbers OR in words. Fix: delete it and restate the claim on what we win (Phase 4 "Never expose a weakness"); if the reviewer explicitly asked for that exact thing and the user has not ruled on it, escalate to the user. Concession phrasing fails the same way ("we agree", "we accept", "correct:", "the reviewer is right", "we concede", "we will qualify / replace"); fix per "Never concede".
 
 ### Phase 6: Codex Reviewer Stress Test
 
@@ -290,7 +291,7 @@ When new reviewer comments arrive:
 4. Update `rebuttal/REVISION_PLAN.md` in place — add any new checklist items introduced by the follow-up, tick off items the author has already completed, and keep existing items' status current
 5. Re-run safety lints
 6. Use Codex MCP reply for continuity if useful
-7. Rules: escalate technically not rhetorically; concede only with the user's approval ("Never expose a weakness"); for a reviewer whose lever is `argument` (Phase 3 step 6), keep closing each new objection until none is left, but never repeat an argument that already failed — bring new evidence or a new angle, or stop
+7. Rules: escalate technically not rhetorically; never concede ("Never concede"); for a reviewer whose lever is `argument` (Phase 3 step 6), keep closing each new objection until none is left, but never repeat an argument that already failed — bring new evidence or a new angle, or stop
 
 ### Phase 9: Render HTML view (auto, when `RENDER_HTML = true`, default)
 
@@ -318,7 +319,7 @@ Skip if `RENDER_HTML = false`.
 - **Answer friendly reviewers too.** Reinforce supportive framing.
 - **Meta-reviewer closing.** Summarize resolved/remaining/why accept.
 - **Evidence > rhetoric.** Derivations and numbers over prose.
-- **Concede selectively.** Narrow honest concessions > broad denials — and every concession needs the user's approval.
+- **Never concede.** No agreement, retraction, deflating term, credit to prior work or admitted limitation; a missing citation gets "we will cite X" only.
 - **Never expose a weakness.** Losing comparisons, negative results, self-found errors, unrequested caveats and dropped variants never appear in the response. If the reviewer explicitly asked for one, the user decides how (or whether) it is reported.
 - **Revised PDF = reviewer-raised edits only.** Errors no reviewer raised are logged in `REVISION_PLAN.md` § Unraised errors and left in the paper for the user's camera-ready call.
 - **Don't waste space on unwinnable arguments.** Answer once, move on.
