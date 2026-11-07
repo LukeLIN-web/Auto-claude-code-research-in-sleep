@@ -131,8 +131,12 @@ Create `rebuttal/STRATEGY_PLAN.md`.
 1. Identify 2-4 **global themes** resolving shared concerns
 2. Choose **response mode** per issue
 3. Build **character budget** (10-15% opener, 75-80% per-reviewer, 5-10% closing)
-4. Identify **blocked claims** (ungrounded or unapproved)
-5. If unresolved blockers → pause and present to user
+4. **Story: argue what we can win** (user 2026-11-07: 「都是故事上 强调novelty，强调和过去工作的提升，可以吵赢的」). Every reply's narrative leans on the paper's novelty and its improvement over prior work; pair with "Never expose a weakness" (Phase 4).
+5. **Check instance-level complaints by hand** (「单个样本之类的需要手动check下具体咋回事」). When a concern cites a specific sample, example, prompt, video or table cell, open that exact instance and see what actually happened before choosing a response mode; record the finding in the issue card.
+6. **Pick the lever per reviewer** (「他给1分不太对，但是不是扳不回来 2分哥，看起来是只要补实验就可以 1分哥，主要是要和他掰扯到毛病挑不出来」). A low score is not final. Per negative-score reviewer, record in `STRATEGY_PLAN.md`: `experiments` (concerns are missing evidence, e.g. a typical 2: run what they asked for) or `argument` (concerns attack soundness or claims, e.g. a typical 1: close every objection with evidence or an approved fix until nothing is left to fault).
+7. **Posting order** (「先一个一个回复，看正分审稿人愿不愿意confirm，他们一般confirm之后就不动了. 然后麻烦的负分先留到最后」). Post replies one reviewer at a time, positive-score reviewers first (once they confirm their score they rarely move again); the difficult negative-score reviewers go last. Record the order in `STRATEGY_PLAN.md`.
+8. Identify **blocked claims** (ungrounded or unapproved)
+9. If unresolved blockers → pause and present to user
 
 **QUICK_MODE exit**: If `QUICK_MODE = true`, stop here. Present `ISSUE_BOARD.md` + `STRATEGY_PLAN.md` to the user and summarize: how many issues per reviewer, shared vs unique concerns, recommended priorities, and evidence gaps. The user can then decide to continue with full rebuttal (`/rebuttal — quick mode: false`) or write manually.
 
@@ -157,8 +161,8 @@ If the strategy plan identifies issues that require new empirical evidence (tagg
    - Update evidence source for relevant issue cards
 
 4. If experiments fail or are inconclusive:
-   - Switch response mode to `narrow_concession` or `future_work_boundary`
    - Do NOT fabricate positive results
+   - The result exposes a weakness, so it stays out of the response ("Never expose a weakness" below); answer the concern on the evidence we have. If the reviewer explicitly asked for this experiment, mark the issue `needs_user_input` and let the user decide whether and how to report it (`narrow_concession` or `future_work_boundary` only with the user's approval)
 
 5. Save experiment results to `rebuttal/REBUTTAL_EXPERIMENTS.md` for provenance tracking.
 
@@ -185,11 +189,12 @@ Heuristics from 5 successful rebuttals:
 - Global narrative first, per-reviewer detail second
 - Concrete numbers for counter-intuitive points
 - Name closest prior work + exact delta for novelty disputes
-- Concede narrowly when reviewer is right
+- Concede narrowly when reviewer is right, and only once the user has approved the concession
 - For theory: separate core vs technical assumptions
 - Answer friendly reviewers too
 
 Hard rules:
+- **Never expose a weakness** (user 2026-11-07: 「所有暴露缺点的都不提. 如果 reviewer 明确要了, 那给 user 定」). Nothing in the response reveals a weakness of our work unless the reviewer explicitly asked for that exact thing: a metric or comparison a baseline (or a trivial reference such as a constant predictor) wins, a failed, inconclusive or negative rebuttal experiment, an error we found in our own paper, data or prompts, a caveat or limitation the reviewer did not raise, a model or variant we tried and dropped. Leave it out entirely — no figures AND no qualitative acknowledgment ("trails", "lower than", "however", "one limitation is"); claim only what we win, in positive scope terms. If the reviewer explicitly asked for it, do not decide alone: mark the issue `needs_user_input` and write it only the way the user rules, including whether to concede at all.
 - NEVER invent experiments, numbers, derivations, citations, or links
 - NEVER promise what user hasn't approved
 - If no strong evidence exists, say less not more
@@ -233,6 +238,7 @@ Run all lints:
 4. **Tone** — flag aggressive/submissive/evasive phrases
 5. **Consistency** — no contradictions across reviewer replies
 6. **Limit** — exact character count on the freshly derived `PASTE_READY.txt`. Compress if over (redundancy → friendly → opener → wording, never drop critical answers)
+7. **Weakness scan** — flag every sentence or table that exposes a weakness (a baseline or trivial reference beating ours, a negative or inconclusive experiment, a self-found error, an unrequested caveat or limitation, a dropped variant), in numbers OR in words. Fix: delete it and restate the claim on what we win (Phase 4 "Never expose a weakness"); if the reviewer explicitly asked for that exact thing and the user has not ruled on it, escalate to the user.
 
 ### Phase 6: Codex Reviewer Stress Test
 
@@ -266,6 +272,7 @@ The stress-tested `REBUTTAL_DRAFT.md` from Phases 4-6 IS the deliverable — do 
 2. Update `rebuttal/REBUTTAL_STATE.md`
 3. Refresh `rebuttal/REVISION_PLAN.md` so the overall checklist matches the final draft (add items, mark `already_done` as checked, carry forward any `pending` items)
 4. Present to user:
+   - Posting order (Phase 3 step 7): positive-score reviewers first, one at a time, watching whether each confirms; negative-score reviewers last
    - `PASTE_READY.txt` character count vs venue limit
    - `REVISION_PLAN.md` checklist — counts of pending / approved / deferred
    - Remaining risks + lines needing manual approval
@@ -280,7 +287,7 @@ When new reviewer comments arrive:
 4. Update `rebuttal/REVISION_PLAN.md` in place — add any new checklist items introduced by the follow-up, tick off items the author has already completed, and keep existing items' status current
 5. Re-run safety lints
 6. Use Codex MCP reply for continuity if useful
-7. Rules: escalate technically not rhetorically; concede if reviewer is correct; stop arguing if reviewer is immovable and no new evidence exists
+7. Rules: escalate technically not rhetorically; concede only with the user's approval ("Never expose a weakness"); for a reviewer whose lever is `argument` (Phase 3 step 6), keep closing each new objection until none is left, but never repeat an argument that already failed — bring new evidence or a new angle, or stop
 
 ### Phase 9: Render HTML view (auto, when `RENDER_HTML = true`, default)
 
@@ -308,7 +315,8 @@ Skip if `RENDER_HTML = false`.
 - **Answer friendly reviewers too.** Reinforce supportive framing.
 - **Meta-reviewer closing.** Summarize resolved/remaining/why accept.
 - **Evidence > rhetoric.** Derivations and numbers over prose.
-- **Concede selectively.** Narrow honest concessions > broad denials.
+- **Concede selectively.** Narrow honest concessions > broad denials — and every concession needs the user's approval.
+- **Never expose a weakness.** Losing comparisons, negative results, self-found errors, unrequested caveats and dropped variants never appear in the response. If the reviewer explicitly asked for one, the user decides how (or whether) it is reported.
 - **Don't waste space on unwinnable arguments.** Answer once, move on.
 - **Respect the limit.** Character budget is a hard constraint.
 - **Resume cleanly.** Continue from REBUTTAL_STATE.md on rerun.

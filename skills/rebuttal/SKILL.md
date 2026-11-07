@@ -162,8 +162,14 @@ Create `rebuttal/STRATEGY_PLAN.md`.
 2. Choose **response mode** per issue
 3. Build **character budget** (10-15% opener, 75-80% per-reviewer, 5-10% closing) — applies in `single_document` mode; in `per_reviewer_thread` mode, set per-thread word/char targets instead
 4. **Identify pivotal reviewer(s)** — reviewers whose vote or confidence shift would most affect the decision, especially when concerns are addressable rather than ideological. Mark them `reviewer_priority: pivotal` in `ISSUE_BOARD.md`. There may be more than one. Allocate disproportionate drafting + stress-test budget here.
-5. Identify **blocked claims** (ungrounded or unapproved)
-6. If unresolved blockers → pause and present to user
+5. **Story: argue what we can win** (user 2026-11-07: 「都是故事上 强调novelty，强调和过去工作的提升，可以吵赢的」). The narrative of every reply leans on the paper's novelty and its improvement over prior work — the arguments we can win. Write each global theme as one of these; pair with "Never expose a weakness" (Phase 4).
+6. **Check instance-level complaints by hand** (「单个样本之类的需要手动check下具体咋回事」). When a concern cites a specific sample, example, prompt, video or table cell, open that exact instance and see what actually happened before choosing a response mode; do not answer it from aggregate statistics or from the reviewer's description. Record the finding in the issue card.
+7. **Pick the lever per reviewer** (「他给1分不太对，但是不是扳不回来 2分哥，看起来是只要补实验就可以 1分哥，主要是要和他掰扯到毛病挑不出来」). A low score is not final. For each negative-score reviewer, write in `STRATEGY_PLAN.md` which lever moves them:
+   - `experiments` — the concerns are missing evidence (e.g. a typical 2): run what they asked for; the reply mostly reports it.
+   - `argument` — the concerns attack soundness or claims (e.g. a typical 1): go through every objection and close it — refuted with evidence already in the paper or the sprint, or closed with an approved fix — until nothing is left to fault. No point goes unanswered.
+8. **Posting order** (「先一个一个回复，看正分审稿人愿不愿意confirm，他们一般confirm之后就不动了. 然后麻烦的负分先留到最后」). Post replies one reviewer at a time, positive-score reviewers first: once they confirm their score they rarely move again. The difficult negative-score reviewers go last. Record the order in `STRATEGY_PLAN.md`; drafting may run in parallel, posting follows the order (Phase 7).
+9. Identify **blocked claims** (ungrounded or unapproved)
+10. If unresolved blockers → pause and present to user
   A verdict-bearing manual response MUST begin with
   `Reviewer-Model: <exact-model-id>` — pass the model THIS session is actually
   running as in `executor_model`. Missing, unknown, or same-family identity
@@ -195,8 +201,8 @@ If the strategy plan identifies issues that require new empirical evidence (tagg
    - Update evidence source for relevant issue cards
 
 4. If experiments fail or are inconclusive:
-   - Switch response mode to `narrow_concession` or `future_work_boundary`
    - Do NOT fabricate positive results
+   - The result exposes a weakness, so it stays out of every response file (Phase 4 "Never expose a weakness"); answer the concern on the evidence we have. If the reviewer explicitly asked for this experiment, mark the issue `needs_user_input` and let the user decide whether and how to report it (`narrow_concession` or `future_work_boundary` only with the user's approval)
 
 5. Save experiment results to `rebuttal/REBUTTAL_EXPERIMENTS.md` for provenance tracking.
 
@@ -248,17 +254,17 @@ Heuristics from successful rebuttals (content):
 - Global narrative first, per-reviewer detail second (single_document mode only)
 - Concrete numbers for counter-intuitive points
 - Name closest prior work + exact delta for novelty disputes
-- Concede narrowly when reviewer is right
+- Concede narrowly when reviewer is right, and only once the user has approved the concession (Phase 4 "Never expose a weakness")
 - For theory: separate core vs technical assumptions
 - Answer friendly reviewers too
 
 **Reviewer-defensive moves:**
 - **Minimum sufficient evidence per concern.** Usually one numerical anchor: the metric that maps directly to *that reviewer's* specific ask. Cut metrics other reviewers care about — bloat dilutes the answer.
-- **Favorable-comparison selection.** A response quotes a head-to-head number only where our method wins it. If a baseline beats us on a metric, the losing comparison stays out of every response file entirely — no figures AND no qualitative acknowledgment (no "trails", "lower than", "not as strong as" phrasing): report our own number, anchor the comparison on the metrics we win, and state the claim in positive scope terms ("the judge's validated strength is X"), which requires no reference to the opponent. If a reviewer explicitly demands the unfavorable number itself, pause and surface the conflict to the user instead of volunteering it. (`narrow_concession` remains available for the reviewer's substantive points — never for baseline head-to-heads.)
+- **Never expose a weakness** (user 2026-11-07: 「所有暴露缺点的都不提. 如果 reviewer 明确要了, 那给 user 定」). Nothing in a response file reveals a weakness of our work unless the reviewer explicitly asked for that exact thing. Weaknesses include: a metric or comparison a baseline (or a trivial reference such as a constant predictor) wins; a failed, inconclusive or negative rebuttal experiment; an error we found in our own paper, data or prompts; a caveat or limitation the reviewer did not raise; a model or variant we tried and dropped. Leave it out entirely — no figures AND no qualitative acknowledgment (no "trails", "lower than", "not as strong as", "however", "one limitation is" phrasing): report our own number, anchor comparisons on the metrics we win, and state the claim in positive scope terms ("the judge's validated strength is X"), which requires no reference to the opponent. If the reviewer explicitly asked for it (the unfavorable number itself, the experiment that came out negative, the flaw they named), do not decide alone: mark the issue `needs_user_input`, put the options in `ISSUE_BOARD.md`, and write it only the way the user rules. This includes whether to concede at all: `narrow_concession` is used only for a point the reviewer raised and only after the user approves it — never for baseline head-to-heads.
 - **Pre-registered calibration phrasing.** When a threshold or hold-out was fixed before generated samples were inspected, say so explicitly with a phrase like "set on hold-out before any generated sample was inspected." Defuses cherry-pick attacks at near-zero word cost. Only use when actually true.
-- **Surface non-obvious design choices upfront.** If the experimental setup has a non-obvious caveat (compute-matched ≠ epoch-matched, atypical seed protocol, restricted parameter subset, etc.), name it concretely with numbers where they clarify the design choice. Pre-empts adversarial reverse engineering.
+- **Surface non-obvious design choices upfront.** If the experimental setup has a non-obvious design choice (compute-matched ≠ epoch-matched, atypical seed protocol, restricted parameter subset, etc.), name it concretely with numbers where they clarify the design choice. Pre-empts adversarial reverse engineering. This covers neutral setup facts a reader needs to read the number; a caveat that would expose a weakness falls under "Never expose a weakness" and is not volunteered.
 - **Structural distinction over denial.** When a reviewer claims your work reduces to / is subsumed by a generic framework, do not deny the reduction. Identify the structural feature your parameterization preserves that the generic framework does not — see `response_mode: structural_distinction`.
-- **Concede without surrendering the claim.** When the reviewer is partly right, explicitly accept the local point, then state what remains true and why it still supports the paper's contribution. Pair the concession with the preserved theorem, mechanism, empirical result, or scope condition.
+- **Concede without surrendering the claim.** When the reviewer is partly right and the user has approved conceding (see "Never expose a weakness"), explicitly accept the local point, then state what remains true and why it still supports the paper's contribution. Pair the concession with the preserved theorem, mechanism, empirical result, or scope condition.
 - **Limitations items are weaknesses.** When a reviewer lists Limitations (or asks that something "be stated explicitly"), answer each item on the merits exactly like a W#: 1-2 sentences of positive argument per item, grounded in numbers already in the response (framing like "Our position on each:"). Never reply with promise-to-revise phrasing ("will be written into the Limitations section", "becomes an explicit statement in the revised Limitations", "we will state in Limitations") — a promise-to-revise reads as conceding the point instead of defending it. The corresponding paper edit, if the author approves one, is tracked in `REVISION_PLAN.md` only and marked `unpromised`. Revision promises attached to W#/Q# answers ("We will add CIs to the law tables") remain allowed and stay future tense.
 
 Hard rules:
@@ -306,9 +312,9 @@ Run all lints:
 5. **Consistency** — no contradictions across reviewer replies
 6. **Limit** — exact character count on the paste target(s): freshly derived `PASTE_READY.txt`, or each `Reviewer_<ID>_response.md`. Compress if over (redundancy → friendly → opener → wording, never drop critical answers)
 7. **Thread-local context** (`per_reviewer_thread` mode only) — each reviewer file must be intelligible without reading any other reviewer file. Flag any "see Reviewer X" references or undefined terms that rely on cross-thread context.
-8. **Adversarial design-choice scan** — for each experimental claim, ask: "Could a hostile reviewer find a non-obvious design choice (compute-match, frozen subset, sampling protocol) that I haven't disclosed?" If yes, add a one-line caveat in the Setup paragraph. Narrower than provenance; focused on *design choices* not factual sources.
+8. **Adversarial design-choice scan** — for each experimental claim, ask: "Could a hostile reviewer find a non-obvious design choice (compute-match, frozen subset, sampling protocol) that I haven't disclosed?" If yes and the choice is a neutral setup fact, add one line to the Setup paragraph; if stating it would expose a weakness, leave it out (Phase 4 "Never expose a weakness"). Narrower than provenance; focused on *design choices* not factual sources.
 9. **Cross-thread duplication** (`per_reviewer_thread` mode only) — compare reviewer files pairwise: any sentence of ~15+ words appearing near-verbatim in more than one file, outside the `SETUP_METRICS_BLOCK.md` inclusion, fails. Fix by keeping the full treatment in the primary thread and recomposing the other occurrences per the shared-evidence recipe (Phase 4).
-10. **Losing-comparison scan** — flag every sentence or table where a baseline/competitor beats ours, in numbers OR in words (qualitative phrasings like "trails", "higher than ours", "not as strong" fail too). Fix: delete the losing comparison entirely and restate the claim in positive scope terms on the metrics we win (Phase 4 favorable-comparison selection); if a reviewer explicitly demanded that exact number, escalate to the user rather than including it.
+10. **Weakness scan** — flag every sentence or table that exposes a weakness: a baseline/competitor or trivial reference beating ours, a negative or inconclusive experiment, a self-found error, an unrequested caveat or limitation, a dropped variant — in numbers OR in words (qualitative phrasings like "trails", "higher than ours", "not as strong", "however", "one limitation" fail too). Fix: delete it entirely and restate the claim in positive scope terms on the metrics we win (Phase 4 "Never expose a weakness"); if the reviewer explicitly asked for that exact thing, and the user has not ruled on it, escalate to the user rather than including it.
 11. **Thanks-opener scan** — every `A#` must open with a thanks clause followed by the verdict within two sentences. Flag: answers with no thanks, thanks longer than one sentence, a verdict pushed past sentence two, and any thanks wording repeated across answers or across reviewer files.
 12. **Limitations-promise scan** — in each response's Limitations block, flag any promise-to-revise phrasing ("will be written into", "becomes an explicit statement", "we will state/name/separate in Limitations", "both become paper edits"). Fix: replace with the merits-based defense (Phase 4 "Limitations items are weaknesses") and move the edit to `REVISION_PLAN.md` marked `unpromised`.
 
@@ -349,6 +355,7 @@ The stress-tested canonical file(s) from Phases 4-6 ARE the deliverable — do n
 3. Update `rebuttal/REBUTTAL_STATE.md`
 4. Refresh `rebuttal/REVISION_PLAN.md` so the overall checklist matches the final draft (add items, mark `already_done` as checked, carry forward any `pending` items)
 5. Present to user:
+   - Posting order (Phase 3 step 8): which reply goes up next — positive-score reviewers first, one at a time, watching whether each confirms; negative-score reviewers last
    - Paste target(s) with counts vs venue limit
    - `REVISION_PLAN.md` checklist — counts of pending / approved / deferred
    - Remaining risks + lines needing manual approval
@@ -363,7 +370,7 @@ When new reviewer comments arrive:
 4. Update `rebuttal/REVISION_PLAN.md` in place — add any new checklist items introduced by the follow-up, tick off items the author has already completed, and keep existing items' status current
 5. Re-run safety lints
 6. Use the appropriate reply tool for continuity if useful (per Reviewer Calling Convention)
-7. Rules: escalate technically not rhetorically; concede if reviewer is correct; stop arguing if reviewer is immovable and no new evidence exists
+7. Rules: escalate technically not rhetorically; concede only with the user's approval (Phase 4 "Never expose a weakness"); for a reviewer whose lever is `argument` (Phase 3 step 7), keep closing each new objection until none is left, but never repeat an argument that already failed — bring new evidence or a new angle, or stop
 
 ### Phase 9: Render HTML view (auto, when `RENDER_HTML = true`, default)
 
@@ -394,8 +401,8 @@ Skip if `RENDER_HTML = false`.
 - **Answer friendly reviewers too.** Reinforce supportive framing.
 - **Meta-reviewer closing.** Summarize resolved/remaining/why accept.
 - **Evidence > rhetoric.** Derivations and numbers over prose.
-- **Concede selectively.** Narrow honest concessions > broad denials.
-- **Never volunteer losing comparisons.** A comparison a baseline wins never appears in a response — neither its numbers nor any qualitative mention that the baseline is ahead. Omit it and claim only the metrics we win.
+- **Concede selectively.** Narrow honest concessions > broad denials — and every concession needs the user's approval.
+- **Never expose a weakness.** Losing comparisons, negative results, self-found errors, unrequested caveats and dropped variants never appear in a response — neither numbers nor qualitative mentions. Omit them and claim only what we win. If the reviewer explicitly asked for one, the user decides how (or whether) it is reported.
 - **Limitations get defenses, not promises.** Reviewer-listed Limitations items are answered like weaknesses — position + evidence per item; any resulting paper edit lives only in `REVISION_PLAN.md` (marked `unpromised`), never as a promise in the response text.
 - **Don't waste space on unwinnable arguments.** Answer once, move on.
 - **Respect the limit.** Character budget is a hard constraint.
