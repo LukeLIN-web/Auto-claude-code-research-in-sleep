@@ -203,7 +203,7 @@ If the strategy plan identifies issues that require new empirical evidence (tagg
 
 4. If experiments fail or are inconclusive:
    - Do NOT fabricate positive results
-   - A favorable point estimate whose 95% interval includes 0 counts as inconclusive (Phase 4 "Choosing what to compare on").
+   - A point estimate in our favor is a win, not an inconclusive result, even when its 95% interval includes 0 (Phase 4 "Choosing what to compare on" says how to write it).
    - The result exposes a weakness, so it stays out of every response file (Phase 4 "Never expose a weakness"); answer the concern on the evidence we have. If the reviewer explicitly asked for this experiment, mark the issue `needs_user_input` and let the user decide whether and how to report it (`narrow_concession` or `future_work_boundary` only with the user's approval)
 
 5. Save experiment results to `rebuttal/REBUTTAL_EXPERIMENTS.md` for provenance tracking.
@@ -266,8 +266,11 @@ Heuristics from successful rebuttals (content):
 - **What "explicitly asked" covers** (user 2026-11-07, ICLR R7). Read it off the issue card's `asked_for`, which comes from the raw text, never from a paraphrase. "Compare with X" makes the comparison with X mandatory, but leaves the metric to us. A metric we lose on is "asked for" only when the reviewer named that metric or granularity ("report rank correlation", "does it order the models correctly"). Before telling the user "the reviewer asked for Y", quote the sentence that asks for Y. If no sentence does, the losing number is an ordinary weakness: leave it out without escalating.
 - **Choosing what to compare on** (user 2026-11-07, ICLR R7: 「统一」「补」). Once the comparison is mandatory, the metric decides what the reply exposes:
   - *One metric for every baseline in a reply.* Pick it once per reply. The default is the paper's headline metric for that component. Use it for every baseline the reply compares against. Reporting metric M against baseline A, where we win, while dropping M against baseline B, where we lose, is metric shopping that a reader sees within the same reply. A baseline we beat on no shared metric gets only the structural or format argument (`structural_distinction`), with no number.
-  - *A win needs an interval that excludes 0.* Before a favorable comparison enters a draft, compute a paired bootstrap 95% interval of the gap. Resample the unit the claim generalizes over: videos or items for per-item claims, prompts or tasks for benchmark-level claims. Record the result in the issue card. If the interval includes 0, the comparison is inconclusive and is left out. For metrics built from absolute values (|bias|, mean |error|), give the basic interval next to the percentile one, because resampling pushes them up when the true gap is small.
-  - *A tie is not a win.* "On par with", "comparable to" and "no worse than" a baseline are null results. Leave them out.
+  - *Every win is written; the interval decides only how* (user 2026-11-07: 「如果我们赢了, 区间含 0 也可以写」). Before a favorable comparison enters a draft, compute a paired bootstrap 95% interval of the gap. Resample the unit the claim generalizes over: videos or items for per-item claims, prompts or tasks for benchmark-level claims. Record the interval in the issue card.
+    - If the interval excludes 0, write the win with the interval, or call the gap significant.
+    - If the interval includes 0 but the point estimate favors us, still write the win, as the two point estimates ("5.5% vs 6.8%"). Print no interval and no significance word, since either would expose that the gap is not established.
+    - For metrics built from absolute values (|bias|, mean |error|), record the basic interval next to the percentile one, because resampling pushes them up when the true gap is small.
+  - *A tie is not a win.* Do not state "on par with", "comparable to" or "no worse than" a baseline. A point estimate in our favor is written as the two numbers, not as a tie.
   - *Skip metrics that bring in a named winner.* If reporting metric M would call for listing a reviewer-named baseline that beats us on M, do not use M anywhere in that reply.
   - *No numbers a reader can line up against the paper to show the flagship losing.* Before-and-after gains of our own variants are fine. An absolute value that beats the flagship's number in a paper table is not, for example a variant's rank correlation above the flagship's. Report such variants only on metrics where the flagship is not beaten.
   - *State the format difference precisely.* Say what the baseline outputs (one holistic score, binary labels, fixed yes/no flags) against what ours outputs (graded per-criterion scores). Do not write that it "cannot" do something that one of its modes can do.
@@ -333,7 +336,7 @@ Run all lints:
 12. **Limitations-promise scan** — in each response's Limitations block, flag any promise-to-revise phrasing ("will be written into", "becomes an explicit statement", "we will state/name/separate in Limitations", "both become paper edits"). Fix: replace with the merits-based defense (Phase 4 "Limitations items are weaknesses") and move the edit to `REVISION_PLAN.md` marked `unpromised`.
 13. **Comparison scan.** Per response file:
     - every baseline is compared on the same metric(s);
-    - every favorable comparison has a paired interval that excludes 0 on record in its issue card;
+    - every favorable comparison has its paired interval on record in its issue card; when that interval includes 0, the file prints no interval and does not call the gap significant;
     - no tie is stated as a result;
     - no number can be lined up against a paper table to show the flagship losing.
 
@@ -424,7 +427,7 @@ Skip if `RENDER_HTML = false`.
 - **Evidence > rhetoric.** Derivations and numbers over prose.
 - **Concede selectively.** Narrow honest concessions > broad denials — and every concession needs the user's approval.
 - **Never expose a weakness.** Losing comparisons, negative results, self-found errors, unrequested caveats and dropped variants never appear in a response — neither numbers nor qualitative mentions. Omit them and claim only what we win. If the reviewer explicitly asked for one, the user decides how (or whether) it is reported.
-- **Compare on what we win, the same way for everyone.** "Compare with X" fixes the baseline, not the metric. Every baseline in a reply is compared on one metric. A win counts only when its bootstrap interval excludes 0. Ties are not stated. Escalate a losing metric only when the reviewer named that metric.
+- **Compare on what we win, the same way for everyone.** "Compare with X" fixes the baseline, not the metric. Every baseline in a reply is compared on one metric. Every win is written. Its interval is printed, or the gap called significant, only when the interval excludes 0; otherwise the win is given as point estimates. Ties are not stated. Escalate a losing metric only when the reviewer named that metric.
 - **Revised PDF = reviewer-raised edits only.** Errors no reviewer raised are logged in `REVISION_PLAN.md` § Unraised errors and left in the paper for the user's camera-ready call.
 - **Limitations get defenses, not promises.** Reviewer-listed Limitations items are answered like weaknesses — position + evidence per item; any resulting paper edit lives only in `REVISION_PLAN.md` (marked `unpromised`), never as a promise in the response text.
 - **Don't waste space on unwinnable arguments.** Answer once, move on.
