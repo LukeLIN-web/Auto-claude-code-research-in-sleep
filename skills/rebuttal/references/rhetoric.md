@@ -130,3 +130,33 @@ Ask for specifics
 
 Quote-back (once, late)
 - "Your review lists as a strength: '[verbatim]'. The added [table] extends exactly that."
+
+## 6. Co-author review lessons (Bench-P ICLR 2027 board, 2026-11-09)
+
+Co-authors commented on the draft replies in the shared Google Doc (user 2026-11-09: 「你看看 google doc 的改动, 也学一下」). Each lesson below is a comment they left, generalized. All of them were applied to that draft; apply them before a co-author has to ask.
+
+**C1 — A new experiment is announced, aimed, set up, then concluded.** Before the first number: say it is new, and what it tests. *"To test whether the per-domain and per-law conclusions rest on videos in which the event is missing (new experiment, same labels), we recomputed …"* Then the setup in one or two sentences — models and sizes, data, what "zero-shot" and the training recipe mean (*"LoRA SFT, rank 32, on 9,758 per-law human scores from the 7 non-Veo generators, 1 epoch"*). Then the numbers. Then the conclusion. A number that appears with no stated experiment ("Suddenly it mentions some results. We do not know what experiments these results belong to") is the most common co-author complaint.
+
+**C2 — Every number has an address.** Either a location in the paper (Table / Figure / Appendix / line) or the words "a new analysis of the paper's human ratings (no new labels)". A reviewer cannot check a number whose source is not stated.
+
+**C3 — No action without its result.** "If we mention we did something, also discuss the results." A sentence like "Judge-P-9B scored all 500 videos" must be followed by what the scores showed and what that means for the reviewer's question.
+
+**C4 — Close every evidence paragraph with its conclusion.** End on one sentence that states what the numbers demonstrate for the reviewer's concern: *"… demonstrating that Judge-P-9B's preference for physical correctness transfers to generators it never trained on, which is the property a reward model needs."*
+
+**C5 — Name before you refer.** "Both GPT versions" is unreadable until the versions have been named; name them at first mention (*"both GPT versions we tested, gpt-6-astra and gpt-5.5"*). When two items share a number, say so explicitly ("both are 29.0%") so it does not read as a typo.
+
+**C6 — Self-explanatory names.** Labels invented while drafting ("Same recipe") are renamed to what a reader understands at once ("Judge-P recipe") in the text and in every table.
+
+**C7 — Complete, formal sentences.** No two-word answers ("It does."). Restate the claim as a full sentence: *"The physics supervision also transfers to a backbone from outside the Qwen family."*
+
+**C8 — Make a win eye-catching: superlative + number + ratio to the runner-up.** Not "Bench-P leads" but *"Bench-P leads with the largest human study in the table: the most annotators (459, seven times WorldModelBench's 65, the next largest) and the lowest workload per annotator (12.6 videos, one tenth of the next lowest, 128)."*
+
+**C9 — Future work is concrete.** Name methods, not intentions: best-of-N / rejection sampling, DPO on judge-ranked preference pairs, RL fine-tuning (GRPO-style) with the judge score as reward, per-law targeted rewards. "Training a generator with X as the reward is future work" alone reads as hand-waving.
+
+**C10 — Pre-empt the obvious follow-up on an odd-looking number, within the hard rules.** Co-authors asked "larger size makes it worse — do we need to say why?" and "is 19.9 ok when others are 30+?". Answer such a question in the reply before the reviewer asks it, but only with positive-scope facts that hold: the range every variant lands in, the comparison it still wins (*"all four fine-tuned sizes land at 3.3% to 8.6%, below every closed judge in Table 5"*), a neutral setup fact (*"all sizes reused the 9B hyperparameters without retuning"*). No guessed cause (lint 16), no concession. If no such framing exists, the odd number is an ordinary weakness and leaves the reply ("Never expose a weakness").
+
+**C11 — Generalize from the single instance.** When the reply defends one example the reviewer named (scenario 153), add the check that covers every example the reviewer could name next: *"we removed each of the 250 scenarios in turn … for every removal, 6 of 8 generators keep their exact rank … all Table 23 contrasts keep their sign."* Pairs with Phase 3 step 6 (check the named instance by hand first).
+
+**C12 — Do not change what nobody questioned.** A co-author on a proposed title change: "the reviewer does not mention that the title is not reasonable … change title feels unconfident." Unprompted retreats (title, scope, claims) read as lack of confidence; the same rule as "a revised PDF edits only what a reviewer raised".
+
+**C13 — Check that the answer answers the question.** A co-author asked, per answer: "需要确认是否分析回答了审稿人的问题，如果没有，指出来". For each W/Q, list the sub-questions the reviewer asked and mark each answered / partly / not yet (with what is missing). Partial coverage goes to the user, not silently into the post. This is the coverage gate applied at sentence level.

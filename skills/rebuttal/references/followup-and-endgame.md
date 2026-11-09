@@ -64,3 +64,12 @@ Never in the closing note:
 - Update `REVISION_PLAN.md` in place (new items, ticks, statuses).
 - Re-run the Phase 5 lints on the new reply.
 - Record round, posting time and any reviewer score/acknowledgement in `REBUTTAL_STATE.md`.
+
+## 7. Co-author comments on the shared draft
+
+When the draft lives in a shared doc (e.g. the Google Doc status board) and co-authors comment or suggest:
+- Read every comment, open suggestion and direct edit before touching the doc; never rebuild it wholesale from the local files, which would erase their text.
+- Reply to each comment with exactly what changed, quoting the new wording ("Replaced 'It does.' with '…'"), and whether mirrors (e.g. the Chinese version, `Reviewer_<ID>_response.md`) were updated.
+- A co-author's edit that conflicts with a user ruling (e.g. a revision promise — "We will add both models to the revised paper" — against a ruling not to change the paper for that reviewer, or a reply pushed over the character limit) is not applied silently: list it under the board's open-decision section for the user.
+- Record each group decision with its date ("Decided (11-09): the title stays unchanged") in the doc, `ISSUE_BOARD.md` and `REBUTTAL_STATE.md`, and propagate it to every reply it touches ("Rulings reach every draft").
+- Generalize recurring comments into `rhetoric.md` § 6 so the next draft needs fewer of them.

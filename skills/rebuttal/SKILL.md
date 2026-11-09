@@ -108,9 +108,9 @@ Detailed rules live next to this file. Each phase below names the file it requir
 
 | File | Read at | Covers |
 |---|---|---|
-| [references/rhetoric.md](references/rhetoric.md) | Phase 4, Phase 8 | 话术: answer shape, thanks opener, persuading moves (P1–P4), refuting moves (R1–R10), anti-patterns, phrase bank |
+| [references/rhetoric.md](references/rhetoric.md) | Phase 4, Phase 8 | 话术: answer shape, thanks opener, persuading moves (P1–P4), refuting moves (R1–R10), anti-patterns, phrase bank, co-author review lessons (C1–C13) |
 | [references/comparison-rules.md](references/comparison-rules.md) | Phase 4, Phase 5 lint 13 | minimum evidence, one metric per reply, intervals, ties, weak number vs best of the rest, words agree with numbers |
-| [references/followup-and-endgame.md](references/followup-and-endgame.md) | Phase 7, Phase 8 | posting order, delta replies, nudges, score requests, AC closing note |
+| [references/followup-and-endgame.md](references/followup-and-endgame.md) | Phase 7, Phase 8 | posting order, delta replies, nudges, score requests, AC closing note, co-author comments on a shared draft |
 | [references/misconduct-reporting.md](references/misconduct-reporting.md) | Phase 2 (`bad_faith_suspected`), on user request | strict vs malicious triage, evidence pack, channel and timing, note to the AC, what never to do |
 | [references/case-vqtoken-neurips2025.md](references/case-vqtoken-neurips2025.md) | with rhetoric.md | worked example: a NeurIPS 2025 thread, what worked and what failed |
 
@@ -325,6 +325,8 @@ Run all lints:
 16. **Unverified-cause scan** — any explanation of why a number, sample or result looks the way it does (hardware variance, seed, tokenizer, "noise") must cite the log or check that established it (Phase 3 step 6). A guessed cause is deleted.
 17. **Measurement scan** — every reviewer ask for a measurable quantity (latency, FLOPs, memory, a count, a breakdown) is answered with that quantity, or the issue is `needs_user_input`; a derivation plus a camera-ready promise does not close it.
 18. **Outlier-framing scan** — no reviewer thread compares its reviewer with the other reviewers ("unlike the other three reviewers"); that framing belongs only in the AC closing note ([references/followup-and-endgame.md](references/followup-and-endgame.md) § 5).
+19. **New-result framing scan** — every result not in the submitted paper is labelled new and preceded by its goal ("To test whether …"), with setup (models, sizes, data, what "zero-shot"/recipe means); every number carries its address (table/figure/appendix, or "new analysis of existing ratings"); every "we ran / scored / computed" is followed by its result; every evidence paragraph ends with a conclusion sentence ([references/rhetoric.md](references/rhetoric.md) § 6, C1–C4).
+20. **Readability scan** — nothing referred to before it is named ("both versions", "the recipe"); no drafting-time labels; no fragment answers ("It does."); future work names concrete methods ([references/rhetoric.md](references/rhetoric.md) § 6, C5–C7, C9).
 
 ### Phase 6: External Reviewer Stress Test
 
