@@ -110,6 +110,8 @@ Detailed rules live next to this file. Each phase below names the file it requir
 |---|---|---|
 | [references/rhetoric.md](references/rhetoric.md) | Phase 4, Phase 8 | 话术: answer shape, thanks opener, persuading moves (P1–P4), refuting moves (R1–R10), anti-patterns, phrase bank, co-author and user-edit lessons (C1–C16) |
 | [references/comparison-rules.md](references/comparison-rules.md) | Phase 4, Phase 5 lint 13 | minimum evidence, one metric per reply, intervals, ties, weak number vs best of the rest, words agree with numbers |
+| [references/wording-pass.md](references/wording-pass.md) | Phase 6.5, Phase 8 | wording pass on the finished draft, for the drafter: order of the steps, reconcile, tighten filler, reword (delete → replace → define), one owner per number; what is never touched; acceptance; lessons L1–L11 from the first run |
+| [references/blind-read.md](references/blind-read.md) | Phase 6.5 blind read and acceptance read — handed to the blind-read subagent, which gets no other method file | who the reader is, the three signals to record, ledger format |
 | [references/followup-and-endgame.md](references/followup-and-endgame.md) | Phase 7, Phase 8 | posting order, delta replies, nudges, score requests, AC closing note, co-author comments on a shared draft |
 | [references/misconduct-reporting.md](references/misconduct-reporting.md) | Phase 2 (`bad_faith_suspected`), on user request | strict vs malicious triage, evidence pack, channel and timing, note to the AC, what never to do |
 | [references/case-vqtoken-neurips2025.md](references/case-vqtoken-neurips2025.md) | with rhetoric.md | worked example: a NeurIPS 2025 thread, what worked and what failed |
@@ -132,6 +134,7 @@ The rule covers **measurements** of the response, not only its text. Character c
 | `Reviewer_<ID>_response.md` | per_reviewer_thread | **canonical response text** — one self-contained file per reviewer; each file IS the paste target for its thread (no aggregate draft, no `PASTE_READY.txt`) |
 | `SETUP_METRICS_BLOCK.md` | per_reviewer_thread | canonical — shared setup/metrics text; the copies embedded in reviewer files are derived inclusions (the one sanctioned duplication): edit only the block, then re-propagate to every reviewer file that embeds it |
 | `MCP_STRESS_TEST_round<N>.md` | both | canonical — verbatim stress-test transcripts (Phase 6) |
+| `wording/<UTC timestamp>/ledger-<ID>.md` | both | canonical — blind-read ledgers of the wording pass (Phase 6.5); findings and dispositions only, no response text |
 | `SUPPLEMENTARY_FIG_PDF/` | per_reviewer_thread, optional | derived — venue-compliant figure PDF (Phase 7); no response text |
 | `*.html` (+ `.review.json` sidecar) | both, if `RENDER_HTML` | derived — Phase 9 render of each canonical response file |
 
@@ -356,6 +359,18 @@ mcp__codex__codex:
 
 **Iterations.** Run the base round on the full draft. Then run focused follow-up rounds on each `reviewer_priority: pivotal` response, terminating when the reviewer returns no new substantive issues. Hard cap at 5 rounds total. Save each round to `rebuttal/MCP_STRESS_TEST_round<N>.md`; the highest round number represents the final state. If any hard safety blocker remains → revise before finalizing.
 
+### Phase 6.5: Wording Pass
+
+Once the draft is complete and the stress-test fixes are in, go over its wording (user 2026-11-09: 「rebuttal 生成完了, 用这些方法过一遍措辞」). Follow [references/wording-pass.md](references/wording-pass.md); read it now, not from memory. It runs the jargon, prose-tightening and single-source passes as separate steps in a fixed order, with separate readers:
+
+1. **Blind read** — one fresh subagent per paste target, given only [references/blind-read.md](references/blind-read.md), that reviewer's raw review and the stripped reply text, reads as that reviewer and writes a ledger to `rebuttal/wording/<UTC timestamp>/`. The drafter never does this read, and the subagent never gets `wording-pass.md`, the issue board or the evidence.
+2. **Reconcile** — check the numbers and terms the ledger touched against their sources; mismatches go to the user.
+3. **Tighten, once** — delete sentences whose removal does not change the reviewer's judgment (bookkeeping counts, defensive meta-narration, journey, restatement, narrated absences, false pivots, value series). The thanks opener, goal and setup sentences, number addresses and conclusion sentences are house style and stay.
+4. **Reword what survived** — fix each remaining entry by the first move that works: delete the word, replace it with the reviewer's / the paper's / the field's word, delete the sentence, define at first use. Internal names (experiment IDs, checkpoints, board shorthand) and lineage words ("the re-scored copy") are removed, never defined. Deleting comes before rewording so no definition is written for a sentence that is about to go.
+5. **One owner per number** — grep each reply's headline numbers across all response files and derived views; every repeat is identical in value, unit, rounding and name, and each thread states a result once.
+
+The pass edits wording in the canonical response text only. It never changes a number, a reviewer quote or a wording the user ruled on; a co-author's text is never reworded or deleted, only marked (highlight plus a note, or a comment), and it never decides a claim: mismatched numbers, contradictions, unanswered sub-questions and lineage words are reported to the user. Finish with a second fresh blind read, then re-run lints 6, 9, 10, 13, 14, 19 and 20.
+
 ### Phase 7: Finalize
 
 The stress-tested canonical file(s) from Phases 4-6 ARE the deliverable — do not produce any new copy of the response text here.
@@ -369,6 +384,7 @@ The stress-tested canonical file(s) from Phases 4-6 ARE the deliverable — do n
    - Posting order (Phase 3 step 8): which reply goes up next — positive-score reviewers first, one at a time, watching whether each confirms; negative-score reviewers last
    - Paste target(s) with counts vs venue limit
    - `REVISION_PLAN.md` checklist — counts of pending / approved / deferred
+   - Wording pass (Phase 6.5): bugs and decisions it surfaced first, then what was deleted and reworded, and what was kept
    - Remaining risks + lines needing manual approval
 
 ### Phase 8: Follow-Up Rounds
@@ -379,7 +395,7 @@ When new reviewer comments arrive, follow [references/followup-and-endgame.md](r
 2. Link to existing issues or create new ones
 3. Draft **delta reply only** (not full rewrite)
 4. Update `rebuttal/REVISION_PLAN.md` in place — add any new checklist items introduced by the follow-up, tick off items the author has already completed, and keep existing items' status current
-5. Re-run safety lints
+5. Re-run safety lints, then the wording pass (Phase 6.5) on the delta reply
 6. Use the appropriate reply tool for continuity if useful (per Reviewer Calling Convention)
 7. Rules: escalate technically not rhetorically; never concede (Phase 4 "Never concede"); for a reviewer whose lever is `argument` (Phase 3 step 7), keep closing each new objection until none is left, but never repeat an argument that already failed — bring new evidence or a new angle, or stop
 
@@ -421,6 +437,7 @@ Skip if `RENDER_HTML = false`.
 - **Write for the AC.** The reviewer may never move; the AC must see each point met with evidence. Outlier framing goes only into the AC closing note.
 - **Check before explaining.** A reviewer-flagged number or sample is checked in the logs before any reply; never offer a guessed cause.
 - **Strict is not malicious.** Report a review only with verifiable false claims, hallucinated references, content-free/LLM text, hostility or pressure, through the AC-only channel, drafted for the user to send ([references/misconduct-reporting.md](references/misconduct-reporting.md)).
+- **Wording pass before posting.** A fresh subagent blind-reads every reply as its reviewer; undefined terms, internal names and filler are removed, every repeated number matches its owner; numbers, quotes, co-author text and rulings are not touched ([references/wording-pass.md](references/wording-pass.md)).
 - **Respect the limit.** Character budget is a hard constraint.
 - **Resume cleanly.** Continue from REBUTTAL_STATE.md on rerun.
 - **Anti-hallucination citations.** Any reference added must go through DBLP → CrossRef → [VERIFY].

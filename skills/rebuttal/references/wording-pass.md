@@ -1,0 +1,187 @@
+# Wording pass: blind read, tighten, reword, one owner per number
+
+Run at Phase 6.5, after the stress-test fixes and before Finalize, and again on every delta reply in Phase 8 (user 2026-11-09: 「rebuttal 生成完了, 用这些方法过一遍措辞」). It adapts three document passes to a reply a reviewer and an AC will read. They ask different questions, need different readers, and are **never run as one mixed read**:
+
+| Step | Question | Done by | Origin |
+|---|---|---|---|
+| 1. Blind read | Can the reviewer parse this word, at this point in the reply? | a fresh subagent that gets only [blind-read.md](blind-read.md), the review and the reply | `docs-jargon-pass`, first pass |
+| 2. Reconcile | Do the numbers and terms the ledger touched match their sources? | the drafter, with the evidence | `docs-jargon-pass`, second pass |
+| 3. Tighten | If this sentence is deleted, does the reviewer's judgment change? | the drafter | `docs-prose-tighten` |
+| 4. Reword | For each term the reader stalled on and that survived step 3: delete, replace, or define? | the drafter | `docs-jargon-pass`, second pass |
+| 5. One owner per number | Is this number written once, and identical everywhere it is repeated? | the drafter | `docs-ssot-tighten` |
+| 6. Acceptance | Does a second fresh reader still stall? | a second fresh subagent | `docs-jargon-pass` |
+
+**Why this order.** The blind read comes first because it is the only step that cannot be repeated by someone who has seen the evidence. Deleting comes before rewording: a term in a sentence that is about to go needs no definition, and a deletion can remove the sentence a definition was just moved into. Tightening runs once over a given text (a second run starts eating scope qualifiers); the acceptance read is not a second tightening — it only looks for stalls.
+
+The pass changes wording only. It does not decide claims: which numbers go in, what is conceded, what is compared are settled by Phases 3–6 and the user's rulings. Everything it finds that is not wording (two numbers that disagree, an answer that contradicts another thread, a claim the evidence does not carry) is **reported, never smoothed over**.
+
+## 0. What is read, what is touched
+
+- **Read**: each paste target as the reviewer will see it — the reviewer's quoted text plus our answers, markdown stripped. Not the status board, not the notes to the group, not the translation.
+- **Touched**: the canonical response text only (Artifacts table). Translations, status boards, HTML views and shared-doc mirrors are derived; regenerate or re-sync them after the canonical text changes.
+- **Never touched**:
+  - the reviewer's quoted text;
+  - any sentence a co-author wrote or edited in a shared draft — never reworded, never deleted, never moved, whatever is wrong with it and whatever "keep the latest" seems to allow. **Mark it instead** (user 2026-11-10: 「你就想办法标出来, comment, 或者用不同颜色 指出这里是错的」): highlight the wrong or conflicting phrase and put a short note in a third colour (not the co-author's, not the body colour) at the end of that paragraph, or leave a doc comment. The note states the clash in one line and points to the ruling or number it clashes with ([followup-and-endgame.md](followup-and-endgame.md) § co-author comments);
+  - wording the user ruled on verbatim, and text quoted from the revised paper (fix the paper first, then re-quote);
+  - numbers. A wrong number is a bug to report, not a wording fix.
+
+## 1. Step 1 — blind read
+
+**Before the read: one version per answer** (user 2026-11-10: 「保留最新的」). In a shared draft, **our own** superseded versions of an answer are deleted first and only the latest is kept. A co-author's older version or fragment is never deleted, even when it is clearly superseded (user 2026-11-10: 「合作者的永远不删」); the blind reader is simply not given it. A reader given three coexisting versions of A1 spends most of its ledger on their disagreements (first run: 27 entries for one reply, about 8 once the old versions were gone). The older text stays recoverable in the doc history.
+
+One fresh subagent per paste target. Give it exactly: [blind-read.md](blind-read.md), that reviewer's raw review, and the stripped reply text with paragraph ids. Do not give it this file, the issue board, the evidence, or another reviewer's thread. It writes `rebuttal/wording/<UTC timestamp>/ledger-<ReviewerID>.md`.
+
+The drafter never does this read, and never "completes" a ledger from memory: after the evidence has been read the drafter cannot tell where a new reader stalls.
+
+The vocabulary order used in step 4 is the one the blind reader is given: (1) the word the reviewer used, (2) the word the submitted paper uses, (3) the standard term in the field — never a fourth word invented while drafting.
+
+## 2. Step 2 — reconcile
+
+Now the evidence documents, the issue board and the code may be read.
+
+1. **Numbers first.** Check every number the ledger touched against its source (the result file or the paper table). Report-type entries are settled here; a real mismatch stops the pass for that answer until the user rules.
+2. **Word against thing.** If a term describes something other than what was run (the reply says "Judge-P-9B" where the number comes from retrained weights), that is a factual problem in the reply: report it; rewording alone does not settle which model the claim is about.
+3. **Sort the ledger.** Each entry is marked: report to user / idle → step 3 / term → step 4 / no change (with the reason). Entries in co-author text are marked "not touched" and go to the report.
+
+## 3. Step 3 — tighten
+
+For each sentence and each number in it: **delete it, and does the reviewer's judgment change?** If not, delete — do not soften or shorten.
+
+| # | Class | In a rebuttal | Keep when |
+|---|---|---|---|
+| 1 | Bookkeeping counts | intermediate counts, subset denominators, split sizes printed to show work | the denominator scopes the claim ("356 of 2,000 videos") or the number is the answer |
+| 2 | Defensive meta-narration | "we report this only descriptively", "we do not claim", "to be transparent" | never — and it usually also fails the weakness scan (lint 10) |
+| 3 | Journey | "we first tried", "an earlier version", "after re-running" | never; the result stays, the route goes |
+| 4 | Restatement and stacked hedges | the same fact at the start, middle and "therefore" of one answer; "consistent with", "we read this as", "in the sense that" on an already hedged claim | one statement, placed where the reviewer needs it — the closing conclusion sentence (C4) is that place |
+| 5 | Narrated absence (无中生有) | "X does not report this setting", "there is no official number" | the reviewer can see the gap (a `—` in our table) → one short table note; or the absence is the claim |
+| 6 | False pivot (错误的转折) | "not A but B", "rather than A", where nobody proposed A | **A is the reviewer's reading, quoted or paraphrased from the review** — then the pivot is the refutation and stays |
+| 7 | Duplication across answers | two answers in one thread give the same result at different resolutions | one owns it; the other keeps one sentence and "(A1)" |
+| 8 | Provenance assurances | which checkpoint, how it was picked, what it was not tuned on | the reviewer would otherwise assume a different experiment: what the number was computed on, train/test separation, the protocol a comparison depends on |
+| 9 | Process vocabulary | "preregistered", "frozen before reading", "sanity check", "pilot" | the technical sense: frozen backbone, frozen prompts |
+| 10 | Value series (罗列) | one quantity at three or more conditions strung into a sentence | write the shape (monotone, flat, one outlier) plus at most one number; the series lives in a table — unless the reviewer asked for exactly these values |
+
+**Upgrade rule.** A secondary claim that needs two or three caveats to be true is deleted together with its caveats (「越解释越乱」「别解释了」). Headline answers to a W/Q are never deleted this way; if a headline needs a pile of caveats, that is a strategy problem for the user.
+
+**House style is not filler.** These fail the delete test on a naive reading and stay:
+
+- the thanks opener, up to two short sentences (lint 11);
+- the goal sentence before a new result, and its setup (C1, lint 19);
+- the address of a number (C2), and the result that follows an action (C3);
+- the conclusion sentence that closes an evidence paragraph (C4);
+- the superlative-plus-ratio statement of a win (C8);
+- the revised text quoted verbatim for a requested presentation change (C16);
+- the closing request to reconsider the score.
+
+**Deleting must not change the claim set.**
+
+- Never delete into a win: when a null or tied statement goes, the whole sentence goes; it is not replaced by "no difference" or "unaffected".
+- Never delete the denominator that scopes a claim, or a neutral protocol fact a comparison depends on (lint 8 decides which protocol facts are stated at all).
+- Never let a deletion create a concession or expose a weakness; never use the pass to add one.
+- Before deleting a "repeat", grep its distinctive noun: a conclusion that appears only once is moved to its owner answer, not deleted.
+- One pass. A second pass over the same text finds nothing safe and starts eating scope qualifiers.
+
+## 4. Step 4 — reword what survived
+
+Only for ledger entries whose sentence is still there after step 3.
+
+1. **Try these in order — stop at the first that works:**
+   1. **Delete the word** and say the same thing with words already in the reply.
+   2. **Replace it** by the vocabulary order of § 1. Then replace it everywhere: every answer, every table head, every thread that uses it.
+   3. **Delete the sentence** — a term used once, in a sentence no conclusion rests on.
+   4. **Define it at first use**, in one clause, anchored to a term the reviewer already has. Last resort: a definition turns the reviewer's confusion into something they must remember.
+2. **Internal names are never defined.** Delete the name and write what it contains: not "the D1 judge" but "a judge trained without any video from that generator family". **Lineage words** are deleted; if the difference they point at changes how the number should be read (other weights, other prompt, other subset), state that difference in one clause. Report every lineage word to the user: it often means two generations of a result sit in one comparison.
+3. A term used once is assumed deletable. A term used ten times that the reader still cannot parse is not kept because it is frequent.
+4. A definition that arrives later than first use is moved to first use, not duplicated.
+
+## 5. Step 5 — one owner per number
+
+Phase 4 already fixes the depth of shared evidence across threads; this step checks the numbers themselves.
+
+1. **Owner map.** For each headline number: the result file is its source; the primary thread (Phase 4 "Shared evidence across threads") is its owner in the response; the canonical response file is its only authored home.
+2. **Signature grep.** Take 3–5 headline numbers per reply, exactly as printed (`3.3%`, `0.95`, `−10.7`), and grep all response files, the setup block and every derived view. For each hit read the context first — **the same string can be two different quantities**, and two different strings can be the same quantity rounded twice.
+3. **Each hit is one of:**
+   - the owner's statement — stays;
+   - a citation in another thread — stays if it is the 1–2 sentence recomposition carrying only the number that answers that reviewer's ask, and the value, unit, rounding and the name of the quantity are identical to the owner's;
+   - a copy in one thread that the same thread already gave — replace by "(A1)";
+   - a copy in a derived view that differs from the canonical text — the view is stale; regenerate it;
+   - a number with no owner anywhere in the evidence — an orphan: report it, do not delete it and do not keep citing it.
+4. **Never fix a number in passing.** Two values for one quantity is a bug; the user decides which is right.
+5. **Counts of our own material** ("the four experiments above", "all five backbones") go stale with every edit: recount them now, and prefer wording that carries no count when the count is not the point.
+
+## 6. Greps (high recall, classify by hand)
+
+```bash
+F="rebuttal/Reviewer_*_response.md"   # or REBUTTAL_DRAFT.md
+# internal names and drafting labels: experiment IDs, paths, status tags, TODOs
+command grep -nE '\b[A-D][0-9][a-e]?\b|/home/|/shared/|outputs/|ckpt|checkpoint-[0-9]|TODO|TBD|待定|\[[^]]*x\.xx[^]]*\]' $F
+# lineage words
+command grep -niE 're-?(ran|run|scored|trained|computed|generated)|earlier (run|version)|previous (run|version)|\bv[0-9]\b|the (new|old|second|updated) (run|version|judge|model)' $F
+# defensive meta-narration and journey
+command grep -niE 'we (do not|don.t) claim|only descriptive|to be (transparent|clear|fair)|for completeness|we note that|it is worth noting|we first (tried|ran)|initially|turned out' $F
+# false pivots and concessive hedges
+command grep -niE 'rather than|instead of|not (because|due to|merely|simply|just)|is not [^.]{1,40} but|although|even though|while it is true' $F
+# narrated absences
+command grep -niE 'does not (report|provide|release)|no official|not available|was not (reported|released)' $F
+# value series outside tables
+command grep -nE '[0-9.]+%? ?/ ?[0-9.]+%? ?/ ?[0-9.]+|([0-9.]+%?, ){3,}' $F | command grep -v '^[^:]*:[0-9]*:\s*|'
+# process vocabulary
+command grep -niE 'preregister|pre-register|frozen before|sanity check|pilot|ablation we dropped' $F
+```
+
+## 7. Acceptance
+
+- Every load-bearing and local ledger entry has a disposition: word deleted / replaced / sentence deleted / defined / reported / no change (with the reason). Expect about half the entries to end as "no change".
+- **A second fresh subagent rereads the final text** with the same isolation as step 1 (again only [blind-read.md](blind-read.md), the review and the new text). The pass is done when it produces no new load-bearing entry.
+- For each paragraph that changed, one line: what it claimed before, what it claims now. Any difference is a bug.
+- Re-run the Phase 5 lints the pass can break: 6 (limit — recount), 9 (cross-thread duplication), 10 (weakness and concession), 13 and 14 (comparison, words agree with numbers), 19 and 20.
+- Derived views regenerated; the replaced terms have no leftovers in any thread, table head or view.
+- Report to the user in this order: (1) structural findings; (2) bugs and decisions — mismatched numbers, contradictions, unanswered sub-questions, lineage words, findings in co-author text that was not touched; (3) what was deleted, each with its delete test, and what was reworded. Say what was kept and why: the kept list is the evidence that nothing was over-cut.
+
+## 8. Common misjudgments
+
+| Symptom | Correction |
+|---|---|
+| The drafter does the blind read | It is void; a fresh subagent with only the review and the reply |
+| The blind reader is handed this file, the board or the evidence | It gets blind-read.md, the review and the reply — nothing else |
+| A term gets a definition, then its sentence is deleted as filler | Tighten (step 3) before rewording (step 4) |
+| The acceptance read is used to cut more sentences | It only looks for stalls; tightening ran once |
+| A term is defined two paragraphs later, so it passes | Late definition is recorded; move the definition to first use |
+| Every unknown noun is recorded | The threshold is "had to reread", not "unfamiliar" |
+| A standard term is rewritten into plain words | Field terms and the reviewer's own terms stay |
+| An unclear word gets a definition by default | Order is delete word → replace → delete sentence → define |
+| A clearer new word is invented | Only the reviewer's, the paper's or the field's word |
+| An experiment ID or checkpoint name gets a gloss | Internal names are deleted; write what the thing is |
+| A lineage word reads smoothly and passes | Grep for it; ask what differed in the input; report it |
+| Filler is rewritten to read better | Filler is deleted, not rewritten |
+| The thanks opener or the conclusion sentence is cut as filler | House style; see § 3 |
+| "Rather than A" is cut although the reviewer proposed A | That pivot is the refutation; it stays |
+| A deleted tie is replaced by "no difference" | Delete the whole sentence |
+| Two numbers that disagree are aligned quietly | Report; the user decides |
+| A number is replaced across files by string | Same string can be a different quantity; read each hit |
+| A co-author's sentence is polished, or an outdated co-author fragment is deleted | Never; highlight the phrase and add a note in a third colour, or comment |
+| Only the English reply is changed | Re-sync the translation, the board and the HTML view |
+
+## 9. Lessons from the first run (Bench-P ICLR 2027, 2026-11-10)
+
+Five replies were blind-read; the user ruled on each reported item in one line. Each ruling below is the general rule it stands for.
+
+**How to report.** List the report-type findings per reviewer as short numbered items, in posting order, each stating the two things that clash and nothing else. The user then rules in a word per item (「删」「说清楚」「改正确」「你改」). A finding that needs a paragraph to state is not yet understood well enough to report.
+
+| # | Finding in the reply | Ruling | Rule |
+|---|---|---|---|
+| L1 | Two sets carried one name: "event missing" was defined at SA ≤ 2 but the filter kept SA ≥ 3, and the reply's own examples of a missing event sat inside the kept set | 「怎么改?」 → fixed by wording | Name a filtered set by what the filter does ("keeping SA ≥ 3, which excludes every video in which the event is not realized"), not by the property we wish it had ("the videos that realize the event"). Delete an example that lands on the wrong side of our own threshold. State the headline without the threshold if the threshold is only defined later. |
+| L2 | "…(mean 2.33), consistent with the policy above", where the policy says such a law receives 1 | fixed by deletion | Do not tie a number to a rule it does not visibly match. Keep the number and the comparison; delete "consistent with". Do not add an explanation that was not checked. |
+| L3 | "its 15-configuration leaderboard" — the paper has eight generators, the reply adds two | 「你改」 | A denominator that comes from the lab's result table is an internal name. Recount on the set the reviewer knows (the paper's items plus the new ones) and check that the stated rank still holds there before rewriting. |
+| L4 | The conclusion credited the released judge with a transfer shown by retrained held-out judges | 「Judge-P-9B 没证据吗?」 | When the evidence comes from retrained weights, look for the released model's own number on the same test before rewording the claim away. If it exists and is favorable, add it with its training overlap stated in one clause, and attribute the held-out number to "the held-out judges". |
+| L5 | Text quoted from the revised paper looked ambiguous to the blind reader | 「不确定的事情不要修订」 | A blind-read doubt about quoted paper text is checked against the cited work's own text first. If the source confirms it, nothing changes. Never revise the paper, or the quote, on a doubt alone. |
+| L6 | The thanks opener named a comparison the answer does not contain | 「删」 | The thanks sentence may only name what the answer delivers. Thank the reviewer for the topic, not for a specific analysis we are not reporting. |
+| L7 | "is off from the human score by 8.1% on average" next to a differently defined 5.5% for the same model and dimension | 「说清楚」 | Every number carries the name of its metric, and two metrics for one model and dimension are told apart in words (mean absolute relative bias over generators vs aggregate relative bias on one generator). When a baseline's output is compared on our scale, say which of its outputs is compared. |
+| L8 | "We ran both released checkpoints", then numbers for only one | 「能给吗? 好吗?」 | A baseline that was run but gets no number: give a number only if one exists on the reply's metric and is favorable. Otherwise say in one clause why the comparison is with the other baseline (its output has no counterpart on our scale). The gap is visible to the reviewer, so this narrated absence stays. |
+| L9 | A new backbone improves less than its siblings | 「也没事? 比 base 低就行?」 | A variant that beats its own untuned base answers "does the supervision transfer"; it need not beat the other variants. No change, and no added comparison to the siblings. |
+| L10 | Two numbers in different answers looked like one quantity (0.80 and 0.92 for "unseen generators") | 「说清楚」 | Give each its table and its unit in the same sentence ("of the same table, also per video-law sample"). |
+| L11 | A count in an abandoned fragment disagreed with the latest version (seven vs eight) | 「改正确」, 「保留最新的」, then 「合作者的永远不删」 | In our own superseded text the wrong number goes with the fragment. In a co-author's fragment nothing is removed or corrected: highlight the number and add a note. The first run deleted two co-author fragments under "keep the latest" and had to restore them. |
+
+**What the pass got wrong, and the fix now in this file.**
+- The blind-read rules and the verification rules were first written in one file, and the blind reader was told to read "sections 1 and 2 only". Isolation that depends on the reader not scrolling is not isolation: the blind reader's instructions are a separate file.
+- Rewording was first placed before tightening. Deleting comes first.
+- The first report mixed wording fixes with strategy questions. Wording fixes are applied and listed last; anything that changes a denominator, adds a result or touches a quoted paper sentence is a question for the user, asked in the short-item form above.
