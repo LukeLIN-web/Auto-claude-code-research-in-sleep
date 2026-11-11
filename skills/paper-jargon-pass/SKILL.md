@@ -118,7 +118,7 @@ for f in figures/*.pdf; do echo "== $f"; pdftotext "$f" -; done   # 每张图画
 
 **C 组 · 废话**(不是看不懂,是没内容;处置只有删或降级,没有"改写"选项。判死生需要全稿语境——套件枚举了哪些考场、别的表有哪些行——所以 C 组**不吃盲读隔离**:盲读只标记空转句,判定放第二趟,也可以在第二趟直接用 grep 候选清单补扫)
 
-- **无中生有**——句子的主语是一个不存在的东西:`Bench-X publishes no row for this backbone and has no column for it`、`X does not report Y for this setting`、`no official number exists for…`。为一个空格子、一个别人没做的实验、一条没有的基线写整句正文。它最隐蔽,因为读起来像尽职的披露——这正是它能活过历版草稿的原因。判死生只看一条:**读者在这个图表里看得见这个空缺吗?** 看得见(某格是 `—`、某行比套件枚举少一行、n 比全量小)→ 缺席承重,落法是图例里的一短句(`a dash = none published` 就是范本),不是叙事句;看不见(那个实体从头就不在这张表里)→ 删。同一句法两种命运:`Bench-X has no whole-clip arm.`(解释表里可见的空格)留;`Bench-X publishes no row for this backbone and has no column.`(表里根本没有这一列,而真正被省掉的候选它反而只字未提)删。
+- **无中生有**——句子的主语是一个不存在的东西:`Benchmark X publishes no row for this backbone and has no column for it`、`X does not report Y for this setting`、`no official number exists for…`。为一个空格子、一个别人没做的实验、一条没有的基线写整句正文。它最隐蔽,因为读起来像尽职的披露——这正是它能活过历版草稿的原因。判死生只看一条:**读者在这个图表里看得见这个空缺吗?** 看得见(某格是 `—`、某行比套件枚举少一行、n 比全量小)→ 缺席承重,落法是图例里的一短句(`a dash = none published` 就是范本),不是叙事句;看不见(那个实体从头就不在这张表里)→ 删。同一句法两种命运:`Benchmark X has no baseline arm.`(解释表里可见的空格)留;`Benchmark X publishes no row for this backbone and has no column.`(表里根本没有这一列,而真正被省掉的候选它反而只字未提)删。
 - 其余子类照 `/paper-prose-tighten` 的切除分类认:记账计数、自辩元叙述、否弃方案的游记、复述与叠 hedge。盲读时不用背分类,过删句测试就记;完整判据与保留红线(显著性限定词、划范围的分母、协议差异不许删)以那份技能为准。
 
 写到 `paper/review-stage/jargon/<UTC时间戳>/ledger-<节名>.md`(**不要写进 Overleaf clone**)。一节一份。用分块不用表格。
@@ -187,13 +187,13 @@ A 组逐条处置。**四个动作是有序的,不是并列的**——从上往�
 3. **删掉整句**——这个术语全篇只用一次、删了不损失任何主张。**这一条比想象中常用**。
 4. **首次出现处补一句定义**(≤1 个从句)——**只有前三条都不成立时才用**:
    概念真实存在、稿子里没有同义词、领域也确实没有现成词,且它承重到不能删。
-   `window (a 75 s span; eight of them tile each block)`。
+   `window (a short span; eight of them tile each block)`。
 
 **只出现一次的词一律先假定要删。** 一个名词全稿只用一次,几乎不可能是承重概念——
 它是作者写那一句时顺手造的。删它,用已有的词重写那半句。
 `the live target` / `amortization floor` / `recency slot` / `letter budget` / `the churn` /
 `Room to retrieve` 都是这么删掉的,每一条的替换都来自稿子已有的词(`the answering stage` /
-`cannot be reused` / `reserved for the most recent 75 s` / `the eight lettered candidates` /
+`cannot be reused` / `reserved for the most recent window` / `the eight lettered candidates` /
 `the change` / `More than one block`)。
 
 **自查(第二趟收尾跑一次)**:把候选词按全稿出现次数排序。`n == 1` 的逐个问"删得掉吗";

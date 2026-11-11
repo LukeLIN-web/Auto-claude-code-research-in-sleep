@@ -29,12 +29,8 @@ they are independent — a figure can pass one and fail the other:
   paper's settled designs and the alternatives already rejected for them, its
   palette, its hand-drawn figures under a content lock, its build. Read it
   before redesigning a figure there. A design it records as settled is not
-  re-proposed; reopening it needs the user. (project-a: `paper/figures/CLAUDE.md`
-  and memory `paper-figure-palette`; project-b: `paperwriting/scripts/CLAUDE.md`.)
-- project-a's `paper/` tree has been read-only since 2026-10-01. The
-  settled designs this skill used to carry for it (`fig:loc_conversion`'s
-  rejected alternatives, `fig:architecture`'s content lock and forbidden tokens)
-  are in `git show 9d700a3:skills/paper-figure-craft/SKILL.md`.
+  re-proposed; reopening it needs the user. (For example its `paper/figures/CLAUDE.md`
+  or a palette memory.)
 
 ## The one test
 
@@ -92,7 +88,7 @@ distributions, cluttered layouts, and multi-arm scenarios", one panel each.
 | **Every printed glyph in 7.5–11 pt** (body text is 10). Do not shrink type to fit; change the layout. | — | Declared ≠ printed, and the ratio cannot be computed from `figsize` when `savefig.bbox="tight"` crops the canvas. |
 | **A schematic's labels are structure and symbols only** — config constants and explanations live in the prose, never printed on the drawing, and never relocated into the caption. Scopes the 2026-08-03 rule to data plots. | 2026-09-21 | See **What a caption is**. |
 | **A symbol may be drawn on a figure only if the reader has met its definition by the page the figure lands on.** Reading order is the compiled PDF's, not the `.tex` order. A figure that prints in §1 carries none of §3's notation: the label is the word the caption or the preceding prose already uses (`block ranking`, `candidate windows`, `localization LoRA`). Neither a gloss on the canvas nor a definition in the caption repairs an early symbol; only the word does. | 2026-09-21 | User: 「gm, rm,k 啥意思,你这就不符合 paper-jargon-pass」. The test is `paper-jargon-pass`'s figure reader, who holds this figure, its caption and the pages before it, nothing after. A figure in an appendix may use what the body defined. |
-| **A figure defines its own symbols where they appear; the caption is not the symbol table.** Each symbol is glossed at the mark that draws it (an edge labelled `M blocks × 600 s` defines $M$; a badge `LoRA φloc` says what φ is). Caption = bold title + one clause per panel side, ~300 chars. | 2026-08-30 | "Self-representative" was the user's word. A symbol left undefined in the figure is fixed *in the figure* — widen the badge, extend the label — never by growing the caption back. For a symbol whose definition comes *after* the figure's page there is no gloss to widen: it is replaced by the word (row above). |
+| **A figure defines its own symbols where they appear; the caption is not the symbol table.** Each symbol is glossed at the mark that draws it (an edge labelled `M blocks × T s` defines $M$; a badge `LoRA φloc` says what φ is). Caption = bold title + one clause per panel side, ~300 chars. | 2026-08-30 | "Self-representative" was the user's word. A symbol left undefined in the figure is fixed *in the figure* — widen the badge, extend the label — never by growing the caption back. For a symbol whose definition comes *after* the figure's page there is no gloss to widen: it is replaced by the word (row above). |
 | **One hue = one meaning within a figure, across panels too.** A data colour may not share hue with the structural accent. A legend chip must be drawn exactly like some mark in the figure; magnification marks (zoom outline + cone) are grey dashed so a solid accent outline reads as selection only. | 2026-08-30 | A panel that draws one series in the hue that means *our method* in the next panel reads as our method. Recolour it in its own role's hue and direct-label it at the curve end. |
 | **No em dashes in figure labels** — the user reads them as AI-generated. Use `·`, a comma, or a colon; sweep the SVG and its blueprint together. | 2026-08-30 | Prose has its own dash rule (two pairs = split); this one is absolute for label text. |
 
@@ -100,9 +96,7 @@ distributions, cluttered layouts, and multi-arm scenarios", one panel each.
 
 The palette is the project's, and colour preferences are not rulings of this
 skill (user, 2026-09-01, deleting two such "rulings"). Read it where the project
-keeps it — project-a: memory `paper-figure-palette` (its 2026-09-24 palette
-replaced the gold / brick / olive set and that set's lightness ladder);
-project-b: role in `paper_data.ROLE`, colour in the figure template.
+keeps it (a palette memory, or a role table plus the figure template).
 
 Two things hold whatever the palette: one hue = one meaning (above), and two
 series a reader must tell apart inside one panel get a second channel — marker
@@ -199,8 +193,8 @@ routinely mixes drawn numbers with numbers that have no other home.
 
 **On a schematic the arrow points the other way** (user, 2026-09-21). A method,
 protocol or architecture figure draws no measurement, so a constant printed on
-it — `600 s blocks, fixed by the clock`, `K = 8 candidate windows`, `keep top
-B = 3`, `32 frames + full audio per 75 s window`, `no lookahead · one worker` —
+it — `T s blocks, fixed by the clock`, `K = 8 candidates`, `keep top
+B = 3`, `n frames per window`, `one worker` —
 is prose copied onto the canvas, and a second authority for a value that will
 change. **Strip it; the prose is its home**, and config constants are already
 allowed there. What stays is structure and symbols: group names, row names,

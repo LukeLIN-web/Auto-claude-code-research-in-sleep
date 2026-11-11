@@ -24,10 +24,7 @@ true. It is visible from the column: nobody reads down a column of sentences.
 
 This skill carries the rulings that hold for every paper. A paper's own
 mechanics — which tables are hand-authored, which data file a table reads, the
-rounding helper, the caption checker — live in its repo (project-a:
-`paper/tables/CLAUDE.md`, read-only since 2026-10-01, with its specifics as they
-stood in `git show 9d700a3:skills/paper-table-craft/SKILL.md`; project-b:
-`paperwriting/tables/CLAUDE.md`).
+rounding helper, the caption checker — live in its repo (its tables CLAUDE.md).
 
 ## The one test
 
@@ -50,7 +47,7 @@ fact are one row.
 | Ruling | Date | Note |
 |---|---|---|
 | **No confidence intervals in any table.** No `95% CI` column, no `[lo, hi]` in a Δ cell, none in the caption either. | 2026-08-01 | The intervals stay in the SSOT. How the prose words significance is memory `paper-prose-rules` §1. |
-| **A table that prints both compared levels carries no Δ column or Δ row.** Same-row pair (`Whole clip | c2f windows`) or same-block pair (`Native streaming` / `\method`) — the reader subtracts. Keep a difference cell only when the comparator's own level is *not* printed there, or when the cell is an interaction rather than a printed pair. | 2026-08-23 | A bold-if-significant mark riding on the difference cell dies with it. Delete the caption's `$\Delta$ =` sentence and its `bold marks ... excludes zero` sentence too — including the parent float's caption when the table is split into subtables. Working mirrors of the table (`.md` next to the generator) may keep printing Δ. |
+| **A table that prints both compared levels carries no Δ column or Δ row.** Same-row pair (`Baseline | Ours`) or same-block pair (`Native` / `\method`) — the reader subtracts. Keep a difference cell only when the comparator's own level is *not* printed there, or when the cell is an interaction rather than a printed pair. | 2026-08-23 | A bold-if-significant mark riding on the difference cell dies with it. Delete the caption's `$\Delta$ =` sentence and its `bold marks ... excludes zero` sentence too — including the parent float's caption when the table is split into subtables. Working mirrors of the table (`.md` next to the generator) may keep printing Δ. |
 | **No p-values.** Not computed, not reported, not transcribed from an older result page. | 2026-07-30 | Significance reads off the paired interval and nothing else. |
 | **Caption above the tabular** — `\caption`+`\label` before `\begin{tabular}`. | 2026-08-05 | The user issued the opposite instruction once, watched the full sweep land, and withdrew it the same day. If asked again to move captions below, say this first, then act. |
 | **Caption carries no numbers, no pointer at another float.** Banned: `\ref{}`, `\S`, Appendix, `Table~`, `Figure~`, "the text". 1200 chars hard cap. | — | Enforce it, do not remember it: `paper-compile`'s `scripts/check_tex.py` checks generated and hand-written captions alike. |
@@ -60,7 +57,7 @@ fact are one row.
 | **A benchmark's question or episode count is not a column header.** Delete the `(n)` sub-header row under the benchmark columns: the body names each benchmark's denominator once, in Settings, and that is the paper's one printing. Fold a qualifier that changes how the column is *read* (`1--4h`, `10-way`, a subtask or split name) into the title line. | 2026-08-23 | User: 不要写 (1549) (2700) 这些数字, 正文里写一次就够了. This is the prose-facing half of step 6's *no number reported in two tables*. |
 | **A table's printed type size is measured, never scaled into place.** The floor is the figures' floor, 7.5 pt. | — | `\resizebox{\textwidth}{!}` sets the type size by an accident of the table's own width — one build measured 10.96 pt (magnified past the 9.96 pt body text), 8.90 and 8.41 against 8.97 everywhere else. Fix an overflowing table by the gutter (`\tabcolsep`) or by structure; in a two-column venue, by `table*` before squeezing a wide table into a column. |
 | **One owner per mark.** Bold, underline, the zero convention and any difference cell come from one helper the generators share. | — | Four generators had reimplemented `lo > 0 or hi < 0`, and the zero convention had drifted three ways (`0.00`, `+0.00`, `\pm0.00`) — a reader comparing two tables reads the same mark as two different things. |
-| **Every cell in a comparison table is on the same protocol.** A number borrowed from another paper is marked (`*` or `†`, with its citation) and sits where the project's rule puts it (project-a: only in a `base` cell; project-b: its own block, ranking per its `paperwriting/tables/CLAUDE.md`); a paired difference only between same-protocol measured cells. | — | Memory `no-protocol-switch-to-rescue-arm`. Marks borrowed from another paper's table are transcribed, never glossed (memory `borrowed-table-marks-transcribe-only`). |
+| **Every cell in a comparison table is on the same protocol.** A number borrowed from another paper is marked (`*` or `†`, with its citation) and sits where the project's rule puts it (for example only in a `base` cell, or in its own block ranked per the project's tables CLAUDE.md); a paired difference only between same-protocol measured cells. | — | Memory `no-protocol-switch-to-rescue-arm`. Marks borrowed from another paper's table are transcribed, never glossed (memory `borrowed-table-marks-transcribe-only`). |
 
 ## What a caption is
 
@@ -104,13 +101,13 @@ When a table has grown prose, these are the shapes, in descending yield.
 
 | Class | Shape | Fix |
 |---|---|---|
-| **T1 Narrated cell** | a `so that…` / `which…` clause hanging off a value: `every training clip fits one 600 s block (30–598 s, median 297 s), so a coarse training forward has the form of one deployed glance` | keep the value, drop the clause — then grep the method section, which almost always already says it |
+| **T1 Narrated cell** | a `so that…` / `which…` clause hanging off a value: `every training clip fits one block (median well under its length), so a coarse training forward has the form of one deployed glance` | keep the value, drop the clause — then grep the method section, which almost always already says it |
 | **T2 Provenance assurance** | `step 2000, selected by a pre-specified stopping rule inside epoch 1`; `step 900, the run's endpoint`; `winner's hash frozen to disk before any test number was computed` | a checkpoint's *identity* is configuration and stays as a bare value; how it was chosen, and what it was **not** chosen by, goes |
 | **T3 Pointer row** | `slot and letter probes pass every pre-registered gate (details in the text below)` | delete the row; the text below is right there |
 | **T4 Sub-slice bookkeeping** | a second bound on a subset hung off the main bound (`$V\leq0.041$ … ; $\leq0.009$ on the 3,404 training chains`) | the main bound is the constraint |
 | **T5 False pivot in a cell** | `assigned from the gold windows' empirical start-time law (rank-matched quantiles), not drawn uniformly` | delete from the pivot on |
 | **T6 Split pair** | `Gold slot balance` / `Gold letter balance`; `Target` / `Loss masking` | one row |
-| **T7 Deployed-vs-training disclaimer** | `The deployed grid (8×75 s per block) is not retrained on` | a protocol fact the method section states in its own voice; keep it there, not in a cell |
+| **T7 Deployed-vs-training disclaimer** | `The deployed grid (k windows per block) is not retrained on` | a protocol fact the method section states in its own voice; keep it there, not in a cell |
 | **T8 Another table's rows** | a results table reproducing the five external-reference rows of the main table verbatim, marks and all | one table owns a comparison; the second points at it. The duplicate is invisible from either table alone — it is `paper-prose-tighten`'s class 7 with floats instead of paragraphs |
 
 ## Hard stops

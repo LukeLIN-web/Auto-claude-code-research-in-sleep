@@ -94,7 +94,7 @@ the work was done.
 | `abstained blocks $569 \to 551$, so muting perturbs the gate without collapsing it` | the reader needs "the gate does not collapse", not the two integers |
 | `an exact $82{:}82$ split of the discordant pairs` | the delta already said "tie" |
 | `same-question discordant pairs $166{:}103$` | redundant with the reported delta and its interval |
-| `Bench-A is mostly partial ($79$ of $133$), Bench-C complete ($262$ of $307$)` | three parenthetical fractions to support one qualitative sentence |
+| `A is mostly partial ($41$ of $70$), C complete ($180$ of $200$)` | three parenthetical fractions to support one qualitative sentence |
 | `the within-block miss contributes 32 of the 39` | a count of a count |
 | `gold slot balance $1135/1134/1135$`, `$851$ each over A/B/C/D` | already in the config table; prose repeats it |
 
@@ -103,7 +103,7 @@ demonstrates it. "muting perturbs the gate without collapsing it" is the whole
 content of the first row.
 
 **Keep** a count when it *is* the finding: a denominator that scopes the claim
-(`801 of 1,062 questions exceed the whole-clip limit`), a headline delta, an
+(`412 of 500 questions exceed the context limit`), a headline delta, an
 interval, a rate the argument turns on.
 
 ### 2. Defensive meta-narration
@@ -150,7 +150,7 @@ amount of reading one paragraph at a time will surface.
 
 Prose whose grammatical subject is something that does not exist:
 
-- "Bench-X publishes no row for this backbone and has no column for it."
+- "Benchmark X publishes no row for this backbone and has no column for it."
 - "X does not report Y for this setting."
 - "No official number exists for Z."
 
@@ -159,7 +159,7 @@ nobody published. It reads like diligent disclosure — which is why it survives
 draft after draft. The deciding test: **can the reader see the gap in the
 artifact?** A dash in a cell, a reduced $n$, a row missing from an enumerated
 suite — visible, so the absence is load-bearing and lives as one terse legend
-clause (`a dash = none published`; `Bench-X has no whole-clip arm.`),
+clause (`a dash = none published`; `Benchmark X has no baseline arm.`),
 never as a narrative sentence. An entity that was never in the table at all —
 invisible, delete. The same surface shape gets both verdicts: the two examples
 above differ only in whether the table shows the hole being explained.
@@ -172,7 +172,7 @@ What a caption is *for* is not this skill's call: `paper-table-craft` and
 `paper-figure-craft` own that.
 
 **Keep** an absence statement also when the absence *is* the claim ("no prior
-benchmark evaluates audio-visual retrieval jointly" as a motivation sentence)
+benchmark evaluates X and Y jointly" as a motivation sentence)
 or when it states a protocol fact a reviewer would otherwise assume the other
 way ("no test-set videos appear in training").
 
@@ -379,8 +379,8 @@ slashes or commas. It is a table row read out loud.
 |-----|-----|
 | `the block hit rate is $96.7$ / $90.0$ / $91.3$ / $80.8\%$ across the four distance layers` | the same sentence already says it: *falls with distance* |
 | `window choice inside a retained block does not, at $83.0$ / $83.3$ / $85.0$ / $84.4\%$` | "does not" **is** the reading; the four numbers only prove we looked |
-| `$+0.82$pp on Bench-A, $+0.69$ on Bench-B, $-1.60$ on Bench-C and $+0.28$ on Bench-D --- bounded by $1.6$pp` | the bound is the claim; the four values are its raw material |
-| `median $5$ / $5$ / $2$ / $2$ on Bench-A / Bench-B / Bench-C / Bench-D` | one adjective — "single-digit" — carries all four |
+| `$+0.8$pp on A, $+0.7$ on B, $-1.6$ on C and $+0.3$ on D --- bounded by $1.6$pp` | the bound is the claim; the four values are its raw material |
+| `median $5$ / $5$ / $2$ / $2$ on A / B / C / D` | one adjective — "single-digit" — carries all four |
 | `$45.7\%$ at base, then $48.5$ / $50.3$ / $50.4\%$ at steps $100$ / $300$ / $600$` | "rises monotonically, flattening after step 300" is the whole content |
 | `$81.3\%$ in a single window, $97.8\%$ within three, none more than eight` | keep the bound the readout budget is compared against, drop the ladder under it |
 
@@ -441,7 +441,7 @@ Every key stays (Hard stops). A work that shrinks to one key in a cluster is
 still cited, and concurrent work is still cited and discussed.
 
 **Field note (2026-11-01, the ruling that created this class).** After a
-motivation pass added a paragraph for each newly found family, the project-b
+motivation pass added a paragraph for each newly found family, one
 draft's related work reached six paragraphs, about 1,800 words and 51 cite keys.
 The author wrote 「一般 related work 两段就行了, 你写的也太多了」. The source was
 `paper-write`'s "minimum one full page, 3–4 paragraphs", replaced the same day.
@@ -459,11 +459,11 @@ cut saves a word or two, so the class is many small edits, not one big one.
 | `We refer to the orchestrator together with the VLA and the tools it calls as the agent` | `We call the orchestrator, VLA and tools the agent` |
 | `It meets the orchestrator's subgoals ... for the first time at deployment` | `It first meets the orchestrator's subgoals ... at deployment` |
 | `trains on its positive episodes together with those collected on ...` | `trains on its positive episodes and those collected on ...` |
-| `none of them in LIBERO-Plus's evaluation set` | `none in LIBERO-Plus's evaluation set` |
+| `none of them in Bench-7's evaluation set` | `none in Bench-7's evaluation set` |
 | `calls grasping or placing tools` | `calls grasp or place tools` (the method section's name for them) |
 
 **Rewrite pattern:** first look for a word the paper already uses (`vague` is
-in the benchmark name Bench-2; `grasp and place tools` is the method
+already in one benchmark's name; `grasp and place tools` is the method
 section's term), then for the field's usual word. Swap only when the short word
 means the same thing.
 
@@ -497,8 +497,8 @@ fix is more cuts from this class in the same paragraph (`the VLA and the tools`
 already says training). Recompile until `paper-compile`'s `check_runts.py`
 reads 0.
 
-**Field note (2026-11-03, the ruling that created this class).** On the
-project-b abstract's `loosely worded instructions`, the author wrote
+**Field note (2026-11-03, the ruling that created this class).** On one
+abstract's `loosely worded instructions`, the author wrote
 「论文应该能用少词的就不要用多个词, 比如 loose worded 就应该写成 vague」. They also
 made that edit themselves on Overleaf. After reading every sentence of the
 draft, the agent changed six more phrases, and four more to fix short last lines.
@@ -514,8 +514,8 @@ it because each sentence is short.
 
 | Cut | Write |
 |-----|-------|
-| `Our method significantly outperforms $\pi_{0.5}$ alone on Bench-1 and on Bench-2, …` / `On Bench-3 our method also significantly outperforms $\pi_{0.5}$ alone.` / `Our method also significantly outperforms $\pi_{0.5}$ alone on Bench-4, and lies clearly above it on MolmoSpaces.` | `Our method significantly outperforms $\pi_{0.5}$ alone on Bench-1, Bench-2, Bench-3 and Bench-4, and lies clearly above it on MolmoSpaces (Table~\ref{tab:volo}).` |
-| `on Bench-1, on Bench-2, on Bench-4 and on Bench-5 Lite` | `on Bench-1, Bench-2, Bench-4 and Bench-5 Lite` (the same repetition at word scale) |
+| `Our method significantly outperforms $\pi_{0.5}$ alone on Bench-1 and on Bench-2, …` / `On Bench-3 our method also significantly outperforms $\pi_{0.5}$ alone.` / `Our method also significantly outperforms $\pi_{0.5}$ alone on Bench-4, and lies clearly above it on Bench-6.` | `Our method significantly outperforms $\pi_{0.5}$ alone on Bench-1, Bench-2, Bench-3 and Bench-4, and lies clearly above it on Bench-6 (Table~\ref{tab:main}).` |
+| `on Bench-1, on Bench-2, on Bench-4 and on Bench-5` | `on Bench-1, Bench-2, Bench-4 and Bench-5` (the same repetition at word scale) |
 
 **Rewrite pattern:** write one sentence per baseline. The significant conditions
 go in one list. Point-estimate leads (`lies above`) follow as a second clause
@@ -544,11 +544,11 @@ does not change what the paper claims.
 |----------|-----|
 | A copy lists fewer conditions than Results (the conclusion omits Bench-3) | Add the missing ones to the copy. A copy that enumerates must enumerate all of them, or use a summary word that is true for all |
 | A copy's verb or metric is stronger than the one in Results (`significantly outperforms` where Results has significance only on every-action-own completions) | Weaken the copy to the Results wording |
-| A copy states a condition Results never states (`lies above it on LIBERO-Plus` in the intro and conclusion only) | If the table shows it at the copy's strength (a point-estimate `lies above` only needs the table), add it to Results. A significance claim with no Results owner goes to `/paper-claim-audit`, not into Results |
+| A copy states a condition Results never states (`lies above it on Bench-7` in the intro and conclusion only) | If the table shows it at the copy's strength (a point-estimate `lies above` only needs the table), add it to Results. A significance claim with no Results owner goes to `/paper-claim-audit`, not into Results |
 | The mismatch is in the abstract or contribution list | Do not edit: the authors write those. Report it |
 
-**Field note (2026-11-03, the ruling that created this class).** On the
-project-b Main Results, the author wrote 「这重复也太多了 … 明明可以就说一次
+**Field note (2026-11-03, the ruling that created this class).** On one
+Main Results section, the author wrote 「这重复也太多了 … 明明可以就说一次
 π0.5 单跑」. Merging three sentences into one showed that the conclusion's list
 lacked Bench-3. Bench-3 had become significant on 11-01, and that edit
 reached the intro and Results but not the conclusion. The author's reply was
@@ -556,7 +556,7 @@ reached the intro and Results but not the conclusion. The author's reply was
 more: the intro and method claimed a significant success gain over frame-level
 RECAP-style conditioning, while Results (on the 30 s-capped table) is
 significant only on every-action-own completions; and the intro and conclusion
-said our method lies above $\pi_{0.5}$ alone on LIBERO-Plus, which no Results
+said our method lies above $\pi_{0.5}$ alone on Bench-7, which no Results
 sentence said.
 
 ## Hard stops
