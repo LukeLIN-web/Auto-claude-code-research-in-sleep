@@ -122,8 +122,9 @@ Use `references/paper-review.md` for the full checklist and workflow.
 3. Avoid writing style that looks like incremental patching of a naive baseline.
 4. Keep terminology stable across the full paper.
 5. If a claim cannot be supported by results, weaken or remove the claim.
-6. Before finalizing, append and answer a five-dimension self-review question list, then revise the paper based on unresolved items.
-7. Do not load all section references (Introduction/Abstract/Related Work/Method/Experiments/Conclusion) at once; load only the specific section guide needed for the current edit target.
+6. Keep the main text self-contained (user 2026-11-11): every main-text argument carries at least one or two pieces of its evidence in the main text itself (a main-text figure or table, or its decisive number with the comparison). The appendix only adds to that evidence, and "see Appendix X" alone supports nothing. The rule and how to fix a claim whose evidence sits only in the appendix: `../shared-references/review-float-map.md`.
+7. Before finalizing, append and answer a five-dimension self-review question list, then revise the paper based on unresolved items.
+8. Do not load all section references (Introduction/Abstract/Related Work/Method/Experiments/Conclusion) at once; load only the specific section guide needed for the current edit target.
 
 ## Output Contract
 
@@ -132,4 +133,4 @@ When asked to rewrite or draft sections, return:
 1. A compact section outline (3-7 bullets). For the Introduction, the outline is the answers to the four backward questions, the four-step forward story and the paragraph-level plan (`references/introduction.md`). Take the contributions for backward question (2) from the authors' contribution list; never draft them.
 2. Revised paragraphs with explicit paragraph roles (opening/challenge/method/advantage/evidence/limitation).
 3. A short self-review checklist covering clarity, flow, terminology consistency, unsupported claims, and missing evidence.
-4. A claim-evidence map for each major claim in the revised text using `Claim: ... | Evidence: ... | Status: supported/needs evidence`.
+4. A claim-evidence map for each major claim in the revised text using `Claim: ... | Main-text evidence: ... | Appendix evidence: ... | Status: supported / appendix only / needs evidence`. A claim marked `appendix only` gets its decisive evidence moved into the main text (Execution Rule 6).

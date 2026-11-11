@@ -44,8 +44,9 @@ Before calling the external reviewer, compile a comprehensive briefing:
 2. Read any memory/notes files for key findings and experiment history
 3. Identify: core claims, methodology, key results, known weaknesses
 4. For a manuscript, give the entry `.tex` file and the directories that hold its
-   figures and tables. Do not write down what each float shows or which argument
-   it serves: the reviewer builds that map itself (FLOAT MAP block, Step 2).
+   figures and tables. Do not write down what each float shows, which argument
+   it serves, or where each argument's evidence sits: the reviewer builds that
+   map itself (FLOAT AND ARGUMENT MAP block, Step 2).
 
 ### Step 2: Initial Review (Round 1)
 Send a detailed prompt with max reasoning:
@@ -89,7 +90,7 @@ mcp__claude-review__review_start:
     Be brutally honest. If, after genuinely trying to break it, the work
     holds up and is ready, say so clearly.
 
-    === FLOAT MAP (manuscripts; a required named field at the end of your reply) ===
+    === FLOAT AND ARGUMENT MAP (manuscripts; two required named fields at the end of your reply) ===
     Every figure and every table must serve an argument the paper makes: a
     contribution, a motivation, or a stated advantage of the method. Build the map
     yourself from the manuscript. Output a field named "Float map" with one line per
@@ -99,14 +100,27 @@ mcp__claude-review__review_start:
       serves (quote that sentence and give its location) — the sections that cite
       it, or "cited only in its own appendix section".
     Setup and protocol tables serve reproducibility; say so instead of forcing a
-    claim onto them. Under "Flagged", list with its anchor every float that:
+    claim onto them.
+    The main text must be self-contained: every argument it makes carries at least
+    one or two pieces of its evidence in the main text itself. The appendix may add
+    evidence (more settings, breakdowns, protocol details); it never holds all of
+    it. Output a field named "Argument map" with one line per argument the main text
+    makes (a contribution, a motivation, a stated advantage, a result claim, a
+    design choice justified by a result):
+      <quote the sentence, give its location> — its main-text evidence: a main-text
+      figure or table, a number with its comparison in main-text prose, or a
+      citation for a claim about prior work (give each location) — its appendix
+      evidence, if any.
+    Under "Flagged", list with its anchor every float that:
       1. serves no argument (a result no claim rests on);
       2. is cited only in its own appendix section;
       3. does not support the sentence that cites it, e.g. a baseline or an
          undeployed variant holds the decisive cell of the column that sentence
          leans on;
-      4. is the only evidence for a main-text argument yet sits in the appendix.
-    A flagged float is a Critical Weakness only if it would sink the paper.
+    and every main-text argument that:
+      4. has no supporting evidence in the main text: its evidence sits only in the
+         appendix (e.g. the sentence rests on "see Appendix C" alone) or nowhere.
+    A flagged float or argument is a Critical Weakness only if it would sink the paper.
 ```
 
 After this start call, immediately save the returned `jobId` and poll `mcp__claude-review__review_status` with a bounded `waitSeconds` until `done=true`. Treat the completed status payload's `response` as the reviewer output, and save the completed `threadId` for any follow-up round.
@@ -155,7 +169,7 @@ Save the full interaction and conclusions to a review document in the project ro
 - Round-by-round summary of criticisms and responses
 - Final consensus on claims, narrative, and experiments
 - Claims matrix (what claims are allowed under each possible outcome)
-- For a manuscript, the reviewer's float map and every float it flagged
+- For a manuscript, the reviewer's float map and argument map, and every float and argument it flagged
 - Prioritized TODO list with estimated compute costs
 - Paper outline if discussed
 
@@ -180,9 +194,12 @@ Save a trace for every `mcp__claude-review__review_start`, `mcp__claude-review__
 - Focus on ACTIONABLE feedback — "what experiment would fix this?"
 - Document the completed `threadId` for potential future resumption
 - In a manuscript, every figure and table must serve an argument (user 2026-11-03,
-  「每个图表都应该服务论点」): send the FLOAT MAP block, manuscripts only, in the
-  first-round prompt and in every follow-up brief. The reviewer builds the map; do
-  not pass on your own map or reading of what a float shows (reviewer-independence.md).
+  「每个图表都应该服务论点」), and every main-text argument carries at least one or
+  two pieces of its evidence in the main text, never all of it in the appendix
+  (user 2026-11-11, 「main 正文应该 self contain」): send the FLOAT AND ARGUMENT MAP
+  block, manuscripts only, in the first-round prompt and in every follow-up brief.
+  The reviewer builds the map; do not pass on your own map or reading of what a
+  float shows or where an argument's evidence sits (reviewer-independence.md).
 - The review document should be self-contained (readable without the conversation)
 
 ## Prompt Templates

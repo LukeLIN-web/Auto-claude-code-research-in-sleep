@@ -102,5 +102,5 @@ Readers care most about how the core contributions affect performance, and wonde
 1. Are baselines recent and relevant?
 2. Are metrics sufficient and standard for this task?
 3. Is ablation tied to every key design claim?
-4. Are claims in Abstract/Introduction supported by reported numbers?
+4. Are claims in Abstract/Introduction supported by reported numbers, with at least one or two of them in the main text rather than only in the appendix?
 5. Are limitations of evaluation scope explicitly stated?

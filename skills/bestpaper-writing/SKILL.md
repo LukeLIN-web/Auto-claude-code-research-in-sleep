@@ -73,14 +73,14 @@ Mark the **pivot sentences** (the bottleneck, the cause, the tension, the idea);
 For each paragraph, read 2–3 award-paper paragraphs with the same function and, if possible, the same paper type: `python3 scripts/find_exemplars.py --para <function> --type <L*>`; for sentences, `python3 scripts/find_exemplars.py <move>` or `--phrases <function>`; for whole introductions, the route’s card in `references/exemplars/cards/`. Learn their order of information and rhythm; never copy a sentence or a run of ≥ 6 words. Write in the authors’ voice (“we”, “our model”); never describe the user’s input as “supplied”, “provided” or “reported”.
 
 ### Step 5b — Method and Experiments (when requested)
-1. Extend the claim map into an **evidence map**: claim → method subsection → experiment (table/figure) → ablation. Claims without evidence are softened in the introduction or get an experiment `[TODO]`.
+1. Extend the claim map into an **evidence map**: claim → method subsection → experiment (table/figure) → ablation, each evidence entry marked main text or appendix. Claims without evidence are softened in the introduction or get an experiment `[TODO]`; a claim whose evidence is all in the appendix gets its decisive table, figure or number moved into the main text (Hard rules).
 2. Method: follow `references/method.md` (opener, preliminaries, one subsection per component with need → mechanism → property, objective, optional discussion). Mechanisms, equations and losses the user has not given are `[TODO]`; never invent them.
 3. Experiments: follow `references/experiments.md` (opener, setup, claim-first results per benchmark, ablations that mirror the claims, analysis, limitations). Tables use booktabs with `\TODO{}` cells for missing numbers.
 4. Limitations belong in the experiments or a separate section; the author preference excludes them only from the abstract and introduction.
 
 ### Step 5c — Figure plan and figures (whenever Method/Experiments are written, or when asked)
 Load `references/figures.md`.
-1. Make the **figure plan** from the evidence map: one row per figure with its place, the claim it carries, its type, panels, the material needed, its status and the caption's takeaway sentence (`figures.md` §2). Every main claim has a figure or a table; every figure carries one claim.
+1. Make the **figure plan** from the evidence map: one row per figure with its place, the claim it carries, its type, panels, the material needed, its status and the caption's takeaway sentence (`figures.md` §2). Every main claim has a figure or a table in the main text; every figure carries one claim.
 2. Choose **Figure 1** by route (`figures.md` §3.2): `diagnosis`/`contrast-results` for `failure`, `contrast-schematic` for `cost` and `insight`, `showcase` for `capability-gap`/`trend`, `plot` for scaling and re-examination, `concept` for mechanism and theory, `resource` for datasets. In two-column templates it goes on page 1, usually full width.
 3. **Draw now** what the user has stated: schematics of the mechanism (Figure 1 contrast panels, method overview, query or data-flow illustrations) in TikZ with `assets/figures/figures_preamble.tex`; parts whose mechanism is `[TODO]` are drawn dashed. **Leave as placeholders** everything that shows results (renders, qualitative grids, plots, numbers): a blank framed area of the planned size whose caption carries the full plan as `\FigPlan{…}`. Plots the user has data for use `assets/figures/plot_style.py`.
 4. Captions open with the takeaway (`figures.md` §6); method colours, names and symbols are the same in every figure and match the text.
@@ -113,6 +113,7 @@ Load `references/figures.md`.
 - Never cite a key that is not in the user’s bibliography; mark missing references with `[TODO: cite …]`.
 - No limitations, self-undermining sentences or defensive qualifiers in the Abstract or Introduction.
 - The Abstract and Introduction tell the story; tables tell the numbers.
+- **The main text is self-contained** (user 2026-11-11): every main-text claim carries at least one or two pieces of its evidence in the main text itself (a main-text table or figure, or its decisive number with the comparison). The appendix only adds to that evidence, and "see the supplement" alone supports nothing. Rule and fixes: `../shared-references/review-float-map.md`.
 - No generic openings (“has attracted increasing attention”, bare “plays an important role”) and no adjectives about the method without a concrete follow-up.
 - Do not frame the work as a patch on a naive baseline (ruling out an obvious alternative with a quantified reason is fine).
 - Keep terminology fixed once introduced.

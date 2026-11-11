@@ -36,7 +36,7 @@ Derived from the same 55 award papers. Experiments are the most templated part o
 > “Our method employs a Gaussian filter as an approximation to a box filter for efficiency. However, this approximation introduces errors …” (Mip-Splatting)
 
 ## 3. Rules
-1. **Evidence map first.** Before writing, list every claim from the abstract, introduction and method, and the table/figure that proves it. A claim without evidence is softened in the introduction or gets an experiment `[TODO]`; an experiment that proves no claim moves to the appendix.
+1. **Evidence map first.** Before writing, list every claim from the abstract, introduction and method, and the table/figure that proves it. A claim without evidence is softened in the introduction or gets an experiment `[TODO]`; an experiment that proves no claim moves to the appendix. The decisive experiment for each main-text claim stays in the main text; the appendix only adds settings and breakdowns.
 2. **Claim-first paragraphs.** “Ours outperforms X on all metrics (Tab. 1), with the largest gain in Y” rather than “Table 1 shows the results.” Use “As shown in Tab. 1” sparingly.
 3. **Numbers belong here.** Report margins, not only rankings; the abstract/introduction number limits do not apply. Keep at most two or three numbers per sentence; the rest stay in the table.
 4. **Fair comparison is stated once, in the setup** (same data, official code, same backbone); do not repeat qualifiers in every results sentence.

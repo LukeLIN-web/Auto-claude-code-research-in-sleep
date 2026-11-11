@@ -96,9 +96,9 @@ Before calling the external reviewer, compile a comprehensive briefing:
 2. Read any memory/notes files for key findings and experiment history
 3. Identify: core claims, methodology, key results, known weaknesses
 4. For a manuscript, give the entry `.tex` file and the directories that hold its
-   figures and tables. Do not write down what each float shows or which argument
-   it serves: the reviewer builds that map itself
-   ([`review-float-map.md`](../shared-references/review-float-map.md)).
+   figures and tables. Do not write down what each float shows, which argument
+   it serves, or where each argument's evidence sits: the reviewer builds that
+   map itself ([`review-float-map.md`](../shared-references/review-float-map.md)).
 
 ### Step 2: Initial Review (Round 1)
 Send a detailed prompt with max reasoning, using the selected backend. For
@@ -121,7 +121,7 @@ mcp__codex__codex:
 
     [SCOPE LIMITS block, verbatim from shared-references/review-scope-limits.md]
 
-    [FLOAT MAP block, verbatim from shared-references/review-float-map.md — manuscripts only]
+    [FLOAT AND ARGUMENT MAP block, verbatim from shared-references/review-float-map.md — manuscripts only]
 ```
 
 For Antigravity, Grok, or Claude Code, send the same prompt through its selected
@@ -189,7 +189,7 @@ Save the full interaction and conclusions to a review document in the project ro
 - Round-by-round summary of criticisms and responses
 - Final consensus on claims, narrative, and experiments
 - Claims matrix (what claims are allowed under each possible outcome)
-- For a manuscript, the reviewer's float map and every float it flagged
+- For a manuscript, the reviewer's float map and argument map, and every float and argument it flagged
 - Prioritized TODO list with estimated compute costs
 - Paper outline if discussed
 
@@ -215,7 +215,7 @@ Update project memory/notes with key review conclusions.
 - Be honest about weaknesses — hiding them leads to worse feedback
 - Focus on ACTIONABLE feedback — "what experiment would fix this?"
 - Every weakness must carry an evidence anchor; spot-check anchors before acting, and drop findings whose anchor does not check out
-- In a manuscript, every figure and table must serve an argument (user 2026-11-03): send the FLOAT MAP block of `shared-references/review-float-map.md` in the first-round prompt and every follow-up brief; the reviewer builds the map
+- In a manuscript, every figure and table must serve an argument (user 2026-11-03), and every main-text argument carries at least one or two pieces of its evidence in the main text, never all of it in the appendix (user 2026-11-11): send the FLOAT AND ARGUMENT MAP block of `shared-references/review-float-map.md` in the first-round prompt and every follow-up brief; the reviewer builds the map
 - Document the threadId for potential future resumption
 - The review document should be self-contained (readable without the conversation)
 

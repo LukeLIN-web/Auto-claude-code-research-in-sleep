@@ -12,8 +12,9 @@ Pursue perfectionism in paper quality: assume reviewers will probe every weak po
 
 Every major claim, especially in Abstract and Introduction, must be:
 
-1. technically correct, and
-2. explicitly supported by experimental evidence.
+1. technically correct,
+2. explicitly supported by experimental evidence, and
+3. supported in the main text itself: at least one or two pieces of its evidence sit in the main text, never all of them in the appendix (Execution Rule 6 in `SKILL.md`).
 
 If a claim is not supported, either add evidence or weaken/remove the claim.
 

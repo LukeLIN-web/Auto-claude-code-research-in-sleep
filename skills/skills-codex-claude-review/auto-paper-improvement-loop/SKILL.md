@@ -248,7 +248,7 @@ mcp__claude-review__review_start:
     Focus on: theoretical rigor, claims vs evidence alignment, writing clarity,
     self-containedness, notation consistency, AND visual presentation quality.
 
-    === FLOAT MAP (manuscripts; a required named field at the end of your reply) ===
+    === FLOAT AND ARGUMENT MAP (manuscripts; two required named fields at the end of your reply) ===
     Every figure and every table must serve an argument the paper makes: a
     contribution, a motivation, or a stated advantage of the method. Build the map
     yourself from the manuscript. Output a field named "Float map" with one line per
@@ -258,14 +258,27 @@ mcp__claude-review__review_start:
       serves (quote that sentence and give its location) — the sections that cite
       it, or "cited only in its own appendix section".
     Setup and protocol tables serve reproducibility; say so instead of forcing a
-    claim onto them. Under "Flagged", list with its anchor every float that:
+    claim onto them.
+    The main text must be self-contained: every argument it makes carries at least
+    one or two pieces of its evidence in the main text itself. The appendix may add
+    evidence (more settings, breakdowns, protocol details); it never holds all of
+    it. Output a field named "Argument map" with one line per argument the main text
+    makes (a contribution, a motivation, a stated advantage, a result claim, a
+    design choice justified by a result):
+      <quote the sentence, give its location> — its main-text evidence: a main-text
+      figure or table, a number with its comparison in main-text prose, or a
+      citation for a claim about prior work (give each location) — its appendix
+      evidence, if any.
+    Under "Flagged", list with its anchor every float that:
       1. serves no argument (a result no claim rests on);
       2. is cited only in its own appendix section;
       3. does not support the sentence that cites it, e.g. a baseline or an
          undeployed variant holds the decisive cell of the column that sentence
          leans on;
-      4. is the only evidence for a main-text argument yet sits in the appendix.
-    A flagged float is a Critical Weakness only if it would sink the paper.
+    and every main-text argument that:
+      4. has no supporting evidence in the main text: its evidence sits only in the
+         appendix (e.g. the sentence rests on "see Appendix C" alone) or nowhere.
+    A flagged float or argument is a Critical Weakness only if it would sink the paper.
 ```
 
 After this start call, immediately save the returned `jobId` and poll `mcp__claude-review__review_status` with a bounded `waitSeconds` until `done=true`. Treat the completed status payload's `response` as the reviewer output, and save the completed `threadId` for any follow-up round.
@@ -318,6 +331,7 @@ never manuscript content; tone edits never change what the paper knows.
 | Story built on a losing metric, or results narrated as defeats | Reframe around the contest the paper wins; explain the gap as a goal difference or tradeoff when the evidence supports that, otherwise state it neutrally and narrow the claim; keep every number in the table |
 | Experiment with no argumentative duty | Cut, shorten, move to the appendix, or redesign it so it proves the method, the mechanism, the target-scenario value, or rules out an alternative |
 | Float flagged by the float map | Tie it to its argument: cite it from the sentence that makes the argument, open its caption with that argument, or move it next to that sentence; a float no argument needs follows the row above. Never cut a float holding unfavorable numbers: list it for the author |
+| Argument flagged by the argument map (its evidence is only in the appendix or nowhere) | Bring its decisive evidence into the main text: move the float, or the row or panel carrying the argument, next to the sentence, or, where the project lets main-text prose carry numbers, state the decisive number with its comparison; an argument with no evidence anywhere is narrowed to what the evidence supports or gets an experiment. Never drop an argument from the main text or move it to the appendix with its evidence: list it for the author |
 | Missing metrics | Add quantitative table with honest parameter counts and caveats |
 | Theorem not self-contained | Add "Interpretation" paragraph listing all dependencies |
 | Notation confusion | Rename conflicting symbols globally, add Notation paragraph |
@@ -424,7 +438,7 @@ mcp__claude-review__review_start:
     Focus on: theoretical rigor, claims vs evidence alignment, writing clarity,
     self-containedness, notation consistency, and visual presentation quality.
 
-    === FLOAT MAP (manuscripts; a required named field at the end of your reply) ===
+    === FLOAT AND ARGUMENT MAP (manuscripts; two required named fields at the end of your reply) ===
     Every figure and every table must serve an argument the paper makes: a
     contribution, a motivation, or a stated advantage of the method. Build the map
     yourself from the manuscript. Output a field named "Float map" with one line per
@@ -434,14 +448,27 @@ mcp__claude-review__review_start:
       serves (quote that sentence and give its location) — the sections that cite
       it, or "cited only in its own appendix section".
     Setup and protocol tables serve reproducibility; say so instead of forcing a
-    claim onto them. Under "Flagged", list with its anchor every float that:
+    claim onto them.
+    The main text must be self-contained: every argument it makes carries at least
+    one or two pieces of its evidence in the main text itself. The appendix may add
+    evidence (more settings, breakdowns, protocol details); it never holds all of
+    it. Output a field named "Argument map" with one line per argument the main text
+    makes (a contribution, a motivation, a stated advantage, a result claim, a
+    design choice justified by a result):
+      <quote the sentence, give its location> — its main-text evidence: a main-text
+      figure or table, a number with its comparison in main-text prose, or a
+      citation for a claim about prior work (give each location) — its appendix
+      evidence, if any.
+    Under "Flagged", list with its anchor every float that:
       1. serves no argument (a result no claim rests on);
       2. is cited only in its own appendix section;
       3. does not support the sentence that cites it, e.g. a baseline or an
          undeployed variant holds the decisive cell of the column that sentence
          leans on;
-      4. is the only evidence for a main-text argument yet sits in the appendix.
-    A flagged float is a Critical Weakness only if it would sink the paper.
+    and every main-text argument that:
+      4. has no supporting evidence in the main text: its evidence sits only in the
+         appendix (e.g. the sentence rests on "see Appendix C" alone) or nowhere.
+    A flagged float or argument is a Critical Weakness only if it would sink the paper.
 ```
 
 After this start call, immediately save the returned `jobId` and poll `mcp__claude-review__review_status` with a bounded `waitSeconds` until `done=true`. Treat the completed status payload's `response` as the reviewer output, and save the completed `threadId` for any follow-up round.
@@ -614,7 +641,7 @@ Report to user:
 - Number of CRITICAL/MAJOR/MINOR issues fixed per round
 - Final page count
 - Remaining issues (if any)
-- Floats flagged in the final round's float map, and those left for the author
+- Floats and arguments flagged in the final round's float and argument maps, and those left for the author
 
 ### Feishu Notification (if configured)
 

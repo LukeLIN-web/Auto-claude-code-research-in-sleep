@@ -36,7 +36,7 @@ Rules:
 2. **Status** is `draw now` only for schematics whose content the user has stated (mechanism, components, data flow). Everything that shows results (images, renders, plots, numbers) is a `placeholder` until the user provides the material. Never invent a result image, a curve or a number.
 3. **Material needed** is concrete: which scenes, which baselines, which metric, which axis, which resolution.
 4. The plan goes into `report.md` (section "Figure plan"). In LaTeX, placeholders are blank framed areas and the full plan of each one is written into its caption as a red `\TODO{Figure plan: …}` (`assets/figures/figures_preamble.tex`).
-5. Count check: about one float per page in two-column papers; do not exceed the corpus p90 (9 figures, 5 tables in 8 pages) without moving material to the supplement.
+5. Count check: about one float per page in two-column papers; do not exceed the corpus p90 (9 figures, 5 tables in 8 pages) without moving material to the supplement. Only material that is not a main-text claim's decisive evidence moves.
 
 ## 3. Figure 1
 
