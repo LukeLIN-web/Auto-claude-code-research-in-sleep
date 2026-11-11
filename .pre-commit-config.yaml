@@ -1,0 +1,30 @@
+# The commit gate: this repo is public, so nothing private may enter it -- not in a file,
+# not in a commit message. Both hooks run tools/privacy_check.py, which blocks personal
+# paths, private repo and directory names, our papers' names, reviewer IDs and co-author
+# names. The real names live outside the repo (.git/info/private-patterns locally, the
+# PRIVATE_PATTERNS secret in CI); see the script's docstring for the format.
+#
+# Install once per clone: `pre-commit install` (both hook types below are installed).
+# Push-time backstop: .github/workflows/privacy-check.yml runs the same script over the
+# pushed range, commit messages included.
+
+default_install_hook_types: [pre-commit, commit-msg]
+
+repos:
+  - repo: local
+    hooks:
+      # Added lines only, so placeholders already in upstream docs never trip it.
+      - id: privacy-check
+        name: privacy check (staged diff)
+        entry: python3 tools/privacy_check.py --staged
+        language: system
+        pass_filenames: false
+        always_run: true
+        stages: [pre-commit]
+
+      # The message is published with the commit; a leak there is as public as one in a file.
+      - id: privacy-check-msg
+        name: privacy check (commit message)
+        entry: python3 tools/privacy_check.py --message
+        language: system
+        stages: [commit-msg]

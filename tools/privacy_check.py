@@ -6,10 +6,18 @@ Scans only ADDED lines (and commit messages), so existing placeholders such as
 
 Two pattern layers:
   1. Generic regexes below — safe to publish (they name no real value).
-  2. Private literals — real repo names, directory names, emails. These must NOT be committed,
-     or this file becomes the leak. They are read, one per line (case-insensitive, `#` comments), from:
+  2. Private literals — real repo names, directory names, emails, our papers' names, reviewer IDs,
+     co-author names. These must NOT be committed, or this file becomes the leak. They are read,
+     one per line (`#` comments), from:
        - `$(git rev-parse --git-path info/private-patterns)`  (local, untracked)
        - the PRIVATE_PATTERNS environment variable           (CI, from a repository secret)
+     A plain line is a case-insensitive literal, matched as a whole word where it starts or ends
+     with a word character (so a short reviewer ID does not fire inside a longer word). A line starting with
+     `re:` is a regular expression, e.g. `re:(?-i:\bNAME\b)` to match a name that is also an
+     ordinary word only in capitals.
+
+Hooks: `.pre-commit-config.yaml` runs this on every commit and commit message
+(install once per clone: `pre-commit install`).
 
 Usage:
   privacy_check.py --staged             # pre-commit: staged diff
@@ -56,7 +64,13 @@ def private_literals() -> list[str]:
 
 def build_rules() -> list[tuple[re.Pattern, str]]:
     rules = [(re.compile(rx, re.I), why) for rx, why in GENERIC]
-    rules += [(re.compile(re.escape(lit), re.I), "private literal") for lit in private_literals()]
+    for lit in private_literals():
+        if lit.startswith("re:"):
+            rx = lit[3:]
+        else:
+            rx = re.escape(lit)
+            rx = (r"\b" if re.match(r"\w", lit) else "") + rx + (r"\b" if re.search(r"\w$", lit) else "")
+        rules.append((re.compile(rx, re.I), "private literal"))
     return rules
 
 
