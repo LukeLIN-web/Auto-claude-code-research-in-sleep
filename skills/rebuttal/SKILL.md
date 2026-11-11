@@ -137,6 +137,7 @@ The rule covers **measurements** of the response, not only its text. Character c
 | `wording/<UTC timestamp>/ledger-<ID>.md` | both | canonical — blind-read ledgers of the wording pass (Phase 6.5); findings and dispositions only, no response text |
 | `SUPPLEMENTARY_FIG_PDF/` | per_reviewer_thread, optional | derived — venue-compliant figure PDF (Phase 7); no response text |
 | `*.html` (+ `.review.json` sidecar) | both, if `RENDER_HTML` | derived — Phase 9 render of each canonical response file |
+| `COLLAB_DOC.md` (+ `collab_doc.json`) | both | the collaborator doc (Phase 4 "Collaborator doc"): its board prose is canonical here; every draft and translation section between `<!-- DRAFT:<file> -->` markers is derived, rewritten by `scripts/collab_doc_sync.py`, which also pushes the doc to its HackMD note(s). `collab_doc.json` holds the note ids and the last-pushed hashes, never a token |
 
 ## Workflow
 
@@ -269,6 +270,12 @@ Hard rules:
 - If no strong evidence exists, say less not more
 
 After authoring or changing a canonical draft, regenerate its derived artifacts per the Artifacts table (`single_document`: `PASTE_READY.txt`).
+
+**Collaborator doc** (user 2026-11-09 … 11-11: 「发个 doc 给合作者改」「弄好看点, 分段, 空行」「你不能每次都换啊, 你以后还是要保持 link」「解决了的就删掉」「不要写优点啊, 没意义. 也不要写我们要做的事情」「以后不用更新 doc 了, 就更新这个 md, 你可以写个脚本直接本地 md 同步」「以后就要创建这么一个doc 给合作者」). Every rebuttal gets one, created once the first drafts exist, in the team's language, as `rebuttal/COLLAB_DOC.md` pushed to HackMD:
+1. **Layout, in this order:** a header (scores and confidences, which replies are ready, the posting order, what to strip before pasting); a legend of the baseline and arm names the drafts use; *Open decisions* (only what still needs the user; a settled item leaves, its ruling stays in `ISSUE_BOARD.md`); the general response and any AC note; one section per reviewer in posting order with a one-line role ("most likely to move", lever), *Weaknesses* and *Questions* as numbered W#/Q# summaries in the team's language, then the English draft and its translation; experiments in flight; results already in. No strengths and no to-do lists in a reviewer section. Short paragraphs with blank lines between them; numbers in tables.
+2. **Drafts are derived.** Each draft or translation is one `<!-- DRAFT:<file> -->` … `<!-- /DRAFT -->` block that `scripts/collab_doc_sync.py <rebuttal_dir> --push` rewrites from the canonical response file (heading with the comment count, one label per PART, `⟦PROMISE⟧` / `⟦NEEDS USER⟧` markers as inline-code chips). After every change to a response file or a translation, rerun it; never edit a draft in the doc or on HackMD. A translation whose `<!-- EN <hash> -->` line is stale stops the push.
+3. **One link for the whole rebuttal.** `--create` makes the note once (owner-only; the user widens sharing); later runs update it in place and never re-create it. HackMD rejects an update over 100 KB, so a long doc sets `translation_note` in `collab_doc.json`: the translations move to a second note and the main note keeps each one's heading and a link.
+4. **Collaborators edit on HackMD; the local files stay the sources.** The script stops when a note changed since its last push and saves it as `COLLAB_DOC.md.remote.md`: carry board edits into `COLLAB_DOC.md` and draft edits into the response files by hand (a co-author's sentence is never reworded, [references/wording-pass.md](references/wording-pass.md) § 0), then push with `--force`. Comment threads are answered in the canonical files and get a reply on HackMD; § 7 of [references/followup-and-endgame.md](references/followup-and-endgame.md) applies.
 
 Also generate `rebuttal/REVISION_PLAN.md` — the **overall revision checklist**.
 
@@ -443,6 +450,7 @@ Skip if `RENDER_HTML = false`.
 - **Wording pass before posting.** A fresh subagent blind-reads every reply as its reviewer; undefined terms, internal names and filler are removed, every repeated number matches its owner; numbers, quotes, co-author text and rulings are not touched ([references/wording-pass.md](references/wording-pass.md)).
 - **Respect the limit.** Character budget is a hard constraint.
 - **Resume cleanly.** Continue from REBUTTAL_STATE.md on rerun.
+- **One collaborator doc, one link.** `COLLAB_DOC.md` is the team's view; its drafts are regenerated and pushed by `scripts/collab_doc_sync.py` after every change, never edited by hand on HackMD (Phase 4 "Collaborator doc").
 - **Anti-hallucination citations.** Any reference added must go through DBLP → CrossRef → [VERIFY].
 
 ## Review Tracing

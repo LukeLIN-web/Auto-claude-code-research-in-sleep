@@ -69,7 +69,7 @@ Never in the closing note:
 
 ## 7. Co-author comments on the shared draft
 
-When the draft lives in a shared doc (e.g. the Google Doc status board) and co-authors comment or suggest:
+When the draft lives in a shared doc (the collaborator doc on HackMD, `SKILL.md` Phase 4; earlier rebuttals used a Google Doc) and co-authors comment or suggest:
 - Read every comment, open suggestion and direct edit before touching the doc; never rebuild it wholesale from the local files, which would erase their text.
 - Each source needs its own read. The Drive text export (`read_file_content` with comments) carries comment threads but not suggestions; read suggestions from the Docs API (`read_doc`: `suggestions[]`, and the `suggested*Ids` on text runs for their anchors). Direct edits show up only as a diff of the doc against the canonical files; text a co-author wrote is often the richest lesson (`rhetoric.md` § 9).
 - Reply to each comment with exactly what changed, quoting the new wording ("Replaced 'It does.' with '…'"), and whether mirrors (e.g. the Chinese version, `Reviewer_<ID>_response.md`) were updated.
