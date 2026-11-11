@@ -10,8 +10,11 @@ board prose is authored in the doc itself. Every draft section is derived: the b
     <!-- /DRAFT -->
 
 belongs to this script, which rewrites it from the canonical response file (heading
-with the comment count, the internal-marker note, one comment label per PART). Never
-edit a draft inside the doc or on HackMD; edit the response file and rerun.
+with the comment count, the copy note, one comment label per PART). A comment between
+its label and the next `---` is paste-ready: ⟦PROMISE⟧ markers are dropped (the sentence
+they tag already says what the revision does), and a ⟦NEEDS USER⟧ marker stays as an
+inline-code chip because that comment is not ready to post. Never edit a draft inside
+the doc or on HackMD; edit the response file and rerun.
 
     python collab_doc_sync.py <rebuttal_dir>            # regenerate the draft sections
     python collab_doc_sync.py <rebuttal_dir> --push     # ... and push to the note
@@ -51,7 +54,7 @@ from pathlib import Path
 
 API = "https://api.hackmd.io/v1"
 LABEL_KEYS = ("draft_heading", "draft_label", "translation_label", "draft_note",
-              "comment", "translation_comment", "promise", "needs_user")
+              "comment", "translation_comment", "needs_user")
 REGION = re.compile(r"(<!-- DRAFT:(\S+) -->\n)(.*?)(<!-- /DRAFT -->)", re.S)
 PART = re.compile(r"^<!-- PART (\d+)/(\d+) -->$")
 HASH_LINE = re.compile(r"^<!-- EN ([0-9a-f]+) -->$")
@@ -82,8 +85,7 @@ def render(path, translation, labels):
             continue
         if re.fullmatch(r"\s*<!--.*-->\s*", line):
             continue
-        line = re.sub(r"⟦PROMISE (R-\d+)(?:,[^⟧]*)?⟧ ?",
-                      lambda x: "`" + labels["promise"].format(id=x.group(1)) + "` ", line)
+        line = re.sub(r"⟦PROMISE [^⟧]*⟧ ?", "", line)
         line = re.sub(r"⟦NEEDS USER (\S+?)(?: —[^⟧]*)?⟧ ?",
                       lambda x: "`" + labels["needs_user"].format(id=x.group(1)) + "` ", line)
         out.append(line)
