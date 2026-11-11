@@ -20,7 +20,7 @@ None of them has the repository, the experiment plan, the issue board, the group
 
 Read the reply once, front to back, at normal speed, as the reviewer who wrote the review. Record three signals:
 
-- **Stall** — had to reread or scroll back. Types: a term or abbreviation with no definition or defined later than first use; a label invented by us ("the D1 judge", "split a", "Same recipe"); a referent that has not been named ("both versions", "the two pools"); one word used for two things, or two words for one thing; a number whose noun has not appeared yet ("at rank 32" before any mention of LoRA); a name that says A while the sentence describes B.
+- **Stall** — had to reread or scroll back. Types: a term or abbreviation with no definition or defined later than first use; a label invented by us ("the D1 judge", "split a", "Same recipe"); a referent that has not been named ("both versions", "the two pools"); one word used for two things, or two words for one thing; a number whose noun has not appeared yet ("at rank 32" before any mention of LoRA); a name that says A while the sentence describes B; a ratio or speedup with no stated comparator ("1.6× faster" — than what?).
 - **Idle** — read without effort, but the sentence defines nothing, claims nothing and answers nothing the reviewer asked. Test: delete it and reread the paragraph; if no conclusion loses support, record it. (Only mark it; whether it is deleted is decided later, with full context.)
 - **Lineage and internal names** — these read smoothly and sit in load-bearing sentences, so the first two signals miss them. Internal names: experiment IDs (`A5`, `B2c`), run and checkpoint names, machine names, paths, status tags, the board's shorthand. Lineage words: "the retrained one", "the re-scored copy", "the earlier run", "the leave-one-out version", "v2". For each ask: *what does this tell the reviewer about what went into the model?* If nothing, record it.
 
@@ -31,7 +31,7 @@ Also recorded, never fixed by rewording (they go to the user):
 - a sentence that contradicts another sentence in the reply or the reviewer's quoted text;
 - a sub-question of the reviewer that no sentence answers (rhetoric C13).
 
-Not recorded: unfamiliar but standard terms (LoRA, Spearman, Holm correction, bootstrap, best-of-N); terms the reviewer used; terms the paper defines and the reply uses in the same sense. The reader lists the terms it checked and cleared, so the next step does not rewrite them into plain words.
+Not recorded: unfamiliar but standard terms (LoRA, Spearman, Holm correction, bootstrap, best-of-N); terms the reviewer used; terms the paper defines and the reply uses in the same sense. Clearing covers the word, not its number: a standard term whose number restates something the sentence already says in the reader's unit, or only describes how the run was set up (worker count, parallelism degree, hit rate), is still recorded as **idle**. The reader lists the terms it checked and cleared, so the next step does not rewrite them into plain words.
 
 **Calibration.** A reply of 3–5k characters yields about 3–10 load-bearing entries. Above 15, the problem is structural (the reply is a diff against the plan, or assumes another thread): stop listing and say so.
 

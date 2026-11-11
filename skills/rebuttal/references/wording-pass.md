@@ -59,6 +59,9 @@ For each sentence and each number in it: **delete it, and does the reviewer's ju
 | 8 | Provenance assurances | which checkpoint, how it was picked, what it was not tuned on | the reviewer would otherwise assume a different experiment: what the number was computed on, train/test separation, the protocol a comparison depends on |
 | 9 | Process vocabulary | "preregistered", "frozen before reading", "sanity check", "pilot" | the technical sense: frozen backbone, frozen prompts |
 | 10 | Value series (罗列) | one quantity at three or more conditions strung into a sentence | write the shape (monotone, flat, one outlier) plus at most one number; the series lives in a table — unless the reviewer asked for exactly these values |
+| 11 | Instrument readings | a number that restates a fact already given in the reader's unit (a real-time factor beside "minutes per recording hour"), or that says how a measurement was run rather than what it found: worker or process counts, parallelism degree, the cache hit rate behind a reported speedup, exact token or position counts where a ratio says the same | the comparison's fairness rests on it — then state it in words ("decoded the same way for every method", "on four GPUs"), not as the number |
+
+Step 3 tests **every number inside a kept sentence**, not only whole sentences. A field term that the blind reader cleared (real-time factor, hit rate, tensor-parallel) is cleared as a word; the number it carries still takes the delete test.
 
 **Upgrade rule.** A secondary claim that needs two or three caveats to be true is deleted together with its caveats (「越解释越乱」「别解释了」). Headline answers to a W/Q are never deleted this way; if a headline needs a pile of caveats, that is a strategy problem for the user.
 
@@ -148,6 +151,9 @@ command grep -niE 'preregister|pre-register|frozen before|sanity check|pilot|abl
 | A term is defined two paragraphs later, so it passes | Late definition is recorded; move the definition to first use |
 | Every unknown noun is recorded | The threshold is "had to reread", not "unfamiliar" |
 | A standard term is rewritten into plain words | Field terms and the reviewer's own terms stay |
+| A field term is cleared, so the number it carries stays | Clearing covers the word; the number still takes the delete test (§ 3 class 11) |
+| A ratio or speedup is kept without its comparator ("1.6× faster", "4.7× fewer tokens") | Name the comparator in the same clause ("than without the cache", "than the media channel") |
+| Only the English is blind-read; the team-language translation is synced string by string | The translation leaks on its own: the lab's shorthand for a benchmark or for "our codebase", and coined renderings of field terms. Give the acceptance reader the translation too and ask it to flag where the two languages say different things |
 | An unclear word gets a definition by default | Order is delete word → replace → delete sentence → define |
 | A clearer new word is invented | Only the reviewer's, the paper's or the field's word |
 | An experiment ID or checkpoint name gets a gloss | Internal names are deleted; write what the thing is |
@@ -180,6 +186,8 @@ Five replies were blind-read; the user ruled on each reported item in one line. 
 | L9 | A new backbone improves less than its siblings | 「也没事? 比 base 低就行?」 | A variant that beats its own untuned base answers "does the supervision transfer"; it need not beat the other variants. No change, and no added comparison to the siblings. |
 | L10 | Two numbers in different answers looked like one quantity (0.80 and 0.92 for "unseen generators") | 「说清楚」 | Give each its table and its unit in the same sentence ("of the same table, also per video-law sample"). |
 | L11 | A count in an abandoned fragment disagreed with the latest version (seven vs eight) | 「改正确」, 「保留最新的」, then 「合作者的永远不删」 | In our own superseded text the wrong number goes with the fragment. In a co-author's fragment nothing is removed or corrected: highlight the number and add a note. The first run deleted two co-author fragments under "keep the latest" and had to restore them. |
+
+**Second run (2026-11-11).** After two blind reads and one tighten pass, the collaborator doc still carried a real-time factor next to the minutes-per-hour it implies, a cache hit rate and parallelism degree behind a speedup, worker counts and exact position counts (user: 「这种感觉看不懂啊 没用的信息」). Both blind reads had listed these terms as cleared, and the tighten pass had tested sentences, not the numbers inside kept sentences. Fix: § 3 class 11 and the number-level delete test above. The acceptance read of this run also found a board status that the result files had overtaken (an experiment still marked queued whose result a reply already reported): the board's status column is re-checked against the state file in every wording pass.
 
 **What the pass got wrong, and the fix now in this file.**
 - The blind-read rules and the verification rules were first written in one file, and the blind reader was told to read "sections 1 and 2 only". Isolation that depends on the reader not scrolling is not isolation: the blind reader's instructions are a separate file.
