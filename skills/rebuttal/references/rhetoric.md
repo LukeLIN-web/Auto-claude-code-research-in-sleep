@@ -214,3 +214,8 @@ A co-author wrote one reviewer's file opener, A1 and A2 directly in the shared G
 **Not copied (break a hard rule; they stay only as the co-author's own text, under the wording-pass rule that co-author text is not touched):**
 - *"… and we should have made our answer easier to find."* concedes a presentation fault the reviewer did not name ("Never concede"). C30's restatement does the same work without it.
 - *"We have now incorporated the two models in our manuscript and update all analyses accordingly."* is a revision promise the user had not approved, against the ruling not to change the paper for that reviewer ("Never overpromise"); it went to the board's open decisions (`followup-and-endgame.md` § 7).
+
+## 10. User ruling on secondary evidence (2026-11-10)
+
+**C34 — Secondary evidence goes in only when the reviewer asked for it.** User: 「数字串挪进表格, 次要证据如果别人没要就别给, 如果要了就给.」 For each result in an answer, ask whether it is the answer to the reviewer's ask or support for it. The answer stays. Support stays only when a sentence of this reviewer's review asks for it (quote it, as for `asked_for`): a mechanism analysis behind a head-to-head comparison already given, a breakdown of an aggregate already given, a second metric for a lead already shown, the cost of a variant the reviewer did not raise, a comparison with a baseline the reviewer did not name, a result another reviewer asked for. Two exceptions, both reported to the user: it is the only support for a claim the answer makes, or the user or a co-author asked for it by name. Deleted support is held in the issue card as the follow-up answer if the reviewer asks. What survives and strings several values goes into a table (C17). Lint 22 checks this.
+
