@@ -40,7 +40,7 @@ The vocabulary order used in step 4 is the one the blind reader is given: (1) th
 Now the evidence documents, the issue board and the code may be read.
 
 1. **Numbers first.** Check every number the ledger touched against its source (the result file or the paper table). Report-type entries are settled here; a real mismatch stops the pass for that answer until the user rules.
-2. **Word against thing.** If a term describes something other than what was run (the reply says "Judge-P-9B" where the number comes from retrained weights), that is a factual problem in the reply: report it; rewording alone does not settle which model the claim is about.
+2. **Word against thing.** If a term describes something other than what was run (the reply names the released model where the number comes from retrained weights), that is a factual problem in the reply: report it; rewording alone does not settle which model the claim is about.
 3. **Sort the ledger.** Each entry is marked: report to user / idle → step 3 / term → step 4 / no change (with the reason). Entries in co-author text are marked "not touched" and go to the report.
 
 ## 3. Step 3 — tighten
@@ -161,7 +161,7 @@ command grep -niE 'preregister|pre-register|frozen before|sanity check|pilot|abl
 | A co-author's sentence is polished, or an outdated co-author fragment is deleted | Never; highlight the phrase and add a note in a third colour, or comment |
 | Only the English reply is changed | Re-sync the translation, the board and the HTML view |
 
-## 9. Lessons from the first run (Bench-P ICLR 2027, 2026-11-10)
+## 9. Lessons from the first run (2026-11-10)
 
 Five replies were blind-read; the user ruled on each reported item in one line. Each ruling below is the general rule it stands for.
 
@@ -172,7 +172,7 @@ Five replies were blind-read; the user ruled on each reported item in one line. 
 | L1 | Two sets carried one name: "event missing" was defined at SA ≤ 2 but the filter kept SA ≥ 3, and the reply's own examples of a missing event sat inside the kept set | 「怎么改?」 → fixed by wording | Name a filtered set by what the filter does ("keeping SA ≥ 3, which excludes every video in which the event is not realized"), not by the property we wish it had ("the videos that realize the event"). Delete an example that lands on the wrong side of our own threshold. State the headline without the threshold if the threshold is only defined later. |
 | L2 | "…(mean 2.33), consistent with the policy above", where the policy says such a law receives 1 | fixed by deletion | Do not tie a number to a rule it does not visibly match. Keep the number and the comparison; delete "consistent with". Do not add an explanation that was not checked. |
 | L3 | "its 15-configuration leaderboard" — the paper has eight generators, the reply adds two | 「你改」 | A denominator that comes from the lab's result table is an internal name. Recount on the set the reviewer knows (the paper's items plus the new ones) and check that the stated rank still holds there before rewriting. |
-| L4 | The conclusion credited the released judge with a transfer shown by retrained held-out judges | 「Judge-P-9B 没证据吗?」 | When the evidence comes from retrained weights, look for the released model's own number on the same test before rewording the claim away. If it exists and is favorable, add it with its training overlap stated in one clause, and attribute the held-out number to "the held-out judges". |
+| L4 | The conclusion credited the released judge with a transfer shown by retrained held-out judges | 「<released model> 没证据吗?」 | When the evidence comes from retrained weights, look for the released model's own number on the same test before rewording the claim away. If it exists and is favorable, add it with its training overlap stated in one clause, and attribute the held-out number to "the held-out judges". |
 | L5 | Text quoted from the revised paper looked ambiguous to the blind reader | 「不确定的事情不要修订」 | A blind-read doubt about quoted paper text is checked against the cited work's own text first. If the source confirms it, nothing changes. Never revise the paper, or the quote, on a doubt alone. |
 | L6 | The thanks opener named a comparison the answer does not contain | 「删」 | The thanks sentence may only name what the answer delivers. Thank the reviewer for the topic, not for a specific analysis we are not reporting. |
 | L7 | "is off from the human score by 8.1% on average" next to a differently defined 5.5% for the same model and dimension | 「说清楚」 | Every number carries the name of its metric, and two metrics for one model and dimension are told apart in words (mean absolute relative bias over generators vs aggregate relative bias on one generator). When a baseline's output is compared on our scale, say which of its outputs is compared. |

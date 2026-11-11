@@ -54,6 +54,8 @@ Structure (≈ 250–400 words):
 4. **Remaining disagreement**, if any — who raised it, what was answered, and why it does not bear on soundness. VQToken: "were raised only by Gyx4 among the four reviewers, do not impede the precise understanding shown by the other three reviewers". Counts must be true; quote, don't characterize ("no methodological flaws were identified" only if no reviewer named one).
 5. Three-line summary of the contribution (problem, method, evidence).
 
+State coverage with confidence (user 2026-11-10: 「要自信, “回答了所有弱点和问题”」): *"Our response answered every weakness and question"*, not a hedge such as "addresses the review point by point". It is true once the coverage gate passes (every W/Q has an A#). A stress tester that calls it an overclaim because some sub-question is only partly answered is overruled; the partial answers are reported to the user, not hedged in the note.
+
 Never in the closing note:
 - Anything the public threads did not already contain (no new results only the AC sees).
 - Accusations; if a review is reportable, that goes in its own note ([misconduct-reporting.md](misconduct-reporting.md)).
@@ -69,7 +71,12 @@ Never in the closing note:
 
 When the draft lives in a shared doc (e.g. the Google Doc status board) and co-authors comment or suggest:
 - Read every comment, open suggestion and direct edit before touching the doc; never rebuild it wholesale from the local files, which would erase their text.
+- Each source needs its own read. The Drive text export (`read_file_content` with comments) carries comment threads but not suggestions; read suggestions from the Docs API (`read_doc`: `suggestions[]`, and the `suggested*Ids` on text runs for their anchors). Direct edits show up only as a diff of the doc against the canonical files; text a co-author wrote is often the richest lesson (`rhetoric.md` § 9).
 - Reply to each comment with exactly what changed, quoting the new wording ("Replaced 'It does.' with '…'"), and whether mirrors (e.g. the Chinese version, `Reviewer_<ID>_response.md`) were updated.
 - A co-author's edit that conflicts with a user ruling (e.g. a revision promise — "We will add both models to the revised paper" — against a ruling not to change the paper for that reviewer, or a reply pushed over the character limit) is not applied silently: list it under the board's open-decision section for the user.
 - Record each group decision with its date ("Decided (11-09): the title stays unchanged") in the doc, `ISSUE_BOARD.md` and `REBUTTAL_STATE.md`, and propagate it to every reply it touches ("Rulings reach every draft").
-- Generalize recurring comments into `rhetoric.md` § 6 so the next draft needs fewer of them.
+- Before editing, diff every draft paragraph in the doc against the canonical files (normalize markdown escapes and chips). A passage synced late can sit stale in the doc while the files have moved on; in one run the doc's copy of one answer still carried "In an earlier configuration" after the files had replaced it, and the user caught it.
+- Edit commented text inside its anchor where the change allows (insert around it, change words within it). Rewriting the whole anchored span detaches the thread from the text; when the request requires that, say so in the reply list.
+- If the doc connector cannot reply in threads, hand the user one line per thread (what changed, quoting the new wording) to paste.
+- A co-author's worry about the character limit is answered with measured counts per comment, markers stripped (lint 6). When an edit pushes a comment over the limit, re-split at a W/Q boundary and update the comment counts the board shows.
+- Generalize recurring comments, and the moves in text co-authors write themselves, into `rhetoric.md` § 6–9 so the next draft needs fewer of them.

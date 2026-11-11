@@ -74,10 +74,11 @@ Title: Confidential note to the AC regarding Review <ID>
 
 Dear Area Chair,
 
-We would like to bring to your attention factual problems in Review <ID>
-that bear on how it should be weighed. We have answered every point of the
-review on the merits in the public thread; this note only records the
-following verifiable issues.
+We sincerely appreciate the time and effort you and all reviewers have
+devoted to our paper. However, we notice that Review <ID> may not reflect
+a full reading of several parts of the paper that address its concerns.
+We kindly ask that <its score / the points below> be weighed with the
+following verifiable issues in mind.
 
 1. The review states "<verbatim>". The submission reports <fact> in <location>.
 2. The review cites "<reference>". We could not find this work in DBLP,
@@ -87,8 +88,12 @@ following verifiable issues.
 [Optional, one line, only if true:] The review's text lists only strengths
 ("<verbatim>"), while the rating is <r>.
 
-We respectfully ask that these points be taken into account when weighing
-this review. We are happy to provide any further detail.
+We have answered every weakness and question of the review point by
+point in our response. We would be grateful if you could take these
+points into account when weighing this review, and encourage Reviewer
+<ID> to take part in the discussion, for example by naming the specific
+experiment or result they consider incorrect, so that we can answer it
+directly. We are happy to provide any further detail.
 
 Authors of Submission <N>
 ```
@@ -97,6 +102,8 @@ Writing rules:
 - Facts and locations only. No adjectives about the reviewer ("careless", "lazy", "malicious", "clearly AI"). The AC draws the conclusion.
 - Do not write "LLM-generated" as a finding. If relevant, say "the review contains [N] references we could not locate and [M] statements that do not match the submission"; the venue's own policy text names the consequence.
 - No request to remove the review or change the score. Ask that the points "be taken into account".
+- Open warm, then ask gently (co-author on an AC letter, 2026-11-10: "too direct … add something to warm up, such as 'we appreciate the efforts of all reviewers … However, we notice that …'; do not say 'ask' directly, use 'kindly ask'"). A first sentence that is the request reads as a complaint.
+- Ask for more than a re-weighting of one score (same co-author: "it is just a soundness score … rarely see a letter asking for this alone"). Say the review may not reflect a full reading of the paper, that the response answers every point, and ask the AC to encourage the reviewer to engage in the discussion. A letter about a single sub-score alone looks petty; the AC can act on engagement.
 - No mention of other reviewers' scores, and no comparison with them, in this note (that belongs in the closing note, [followup-and-endgame.md](followup-and-endgame.md)).
 - One note per reviewer. A follow-up only if new evidence appears (e.g. the reviewer's reply adds a new false claim) — not to chase the AC.
 
