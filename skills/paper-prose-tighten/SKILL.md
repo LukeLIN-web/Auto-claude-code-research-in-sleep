@@ -461,20 +461,31 @@ cut saves a word or two, so the class is many small edits, not one big one.
 | `trains on its positive episodes together with those collected on ...` | `trains on its positive episodes and those collected on ...` |
 | `none of them in Bench-7's evaluation set` | `none in Bench-7's evaluation set` |
 | `calls grasping or placing tools` | `calls grasp or place tools` (the method section's name for them) |
+| `with the VLA fine-tuned on X, the system succeeds significantly less often than with the frozen VLA` | `fine-tuning on X performs significantly worse than the frozen VLA baseline` |
+| `succeeds significantly more often than with it fine-tuned on Y` | `achieves significantly higher success rates than fine-tuning on Y` |
+| `The VLA's own successful episodes are what make fine-tuning help` | `The VLA's own successful episodes are the primary driver` |
+| `fine-tuned, half and half with DROID, on the episodes it completed` | `fine-tuned on its completed episodes mixed 1:1 with DROID` |
+| `fine-tuning it has been reported to lower the success of the whole system` | `naively fine-tuning it often degrades overall system success` |
 
 **Rewrite pattern:** first look for a word the paper already uses (`vague` is
 already in one benchmark's name; `grasp and place tools` is the method
-section's term), then for the field's usual word. Swap only when the short word
-means the same thing.
+section's term), then for the field's usual word or phrase. Swap only when the
+short form means the same thing.
+
+**Comparisons take the field's result verbs.** `X performs (significantly)
+worse than Y`, `X achieves (significantly) higher success rates than Y`, `X
+(significantly) outperforms Y`, never `the system succeeds (significantly)
+less / more often with X than with Y`. The thing compared becomes the subject
+(`fine-tuning on DROID alone performs worse than ...`), and the comparator is
+named as a baseline, not as a second `with` clause. `more often` stays only for
+how often a behavior happens (`lifts the named object first more often`), not
+for success.
 
 **Not this class** (all from the same draft, all kept):
 
 | Kept | Why |
 |------|-----|
-| `succeeds significantly less often` | `fails` is a different claim |
-| `The VLA's own successful episodes are what make fine-tuning help` | the cleft says *these and nothing else*; dropping `are what` loses that |
 | `is not significantly different from` | the project's allowed wording for a null that matters |
-| `half and half with DROID` | no single word says it |
 | `leaves the orchestrator in place` | `unchanged` says something else |
 
 Also kept: a qualifier that is the claim or bounds it (`significantly`,
@@ -503,6 +514,17 @@ abstract's `loosely worded instructions`, the author wrote
 made that edit themselves on Overleaf. After reading every sentence of the
 draft, the agent changed six more phrases, and four more to fix short last lines.
 The other multi-word phrases carried a claim or had no one-word equivalent.
+
+**Field note (2026-11-11, the kept list was wrong).** The 11-03 pass had kept
+`succeeds significantly less often` (`fails` is a different claim),
+`are what make fine-tuning help` (the cleft) and `half and half with DROID` (no
+single word). The author then rewrote the abstract on Overleaf to
+`performs significantly worse than`, `achieves significantly higher success
+rates than`, `the primary driver` and `mixed 1:1 with DROID`, and ruled
+「performs worse 是对的, succeeds less often 是不好的写法」. The pass had only
+tried one-word swaps; each phrase had a standard phrase in the field that says
+the same claim. Before keeping a phrase because no single word replaces it,
+try the field's standard phrasing.
 
 ### 13. One comparison split across sentences, and copies that disagree (同一个比较说好几遍、各处副本对不上)
 
@@ -669,7 +691,7 @@ Rule of thumb: cut what proves *diligence*; keep what bounds *scope*.
    command grep -nE '\$[0-9.]+\$ ?/ ?\$[0-9.]+\$' sections/*.tex | command grep -v '&'
    command grep -nE '(on|at) [A-Z][A-Za-z-]+, \$?[-+0-9]' sections/*.tex | command grep -v '&'
    # class 12 wordy phrases: recall aid only, read every sentence (class 12)
-   command grep -niE 'carr(y|ies|ied) out|refer(s|red)? to .* as|for the first time|together with|none of them|loosely worded|in order to' sections/*.tex
+   command grep -niE 'carr(y|ies|ied) out|refer(s|red)? to .* as|for the first time|together with|none of them|loosely worded|in order to|(less|more) often|half and half|has been reported to|are what make' sections/*.tex
    # class 13: every sentence that compares against one baseline, across all sections
    # (run once per baseline noun; read the list for split sentences and for copies that disagree)
    for b in 'alone' 'frozen' 'EXIMO-style' 'zero-shot' 'RECAP'; do
