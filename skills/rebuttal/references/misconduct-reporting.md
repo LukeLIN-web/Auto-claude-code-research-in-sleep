@@ -91,8 +91,8 @@ review (rating <r>, soundness <s>, confidence <c>). <Optional, only if
 true: The other reviewers rate soundness <x> to <y>; Reviewers <B> and
 <C> state "<verbatim>".>
 
-1. <Neutral heading naming the topic, e.g. "Unseen-scenario evaluations
-   (W4)".> The review states "<verbatim>". The original submission PDF
+1. <Heading naming the complaint, e.g. "A factual error in W4".> The
+   review states "<verbatim absolute sentence>". This is incorrect. The original submission PDF
    (<date>, before any rebuttal revision) already contains <fact>:
    <Appendix X, Table Y (p. Z of the original submission)>. Reviewer <A> lists this
    evidence as a strength: "<verbatim>".
@@ -110,7 +110,7 @@ The authors of Submission <N>
 Writing rules:
 - Facts and locations only about the reported reviewer. No adjectives about them ("careless", "lazy", "malicious", "clearly AI"), no "violates"; quote the rule and the review and let the AC draw the conclusion.
 - Praise is for the other reviewers and must be specific and true; quote their own words where possible. Comparing scores is allowed when it supports a point (step 4); never as "the others liked it, so this one is wrong".
-- Headings name the topic, not an accusation. Do not call a reviewer's statement a "factual error / false premise" if any part of the submission's main text supports their reading (a 2026-11-12 letter: the main text said every judge test used one held-out generator, which was the review's premise that no unseen-scenario test existed, while the appendix had two; the heading became "Unseen-scenario evaluations (W4)").
+- **Each point says plainly what the complaint is** (user 2026-11-12, on a W4 point that only listed tables: 「我没看出来你要投诉什么…你要指出这个是 factual error 吧 别的审稿人也有不同意见…写清楚」). When the review makes an absolute statement about the submission's content ("No evaluation of X on Y") that the submission contradicts, the heading says "A factual error in W<n>", the quote is followed by "This is incorrect.", the evidence follows with locations, and one sentence names the complaint: "W<n> therefore rests on a statement that the submission contradicts and that another reviewer explicitly disagrees with." This replaces the earlier neutral-heading rule ("Unseen-scenario evaluations (W4)"). Quote only the review's absolute sentence, never its hedge that the main text could support (in the 2026-11-12 case the main text said every judge test used one held-out generator, so the review's "the reported evaluation does not establish …" was left out, while its headline "No evaluation of <the judge> on unseen scenarios" was false because an appendix tests that judge itself on unseen prompts), and tell the user about that exposure before sending. Other wording stays factual: no adjectives about the reviewer, no "did not read".
 - Do not write "LLM-generated" as a finding. If relevant, say "the review contains [N] references we could not locate and [M] statements that do not match the submission"; the venue's own policy text names the consequence.
 - No request to remove the review or change the score. Ask that the points "be taken into account".
 - Open warm, then ask gently (co-author on an AC letter, 2026-11-10: "too direct … add something to warm up … do not say 'ask' directly, use 'kindly ask'"). A first sentence that is the request reads as a complaint.
