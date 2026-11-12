@@ -67,44 +67,56 @@ Rules:
 
 ## 4. The note to the AC
 
-One message, factual, short (≈ 150–300 words plus the table). It asks the AC to weigh the review, not to punish anyone.
+One message, written like a normal letter (user 2026-11-12: 「怎么举报是需要学习的, 就正常写就行」), not a charge sheet. It asks the AC to weigh the review, not to punish anyone. Structure, in this order (user 2026-11-12: 「你先把其他正常的审稿人夸一遍，然后说他们怎么怎么好，然后 bring attention to reviewer xxx 然后后面就说事情」):
+
+1. **Thank the AC, then praise the other reviewers by name, specifically.** Say what each one did well, with a short verbatim quote or the concrete thing they checked ("Reviewer A checks the fine-tuning gains against two specific tables"). Generic thanks ("all reviewers were helpful") does not count. Only reviewers whose review is normal; skip the one being reported.
+2. **"We would like to bring to your attention Reviewer X's review"**, with its rating / soundness / confidence.
+3. **The facts, numbered**, one per point. Each point: the reviewer's verbatim words, what the submission contains and where.
+4. **Support from the other reviewers, inside each point** (user 2026-11-12: 「最好能从别的审稿人那里找一点支持你的结论」). For every point, search the other reviews for text that backs it and quote it verbatim: a reviewer who lists as a strength the very evidence the reported review says is missing is the strongest support; next, the other reviewers' sub-scores on the dimension the reported review attacks (e.g. "the other four rate soundness 2 or 3; two state 'no substantive concerns about the paper's soundness'"). Never cite a reviewer who raised the same concern as the reported one, and do not mention a point where the other reviewers agree with it (answer it in the public thread only).
+5. **Close**: we answer every point in our response; ask the AC to take the points into account and to encourage the reviewer to engage.
 
 ```
-Title: Confidential note to the AC regarding Review <ID>
+Title: Submission <N>: Reviewer <ID>, <point 1>, <point 2>, ...
 
 Dear Area Chair,
 
-We sincerely appreciate the time and effort you and all reviewers have
-devoted to our paper. However, we notice that Review <ID> may not reflect
-a full reading of several parts of the paper that address its concerns.
-We kindly ask that <its score / the points below> be weighed with the
-following verifiable issues in mind.
+Thank you for handling our submission. We are grateful to all reviewers
+for their time, and would like to thank Reviewers <A>, <B> and <C> in
+particular for reviews that engage closely with the paper: Reviewer <A>
+<concrete thing they checked>; Reviewer <B> finds "<verbatim praise>";
+Reviewer <C> <...>.
 
-1. The review states "<verbatim>". The submission reports <fact> in <location>.
-2. The review cites "<reference>". We could not find this work in DBLP,
-   CrossRef, Semantic Scholar or the <venue> proceedings.
-3. <...>
+We would like to bring to your attention <N> points in Reviewer <ID>'s
+review (rating <r>, soundness <s>, confidence <c>). <Optional, only if
+true: The other reviewers rate soundness <x> to <y>; Reviewers <B> and
+<C> state "<verbatim>".>
 
-[Optional, one line, only if true:] The review's text lists only strengths
-("<verbatim>"), while the rating is <r>.
+1. <Neutral heading naming the topic, e.g. "Unseen-scenario evaluations
+   (W4)".> The review states "<verbatim>". The submission reports <fact>
+   in <location>. Reviewer <A> lists this evidence as a strength:
+   "<verbatim>".
+2. <...>
 
-We have answered every weakness and question of the review point by
-point in our response. We would be grateful if you could take these
-points into account when weighing this review, and encourage Reviewer
-<ID> to take part in the discussion, for example by naming the specific
-experiment or result they consider incorrect, so that we can answer it
-directly. We are happy to provide any further detail.
+We answer every weakness and question of the review in our response
+<to the reviewer / which we will post in this thread>. We would be
+grateful if you could take these points into account when weighing the
+review, and encourage Reviewer <ID> to engage with them during the
+discussion.
 
-Authors of Submission <N>
+The authors of Submission <N>
 ```
 
 Writing rules:
-- Facts and locations only. No adjectives about the reviewer ("careless", "lazy", "malicious", "clearly AI"). The AC draws the conclusion.
+- Facts and locations only about the reported reviewer. No adjectives about them ("careless", "lazy", "malicious", "clearly AI"), no "violates"; quote the rule and the review and let the AC draw the conclusion.
+- Praise is for the other reviewers and must be specific and true; quote their own words where possible. Comparing scores is allowed when it supports a point (step 4); never as "the others liked it, so this one is wrong".
+- Headings name the topic, not an accusation. Do not call a reviewer's statement a "factual error / false premise" if any part of the submission's main text supports their reading (a 2026-11-12 letter: the main text said every judge test used one held-out generator, which was the review's premise that no unseen-scenario test existed, while the appendix had two; the heading became "Unseen-scenario evaluations (W4)").
 - Do not write "LLM-generated" as a finding. If relevant, say "the review contains [N] references we could not locate and [M] statements that do not match the submission"; the venue's own policy text names the consequence.
 - No request to remove the review or change the score. Ask that the points "be taken into account".
-- Open warm, then ask gently (co-author on an AC letter, 2026-11-10: "too direct … add something to warm up, such as 'we appreciate the efforts of all reviewers … However, we notice that …'; do not say 'ask' directly, use 'kindly ask'"). A first sentence that is the request reads as a complaint.
-- Ask for more than a re-weighting of one score (same co-author: "it is just a soundness score … rarely see a letter asking for this alone"). Say the review may not reflect a full reading of the paper, that the response answers every point, and ask the AC to encourage the reviewer to engage in the discussion. A letter about a single sub-score alone looks petty; the AC can act on engagement.
-- No mention of other reviewers' scores, and no comparison with them, in this note (that belongs in the closing note, [followup-and-endgame.md](followup-and-endgame.md)).
+- Open warm, then ask gently (co-author on an AC letter, 2026-11-10: "too direct … add something to warm up … do not say 'ask' directly, use 'kindly ask'"). A first sentence that is the request reads as a complaint.
+- Ask for more than a re-weighting of one score (same co-author: "it is just a soundness score … rarely see a letter asking for this alone"). The AC can act on engagement.
+- **Review-form instructions** are fair to cite (e.g. ICLR 2027 Critical Weaknesses: "identify one or two critical weaknesses … The goal is not to enumerate every negative point"): quote the form, state the count, ask the AC to have the reviewer name the one or two that decide the rating. Check the venue's public reviewer guide for wording that cuts the other way (ICLR 2027: "List strong and weak points of the paper. Be as comprehensive as possible.").
+- **A review that cites a non-anonymous version (arXiv, project page).** Quote the review's words and the venue guide ("It is recommended that you ignore the version on arxiv."). Then compare that version with the submission yourself (download it; check page count, appendix list, the evidence the review says is missing) and, if true, say it is an earlier version and name concretely what the submission adds (user 2026-11-12: 「arxiv 版本也可以说是旧版本, 改了很多」; in the 2026-11-12 case the arXiv v1 had no judge-validation appendix, so none of the evaluations the review called missing). Never claim the reviewer reviewed that version, "searched for it", or guess who they are; never include a date that invites "why didn't you fix it before submitting".
+- If the note goes out before your reply to that reviewer is posted, say so ("our response, which we will post in this thread"); never point the AC at a reply that is not there yet.
 - One note per reviewer. A follow-up only if new evidence appears (e.g. the reviewer's reply adds a new false claim) — not to chase the AC.
 
 ## 5. The public thread, at the same time
