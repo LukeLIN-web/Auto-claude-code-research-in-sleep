@@ -213,7 +213,7 @@ A co-author wrote one reviewer's file opener, A1 and A2 directly in the shared G
 
 **Not copied (break a hard rule; they stay only as the co-author's own text, under the wording-pass rule that co-author text is not touched):**
 - *"… and we should have made our answer easier to find."* concedes a presentation fault the reviewer did not name ("Never concede"). C30's restatement does the same work without it.
-- *"We have now incorporated the two models in our manuscript and update all analyses accordingly."* is a revision promise the user had not approved, against the ruling not to change the paper for that reviewer ("Never overpromise"); it went to the board's open decisions (`followup-and-endgame.md` § 7).
+- *"We have now incorporated the two models in our manuscript and update all analyses accordingly."* is a revision promise the user had not approved, against the ruling not to change the paper for that reviewer ("Never overpromise"); it went to the board's open decisions ([collaboration.md](collaboration.md) § 2).
 
 ## 10. User ruling on secondary evidence (2026-11-10)
 

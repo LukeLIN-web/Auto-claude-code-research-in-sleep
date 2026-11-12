@@ -69,14 +69,4 @@ Never in the closing note:
 
 ## 7. Co-author comments on the shared draft
 
-When the draft lives in a shared doc (the collaborator doc on HackMD, `SKILL.md` Phase 4; earlier rebuttals used a Google Doc) and co-authors comment or suggest:
-- Read every comment, open suggestion and direct edit before touching the doc; never rebuild it wholesale from the local files, which would erase their text.
-- Each source needs its own read. The Drive text export (`read_file_content` with comments) carries comment threads but not suggestions; read suggestions from the Docs API (`read_doc`: `suggestions[]`, and the `suggested*Ids` on text runs for their anchors). Direct edits show up only as a diff of the doc against the canonical files; text a co-author wrote is often the richest lesson (`rhetoric.md` § 9).
-- Reply to each comment with exactly what changed, quoting the new wording ("Replaced 'It does.' with '…'"), and whether mirrors (e.g. the Chinese version, `Reviewer_<ID>_response.md`) were updated.
-- A co-author's edit that conflicts with a user ruling (e.g. a revision promise — "We will add both models to the revised paper" — against a ruling not to change the paper for that reviewer, or a reply pushed over the character limit) is not applied silently: list it under the board's open-decision section for the user.
-- Record each group decision with its date ("Decided (11-09): the title stays unchanged") in the doc, `ISSUE_BOARD.md` and `REBUTTAL_STATE.md`, and propagate it to every reply it touches ("Rulings reach every draft").
-- Before editing, diff every draft paragraph in the doc against the canonical files (normalize markdown escapes and chips). A passage synced late can sit stale in the doc while the files have moved on; in one run the doc's copy of one answer still carried "In an earlier configuration" after the files had replaced it, and the user caught it.
-- Edit commented text inside its anchor where the change allows (insert around it, change words within it). Rewriting the whole anchored span detaches the thread from the text; when the request requires that, say so in the reply list.
-- If the doc connector cannot reply in threads, hand the user one line per thread (what changed, quoting the new wording) to paste.
-- A co-author's worry about the character limit is answered with measured counts per comment, markers stripped (lint 6). When an edit pushes a comment over the limit, re-split at a W/Q boundary and update the comment counts the board shows.
-- Generalize recurring comments, and the moves in text co-authors write themselves, into `rhetoric.md` § 6–9 so the next draft needs fewer of them.
+Moved to [collaboration.md](collaboration.md): ownership of text (§ 1), co-author version vs ours (§ 2), checking against the source (§ 3), marking (§ 4), sync direction (§ 5), comments and suggestions (§ 6), safe edits (§ 7).
