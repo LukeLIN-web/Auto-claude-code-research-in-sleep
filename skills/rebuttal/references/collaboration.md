@@ -12,7 +12,7 @@ Every sentence in the shared draft has one owner, and the owner decides what may
 | A co-author | any sentence they wrote or edited, usually in their own colour | Never reword, delete or move it (2026-11-09「恢复合作者原文的，以后合作者改了你就不要改」, 2026-11-10「合作者的永远不删」). Mark it (§ 4); add to it only by appending after their text in body colour, never woven in (2026-11-09「只 append 不改合作者的话」) |
 | The user | text the user typed into the doc, and every ruling | Same as a co-author's text |
 
-Two exceptions let us change a co-author's sentence: the user names the spot and the new wording (「你直接改成 …」), or the co-author agrees to a listed set of fixes (「她说她的 4 处你可以改正确」). Change exactly those, put the changed sentence in our colour, and log the consent with its date.
+Three exceptions let us change a co-author's sentence: a number that disagrees with its source or a clear grammar slip (user 2026-11-12「数字对不上, 明显的语法错, 直接改.」, § 2); the user names the spot and the new wording (「你直接改成 …」); or the co-author agrees to a listed set of fixes (「她说她的 4 处你可以改正确」). Change exactly the wrong words and nothing around them, put only the changed words in our colour so the co-author sees what moved, and log the change with its date.
 
 "Keep the latest" applies to our own superseded versions only; a co-author's older version stays in the doc (it is simply not given to the blind reader, [wording-pass.md](wording-pass.md) § 1).
 
@@ -23,8 +23,8 @@ When a co-author's version of a passage differs from ours, sort each difference 
 | Kind | Examples | What to do |
 |---|---|---|
 | Wording only | a different thanks opener, another order of the same facts, an equivalent description, a warmer closing | **Use theirs.** Sync it into the canonical file verbatim and drop our version. Withdraw any note of ours that only suggested style ("reads awkwardly", "250 said twice", "including … lists all of them") |
-| Placeholder | `[X] pt`, `Table [N]`, `Appendix [L]` | Fill it in the canonical file from the primary source (§ 3). Their doc text keeps the bracket; a note lists the values |
-| Clear slip | "we have make", a wrong word ("pivot" for "pivotal"), "your comment … addressed them" | Not changed by us. One short note lists the fix for them; the canonical file takes their text verbatim and is re-synced once they fix it |
+| Placeholder or wrong number | `[X] pt`, `Table [N]`, `Appendix [L]`; a value, table number or count that disagrees with the paper build or results | **Fix it directly** in the doc and the canonical file from the primary source (§ 3); changed words in our colour, no note |
+| Clear slip | "we have make", a wrong word ("pivot" for "pivotal"), "your comment … addressed them", "by heart" for "to heart" | **Fix it directly**, the smallest change that makes it correct; changed words in our colour, no note. A rewrite that goes beyond the slip is wording, and wording is theirs |
 | Substance | a concession, a revision promise the user has not approved, an overclaim (calling a model "SoTA" that the human study rated well below another), a number or fact that disagrees with its source, a conflict with a ruling, a comment pushed over the limit | Highlight and note (§ 4), and list it under the board's open decisions. The canonical file keeps the approved text until the group decides |
 
 A paragraph that carries any substance item waits as a whole: do not sync its wording-only parts piecemeal, or the canonical file ends up with half of a paragraph whose other half is still under discussion. Say in the report which paragraphs wait and why.
@@ -38,13 +38,13 @@ Lesson (2026-11-12): a co-author's A2 described the redrawn figure ("We removed 
 ## 4. Marking a co-author's text
 
 - Highlight the exact phrase (yellow) and put one short note in a third colour (red; neither the co-author's colour nor body text) at the end of that paragraph, or leave a doc comment (user 2026-11-10「你就想办法标出来, comment, 或者用不同颜色 指出这里是错的」).
-- Date the note and keep it to what is wrong and what it clashes with: 【注（11-12）：…】. Point to the ruling or the number; propose a fix only for substance and slips, never for style (§ 2).
+- Date the note and keep it to what is wrong and what it clashes with: 【注（11-12）：…】. Point to the ruling or the number. Notes are for substance only: style is theirs and numbers and slips are fixed, not noted (§ 2).
 - Notes are ours: update them when facts change, delete them with their highlight once resolved, and strip them from anything pasted.
 - Mirror the note's facts in the notes section of the canonical response file, so the next session sees the open point without opening the doc.
 
 ## 5. Sync direction
 
-- **Co-author text: doc → canonical, verbatim.** Never the reverse. Normalize only markup (escapes, chips), not words.
+- **Co-author text: doc → canonical, verbatim.** Never the reverse, except the direct fixes of § 2, which land in both places at once. Normalize only markup (escapes, chips), not words.
 - **Our text: canonical → doc.** Where co-authors edit the doc, change our spans in place with targeted edits; never rebuild the doc wholesale from local files, which erases their text.
 - **Translations are ours.** When a co-author's English changes, retranslate it in the canonical file and the doc; keep placeholders as the English has them.
 - After any sync, regenerate the derived views (collaborator doc, HTML board) and re-measure the comment lengths (lint 6). If a render gate refuses a file another session edited (internal names, paths), fix the offending line in our notes and say so.

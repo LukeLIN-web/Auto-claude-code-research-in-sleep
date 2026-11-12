@@ -451,7 +451,7 @@ Skip if `RENDER_HTML = false`.
 - **Wording pass before posting.** A fresh subagent blind-reads every reply as its reviewer; undefined terms, internal names and filler are removed, every repeated number matches its owner; numbers, quotes, co-author text and rulings are not touched ([references/wording-pass.md](references/wording-pass.md)).
 - **Respect the limit.** Character budget is a hard constraint.
 - **Resume cleanly.** Continue from REBUTTAL_STATE.md on rerun.
-- **Co-authors: wording is theirs, substance is noted.** A co-author's sentence is never reworded or deleted; where their version differs from ours only in wording, theirs is used verbatim; substance goes to a dated note and the open decisions; a claim is checked against the paper build or results, never against our own board ([references/collaboration.md](references/collaboration.md)).
+- **Co-authors: wording is theirs, substance is noted.** A co-author's sentence is never reworded or deleted; where their version differs from ours only in wording, theirs is used verbatim; a wrong number or a clear grammar slip in it is fixed directly (changed words in our colour); substance goes to a dated note and the open decisions; a claim is checked against the paper build or results, never against our own board ([references/collaboration.md](references/collaboration.md)).
 - **One collaborator doc, one link.** `COLLAB_DOC.md` is the team's view; its drafts are regenerated and pushed by `scripts/collab_doc_sync.py` after every change, never edited by hand on HackMD (Phase 4 "Collaborator doc").
 - **Anti-hallucination citations.** Any reference added must go through DBLP → CrossRef → [VERIFY].
 
