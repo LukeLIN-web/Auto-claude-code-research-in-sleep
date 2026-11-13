@@ -70,3 +70,10 @@ Lesson (2026-11-12): a co-author's A2 described the redrawn figure ("We removed 
 - Read the whole doc before the first edit and after every write; send every positional batch guarded by the revision id of the latest read. A rejected batch means someone is typing: read again and rebuild, never drop the guard.
 - Apply edits from the highest index down so earlier positions stay valid within one batch.
 - Read the result back and check text, colour and highlight before reporting.
+
+## 8. User rulings on the paste text
+
+Rulings the user made while reviewing paste-ready replies. They hold for every reply and override older examples elsewhere in this skill.
+
+- **OpenReview Markdown shows HTML tags as plain text.** `<u>0.25</u>` comes out as `<u>0.25</u>` (user 2026-11-13「`<u>0.25</u>` openreview 渲染不出来」). OpenReview has no underline. When the user asks for "best bold, second underlined" in a table, mark the best value in each column `**bold**` and the second `*italic*`, and tell the user that the second is in italics instead of underlined. Reference rows such as a human standard or an upper bound are not ranked; only the systems being compared are. Use only Markdown that OpenReview renders: `**`, `*`, `>`, tables and lists.
+- **Do not volunteer what is *not* new.** Leave out asides such as "(no new labels)", "(new experiment, same labels)" and "reanalysis only" (user 2026-11-13「（没有新标注）这种不利的就别说了」). They tell the reviewer that the work is cheap. Keep the address of the number, for example *"a new analysis of the paper's human ratings"* ([rhetoric.md](rhetoric.md) C2), and label new work as new (C1, C31). This is a case of the no-volunteer rule in `SKILL.md`. Remove the matching phrases from the translation as well (「（没有新标注）」「（新实验，标注不变）」).
