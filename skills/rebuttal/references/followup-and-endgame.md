@@ -5,7 +5,7 @@ Rhetoric rules: [rhetoric.md](rhetoric.md). Reports on bad-faith reviews: [misco
 
 ## 1. Posting order
 
-Post one reviewer at a time, positive-score reviewers first; they usually confirm and then stop moving. Difficult negative-score reviewers go last (Phase 3 step 8, 「先一个一个回复，看正分审稿人愿不愿意confirm，他们一般confirm之后就不动了. 然后麻烦的负分先留到最后」).
+Post one reviewer at a time, positive-score reviewers first; they usually confirm and then stop moving. Difficult negative-score reviewers go last (Phase 3 step 8, 「先一个一个回复，看正分审稿人愿不愿意confirm，他们一般confirm之后就不动了. 然后麻烦的负分先留到最后」). The board and collaborator doc use the same order from the start, highest score first (user 2026-11-12「下次应该把高分的放前面」); one rebuttal's board led with the 1-score reviewer and could not be reordered once co-authors were editing it.
 
 VQToken fits this: LjpF acknowledged within three days and ended at 5; RRqQ (4) wrote "this fully addresses all my questions" and stayed at 4; the negative reviewer took the whole period.
 
