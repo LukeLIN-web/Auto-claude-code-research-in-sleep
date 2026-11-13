@@ -8,7 +8,7 @@ Every sentence in the shared draft has one owner, and the owner decides what may
 
 | Owner | What | What we may do |
 |---|---|---|
-| Us | our drafts, translations, board prose, our notes and highlights | Update in place whenever it is stale, without asking; delete a resolved note and its highlight at once (user 2026-11-10「你写的就直接更新, 合作者的 就 append 注」) |
+| Us | our drafts, translations, board prose, our notes and highlights | Update in place whenever it is stale, without asking; delete a resolved note and its highlight at once (user 2026-11-10「你写的就直接更新, 合作者的 就 append 注」). The same goes for board items: a settled open-decision item and a finished to-do item (tagged done / decided) are deleted, not left in place with a 已定 or 完成 label; the ruling stays in `ISSUE_BOARD.md` and the state file (user 2026-11-13「清理一下 需要讨论的」「我们要做的事情 完成了也直接删」). A co-author's paragraph inside a deleted item stays, as below |
 | A co-author | any sentence they wrote or edited, usually in their own colour | Never reword, delete or move it (2026-11-09「恢复合作者原文的，以后合作者改了你就不要改」, 2026-11-10「合作者的永远不删」). Mark it (§ 4); add to it only by appending after their text in body colour, never woven in (2026-11-09「只 append 不改合作者的话」) |
 | The user | text the user typed into the doc, and every ruling | Same as a co-author's text |
 
