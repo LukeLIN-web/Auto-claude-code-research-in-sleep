@@ -7,7 +7,7 @@ Run at Phase 6.5, after the stress-test fixes and before Finalize, and again on 
 | 1. Blind read | Can the reviewer parse this word, at this point in the reply? | a fresh subagent that gets only [blind-read.md](blind-read.md), the review and the reply | `docs-jargon-pass`, first pass |
 | 2. Reconcile | Do the numbers and terms the ledger touched match their sources? | the drafter, with the evidence | `docs-jargon-pass`, second pass |
 | 3. Tighten (cut only) | If this sentence is deleted, does the reviewer's judgment change? | `/paper-polish` editor (a fresh subagent per paste target), overlay § 3 | `paper-polish` → `paper-prose-tighten` |
-| 4. Reword, then rewrite | For each term the reader stalled on: delete, replace, or define? Then: do the surviving sentences say "we did", in order, clearly? | the same editor, overlay § 4 | `paper-polish` → `paper-jargon-pass` + `references/rewrite.md` |
+| 4. Reword, then rewrite | For each term the reader stalled on: delete, replace, or define? Then: do the surviving sentences say "we did", in order, clearly? | the same editor, overlay § 4 | `paper-polish` → `paper-jargon-pass`, then `paper-polish/references/rewrite.md` |
 | 5. Check the editor's edits | Did any edit move a frozen span, a number, or the claim? | the drafter | `paper-polish` § 5, plus § 5 here |
 | 6. One owner per number | Is this number written once, and identical everywhere it is repeated? | the drafter | `docs-ssot-tighten` |
 | 7. Acceptance | Does a second fresh reader still stall? | a second fresh subagent | `docs-jargon-pass` |
@@ -90,7 +90,7 @@ Step 3 tests **every number inside a kept sentence**, not only whole sentences. 
 
 ## 4. Step 4 — reword, then rewrite (`/paper-jargon-pass`)
 
-Overlay for `/paper-polish` step 4. The editor runs `/paper-jargon-pass`'s **second pass only** (查证 + 改写) on the ledger entries step 2 marked "term" whose sentence is still there. Its pass 0 (LaTeX assembly) does not apply, and its blind read is step 1 here. Also skipped: PDF page order, compile, figures, the two-clone rule, and 「正文不写结果数字」 (a reply carries its numbers; rhetoric C17 decides which go in a table). The skill's ordered moves and its 同物异名 / 悬空指代 rules apply as written; the vocabulary order is § 1's. The rewrite that follows is in § 4.1.
+Overlay for `/paper-polish` step 4. The editor runs `/paper-jargon-pass`'s **second pass only** (查证 + 改写) on the ledger entries step 2 marked "term" whose sentence is still there. Its pass 0 (LaTeX assembly) does not apply, and its blind read is step 1 here. Also skipped: PDF page order, compile, figures, the two-clone rule, and 「正文不写结果数字」 (a reply carries its numbers; rhetoric C17 decides which go in a table). The skill's ordered moves and its 同物异名 / 悬空指代 rules apply as written; the vocabulary order is § 1's. The rewrite that follows (`/paper-polish`'s `references/rewrite.md`) is in § 4.1.
 
 1. **Try these in order — stop at the first that works:**
    1. **Delete the word** and say the same thing with words already in the reply.
@@ -101,9 +101,9 @@ Overlay for `/paper-polish` step 4. The editor runs `/paper-jargon-pass`'s **sec
 3. A term used once is assumed deletable. A term used ten times that the reader still cannot parse is not kept because it is frequent.
 4. A definition that arrives later than first use is moved to first use, not duplicated.
 
-### 4.1 Rewrite: active voice, cohesion, clarity ([rewrite.md](../../paper-jargon-pass/references/rewrite.md))
+### 4.1 Rewrite: active voice, cohesion, clarity ([rewrite.md](../../paper-polish/references/rewrite.md))
 
-After the term fixes, the editor reads `/paper-jargon-pass`'s [rewrite.md](../../paper-jargon-pass/references/rewrite.md) and rewrites the sentences that survived (user 2026-11-12: 「我们尽量用 We 这样子的主动语态，你让 AI 给你加强下表达和衔接，以及语言的 clarity」): what we did with "we" as the subject and an active verb; known before new; each paragraph's first sentence linked to the question or the paragraph before; connectives that name the relation; one claim per sentence. It only rewrites; a sentence that looks empty is reported, not cut (cutting was step 3). Reply-specific limits ([rhetoric.md](rhetoric.md) C35):
+After the term fixes, the editor reads `/paper-polish`'s [rewrite.md](../../paper-polish/references/rewrite.md) and rewrites the sentences that survived (user 2026-11-12: 「我们尽量用 We 这样子的主动语态，你让 AI 给你加强下表达和衔接，以及语言的 clarity」): what we did with "we" as the subject and an active verb; known before new; each paragraph's first sentence linked to the question or the paragraph before; connectives that name the relation; one claim per sentence. It only rewrites; a sentence that looks empty is reported, not cut (cutting was step 3). Reply-specific limits ([rhetoric.md](rhetoric.md) C35):
 - The sentence after the thanks stays the bare verdict (rhetoric § 1, lint 11): never "We find that all four contrasts are significant", never "We ran …".
 - The house-style items of § 3 keep their place and job; their wording may be smoothed, they are not removed.
 - Frozen spans are not touched; a co-author's passive sentence stays passive.
@@ -152,10 +152,7 @@ command grep -niE 'does not (report|provide|release)|no official|not available|w
 command grep -nE '[0-9.]+%? ?/ ?[0-9.]+%? ?/ ?[0-9.]+|([0-9.]+%?, ){3,}' $F | command grep -v '^[^:]*:[0-9]*:\s*|'
 # process vocabulary
 command grep -niE 'preregister|pre-register|frozen before|sanity check|pilot|ablation we dropped' $F
-# passive voice and impersonal openers (step 4.1, rewrite.md § 1): read each hit; the authors as hidden actor → active "we"
-command grep -niE '\b(is|are|was|were|been|being|be) ([a-z-]+ed|done|run|made|shown|given|chosen|taken|seen|written|drawn|known|built|kept|held|set|found)\b|\bit (is|can be|should be) (shown|seen|noted|observed|found)|\bit is (worth|important) ' $F
-# connective chains (step 4.1, rewrite.md § 2): Moreover / Furthermore / Additionally opening consecutive sentences
-command grep -nE '(Moreover|Furthermore|Additionally|In addition),' $F
+# passive voice and connective chains (step 4.1): the greps in paper-polish references/rewrite.md § 1–2
 ```
 
 ## 8. Acceptance
@@ -194,14 +191,9 @@ command grep -nE '(Moreover|Furthermore|Additionally|In addition),' $F
 | A number is replaced across files by string | Same string can be a different quantity; read each hit |
 | A co-author's sentence is polished, or an outdated co-author fragment is deleted | Never; highlight the phrase and add a note in a third colour, or comment |
 | Only the English reply is changed | Re-sync the translation, the board and the HTML view |
-| The drafter tightens or polishes alone | A fresh editor subagent invokes `/paper-prose-tighten`, then `/paper-jargon-pass`; the drafter only checks (step 5) |
-| The editor writes its own polish rules instead of calling the skills | Voice, cohesion and clarity live in paper-jargon-pass's `references/rewrite.md` (and its 同物异名 / 悬空指代); a gap there is fixed in that file |
-| An edited paragraph is taken because it reads better | Taken only after the frozen-span diff, the number/address multiset check and the before/after claim line |
+| The drafter tightens or polishes alone, or the editor's edits are taken unchecked | `/paper-polish`: its editor edits, the drafter only checks (its § 5 and § 5 here); its "Never" list covers the rest |
 | "We" is pushed into the verdict sentence ("We find that all four contrasts are significant") | The answer after the thanks stays the bare verdict; "we" goes where the authors acted |
-| An unknown-actor passive is forced active ("Annotators rated each video three times" invented from "each video is rated by three annotators") | Passive stays when the actor is unknown or irrelevant; never invent an actor |
 | A co-author's passive sentence is turned active | Frozen; report it as a note if at all |
-| Prose-tighten run twice, jargon-pass run before prose-tighten, or the rewrite step cuts sentences | Once each, prose-tighten (cut) first, then jargon-pass (reword, rewrite); the rewrite only rewrites |
-| A rejected edit is half-merged into the old sentence | Drop it; keep the earlier sentence |
 
 ## 10. Lessons from the first run (2026-11-10)
 

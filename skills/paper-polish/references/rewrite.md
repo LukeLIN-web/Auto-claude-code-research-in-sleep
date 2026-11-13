@@ -1,8 +1,6 @@
 # Rewrite: active voice, cohesion, clarity
 
-`/paper-jargon-pass` reads this file in its rewrite step (改写), after the term fixes of the second pass. It is about **rewriting** sentences that stay. **Cutting** is `/paper-prose-tighten`'s job and runs before this skill: never cut here, and never rewrite there (user 2026-11-12: 「改写专门开个 reference/ 里面的 .md 把, 删和改不要放一个」).
-
-The usual entry point is [`/paper-polish`](../../paper-polish/SKILL.md), which has a fresh editor subagent run `/paper-prose-tighten`, then `/paper-jargon-pass` and this file, and has the text's owner check every edit.
+`/paper-polish`'s editor reads this file in step 4, after the term fixes of `/paper-jargon-pass`'s second pass. It is about **rewriting** sentences that stay. **Cutting** is `/paper-prose-tighten`'s job and runs before this skill: never cut here, and never rewrite there (user 2026-11-12: 「改写专门开个 reference/ 里面的 .md 把, 删和改不要放一个」).
 
 Origin: for a rebuttal, the user asked 「我们尽量用 We 这样子的主动语态，你让 AI 给你加强下表达和衔接，以及语言的 clarity」, then 「先 paper prose tighten, 再 paper jargon pass」.
 
@@ -44,8 +42,8 @@ Each sentence is correct, but the reader has to work out how it connects to the 
 | A sentence opens with a new term and ends with the known one (`A held-out generator family is what the second test uses`) | Known first, new last: `The second test uses a held-out generator family.` |
 | A paragraph starts with no link to the question or the previous paragraph | First sentence says the relation: `To test whether …, we …`, `This result also holds for unseen prompts: …` |
 | `Moreover, … Furthermore, … Additionally, …` opening consecutive sentences | A connective that names the relation (`therefore`, `because`, `for example`, `first … then`), or none |
-| The same thing called by a new name each time to avoid repetition | One noun throughout; this is the skill's 同物异名 rule |
-| `This` / `It` with two possible antecedents | Add the noun (`This gap shows`); this is the skill's 悬空指代 rule |
+| The same thing called by a new name each time to avoid repetition | One noun throughout; this is `/paper-jargon-pass`'s 同物异名 rule |
+| `This` / `It` with two possible antecedents | Add the noun (`This gap shows`); this is `/paper-jargon-pass`'s 悬空指代 rule |
 
 **Pattern:** read each paragraph as one argument. Its first sentence says what it answers or how it follows the last; each later sentence starts from something the reader already has.
 
@@ -59,7 +57,7 @@ command grep -nE '(Moreover|Furthermore|Additionally|In addition),' $FILES
 
 | Problem | Write |
 |---------|-------|
-| Two independent claims in one sentence joined by `and` / `;` | Split: one claim per sentence (the skill's 一句话塞太多 is the extreme case) |
+| Two independent claims in one sentence joined by `and` / `;` | Split: one claim per sentence (`/paper-jargon-pass`'s 一句话塞太多 is the extreme case) |
 | A long qualifying clause between subject and verb | Move the clause after the verb, or into its own sentence |
 | Nominalizations (`a comparison is made`, `leads to an improvement in`, `the computation of`) | The verb: `we compare`, `improves`, `we compute` |
 | Vague scope (`across settings`, `in most cases`) | The concrete scope the evidence has (`on all four benchmarks`, `in three of four`), only when the text already states it somewhere; otherwise leave it and report |
@@ -70,6 +68,16 @@ command grep -nE '(Moreover|Furthermore|Additionally|In addition),' $FILES
 
 1. Run after the term fixes of the second pass: a sentence is rewritten once, with its terms already settled.
 2. One pass. A second rewrite of rewritten text trades one smooth phrasing for another and drifts terms.
-3. Only rewrite; never cut a sentence here. A sentence that looks empty goes back to `/paper-prose-tighten` (or, for a reply, is reported).
+3. Only rewrite; never cut a sentence here. A sentence that looks empty is reported (cutting was step 3, `/paper-prose-tighten`).
 4. No new terms, no new claims, no new hedges or caveats.
-5. Report what was rewritten by section (voice / cohesion / clarity), after the term fixes in the skill's report.
+5. Report what was rewritten by section (voice / cohesion / clarity), after the term fixes.
+
+## 5. Common misjudgments
+
+| Symptom | Correction |
+|---|---|
+| A sentence is cut while rewriting voice or cohesion | Cutting and rewriting are separate steps (user 2026-11-12「删和改不要放一个」); report it |
+| "We find that" is put before a result to make it active | The result sentence is already active and is the claim; `we` goes where the authors acted |
+| An unknown-actor passive is forced active ("Annotators rated each video three times" invented from "each video is rated by three annotators") | Passive stays when the actor is unknown or irrelevant; never invent an actor |
+| A synonym is swapped in so the text does not repeat a noun | One noun per thing; repetition is cohesion |
+| A transition sentence or recap is added for flow | Cohesion comes from order and first words; no new sentences |

@@ -1,6 +1,6 @@
 ---
 name: paper-polish
-description: "Polish finished prose with a second AI: a fresh editor subagent runs /paper-prose-tighten (cut only), then /paper-jargon-pass second pass (reword terms) and its references/rewrite.md (active voice with \"we\", cohesion, clarity); the session that owns the text checks every edit (frozen spans byte-identical, numbers unchanged, claim unchanged) before taking it. For paper sections and for rebuttal replies (the rebuttal skill calls it with its own overlay). Use when user says \"润色\", \"过一遍措辞\", \"加强表达和衔接\", \"用 We 主动语态\", \"语言 clarity\", \"让 AI 改一下表达\", \"polish the prose\", \"improve flow\", \"active voice\", or after a section or reply is settled and should read well."
+description: "Polish finished prose with a second AI: a fresh editor subagent runs /paper-prose-tighten (cut only), then /paper-jargon-pass second pass (reword terms), then this skill's references/rewrite.md (active voice with \"we\", cohesion, clarity); the session that owns the text checks every edit (frozen spans byte-identical, numbers unchanged, claim unchanged) before taking it. For paper sections and for rebuttal replies (the rebuttal skill calls it with its own overlay). Use when user says \"润色\", \"过一遍措辞\", \"加强表达和衔接\", \"用 We 主动语态\", \"语言 clarity\", \"让 AI 改一下表达\", \"polish the prose\", \"improve flow\", \"active voice\", or after a section or reply is settled and should read well."
 argument-hint: "[paper-dir | section .tex files | reply .md] [— overlay: <file>#<section>] [— frozen: <list or file>] [— ledger: <blind-read ledger>]"
 allowed-tools: Bash(*), Read, Write, Edit, Grep, Glob, Agent, Skill
 ---
@@ -18,7 +18,7 @@ This skill only orchestrates. The rules live in the skills it calls:
 | 1. Blind read | Where does a fresh reader stall? | a fresh subagent (or the caller's ledger) | `/paper-jargon-pass` pass 1, or the caller's blind-read file |
 | 2. Reconcile | Do the numbers and terms the ledger touched match their sources? | the owner | `/paper-jargon-pass` second pass, 「改之前先对账」 and B 组 |
 | 3. Cut | Which sentences carry no claim? | the editor | `/paper-prose-tighten` (cut only) |
-| 4. Reword, then rewrite | Terms the reader stalled on; then active "we" voice, cohesion, clarity on what survived | the same editor | `/paper-jargon-pass` second pass (A/C 组), then its [references/rewrite.md](../paper-jargon-pass/references/rewrite.md) |
+| 4. Reword, then rewrite | Terms the reader stalled on; then active "we" voice, cohesion, clarity on what survived | the same editor | `/paper-jargon-pass` second pass (A/C 组), then [references/rewrite.md](references/rewrite.md) |
 | 5. Check | Did any edit move a frozen span, a number or a claim? | the owner | § 5 below |
 | 6. Acceptance | Does a second fresh reader still stall? | a second fresh subagent | `/paper-jargon-pass` 验收 4 |
 
@@ -57,8 +57,8 @@ Spawn one fresh subagent per unit. Its prompt contains:
 
 > Read the overlay first; it wins where it differs. Then:
 > **Step 3 — cut only.** Invoke `/paper-prose-tighten` and follow it on the target. Do not rewrite for style in this step.
-> **Step 4 — reword, then rewrite.** Invoke `/paper-jargon-pass` and run only its second pass (查证 + 改写) on the ledger's A 组 / C 组 entries whose sentence is still there; its pass 0 and blind read are already done. Then read its `references/rewrite.md` and rewrite the surviving sentences: active voice with "we" where the authors acted, cohesion, clarity. The rewrite never cuts a sentence; report a sentence that looks empty.
-> If a skill is not in your skill list, read it by path (`<skills>/paper-prose-tighten/SKILL.md`, `<skills>/paper-jargon-pass/SKILL.md`, `<skills>/paper-jargon-pass/references/rewrite.md`) and follow it the same way.
+> **Step 4 — reword, then rewrite.** Invoke `/paper-jargon-pass` and run only its second pass (查证 + 改写) on the ledger's A 组 / C 组 entries whose sentence is still there; its pass 0 and blind read are already done. Then read `<skills>/paper-polish/references/rewrite.md` and rewrite the surviving sentences: active voice with "we" where the authors acted, cohesion, clarity. The rewrite never cuts a sentence; report a sentence that looks empty.
+> If a skill is not in your skill list, read it by path (`<skills>/paper-prose-tighten/SKILL.md`, `<skills>/paper-jargon-pass/SKILL.md`) and follow it the same way.
 > Frozen spans are copied character for character. Never change a number, a citation, an address (table / figure / appendix / §), or the claim of a paragraph. Add no term, no hedge, no caveat, no sentence. Do not compile, push, or touch files outside the scratch copy.
 > Return: the edited text; a change list with one row per edit (paragraph id, before, after, step 3 class / step 4 term / rewrite § 1–3); a list of what you would change but may not (frozen spans, scope you cannot verify).
 

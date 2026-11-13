@@ -1,6 +1,6 @@
 ---
 name: paper-jargon-pass
-description: "Use when a paper reads fine to the author but a reviewer would stall on it — 论文术语审查/没定义就用的词和数字/审稿人读不懂/统一术语/undefined notation/jargon audit for papers. Catches terms and notation used before they are defined (figure canvases included), lab-internal vocabulary leaked into English, config numbers that arrive before the thing they configure is named, one word with several meanings, artifact-lineage phrases only the outputs/ tree can translate, and 废话/无中生有; then rewrites the surviving sentences for active voice with \"we\", cohesion and clarity (references/rewrite.md; 用 We 主动语态/加强表达和衔接/语言 clarity/active voice/improve flow). Three passes — assembly check, blind read of the compiled PDF, verify against code/data and rewrite."
+description: "Use when a paper reads fine to the author but a reviewer would stall on it — 论文术语审查/没定义就用的词和数字/审稿人读不懂/统一术语/undefined notation/jargon audit for papers. Catches terms and notation used before they are defined (figure canvases included), lab-internal vocabulary leaked into English, config numbers that arrive before the thing they configure is named, one word with several meanings, artifact-lineage phrases only the outputs/ tree can translate, and 废话/无中生有. Voice, cohesion and clarity rewriting is /paper-polish, which calls this skill. Three passes — assembly check, blind read of the compiled PDF, verify against code/data and rewrite."
 argument-hint: "[paper 目录或 clone 目录,默认自动发现]"
 allowed-tools: Bash(*), Read, Write, Edit, Grep, Glob
 ---
@@ -87,7 +87,7 @@ for f in figures/*.pdf; do echo "== $f"; pdftotext "$f" -; done   # 每张图画
 - **名字晚于数字**——`600-second blocks` / `eight candidate windows` / `the top $B{=}3$ blocks` / `keep-cap 12` / `max-pos 36{,}864`:配置常数照写没问题(数字是允许的),但**它配置的那个东西必须已经被命名过**。"block""window""readout budget"没定义之前,`B{=}3` 只是一个不知道在数什么的数。修法是在名词首次出现处给一句话定义,不是把数字删掉。
 - **内部工作语 / 翻译残留**——组里中文黑话被直译进英文,读起来像正经术语,作者永远看不见:`考场→court`、`口径→caliber`、`臂→arm`、`剂量→dose`、`打底→ground`。检验法只有一条:**这个词在本领域公开文献里,是这个意思吗?** 不是就换。`court` 没有 ⇒ 换。本仓库另有 user 裁定:`臂→arm` 也整稿禁用,按语境换 variant / configuration / condition / setting / 对照自己的名字,不一键替换(2026-09-22)。
 - **一词多义 / 含义漂移**——同一个词在三处指三样东西(`caliber` 一会儿指窗口枚举、一会儿指权重配置、一会儿指 prompt 版本)。同一个词第三次出现时你又得重猜 = 记。
-- **同物异名**——`regime` 与 `régime`、`region` 与 `window`、`benchmark` 与 `court`、`localization-training system` 与 `retrieval-trained system` 与 `localization-only row` 指同一条臂。读者会以为是三个东西。**为避免重复而换的同义词也算**:`the held-out judge` 下一句成了 `this model`、再下一句成了 `the new evaluator`——英文写作课教的「换词避免重复」在论文里是错的,同一个东西全稿只用一个名词(user 2026-11-12「加强下表达和衔接」;衔接的其余部分见 [references/rewrite.md](references/rewrite.md) § 2)。
+- **同物异名**——`regime` 与 `régime`、`region` 与 `window`、`benchmark` 与 `court`、`localization-training system` 与 `retrieval-trained system` 与 `localization-only row` 指同一条臂。读者会以为是三个东西。**为避免重复而换的同义词也算**:`the held-out judge` 下一句成了 `this model`、再下一句成了 `the new evaluator`——英文写作课教的「换词避免重复」在论文里是错的,同一个东西全稿只用一个名词(user 2026-11-12「加强下表达和衔接」;衔接的其余部分见 [`/paper-polish` 的 references/rewrite.md](../paper-polish/references/rewrite.md) § 2)。
 - **画布上的记号早于定义**——方法图/架构图上的 `g_m`、`r_{m,k}`、`φloc`、`ω`、`1…K`,图落在 p.2 而定义在 p.4。
   修法只有一个:换成 caption 或图之前的正文已经在用的词(`block ranking`、`candidate windows`、`retained blocks`、
   `localization LoRA`);画布上补 gloss 与 caption 里补定义都不算修(user 裁定 2026-09-21)。
@@ -224,10 +224,6 @@ grep -rnoiE '\b(re-?scored|re-?struck|re-?run|rerun|re-?answered|earlier|a third
 - 每处改动可回溯到 ledger 的某一条;ledger 上没有的地方不顺手改。
 - `sure` + `表面` 的可以只记不改。**预期 50%+ 条目最终判为无需改,这是正常的**,不是第一趟记多了。
 
-### 改写:语态、衔接、清晰(读 [references/rewrite.md](references/rewrite.md))
-
-A 组术语处置完之后,**读 `references/rewrite.md` 并照做**,对留下来的句子改写:我们做的事用 `we` 作主语的主动语态,先旧后新、段首交代和上一段的关系,一句一个主张(user 2026-11-12「我们尽量用 We 这样子的主动语态…加强下表达和衔接,以及语言的 clarity」)。**删和改分开**(user 2026-11-12「删和改不要放一个」):删句是 `/paper-prose-tighten` 的事,在本技能之前跑;这一步只改写不删句,论点、数字、限定词一个不动,每段改动写一行改前/改后主张。只跑一遍。
-
 ## 验收
 
 1. **重编译**:`cd paper/scripts && ./compile.sh`,rc=0,新的 `undefined reference` 数不增加(既有的 undefined citation 不管)。
@@ -236,7 +232,7 @@ A 组术语处置完之后,**读 `references/rewrite.md` 并照做**,对留下�
    每个符号(`pdftotext figures/<图>.pdf -`),定义页 ≤ 图的落页;Fig 1 落在 §1 ⇒ 画布上一个 §3 记号都不许有。
 4. **验收盲读是强制步骤,且必须派给独立 subagent**——你在第二趟里已经被实现污染第二次了,自己重读绝对发现不了残留。给它新编的 PDF 前两页 + 一张随机 caption,不给任何上下文。新一轮不再产生 `承重` 条目才算过。
 5. 全篇没有新增只有本组懂的词;换掉的词全仓无残留(`grep -rn` 旧词,含 `fig_*.py`)。
-6. 汇报分三块,**顺序不能反**:①装配问题与结构改动(丢节、缺记号小节)②发现的 bug(自相矛盾、数值互斥、数目不自洽)③已删的废话(每条附一行删句测试)与已改的措辞,其后是 rewrite.md 的改写(按语态 / 衔接 / 清晰分列)。措辞列表最长但最不重要,放最后。
+6. 汇报分三块,**顺序不能反**:①装配问题与结构改动(丢节、缺记号小节)②发现的 bug(自相矛盾、数值互斥、数目不自洽)③已删的废话(每条附一行删句测试)与已改的措辞。措辞列表最长但最不重要,放最后。
 
 ## 常见错判
 
@@ -253,8 +249,6 @@ A 组术语处置完之后,**读 `references/rewrite.md` 并照做**,对留下�
 | 中文黑话直译当术语放过(`court`/`caliber`) | 最隐蔽的一类:它读起来像术语。按"领域文献里是这个意思吗"判 |
 | 发明一个"更清楚"的新词 | 只能用领域已有的词,否则是新黑话 |
 | 为了读着不重复给同一个东西换同义词 | 同物异名;全稿一个名词,重复是衔接不是毛病 |
-| 改写语态/衔接时顺手删句 | 删和改分开:删是 `/paper-prose-tighten` 的事;这里只改写,空句报回去 |
-| 结论前加 "We find that" 当作主动语态 | 结论句本身已是主动且就是主张;`we` 放在作者做了事的地方 |
 | 看不懂的词一律补定义 | 顺序反了:先试删、再试换成稿子已有的词,补定义是第四选择 |
 | 高频词"改起来太多处"就留着补个定义 | 频次不是保留理由(`gate` 29 次照删);判据是"稿子里有没有同义词" |
 | 只出现一次的自造词被放过 | 默认删。全稿只用一次的名词几乎不可能承重 |
