@@ -73,7 +73,7 @@ One message, written like a normal letter (user 2026-11-12: 「怎么举报是�
 2. **"We would like to bring to your attention Reviewer X's review"**, with its rating / soundness / confidence.
 3. **The facts, numbered, most serious first**, one per point (user 2026-11-12, moving the anonymity point ahead of W4: 「把第二点提到第一点，这个比较重要」). Each point: the reviewer's verbatim words, what the submission contains and where.
 4. **Support from the other reviewers, inside each point** (user 2026-11-12: 「最好能从别的审稿人那里找一点支持你的结论」). For every point, search the other reviews for text that backs it and quote it verbatim: a reviewer who lists as a strength the very evidence the reported review says is missing is the strongest support; next, the other reviewers' sub-scores on the dimension the reported review attacks (e.g. "the other four rate soundness 2 or 3; two state 'no substantive concerns about the paper's soundness'"). Never cite a reviewer who raised the same concern as the reported one, and do not mention a point where the other reviewers agree with it (answer it in the public thread only).
-5. **Close**: we answer every point in our response; ask the AC to take the points into account and to encourage the reviewer to engage.
+5. **Close**: ask the AC to take the points into account and to encourage the reviewer to engage. Do not add a sentence about the review's other points ("We address the substance of the reviewer's other points (W3 …, W5 …) in our response"): "substance" grants that they have merit, and naming them points the AC at the places where the reviewer may be right (user 2026-11-13: 「感觉也不该说? 等于承认他还是个好人.」).
 
 ```
 Title: Submission <N>: Reviewer <ID>, <point 1>, <point 2>, ...
@@ -98,8 +98,7 @@ true: The other reviewers rate soundness <x> to <y>; Reviewers <B> and
    evidence as a strength: "<verbatim>".
 2. <...>
 
-We answer every weakness and question of the review in our response
-<to the reviewer / which we will post in this thread>. We would be
+We would be
 grateful if you could take these points into account when weighing the
 review, and encourage Reviewer <ID> to engage with them during the
 discussion.
