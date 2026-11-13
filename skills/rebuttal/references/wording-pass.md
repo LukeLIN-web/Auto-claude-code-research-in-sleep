@@ -1,17 +1,18 @@
-# Wording pass: blind read, tighten, reword, one owner per number
+# Wording pass: blind read, cut, reword and rewrite, check, one owner per number
 
-Run at Phase 6.5, after the stress-test fixes and before Finalize, and again on every delta reply in Phase 8 (user 2026-11-09: 「rebuttal 生成完了, 用这些方法过一遍措辞」). It adapts three document passes to a reply a reviewer and an AC will read. They ask different questions, need different readers, and are **never run as one mixed read**:
+Run at Phase 6.5, after the stress-test fixes and before Finalize, and again on every delta reply in Phase 8 (user 2026-11-09: 「rebuttal 生成完了, 用这些方法过一遍措辞」). Steps 3–5 are [`/paper-polish`](../../paper-polish/SKILL.md), the same polish a paper gets: a second AI (the editor) calls `/paper-prose-tighten` (cut), then `/paper-jargon-pass` (reword, then rewrite), and the drafter checks its edits; this file's § 3–5 are the rebuttal overlay passed to it (user 2026-11-12: 「让另一个 AI 润色 … 先 paper prose tighten, 再 paper jargon pass」「这一套应该封装为一个单独的 skill, 这样 paper 也能用」). The steps ask different questions, need different readers, and are **never run as one mixed read**:
 
 | Step | Question | Done by | Origin |
 |---|---|---|---|
 | 1. Blind read | Can the reviewer parse this word, at this point in the reply? | a fresh subagent that gets only [blind-read.md](blind-read.md), the review and the reply | `docs-jargon-pass`, first pass |
 | 2. Reconcile | Do the numbers and terms the ledger touched match their sources? | the drafter, with the evidence | `docs-jargon-pass`, second pass |
-| 3. Tighten | If this sentence is deleted, does the reviewer's judgment change? | the drafter | `docs-prose-tighten` |
-| 4. Reword | For each term the reader stalled on and that survived step 3: delete, replace, or define? | the drafter | `docs-jargon-pass`, second pass |
-| 5. One owner per number | Is this number written once, and identical everywhere it is repeated? | the drafter | `docs-ssot-tighten` |
-| 6. Acceptance | Does a second fresh reader still stall? | a second fresh subagent | `docs-jargon-pass` |
+| 3. Tighten (cut only) | If this sentence is deleted, does the reviewer's judgment change? | `/paper-polish` editor (a fresh subagent per paste target), overlay § 3 | `paper-polish` → `paper-prose-tighten` |
+| 4. Reword, then rewrite | For each term the reader stalled on: delete, replace, or define? Then: do the surviving sentences say "we did", in order, clearly? | the same editor, overlay § 4 | `paper-polish` → `paper-jargon-pass` + `references/rewrite.md` |
+| 5. Check the editor's edits | Did any edit move a frozen span, a number, or the claim? | the drafter | `paper-polish` § 5, plus § 5 here |
+| 6. One owner per number | Is this number written once, and identical everywhere it is repeated? | the drafter | `docs-ssot-tighten` |
+| 7. Acceptance | Does a second fresh reader still stall? | a second fresh subagent | `docs-jargon-pass` |
 
-**Why this order.** The blind read comes first because it is the only step that cannot be repeated by someone who has seen the evidence. Deleting comes before rewording: a term in a sentence that is about to go needs no definition, and a deletion can remove the sentence a definition was just moved into. Tightening runs once over a given text (a second run starts eating scope qualifiers); the acceptance read is not a second tightening — it only looks for stalls.
+**Why this order.** The blind read comes first because it is the only step that cannot be repeated by someone who has seen the evidence. Deleting comes before rewording: a term in a sentence that is about to go needs no definition, and a deletion can remove the sentence a definition was just moved into; for the same reason the voice and cohesion rewrite comes last, inside step 4, and cutting and rewriting live in different skills (user 2026-11-12: 「删和改不要放一个」). The editor is not the drafter: after days with the evidence the drafter no longer hears a stiff sentence, a passive that hides who acted, or a missing link between paragraphs. The drafter checks the editor's edits (step 5), and the number check runs after that so it sees the final text. Tightening runs once over a given text (a second run starts eating scope qualifiers); the acceptance read is not a second tightening — it only looks for stalls.
 
 The pass changes wording only. It does not decide claims: which numbers go in, what is conceded, what is compared are settled by Phases 3–6 and the user's rulings. Everything it finds that is not wording (two numbers that disagree, an answer that contradicts another thread, a claim the evidence does not carry) is **reported, never smoothed over**.
 
@@ -43,9 +44,13 @@ Now the evidence documents, the issue board and the code may be read.
 2. **Word against thing.** If a term describes something other than what was run (the reply names the released model where the number comes from retrained weights), that is a factual problem in the reply: report it; rewording alone does not settle which model the claim is about.
 3. **Sort the ledger.** Each entry is marked: report to user / idle → step 3 / term → step 4 / no change (with the reason). Entries in co-author text are marked "not touched" and go to the report.
 
-## 3. Step 3 — tighten
+## 3. Step 3 — tighten, cut only (`/paper-prose-tighten`)
 
-For each sentence and each number in it: **delete it, and does the reviewer's judgment change?** If not, delete — do not soften or shorten.
+**Calling `/paper-polish`.** Run [`/paper-polish`](../../paper-polish/SKILL.md) once per paste target with: target = the stripped reply with paragraph ids; ledger = the step-1 ledger with the step-2 dispositions (so `/paper-polish` skips its own blind read and reconcile); frozen spans = § 0 "Never touched" (the reviewer's quote, quoted paper text, every co-author sentence, wording the user ruled on — copied unchanged, even when passive); overlay = § 3, § 4 and § 5 of this file. The editor also gets that reviewer's raw review; it does not get the issue board, the evidence or another thread. The drafter never does steps 3–4.
+
+**Paper-only parts of `/paper-prose-tighten` are skipped:** the paragraph-map script over `sections/*.tex`, compile, captions and figure generators, the short-last-line gate, the cross-section copy check of class 13 (step 6 does that across threads). The skill's class 11 (related-work sprawl) becomes "secondary evidence nobody asked for" (lint 22).
+
+For each sentence and each number in it: **delete it, and does the reviewer's judgment change?** If not, delete — do not soften or shorten. In a reply the cut classes read as below (this table numbers them for replies: it adds instrument readings and leaves out related-work sprawl):
 
 | # | Class | In a rebuttal | Keep when |
 |---|---|---|---|
@@ -83,9 +88,9 @@ Step 3 tests **every number inside a kept sentence**, not only whole sentences. 
 - Before deleting a "repeat", grep its distinctive noun: a conclusion that appears only once is moved to its owner answer, not deleted.
 - One pass. A second pass over the same text finds nothing safe and starts eating scope qualifiers.
 
-## 4. Step 4 — reword what survived
+## 4. Step 4 — reword, then rewrite (`/paper-jargon-pass`)
 
-Only for ledger entries whose sentence is still there after step 3.
+Overlay for `/paper-polish` step 4. The editor runs `/paper-jargon-pass`'s **second pass only** (查证 + 改写) on the ledger entries step 2 marked "term" whose sentence is still there. Its pass 0 (LaTeX assembly) does not apply, and its blind read is step 1 here. Also skipped: PDF page order, compile, figures, the two-clone rule, and 「正文不写结果数字」 (a reply carries its numbers; rhetoric C17 decides which go in a table). The skill's ordered moves and its 同物异名 / 悬空指代 rules apply as written; the vocabulary order is § 1's. The rewrite that follows is in § 4.1.
 
 1. **Try these in order — stop at the first that works:**
    1. **Delete the word** and say the same thing with words already in the reply.
@@ -96,7 +101,25 @@ Only for ledger entries whose sentence is still there after step 3.
 3. A term used once is assumed deletable. A term used ten times that the reader still cannot parse is not kept because it is frequent.
 4. A definition that arrives later than first use is moved to first use, not duplicated.
 
-## 5. Step 5 — one owner per number
+### 4.1 Rewrite: active voice, cohesion, clarity ([rewrite.md](../../paper-jargon-pass/references/rewrite.md))
+
+After the term fixes, the editor reads `/paper-jargon-pass`'s [rewrite.md](../../paper-jargon-pass/references/rewrite.md) and rewrites the sentences that survived (user 2026-11-12: 「我们尽量用 We 这样子的主动语态，你让 AI 给你加强下表达和衔接，以及语言的 clarity」): what we did with "we" as the subject and an active verb; known before new; each paragraph's first sentence linked to the question or the paragraph before; connectives that name the relation; one claim per sentence. It only rewrites; a sentence that looks empty is reported, not cut (cutting was step 3). Reply-specific limits ([rhetoric.md](rhetoric.md) C35):
+- The sentence after the thanks stays the bare verdict (rhetoric § 1, lint 11): never "We find that all four contrasts are significant", never "We ran …".
+- The house-style items of § 3 keep their place and job; their wording may be smoothed, they are not removed.
+- Frozen spans are not touched; a co-author's passive sentence stays passive.
+- No new hedges, concessions or caveats (lint 10), no new term, no new sentence, and the reply does not get longer (lint 6).
+
+## 5. Step 5 — check the editor's edits
+
+The drafter runs `/paper-polish` § 5 on each paste target (frozen spans byte-identical, numbers and addresses unchanged, one before/after claim line per changed paragraph, no new hedge, not longer; a rejected edit is dropped, not repaired). The reply adds:
+
+- no new hit for the § 7 greps and no new concession or weakness wording (lint 10);
+- the house-style items of § 3 are still there, and the sentence after each thanks is still the bare verdict (lint 11);
+- the paste target is within the venue limit (lint 6).
+
+Anything the editor flagged but could not touch (a frozen co-author sentence, a scope it could not verify) goes to the report, never into the text. Save the change list as `rebuttal/wording/<UTC timestamp>/edits-<ReviewerID>.md`, each row marked taken or rejected (and the check that rejected it); no reply text beyond the before/after sentences.
+
+## 6. Step 6 — one owner per number
 
 Phase 4 already fixes the depth of shared evidence across threads; this step checks the numbers themselves.
 
@@ -111,7 +134,7 @@ Phase 4 already fixes the depth of shared evidence across threads; this step che
 4. **Never fix a number in passing.** Two values for one quantity is a bug; the user decides which is right.
 5. **Counts of our own material** ("the four experiments above", "all five backbones") go stale with every edit: recount them now, and prefer wording that carries no count when the count is not the point.
 
-## 6. Greps (high recall, classify by hand)
+## 7. Greps (high recall, classify by hand)
 
 ```bash
 F="rebuttal/Reviewer_*_response.md"   # or REBUTTAL_DRAFT.md
@@ -129,18 +152,23 @@ command grep -niE 'does not (report|provide|release)|no official|not available|w
 command grep -nE '[0-9.]+%? ?/ ?[0-9.]+%? ?/ ?[0-9.]+|([0-9.]+%?, ){3,}' $F | command grep -v '^[^:]*:[0-9]*:\s*|'
 # process vocabulary
 command grep -niE 'preregister|pre-register|frozen before|sanity check|pilot|ablation we dropped' $F
+# passive voice and impersonal openers (step 4.1, rewrite.md § 1): read each hit; the authors as hidden actor → active "we"
+command grep -niE '\b(is|are|was|were|been|being|be) ([a-z-]+ed|done|run|made|shown|given|chosen|taken|seen|written|drawn|known|built|kept|held|set|found)\b|\bit (is|can be|should be) (shown|seen|noted|observed|found)|\bit is (worth|important) ' $F
+# connective chains (step 4.1, rewrite.md § 2): Moreover / Furthermore / Additionally opening consecutive sentences
+command grep -nE '(Moreover|Furthermore|Additionally|In addition),' $F
 ```
 
-## 7. Acceptance
+## 8. Acceptance
 
 - Every load-bearing and local ledger entry has a disposition: word deleted / replaced / sentence deleted / defined / reported / no change (with the reason). Expect about half the entries to end as "no change".
 - **A second fresh subagent rereads the final text** with the same isolation as step 1 (again only [blind-read.md](blind-read.md), the review and the new text). The pass is done when it produces no new load-bearing entry.
 - For each paragraph that changed, one line: what it claimed before, what it claims now. Any difference is a bug.
-- Re-run the Phase 5 lints the pass can break: 6 (limit — recount), 9 (cross-thread duplication), 10 (weakness and concession), 13 and 14 (comparison, words agree with numbers), 19 and 20.
+- Voice check: grep the § 7 passive pattern; every remaining passive with the authors as the hidden actor is either in a frozen span or turned active.
+- Re-run the Phase 5 lints the pass can break: 6 (limit — recount), 9 (cross-thread duplication), 10 (weakness and concession), 13 and 14 (comparison, words agree with numbers), 19, 20 and 23 (voice).
 - Derived views regenerated; the replaced terms have no leftovers in any thread, table head or view.
 - Report to the user in this order: (1) structural findings; (2) bugs and decisions — mismatched numbers, contradictions, unanswered sub-questions, lineage words, findings in co-author text that was not touched; (3) what was deleted, each with its delete test, and what was reworded. Say what was kept and why: the kept list is the evidence that nothing was over-cut.
 
-## 8. Common misjudgments
+## 9. Common misjudgments
 
 | Symptom | Correction |
 |---|---|
@@ -166,8 +194,16 @@ command grep -niE 'preregister|pre-register|frozen before|sanity check|pilot|abl
 | A number is replaced across files by string | Same string can be a different quantity; read each hit |
 | A co-author's sentence is polished, or an outdated co-author fragment is deleted | Never; highlight the phrase and add a note in a third colour, or comment |
 | Only the English reply is changed | Re-sync the translation, the board and the HTML view |
+| The drafter tightens or polishes alone | A fresh editor subagent invokes `/paper-prose-tighten`, then `/paper-jargon-pass`; the drafter only checks (step 5) |
+| The editor writes its own polish rules instead of calling the skills | Voice, cohesion and clarity live in paper-jargon-pass's `references/rewrite.md` (and its 同物异名 / 悬空指代); a gap there is fixed in that file |
+| An edited paragraph is taken because it reads better | Taken only after the frozen-span diff, the number/address multiset check and the before/after claim line |
+| "We" is pushed into the verdict sentence ("We find that all four contrasts are significant") | The answer after the thanks stays the bare verdict; "we" goes where the authors acted |
+| An unknown-actor passive is forced active ("Annotators rated each video three times" invented from "each video is rated by three annotators") | Passive stays when the actor is unknown or irrelevant; never invent an actor |
+| A co-author's passive sentence is turned active | Frozen; report it as a note if at all |
+| Prose-tighten run twice, jargon-pass run before prose-tighten, or the rewrite step cuts sentences | Once each, prose-tighten (cut) first, then jargon-pass (reword, rewrite); the rewrite only rewrites |
+| A rejected edit is half-merged into the old sentence | Drop it; keep the earlier sentence |
 
-## 9. Lessons from the first run (2026-11-10)
+## 10. Lessons from the first run (2026-11-10)
 
 Five replies were blind-read; the user ruled on each reported item in one line. Each ruling below is the general rule it stands for.
 
