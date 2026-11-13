@@ -38,7 +38,7 @@ Lesson (2026-11-12): a co-author's A2 described the redrawn figure ("We removed 
 ## 4. Marking a co-author's text
 
 - Highlight the exact phrase (yellow) and put one short note in a third colour (red; neither the co-author's colour nor body text) at the end of that paragraph, or leave a doc comment (user 2026-11-10「你就想办法标出来, comment, 或者用不同颜色 指出这里是错的」).
-- Date the note and keep it to what is wrong and what it clashes with: 【注（11-12）：…】. Point to the ruling or the number. Notes are for substance only: style is theirs and numbers and slips are fixed, not noted (§ 2).
+- Start the note with the user's own handle and a colon, so every note in the doc can be found with one search: 【<handle>:（11-12）…】, where `<handle>` is the name the user picks for their notes (ask once if unknown). A bare 【注：…】 is not searchable because 注 also appears in ordinary words like 标注. Never write a real name into this skill or any shared file; the handle belongs in the user's own memory, not here. Date the note and keep it to what is wrong and what it clashes with. Point to the ruling or the number. Notes are for substance only: style is theirs and numbers and slips are fixed, not noted (§ 2).
 - Notes are ours: update them when facts change, delete them with their highlight once resolved, and strip them from anything pasted.
 - Mirror the note's facts in the notes section of the canonical response file, so the next session sees the open point without opening the doc.
 
