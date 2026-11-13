@@ -77,8 +77,9 @@ Step 3 tests **every number inside a kept sentence**, not only whole sentences. 
 - the address of a number (C2), and the result that follows an action (C3);
 - the conclusion sentence that closes an evidence paragraph (C4);
 - the superlative-plus-ratio statement of a win (C8);
-- the revised text quoted verbatim for a requested presentation change (C16);
-- the closing request to reconsider the score.
+- the revised text quoted verbatim for a requested presentation change (C16).
+
+A closing request to reconsider the score or rating is not house style: delete it (Phase 4 "Never ask for a score").
 
 **Deleting must not change the claim set.**
 

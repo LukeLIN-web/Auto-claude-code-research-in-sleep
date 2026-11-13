@@ -34,10 +34,10 @@ Rules:
 
 VQToken asked RRqQ, after "this fully addresses all my questions", to "consider increasing your final rating"; the rating stayed at 4.
 
-Rules:
-- Never ask a reviewer who has not written that their concerns are resolved.
-- After such a statement, at most one sentence, once, conditional, in the same reply that thanks them: "If the additions change your assessment, we would be grateful if the rating could reflect it." Never a separate post titled for the score; never repeated.
+Rules (user 2026-11-13「不要和他们要分」):
+- Never ask a reviewer for a score, in any round: no "we hope the reviewer will reassess the soundness rating", no "we would be grateful if the reviewer would reconsider the score", no conditional "if the additions change your assessment …", no separate post about the score. A closing sentence may hope the answers address the concerns ("We hope these experiments address the reviewer's concerns."), nothing about the rating.
 - No appeal to personal stakes ("would mean a great deal to our team and our work's visibility").
+- Whether a reviewer's score moved is recorded in `REBUTTAL_STATE.md`, never raised in the thread.
 
 ## 5. AC closing note
 
