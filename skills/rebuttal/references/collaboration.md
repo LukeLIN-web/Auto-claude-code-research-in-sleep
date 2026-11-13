@@ -27,6 +27,8 @@ When a co-author's version of a passage differs from ours, sort each difference 
 | Clear slip | "we have make", a wrong word ("pivot" for "pivotal"), "your comment … addressed them", "by heart" for "to heart" | **Fix it directly**, the smallest change that makes it correct; changed words in our colour, no note. A rewrite that goes beyond the slip is wording, and wording is theirs |
 | Substance | a concession, a revision promise the user has not approved, an overclaim (calling a model "SoTA" that the human study rated well below another), a number or fact that disagrees with its source, a conflict with a ruling, a comment pushed over the limit | Highlight and note (§ 4), and list it under the board's open decisions. The canonical file keeps the approved text until the group decides |
 
+**A co-author's wholesale rewrite** (of a letter, an opener, a whole reply) is sorted sentence by sentence the same way, then shown to the user as one list: each change, the ruling or fact it conflicts with, and the few sentences worth adopting, with a recommendation. The user may reject almost all of it (2026-11-13, a co-author's rewrite of the AC letter: 「她的基本上都可以全删了」, keeping one sentence). Their full version still is not deleted: in a shared note it moves below the paste text under a heading such as 「<name> 版（<date>，未采用，原文保留）」, and the paste text on top is ours with only the adopted sentences.
+
 A paragraph that carries any substance item waits as a whole: do not sync its wording-only parts piecemeal, or the canonical file ends up with half of a paragraph whose other half is still under discussion. Say in the report which paragraphs wait and why.
 
 ## 3. Check against the source, not against our board
