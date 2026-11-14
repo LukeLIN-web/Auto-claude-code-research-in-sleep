@@ -57,6 +57,8 @@ VQToken asked RRqQ, after "this fully addresses all my questions", to "consider 
 Rules (user 2026-11-13「不要和他们要分」):
 - Never ask a reviewer for a score, in any round: no "we hope the reviewer will reassess the soundness rating", no "we would be grateful if the reviewer would reconsider the score", no conditional "if the additions change your assessment …", no separate post about the score. A closing sentence may hope the answers address the concerns ("We hope these experiments address the reviewer's concerns."), nothing about the rating.
 - No appeal to personal stakes ("would mean a great deal to our team and our work's visibility").
+- No deference line after a request or closing (user 2026-11-14「However, we fully respect your final judgment. 感觉有点生硬 … 把这句删了吧」): no "However, we fully respect your final judgment", "we respect whatever decision you make", "of course, the final decision is yours". It reads stiff, and "However" sets it against the sentence before it. Delete it, do not reword it; the reply ends on the thanks.
+- A co-author's text that already carries a score request is not deleted silently: ask the user. On 2026-11-14 the user kept a co-author's conditional request in a round-2 reply to a reviewer who had confirmed acceptance ("If these additional analyses address your remaining concern, we would be grateful if you could consider increasing your rating in light of the strengthened evidence.").
 - Whether a reviewer's score moved is recorded in `REBUTTAL_STATE.md`, never raised in the thread.
 
 ## 5. AC closing note
