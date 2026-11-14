@@ -29,7 +29,7 @@ When a follow-up confirms acceptance or keeps a positive rating ("I consider the
 2. **Bold thanks for every good thing the reviewer wrote**, in the reviewer's own terms: `**Thank you for finding the work suitable for acceptance, and the benchmark and judge useful for advancing physically realistic video generation.**`
 3. **Can we resolve the remaining concern with evidence we already have?** Yes: answer it in one to three plain sentences, the verdict first, one number at most per claim. No: stop after the thanks; no answer, no promise, no "future work" paragraph.
 4. **Never rebut, and do not state our position** (user 2026-11-14「所以也不要说我们的立场」). No "by design" defence, no "we respectfully disagree", no sentence explaining why our view of the concern is right, not even as a neutral design statement; no restating a position the reviewer did not accept; agreeing with the reviewer's framing ("We agree that SA is only a proxy for event completion") is fine. A limitation the reviewer did not ask about is not volunteered (C34).
-5. Never mention the score beyond the title; never ask for anything (§ 4).
+5. Do not discuss the score beyond the title and an optional closing request (§ 4).
 
 Worked example (a benchmark paper, 2026-11; concern: "semantic alignment is a proxy for event completion, and the criterion scores still combine event realization with physical plausibility"):
 
@@ -54,12 +54,11 @@ Rules:
 
 VQToken asked RRqQ, after "this fully addresses all my questions", to "consider increasing your final rating"; the rating stayed at 4.
 
-Rules (user 2026-11-13「不要和他们要分」):
-- Never ask a reviewer for a score, in any round: no "we hope the reviewer will reassess the soundness rating", no "we would be grateful if the reviewer would reconsider the score", no conditional "if the additions change your assessment …", no separate post about the score. A closing sentence may hope the answers address the concerns ("We hope these experiments address the reviewer's concerns."), nothing about the rating.
+Rules:
+- Asking for a higher rating is allowed (user 2026-11-14「删掉"不向审稿人要分"这个规定」, which lifts the 2026-11-13 ban). Form used in a 2026-11-14 round-2 reply: "If these additional analyses address your remaining concern, we would be grateful if you could consider increasing your rating in light of the strengthened evidence."
 - No appeal to personal stakes ("would mean a great deal to our team and our work's visibility").
 - No deference line after a request or closing (user 2026-11-14「However, we fully respect your final judgment. 感觉有点生硬 … 把这句删了吧」): no "However, we fully respect your final judgment", "we respect whatever decision you make", "of course, the final decision is yours". It reads stiff, and "However" sets it against the sentence before it. Delete it, do not reword it; the reply ends on the thanks.
-- A co-author's text that already carries a score request is not deleted silently: ask the user. On 2026-11-14 the user kept a co-author's conditional request in a round-2 reply to a reviewer who had confirmed acceptance ("If these additional analyses address your remaining concern, we would be grateful if you could consider increasing your rating in light of the strengthened evidence.").
-- Whether a reviewer's score moved is recorded in `REBUTTAL_STATE.md`, never raised in the thread.
+- Whether a reviewer's score moved is recorded in `REBUTTAL_STATE.md`.
 
 ## 5. AC closing note
 
