@@ -55,7 +55,7 @@ Consequences for every reply:
 **P3 — Turn their praise into the paper's thesis.** When a positive reviewer names a strength, the reply restates it as the paper's contribution with one number behind it, so the AC sees the strength confirmed rather than merely thanked.
 
 **P4 — Close the loop, then stop.** Once a reviewer writes that the concerns are resolved, reply with one short thanks naming what changed. Do not keep feeding them new material.
-On asking for a higher score, see [followup-and-endgame.md](followup-and-endgame.md) § Score requests — in VQToken it moved nothing.
+On asking for a higher score, see [round2-replies.md](round2-replies.md) § 7 Score requests — in VQToken it moved nothing.
 
 ## 3. Refuting (negative reviewers)
 
@@ -82,7 +82,7 @@ Only after the reviewer explicitly named the drop (otherwise the losing benchmar
 
 **R7 — A scope argument must match what the paper itself evaluates.** *VQToken* argued long-video understanding is "another important, yet completely different, task". The reviewer replied that "2 of 5 benchmarks they conduct the experiments on the paper are long videos". If the paper's own benchmark list contradicts the scope line, the reviewer turns the paper against the reply. Check the paper's tables before drawing a scope line.
 
-**R8 — Isolating the outlier goes to the AC, not to the outlier.** In the closing note to the AC, *VQToken* wrote that the remaining concerns "were raised only by Gyx4 among the four reviewers", that "no methodological flaws were identified", and that they "are presentation-oriented". The AC's meta-review repeated that shape. In the reviewer's own thread, the same move ("Unlike the other three reviewers, Reviewer Gyx4's comments center on paper organization, writing style …") did not move the reviewer, whose follow-ups only got sharper. Use it only in the AC-facing note ([followup-and-endgame.md](followup-and-endgame.md) § AC closing note), and only with the counts true.
+**R8 — Isolating the outlier goes to the AC, not to the outlier.** In the closing note to the AC, *VQToken* wrote that the remaining concerns "were raised only by Gyx4 among the four reviewers", that "no methodological flaws were identified", and that they "are presentation-oriented". The AC's meta-review repeated that shape. In the reviewer's own thread, the same move ("Unlike the other three reviewers, Reviewer Gyx4's comments center on paper organization, writing style …") did not move the reviewer, whose follow-ups only got sharper. Use it only in the AC-facing note ([posting-and-endgame.md](posting-and-endgame.md) § 2 AC closing note), and only with the counts true.
 
 **R10 — A weak number goes next to the best the others reach.** When the reviewer quotes a number of ours that is not high in absolute terms, do not argue that it is high; show that the strongest existing method reaches less on the same quantity, measured with the same protocol (「如果说不好, 就写 别人的最好的也不如我们好」). Conditions: [comparison-rules.md](comparison-rules.md) § Weak number.
 
@@ -99,7 +99,7 @@ Only after the reviewer explicitly named the drop (otherwise the losing benchmar
 | "§ 3.3 'Material Physics MoE'" in a video-token paper | Text from another project leaked into the reply | Lint: foreign-content scan |
 | Reviewer asked for k-means latency/FLOPs; reply gave a complexity derivation plus "we will include actual latency measurements … in the camera-ready" | Meta-review: "left … overhead issues unresolved" | A measurable ask gets the measurement in the reply |
 | "requested during the final two days", "the limited rebuttal period prevents us", "rapid iteration during rebuttal" | Advertises that the work is incomplete | Never expose a weakness. State what is there |
-| Three nudge posts aimed at one reviewer plus two to all reviewers, Aug 2–8, most carrying no new content | Reviewer kept 2 | [followup-and-endgame.md](followup-and-endgame.md) § Nudges |
+| Three nudge posts aimed at one reviewer plus two to all reviewers, Aug 2–8, most carrying no new content | Reviewer kept 2 | [round2-replies.md](round2-replies.md) § 6 Nudges |
 
 ## 5. Phrase bank
 

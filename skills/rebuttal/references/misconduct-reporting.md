@@ -31,7 +31,7 @@ Reportable, with the venue's wording where it exists:
 Gray zone — not reportable on its own; answer on the merits and mention to the AC only as part of a larger pattern:
 - Requests to cite specific papers. Answer "We will cite X" if relevant. Only when the requested papers are unrelated to the submission and the request is a condition for the score is it worth noting to the AC, factually, without guessing who wrote them.
 - Score inconsistent with the text (strengths only, rating 1–2). Point it out in the AC note as an observation, not an accusation.
-- Silence after the rebuttal. Not misconduct; handled by [followup-and-endgame.md](followup-and-endgame.md).
+- Silence after the rebuttal. Not misconduct; handled by [round2-replies.md](round2-replies.md) § 6.
 
 Never a basis for a report:
 - An LLM-detector score alone. ICLR uses detectors only for triage and acts "only … if an AC or SAC identifies concrete evidence"; its retrospective notes their "accuracy is far from perfect". A detector number can be one line in the evidence pack, after the factual errors.
