@@ -78,7 +78,7 @@ Step 3 tests **every number inside a kept sentence**, not only whole sentences. 
 - the conclusion sentence that closes an evidence paragraph (C4);
 - the superlative-plus-ratio statement of a win (C8);
 - the revised text quoted verbatim for a requested presentation change (C16);
-- the closing request to reconsider the score or rating, and the closing invitation ("We look forward to any of your further thoughts!") ([round2-replies.md](round2-replies.md) § 3, § 7).
+- the closing request to reconsider the score or rating, and the invitation after it ("If you have any further questions, please let us know, and we will address them.") ([round2-replies.md](round2-replies.md) § 3, § 7).
 
 **Deleting must not change the claim set.**
 

@@ -28,9 +28,8 @@ In this order; drop the parts that do not apply:
 2. **Bold thanks for every good thing the reviewer wrote**, in the reviewer's own words, then one plain sentence of thanks for the follow-up.
 3. **Agree with the reviewer's framing** where we can: "we agree that X is a proxy for Y" (求同存异). "Agree" is fine; "admit", "acknowledge a limitation", "we concede" are not (user 2026-11-14「admit 就不好听, agree 就还行」).
 4. **The answer** (§ 5 when it carries a new analysis).
-5. **Optional rating request** (§ 7).
-6. **Thanks line**: "Thank you again for your time, valuable feedback, and continued support!"
-7. **Closing invitation, copied from a posted round-1 closing**: "We look forward to any of your further thoughts!" (中文「期待您进一步的想法！」) (user 2026-11-14「最后加一句, 说如果还有别的问题 请提出, 就直接抄前面 别的就行」). Take the sentence from what round 1 already posted rather than writing a new one, so every thread sounds the same; no "Please do not hesitate to …".
+5. **Optional rating request, followed by an invitation to ask more**, in the same paragraph: "If these additional analyses address your remaining concern, we would be grateful if you could consider increasing your rating in light of the strengthened evidence. If you have any further questions, please let us know, and we will address them." (中文「如果您还有其他问题，请告诉我们，我们会进一步解决。」) (user 2026-11-14「应该写在这里 "…恳请您考虑据此提高评分。if you have any further questions. 请进一步让我们知道 我们可以解决."」). The invitation goes right after the request, not at the very end; without a rating request it still goes before the thanks line. It says we will address the questions, not just that we look forward to thoughts (an earlier "We look forward to any of your further thoughts!" at the end was moved here and reworded).
+6. **Thanks line**, last: "Thank you again for your time, valuable feedback, and continued support!"
 
 No deference line anywhere ("However, we fully respect your final judgment"): delete it, do not reword it (§ 7, lint 24).
 
@@ -40,7 +39,7 @@ When a follow-up confirms acceptance or keeps a positive rating ("I consider the
 
 1. **Title line**, bold and upper case: `**THANK YOU FOR CONFIRMING THE ACCEPTANCE RATING**`.
 2. **Bold thanks quoting their praise**: `**Thank you so much for finding the work suitable for acceptance, and the benchmark and judge useful for advancing physically realistic video generation!**` A co-author who rewrites the opening may drop the title or turn the quoted praise into generic thanks ("Thank you so much for your thoughtful follow-up and positive assessment!"); put both back (user 2026-11-14, same request a second time after a co-author rewrite).
-3. **Can we resolve the remaining concern with evidence we already have?** No: stop after the thanks, the thanks line and the closing invitation; no answer, no promise, no "future work" paragraph. Yes: answer it. Short by default (one to three plain sentences, verdict first, one number at most per claim). When new analyses of data we already have answer the concern, the longer reply is allowed (user 2026-11-14「为啥要缩回 … 保留这一版」): findings as bold headings (§ 5), a promise to add them to the appendix, an optional rating request.
+3. **Can we resolve the remaining concern with evidence we already have?** No: stop after the thanks, the invitation to ask more and the thanks line; no answer, no promise, no "future work" paragraph. Yes: answer it. Short by default (one to three plain sentences, verdict first, one number at most per claim). When new analyses of data we already have answer the concern, the longer reply is allowed (user 2026-11-14「为啥要缩回 … 保留这一版」): findings as bold headings (§ 5), a promise to add them to the appendix, an optional rating request.
 4. **Never rebut, and do not state our position** (user 2026-11-14「所以也不要说我们的立场」). No "by design" defence, no "we respectfully disagree", no sentence explaining why our view of the concern is right, not even as a neutral design statement; no restating a position the reviewer did not accept. Agreeing with the reviewer's framing is fine (§ 3 item 3). A limitation the reviewer did not ask about is not volunteered (C34).
 5. Do not discuss the score beyond the title and an optional closing request (§ 7).
 
@@ -52,7 +51,7 @@ Worked example, short form (a benchmark paper, 2026-11; concern: "semantic align
 >
 > We agree that SA is only a proxy for event completion. The outcome-information study (Appendix Q) also asked every rater directly whether the described outcome occurred: among the 182 of its 900 videos where a majority answered Yes, 17 (9%) still have at least one law rated below 3, so the law scores also catch physical errors in videos where the event is completed.
 
-The first draft added a ranking caveat ("too few to re-rank generators on completed videos alone") and a "by design" stance sentence; both were cut by this rule. The reply that went forward was the long form: title, bold thanks, agreement, the outcome question and its five options, three bold-headed findings, the appendix promise, a rating request, the thanks line and the closing invitation (about 3,000 characters).
+The first draft added a ranking caveat ("too few to re-rank generators on completed videos alone") and a "by design" stance sentence; both were cut by this rule. The reply that went forward was the long form: title, bold thanks, agreement, the outcome question and its five options, three bold-headed findings, the appendix promise, a rating request with the invitation to ask more, and the thanks line (about 3,000 characters).
 
 ## 5. A new analysis in a round-2 reply
 
@@ -86,5 +85,5 @@ Rules:
 - A co-author's rating request already in the shared draft goes to the user; it is not deleted silently.
 - Asking for a higher rating is allowed (user 2026-11-14「删掉"不向审稿人要分"这个规定」, which lifts the 2026-11-13 ban). Form used in a 2026-11-14 round-2 reply: "If these additional analyses address your remaining concern, we would be grateful if you could consider increasing your rating in light of the strengthened evidence."
 - No appeal to personal stakes ("would mean a great deal to our team and our work's visibility").
-- No deference line after a request or closing (user 2026-11-14「However, we fully respect your final judgment. 感觉有点生硬 … 把这句删了吧」): no "However, we fully respect your final judgment", "we respect whatever decision you make", "of course, the final decision is yours". It reads stiff, and "However" sets it against the sentence before it. Delete it, do not reword it; the reply ends on the thanks line and the closing invitation (§ 3).
+- No deference line after a request or closing (user 2026-11-14「However, we fully respect your final judgment. 感觉有点生硬 … 把这句删了吧」): no "However, we fully respect your final judgment", "we respect whatever decision you make", "of course, the final decision is yours". It reads stiff, and "However" sets it against the sentence before it. Delete it, do not reword it; the reply ends on the thanks line (§ 3).
 - Whether a reviewer's score moved is recorded in `REBUTTAL_STATE.md`.
