@@ -28,7 +28,7 @@ When a follow-up confirms acceptance or keeps a positive rating ("I consider the
 1. **Title line**, bold and upper case: `**THANK YOU FOR CONFIRMING THE ACCEPTANCE RATING**`.
 2. **Bold thanks for every good thing the reviewer wrote**, in the reviewer's own terms: `**Thank you for finding the work suitable for acceptance, and the benchmark and judge useful for advancing physically realistic video generation.**`
 3. **Can we resolve the remaining concern with evidence we already have?** Yes: answer it in one to three plain sentences, the verdict first, one number at most per claim. No: stop after the thanks; no answer, no promise, no "future work" paragraph.
-4. **Never rebut.** No "by design" defence, no "we respectfully disagree", no restating a position the reviewer did not accept; agreeing with the reviewer's framing ("We agree that SA is only a proxy for event completion") is fine. A limitation the reviewer did not ask about is not volunteered (C34).
+4. **Never rebut, and do not state our position** (user 2026-11-14「所以也不要说我们的立场」). No "by design" defence, no "we respectfully disagree", no sentence explaining why our view of the concern is right, not even as a neutral design statement; no restating a position the reviewer did not accept; agreeing with the reviewer's framing ("We agree that SA is only a proxy for event completion") is fine. A limitation the reviewer did not ask about is not volunteered (C34).
 5. Never mention the score beyond the title; never ask for anything (§ 4).
 
 Worked example (a benchmark paper, 2026-11; concern: "semantic alignment is a proxy for event completion, and the criterion scores still combine event realization with physical plausibility"):
