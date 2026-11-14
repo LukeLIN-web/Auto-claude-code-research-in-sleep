@@ -24,7 +24,7 @@ Long replies: split into `[PART 1/2]`, `[PART 2/2]` comments when over the per-c
 
 In this order; drop the parts that do not apply:
 
-1. **Title**, only for a reviewer who confirms an accepting rating: `**THANK YOU FOR CONFIRMING THE ACCEPTANCE RATING**` (§ 4).
+1. **Title**, only for a reviewer who confirms an accepting rating: `Thank You for Confirming the Acceptance Rating` (§ 4), in the OpenReview Title field, not in the body.
 2. **Bold thanks for every good thing the reviewer wrote**, in the reviewer's own words, then one plain sentence of thanks for the follow-up.
 3. **Agree with the reviewer's framing** where we can: "we agree that X is a proxy for Y" (求同存异). "Agree" is fine; "admit", "acknowledge a limitation", "we concede" are not (user 2026-11-14「admit 就不好听, agree 就还行」).
 4. **The answer** (§ 5 when it carries a new analysis).
@@ -37,7 +37,7 @@ No deference line anywhere ("However, we fully respect your final judgment"): de
 
 When a follow-up confirms acceptance or keeps a positive rating ("I consider the work suitable for acceptance and maintain my positive rating") and leaves a minor concern, the reply thanks first and answers without arguing (user 2026-11-14「能解决你就回消息，title 大写加粗 thank you for confirming acceptance rating 然后不要反驳他，就简短回答问题 他写你的好话，比如什么达到接收标准什么的黑体加粗感谢」「你要是解决不了就简单感谢」):
 
-1. **Title line**, bold and upper case: `**THANK YOU FOR CONFIRMING THE ACCEPTANCE RATING**`.
+1. **Title**, Title Case, plain text in the OpenReview comment's Title field: `Thank You for Confirming the Acceptance Rating`. OpenReview bolds the title itself, so no `**`; not upper case (reads as shouting; user 2026-11-14「全大写会不会不好看」→「改.」「openreview 标题不需要 **, 自动会加粗.」). The body starts with the bold thanks. The paste page gives the title its own copy button.
 2. **Bold thanks quoting their praise**: `**Thank you so much for finding the work suitable for acceptance, and the benchmark and judge useful for advancing physically realistic video generation!**` A co-author who rewrites the opening may drop the title or turn the quoted praise into generic thanks ("Thank you so much for your thoughtful follow-up and positive assessment!"); put both back (user 2026-11-14, same request a second time after a co-author rewrite).
 3. **Can we resolve the remaining concern with evidence we already have?** No: stop after the thanks, the invitation to ask more and the thanks line; no answer, no promise, no "future work" paragraph. Yes: answer it. Short by default (one to three plain sentences, verdict first, one number at most per claim). When new analyses of data we already have answer the concern, the longer reply is allowed (user 2026-11-14「为啥要缩回 … 保留这一版」): findings as bold headings (§ 5), a promise to add them to the appendix, an optional rating request.
 4. **Never rebut, and do not state our position** (user 2026-11-14「所以也不要说我们的立场」). No "by design" defence, no "we respectfully disagree", no sentence explaining why our view of the concern is right, not even as a neutral design statement; no restating a position the reviewer did not accept. Agreeing with the reviewer's framing is fine (§ 3 item 3). A limitation the reviewer did not ask about is not volunteered (C34).
@@ -45,7 +45,7 @@ When a follow-up confirms acceptance or keeps a positive rating ("I consider the
 
 Worked example, short form (a benchmark paper, 2026-11; concern: "semantic alignment is a proxy for event completion, and the criterion scores still combine event realization with physical plausibility"):
 
-> **THANK YOU FOR CONFIRMING THE ACCEPTANCE RATING**
+> Title: Thank You for Confirming the Acceptance Rating
 >
 > **Thank you for finding the work suitable for acceptance, and the benchmark and judge useful for advancing physically realistic video generation.**
 >
