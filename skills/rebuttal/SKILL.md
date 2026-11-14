@@ -112,7 +112,7 @@ Detailed rules live next to this file. Each phase below names the file it requir
 | [references/comparison-rules.md](references/comparison-rules.md) | Phase 4, Phase 5 lint 13 | minimum evidence, one metric per reply, one measurement setup for every arm, intervals, ties, weak number vs best of the rest, words agree with numbers |
 | [references/wording-pass.md](references/wording-pass.md) | Phase 6.5, Phase 8 | wording pass on the finished draft, for the drafter: order of the steps, reconcile, tighten filler, reword (delete → replace → define) and rewrite for voice and cohesion — the overlay passed to `/paper-polish`, whose editor subagent runs `/paper-prose-tighten` (cut) then `/paper-jargon-pass` (reword, rewrite) — the drafter's checks on its edits, one owner per number; what is never touched; acceptance; lessons L1–L11 from the first run |
 | [references/blind-read.md](references/blind-read.md) | Phase 6.5 blind read and acceptance read — handed to the blind-read subagent, which gets no other method file | who the reader is, the three signals to record, ledger format |
-| [references/followup-and-endgame.md](references/followup-and-endgame.md) | Phase 7, Phase 8 | posting order, delta replies, nudges, score requests, AC closing note |
+| [references/followup-and-endgame.md](references/followup-and-endgame.md) | Phase 7, Phase 8 | posting order, delta replies, replies to a reviewer who confirms acceptance (§ 2a), nudges, score requests, AC closing note |
 | [references/collaboration.md](references/collaboration.md) | Phase 4 collaborator doc, whenever a co-author has touched the shared draft | who owns which text, co-author version vs ours (wording → theirs, substance → note), check against the source not our board, marking, sync direction, comments and suggestions, safe doc edits |
 | [references/misconduct-reporting.md](references/misconduct-reporting.md) | Phase 2 (`bad_faith_suspected`), on user request | strict vs malicious triage, evidence pack, channel and timing, note to the AC, what never to do |
 | [references/case-vqtoken-neurips2025.md](references/case-vqtoken-neurips2025.md) | with rhetoric.md | worked example: a NeurIPS 2025 thread, what worked and what failed |
@@ -418,7 +418,8 @@ When new reviewer comments arrive, follow [references/followup-and-endgame.md](r
 4. Update `rebuttal/REVISION_PLAN.md` in place — add any new checklist items introduced by the follow-up, tick off items the author has already completed, and keep existing items' status current
 5. Re-run safety lints, then the wording pass (Phase 6.5) on the delta reply
 6. Use the appropriate reply tool for continuity if useful (per Reviewer Calling Convention)
-7. Rules: escalate technically not rhetorically; never concede (Phase 4 "Never concede"); for a reviewer whose lever is `argument` (Phase 3 step 7), keep closing each new objection until none is left, but never repeat an argument that already failed — bring new evidence or a new angle, or stop
+7. A reviewer who confirms an accepting rating gets a short reply: bold upper-case title `**THANK YOU FOR CONFIRMING THE ACCEPTANCE RATING**`, bold thanks for each good thing they wrote, then a one-to-three-sentence answer only if existing evidence resolves the remaining concern (otherwise thanks only); never rebut ([references/followup-and-endgame.md](references/followup-and-endgame.md) § 2a)
+8. Rules: escalate technically not rhetorically; never concede (Phase 4 "Never concede"); for a reviewer whose lever is `argument` (Phase 3 step 7), keep closing each new objection until none is left, but never repeat an argument that already failed — bring new evidence or a new angle, or stop
 
 ### Phase 9: Render HTML view (auto, when `RENDER_HTML = true`, default)
 

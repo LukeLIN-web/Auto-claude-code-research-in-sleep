@@ -21,6 +21,26 @@ When a reviewer comments again:
 
 Long replies: split into `[PART 1/2]`, `[PART 2/2]` comments when over the per-comment limit (ICLR: "There is a word limit for each comment, but there is no limit on the number of comments"). Each part opens with its own label and closes with "continued in PART 2/2".
 
+## 2a. A reviewer who confirms an accepting rating
+
+When a follow-up confirms acceptance or keeps a positive rating ("I consider the work suitable for acceptance and maintain my positive rating") and leaves a minor concern, the reply is short and only thanks and answers (user 2026-11-14「能解决你就回消息，title 大写加粗 thank you for confirming acceptance rating 然后不要反驳他，就简短回答问题 他写你的好话，比如什么达到接收标准什么的黑体加粗感谢」「你要是解决不了就简单感谢」):
+
+1. **Title line**, bold and upper case: `**THANK YOU FOR CONFIRMING THE ACCEPTANCE RATING**`.
+2. **Bold thanks for every good thing the reviewer wrote**, in the reviewer's own terms: `**Thank you for finding the work suitable for acceptance, and the benchmark and judge useful for advancing physically realistic video generation.**`
+3. **Can we resolve the remaining concern with evidence we already have?** Yes: answer it in one to three plain sentences, the verdict first, one number at most per claim. No: stop after the thanks; no answer, no promise, no "future work" paragraph.
+4. **Never rebut.** No "by design" defence, no "we respectfully disagree", no restating a position the reviewer did not accept; agreeing with the reviewer's framing ("We agree that SA is only a proxy for event completion") is fine. A limitation the reviewer did not ask about is not volunteered (C34).
+5. Never mention the score beyond the title; never ask for anything (§ 4).
+
+Worked example (a benchmark paper, 2026-11; concern: "semantic alignment is a proxy for event completion, and the criterion scores still combine event realization with physical plausibility"):
+
+> **THANK YOU FOR CONFIRMING THE ACCEPTANCE RATING**
+>
+> **Thank you for finding the work suitable for acceptance, and the benchmark and judge useful for advancing physically realistic video generation.**
+>
+> We agree that SA is only a proxy for event completion. The outcome-information study (Appendix Q) also asked every rater directly whether the described outcome occurred: among the 182 of its 900 videos where a majority answered Yes, 17 (9%) still have at least one law rated below 3, so the law scores also catch physical errors in videos where the event is completed.
+
+The first draft of this reply added a ranking caveat ("too few to re-rank generators on completed videos alone") and a "by design" stance sentence; both were cut by this rule.
+
 ## 3. Nudges
 
 VQToken sent three nudge posts aimed at one reviewer plus two to all reviewers within Aug 2–8, most repeating "Do you still have any concerns?". The reviewer replied to the content posts and kept 2. The NeurIPS 2025 PCs reported "reviewers increasing their scores just to end back-and-forth discussion with the authors, but being silent or critical in private discussions with the AC" and attributed it to "reviewer fatigue". ICLR's author guide asks authors to "remain civil and considerate of the reviewers time".
