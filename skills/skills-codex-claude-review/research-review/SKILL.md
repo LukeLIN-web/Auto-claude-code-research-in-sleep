@@ -47,13 +47,6 @@ Before calling the external reviewer, compile a comprehensive briefing:
    figures and tables. Do not write down what each float shows, which argument
    it serves, or where each argument's evidence sits: the reviewer builds that
    map itself (FLOAT AND ARGUMENT MAP block, Step 2).
-5. For a manuscript, put the writing rule files in the brief under `Writing rules` (owner of this
-   list: `skills/shared-references/review-writing-rules.md`): `research-paper-writing/SKILL.md` with
-   its `references/introduction.md`, `experiments.md`, `figures.md` and `distinguish-prior-work.md`;
-   `paper-table-craft/SKILL.md` and `paper-figure-craft/SKILL.md`; the paper's `CLAUDE.md`, the
-   `CLAUDE.md` of its tables, figures and scripts directories where they exist, and every rule file
-   these point to. The reviewer cannot read your files, so paste each file's full text verbatim
-   under its path; do not quote selectively or summarise the rules.
 
 ### Step 2: Initial Review (Round 1)
 Send a detailed prompt with max reasoning:
@@ -128,19 +121,6 @@ mcp__claude-review__review_start:
       4. has no supporting evidence in the main text: its evidence sits only in the
          appendix (e.g. the sentence rests on "see Appendix C" alone) or nowhere.
     A flagged float or argument is a Critical Weakness only if it would sink the paper.
-
-    === WRITING RULES (manuscripts; one required named field at the end of your reply) ===
-    The brief lists rule files under "Writing rules". Read them, then check the
-    manuscript, main text and appendix, against every rule they state. Where a
-    project rule file and a general one disagree, the project rule holds. Check only
-    rules written in those files: a style preference of your own is not a finding.
-    Output a field named "Rule violations" with one line per rule broken:
-      <rule: file, section, and a short quote of the rule> — every place that breaks
-      it (file:line, or Table/Figure N as the compiled PDF numbers it) — what at that
-      place breaks it.
-    A rule broken in many places is one line that lists every place. Write "none" if
-    no rule is broken. A rule violation does not enter your score unless it would
-    sink the paper.
 ```
 
 After this start call, immediately save the returned `jobId` and poll `mcp__claude-review__review_status` with a bounded `waitSeconds` until `done=true`. Treat the completed status payload's `response` as the reviewer output, and save the completed `threadId` for any follow-up round.
@@ -190,7 +170,6 @@ Save the full interaction and conclusions to a review document in the project ro
 - Final consensus on claims, narrative, and experiments
 - Claims matrix (what claims are allowed under each possible outcome)
 - For a manuscript, the reviewer's float map and argument map, and every float and argument it flagged
-- For a manuscript, the reviewer's rule violations whose anchors hold, under their own heading
 - Prioritized TODO list with estimated compute costs
 - Paper outline if discussed
 
@@ -221,10 +200,6 @@ Save a trace for every `mcp__claude-review__review_start`, `mcp__claude-review__
   block, manuscripts only, in the first-round prompt and in every follow-up brief.
   The reviewer builds the map; do not pass on your own map or reading of what a
   float shows or where an argument's evidence sits (reviewer-independence.md).
-- A manuscript review also checks the paper against the writing rules (user 2026-11-15): put the
-  rule files in the brief and send the WRITING RULES block, manuscripts only, in the first-round
-  prompt and in every follow-up brief. The rules themselves stay in their own files
-  (`review-writing-rules.md`).
 - The review document should be self-contained (readable without the conversation)
 
 ## Prompt Templates

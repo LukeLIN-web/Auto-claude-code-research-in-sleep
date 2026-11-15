@@ -112,9 +112,6 @@ Before calling the external reviewer, compile a comprehensive briefing:
    tabular, and ranking tables with no shaded row. These are counts, not
    judgements: do not send them to the reviewer, and do not treat one as a finding until the sentence
    or caption it points at has been read.
-6. For a manuscript, list the writing rule files in the brief under `Writing rules`, by absolute
-   path, as [`review-writing-rules.md`](../shared-references/review-writing-rules.md) ("What the
-   brief lists") says. Paths only: do not quote or summarise the rules.
 
 ### Step 2: Initial Review (Round 1)
 Send a detailed prompt with max reasoning, using the selected backend. For
@@ -138,8 +135,6 @@ mcp__codex__codex:
     [SCOPE LIMITS block, verbatim from shared-references/review-scope-limits.md]
 
     [FLOAT AND ARGUMENT MAP block, verbatim from shared-references/review-float-map.md — manuscripts only]
-
-    [WRITING RULES block, verbatim from shared-references/review-writing-rules.md — manuscripts only]
 ```
 
 For Antigravity, Grok, or Claude Code, send the same prompt through its selected
@@ -208,7 +203,6 @@ Save the full interaction and conclusions to a review document in the project ro
 - Final consensus on claims, narrative, and experiments
 - Claims matrix (what claims are allowed under each possible outcome)
 - For a manuscript, the reviewer's float map and argument map, and every float and argument it flagged
-- For a manuscript, the reviewer's rule violations whose anchors hold, under their own heading
 - For a manuscript, the checker warnings of Step 1 that hold after reading the text they point at, under their own heading, apart from the reviewer's points
 - Prioritized TODO list with estimated compute costs
 - Paper outline if discussed
@@ -236,7 +230,6 @@ Update project memory/notes with key review conclusions.
 - Focus on ACTIONABLE feedback — "what experiment would fix this?"
 - Every weakness must carry an evidence anchor; spot-check anchors before acting, and drop findings whose anchor does not check out
 - In a manuscript, every figure and table must serve an argument (user 2026-11-03), and every main-text argument carries at least one or two pieces of its evidence in the main text, never all of it in the appendix (user 2026-11-11): send the FLOAT AND ARGUMENT MAP block of `shared-references/review-float-map.md` in the first-round prompt and every follow-up brief; the reviewer builds the map
-- A manuscript review also checks the paper against the writing rules (user 2026-11-15): list the rule files in the brief and send the WRITING RULES block of `shared-references/review-writing-rules.md` in the first-round prompt and every follow-up brief; the rules themselves stay in their own files
 - Document the threadId for potential future resumption
 - The review document should be self-contained (readable without the conversation)
 

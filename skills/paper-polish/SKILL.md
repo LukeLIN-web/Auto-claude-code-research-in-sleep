@@ -36,7 +36,7 @@ This skill only orchestrates. The rules live in the skills it calls:
   - in a paper: the abstract and contribution list, unless the user names them as in scope (`/paper-prose-tighten` class 13 reports, never edits, those).
 - **Overlay** (optional): a caller's file section whose rules win where they differ from the called skills — for example `rebuttal/references/wording-pass.md` § 3 and § 4.1. Pass the whole section; the editor reads it before the skills.
 - **Ledger** (optional): a blind-read ledger the caller already produced. If given, step 1 is skipped.
-- **Writing rules** (papers): the rule files a manuscript review checks, as listed in `../shared-references/review-writing-rules.md` ("What the brief lists"), by absolute path. The polish never breaks them and fixes what it may (user 2026-11-15).
+- **Writing rules** (papers; user 2026-11-15): the absolute paths of `research-paper-writing/SKILL.md` with its `references/introduction.md`, `experiments.md`, `figures.md` and `distinguish-prior-work.md`; `paper-table-craft/SKILL.md` and `paper-figure-craft/SKILL.md`; the paper's `CLAUDE.md`, the `CLAUDE.md` of its tables, figures and scripts directories where they exist, and every rule file these point to. The rules stay in those files. The polish never breaks them and fixes every violation it finds: prose by the editor, the rest by the owner (§ 5).
 
 ## 1. Blind read
 
@@ -80,7 +80,7 @@ Take the editor's text one paragraph at a time. A paragraph's edits are taken on
 - in a paper, no edit adds a writing-rule warning: run `research-paper-writing/scripts/check_draft.py` (and `check_figures.py` when a caption changed) on the text before and after, and reject an edit that brings in an ERROR or WARN the text did not have;
 - the overlay's own checks pass (the rebuttal overlay adds: house-style items present, verdict sentence bare, lint 10).
 
-A rejected edit is dropped, not repaired: keep the earlier sentence. Do not hand-merge half of an edited sentence into the old one. Then apply the taken edits to the real files; for a paper, change generated captions in their generator, rebuild, compile, and run the short-last-line gate (`/paper-prose-tighten` class 12). Save the change list, each row marked taken or rejected with the check that rejected it, next to the ledger as `edits-<unit>.md`.
+A rejected edit is dropped, not repaired: keep the earlier sentence. Do not hand-merge half of an edited sentence into the old one. Then apply the taken edits to the real files. For a paper, also fix the writing-rule violations the editor listed outside prose (table shading and marks, caption placement, figure type size): yourself, in their generator, unless the fix would change a number, a claim or what a float shows, which goes to the user. Change generated captions in their generator, rebuild, compile, and run the short-last-line gate (`/paper-prose-tighten` class 12). Save the change list, each row marked taken or rejected with the check that rejected it, next to the ledger as `edits-<unit>.md`.
 
 ## 6. Acceptance
 
@@ -88,7 +88,7 @@ A second fresh subagent rereads the final text with the step-1 isolation (`/pape
 
 ## Report
 
-In this order: (1) structural findings and bugs from steps 1–2 (contradictions, number clashes) for the user to rule on; (2) what the editor flagged but could not touch, writing-rule violations included, each with its rule and place (the owner fixes a generated table or caption in its generator); (3) cuts by `/paper-prose-tighten` class, with the kept list; (4) term fixes; (5) rewrites by `rewrite.md` section (voice / cohesion / clarity); (6) rejected edits and why; (7) the suggested-experiments table below. No "% shorter" headline.
+In this order: (1) structural findings and bugs from steps 1–2 (contradictions, number clashes) for the user to rule on; (2) what the editor flagged but could not touch; the writing-rule violations outside prose, each with its rule, place and the fix made; (3) cuts by `/paper-prose-tighten` class, with the kept list; (4) term fixes; (5) rewrites by `rewrite.md` section (voice / cohesion / clarity); (6) rejected edits and why; (7) the suggested-experiments table below. No "% shorter" headline.
 
 **Suggested experiments** (user 2026-11-15「最后加一个 返回一个建议实验的表」). The report ends with one table. It has one row per finding from (1) or (2) that needs new evidence, not new wording. Typical cases:
 
