@@ -59,12 +59,14 @@ command grep -nE '(Moreover|Furthermore|Additionally|In addition),' $FILES
 |---------|-------|
 | Two independent claims in one sentence joined by `and` / `;` | Split: one claim per sentence (`/paper-jargon-pass`'s 一句话塞太多 is the extreme case) |
 | A long qualifying clause between subject and verb | Move the clause after the verb, or into its own sentence |
+| More than four commas in one sentence, or an aside wedged mid-sentence between commas (`A outperforms B and, when X holds, C.`) | Split into two sentences, or move the aside to the end (`A outperforms B. It also outperforms C when X holds.`). At most four commas per sentence; commas inside `\cite{}`, math and numbers do not count |
 | Nominalizations (`a comparison is made`, `leads to an improvement in`, `the computation of`) | The verb: `we compare`, `improves`, `we compute` |
 | `because` joining a reason to a claim (`because the VLA is trained without the orchestrator, fine-tuning degrades …`) | `as` or `since`: `because` asserts the cause outright, and papers rarely use it; keep it only where the text reports a test of that cause. If neither the softer word nor the evidence fits, the clause is a claim change: leave it and report |
 | Vague scope (`across settings`, `in most cases`) | The concrete scope the evidence has (`on all four benchmarks`, `in three of four`), only when the text already states it somewhere; otherwise leave it and report |
 
 ```bash
 command grep -niE '\bbecause\b' $FILES
+command grep -nE '^([^,]*,){5,}' $FILES   # lines with five or more commas (one sentence per line); discount \cite, math, numbers
 ```
 
 **Hold the scope.** A split or reorder must not move a qualifier so that it seems to scope a different clause (`on two benchmarks` drifting to the end of a sentence, where it reads as scoping only the last clause).
