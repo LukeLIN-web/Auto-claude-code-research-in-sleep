@@ -36,6 +36,18 @@ Before calling the external reviewer, compile a comprehensive briefing:
    figures and tables. Do not write down what each float shows, which argument
    it serves, or where each argument's evidence sits: the reviewer builds that
    map itself (FLOAT AND ARGUMENT MAP block, Step 2).
+5. For a manuscript, run the mechanical checkers of the `research-paper-writing` skill before the
+   reviewer is called, and keep their output:
+   ```bash
+   W=<skills dir>/research-paper-writing/scripts
+   python3 $W/check_draft.py <introduction .tex> <experiments .tex>
+   python3 $W/check_figures.py --layout two <entry .tex>     # --layout one for a one-column venue
+   ```
+   `check_draft.py` compares the introduction with award papers (logical connectors per 100 words,
+   sentence length, runs of short sentences) and flags experiments sentences with more than two numbers;
+   `check_figures.py` flags long captions and long first caption sentences. These are counts, not
+   judgements: do not send them to the reviewer, and do not treat one as a finding until the sentence
+   or caption it points at has been read.
 
 ### Step 2: Initial Review (Round 1)
 Save the resolved route and its session id/cwd. Send the following substantive
@@ -158,6 +170,7 @@ Save the full interaction and conclusions to a review document in the project ro
 - Final consensus on claims, narrative, and experiments
 - Claims matrix (what claims are allowed under each possible outcome)
 - For a manuscript, the reviewer's float map and argument map, and every float and argument it flagged
+- For a manuscript, the checker warnings of Step 1 that hold after reading the text they point at, under their own heading, apart from the reviewer's points
 - Prioritized TODO list with estimated compute costs
 - Paper outline if discussed
 
