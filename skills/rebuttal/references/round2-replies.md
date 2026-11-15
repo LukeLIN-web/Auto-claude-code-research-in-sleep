@@ -91,13 +91,15 @@ The sequence (user 2026-11-15「你先发个全体message显示你催过了 然�
 
    Title (OpenReview Title field, Title Case, no `**`): `Thank You for Supporting the Acceptance of Our Paper`
 
-   > **Thank you so much for your positive rating in support of accepting our paper, and for your insightful suggestions!**
+   > **Thank you so much for your positive rating in support of accepting our paper, and for your insightful suggestions! We are especially grateful that you found <verbatim strength 1>, <verbatim strength 2>, and <verbatim strength 3>.**
    >
    > We are fully committed to resolving all of your concerns. Could you kindly let us know whether you have any remaining concerns? We would be glad to address them.
    >
    > Thank you again for your time and valuable feedback!
 
-   中文对照：**非常感谢您给出支持接收的正面评分，以及富有洞见的建议！** 我们致力于解决您的所有问题。能否请您告诉我们是否还有其他问题？我们很乐意进一步解决。再次感谢您的时间和宝贵意见！
+   The second bold sentence quotes the review's own strengths field (e.g. ICLR's Critical Strengths), each phrase a verbatim substring in quotation marks (user 2026-11-15「要引用一下他原话的Critical Strengths」). Leave out any strength that names a cost, a limitation or a null result, even as praise ("the paper is honest about cost", "honestly reports negative results"): it points the AC at the weakness (Never expose a weakness). No numbers.
+
+   中文对照：**非常感谢您给出支持接收的正面评分，以及富有洞见的建议！我们尤其感谢您认为〈原话 1〉、〈原话 2〉以及〈原话 3〉。** 我们致力于解决您的所有问题。能否请您告诉我们是否还有其他问题？我们很乐意进一步解决。再次感谢您的时间和宝贵意见！
 
 5. **Their answer decides the next post** (user「他们回复没有就使劲夸他们 有的话就赶紧解决到没意见可以提」「如果正分不回复不管他」):
    - *No remaining concerns*: praise them warmly, bold thanks quoting what they wrote (with the § 4 title when they confirm their rating); if no request was made to them yet, the one request follows (§ 7, form 5), then the invitation to ask more and the thanks line.
