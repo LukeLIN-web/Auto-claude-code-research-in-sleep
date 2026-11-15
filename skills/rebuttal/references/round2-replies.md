@@ -91,13 +91,13 @@ The sequence (user 2026-11-15「你先发个全体message显示你催过了 然�
 
    Title (OpenReview Title field, Title Case, no `**`): `Thank You for Supporting the Acceptance of Our Paper`
 
-   > **Thank you so much for your positive rating in support of accepting our paper, and for your insightful suggestions! We are especially grateful that you found <verbatim strength 1>, <verbatim strength 2>, and <verbatim strength 3>.**
+   > **Thank you so much for your positive rating in support of accepting our paper, and for your insightful suggestions! We are especially grateful that you found <strength 1>, <strength 2>, and <strength 3>.**
    >
    > We are fully committed to resolving all of your concerns. Could you kindly let us know whether you have any remaining concerns? We would be glad to address them.
    >
    > Thank you again for your time and valuable feedback!
 
-   The second bold sentence quotes the review's own strengths field (e.g. ICLR's Critical Strengths), each phrase a verbatim substring in quotation marks (user 2026-11-15「要引用一下他原话的Critical Strengths」). Leave out any strength that names a cost, a limitation or a null result, even as praise ("the paper is honest about cost", "honestly reports negative results"): it points the AC at the weakness (Never expose a weakness). No numbers.
+   The second bold sentence restates the review's own strengths field (e.g. ICLR's Critical Strengths) in the reviewer's words, woven into one "you found our X good, our Y useful, …" sentence, without quotation marks (user 2026-11-15「要引用一下他原话的Critical Strengths」, then「不要加引号.」). Leave out any strength that names a cost, a limitation or a null result, even as praise ("the paper is honest about cost", "honestly reports negative results"): it points the AC at the weakness (Never expose a weakness). No numbers.
 
    中文对照：**非常感谢您给出支持接收的正面评分，以及富有洞见的建议！我们尤其感谢您认为〈原话 1〉、〈原话 2〉以及〈原话 3〉。** 我们致力于解决您的所有问题。能否请您告诉我们是否还有其他问题？我们很乐意进一步解决。再次感谢您的时间和宝贵意见！
 
