@@ -196,7 +196,7 @@ Local cite:
 10. Style: present tense, “we” for decisions, the method name as subject for what it does. No dashes (author preference); colons are fine before an enumeration or equation.
 
 ## Implementation Details
-`Implementation details include hyperparameters (e.g., layer count, feature dimensions), coordinate transforms/normalization, and other practical details. Put them near the end of Method or in a dedicated Implementation Details section.`
+`Implementation details include hyperparameters (e.g., layer count, feature dimensions), coordinate transforms/normalization, and other practical details. Put them in the experiments setup or the appendix, not in Method, unless they are the contribution.`
 
 ## How to Check Whether Method is Easy to Understand
 `Check method clarity from three levels: writing logic, paragraph writing, and sentence writing.`

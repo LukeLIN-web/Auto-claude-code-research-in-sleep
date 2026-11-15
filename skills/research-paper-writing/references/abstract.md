@@ -66,7 +66,7 @@ Version 1 local cite:
 
 ### Insight-led — Setting → Gap → Insight → Method → Result *(`insight`, `failure` with a clear root cause)*
 
-As the default, with one sentence that states the observation about the problem from which the method follows. Write the observation itself (“The highest frequency a scene can contain is bounded by the sampling rate of its views.”), not a formula announcing it (“Our key insight is …”).
+As the default, with one sentence that states the observation about the problem from which the method follows. Write the observation itself (“The highest frequency a scene can contain is bounded by the sampling rate of its views.”).
 
 The notes' template for this arc (Challenge -> Insight -> Contribution):
 
@@ -158,6 +158,6 @@ Version 3 local cite:
 - [ ] Is there any sentence that mixes too many messages?
 - [ ] Gap sentence and method sentence match one-to-one.
 - [ ] Same claims and strength as the introduction.
-- [ ] No hedging on the core idea; no disclaimers; no “key insight” formula.
+- [ ] No hedging on the core idea; no disclaimers.
 - [ ] At least one evaluative claim backed by evidence (outperforms, first, faster, …).
 - [ ] `python3 scripts/check_draft.py` shows no ERROR and no WARN for connectors, numbers or participial clauses (or each one is justified).

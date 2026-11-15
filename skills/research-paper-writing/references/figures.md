@@ -93,8 +93,8 @@ What they share:
 
 1. **Figure 1 shows real data of the task.** Nine of the ten contain real images, renders or reconstructions, and so do
    both good examples the notes name (NSFF: a gallery of results; KiloNeRF: one large MLP vs. thousands of small ones,
-   each above its rendered scene, with "56s → 0.02s, 2548× faster"). A Figure 1 made only of text boxes and arrows is
-   outside this style.
+   each above its rendered scene, with "56s → 0.02s, 2548× faster"). Whichever type Figure 1 is ("Types"), put real
+   data in it wherever the type allows.
 2. **Data is drawn as data.** Whatever flows between modules (an image, a vector field, a contour, a point cloud, a
    render) appears as its real visualization at that stage. Boxes are kept for networks and operations, filled in pale
    colours and grouped by colour.
@@ -131,7 +131,7 @@ Present in 15 / 26 two-column papers, most often as Figure 2 at the top of the m
 - **One colour per method across every plot in the paper**; ours in the saturated accent colour and drawn on top, baselines in muted colours. Use `assets/figures/bestpaper.mplstyle` and `plot_style.py`.
 - **Label curves directly** at their ends, or with one shared legend above the panels; no legend boxes covering data.
 - Log axes for scaling studies; mark the regime, frontier or slope on the plot itself (data-constrained scaling marks regions; superposition draws the slope triangle).
-- No plot titles inside the figure when the caption carries them; axis labels with units; tick labels at least 6 pt in print.
+- No plot titles inside the figure when the caption carries them; axis labels with units; tick labels at least 7.5 pt in print.
 - Export vector PDF, not PNG.
 
 ### Ablation and analysis figures
@@ -143,9 +143,10 @@ Template (two-column vision papers):
 ```latex
 \caption{\textbf{<Takeaway in 3 to 10 words>.}
 <What is shown, panel by panel: (a) …, (b) …>.
-<How to read it: colours, symbols, insets>.
-<Why it happens, or a pointer: “see Sec. 4.3”>.}
+<How to read it: colours, symbols, insets>.}
 ```
+
+The caption does not point to other sections or floats and does not explain why the result happens; that goes in the text.
 
 - The **first sentence is the takeaway**, not a description: “Decoding on demand.”, “3D Gaussian Splatting aliases when zooming out.”, not “Results on dataset X.” (median 7 words, p90 20).
 - Bold title in about half of two-column papers and a third of NeurIPS papers; either is fine, but be consistent across the paper.
@@ -159,7 +160,7 @@ Template (two-column vision papers):
 |---|---|
 | Widths | `\linewidth` inside `figure` (one column, 3.25 in in CVPR) or inside `figure*`/`strip` (6.875 in). Never absolute widths wider than the column. |
 | Placement | `[t]`, after or on the page of the first reference; teaser via `strip` (CVPR kit) |
-| Text in figures | sans-serif, 6–8 pt at print size, never larger than the caption (9 pt); one font family for all figures |
+| Text in figures | sans-serif, every glyph 7.5–11 pt at the width the figure is actually included at (how to measure: skill `paper-figure-craft`); one font family for all figures |
 | Maths in figures | the same symbols as the paper, set in LaTeX (TikZ) or with matplotlib mathtext |
 | Lines | 0.5–1 pt; arrows with the same head everywhere |
 | Colour | 2–3 accent colours plus greys; colour-blind safe; one fixed colour for “ours”; light fills (20–30 % tint) for boxes, saturated colour only for what matters |
@@ -190,6 +191,6 @@ See `references/experiments.md`, "Figure/Table Writing Rules".
 - [ ] Overview: left to right, names and symbols match the method, colour by role, new component highlighted.
 - [ ] Results: same order and colours for methods everywhere; ours last before ground truth; insets where differences are small.
 - [ ] Captions: takeaway first; 10–100 words (Figure 1 longer); colours and panels named; consistent title style.
-- [ ] Widths relative to `\linewidth`; fonts 6–8 pt; vector plots; ≤ 3 accent colours.
+- [ ] Widths relative to `\linewidth`; fonts 7.5–11 pt in print; vector plots; ≤ 3 accent colours.
 - [ ] No fabricated results; placeholders listed in `report.md`.
 - [ ] `python3 scripts/check_figures.py main.tex` shows no ERROR and each WARN is fixed or justified.

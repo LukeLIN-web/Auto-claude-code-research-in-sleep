@@ -33,14 +33,14 @@ Shape:
 ## What Makes It Persuasive
 1. **Tension before idea.** The gap is set up as a conflict the idea resolves. Award papers use: two goals that pull apart (*tradeoff*, 21/55), a missing capability (13), an obvious fix that is too expensive (8), an unexplained phenomenon (6), an open question (4), a belief the results overturn (2).
 2. **Credit, then gap.** Every award introduction credits prior work with a specific achievement before criticising it, and describes the component it later blames.
-3. **The insight as an observation, not a formula.** 43/55 state an insight or goal, usually just before the method, but only 4/55 use “our key insight is”. Write the observation itself: “The highest frequency a scene can contain is bounded by the sampling rate of its views.”, “We find that …”, “The main idea is …”, “Our work is based on the observation that …”, “Surprisingly, …”. Use a formula at most once, never in the abstract.
+3. **The insight as an observation.** 43/55 state an insight or goal, usually just before the method. Write the observation itself: “The highest frequency a scene can contain is bounded by the sampling rate of its views.”, “We find that …”, “The main idea is …”, “Our work is based on the observation that …”, “Surprisingly, …”. The skeleton sentences of Part C (`Our innovation is ...`) are fine for announcing it.
 4. **A handle when there is one.** 27/55 name the idea itself (“next-brick prediction”, “foundation datasets”) — distinct from the method’s name. Name it once, where it is introduced, and reuse the same words.
 5. **Position against the closest work.** After the method (median position 0.58), name the closest work and state one checkable difference — mechanism (most common), scope, cost, evaluation, assumption, input or output. Forms: “Unlike X, which …, our …”, “In contrast to X, which requires …, Y …”, “Previous work addresses … by …, which is not applicable to …”, “While X …, we …”. Reviewers will look for this paragraph.
 6. **One concrete example.** 36/55 use a concrete example (an input that breaks prior work, a scene, a striking number, an analogy), usually in paragraph 1–2. A list of application domains is not an example.
 7. **Promote the work.** Award introductions use evaluative words (*outperforms*, *efficient*, *first*, *effective*) about three times; back each with evidence. Do not be more modest than the evidence allows.
 8. **Plain connective tissue, full sentences.** Award introductions use about one logical connector (however/therefore/thus/moreover/specifically/…) per 100 words (p10–p90: 0.4–1.4); sentences average 23 words. Let paragraph order and old→new information flow carry most of the logic, but keep relations inside sentences (*while*, *by*, *which*, *because*) rather than splitting every fact into its own short sentence or appending “, making …” clauses. Put short sentences at the pivots (the bottleneck, the cause, the idea) and keep the mean around 20–24 words. Colons are fine; dashes are not used (author preference; `style-rules.md` §1).
 9. **Story, not tables.** A result sentence carries 0–2 numbers; the introduction carries a median of 4 numbers. Ablation values and protocol details stay in the experiments.
-10. **Say each thing once.** Assign every claim (the gap, the insight, each advantage, each result) to exactly one paragraph. Do not restate the insight after the method, do not re-list the research questions, and do not let the contributions repeat the results paragraph — if a contributions list is used, its items are one line each and point to sections; otherwise end with results or a stance. Repetition was the most common weakness found by blind reviewers.
+10. **Say each thing once.** Assign every claim (the gap, the insight, each advantage, each result) to exactly one paragraph. Do not restate the insight after the method and do not re-list the research questions. The contribution list is written by its own rules ("Contribution List"). Repetition was the most common weakness found by blind reviewers.
 11. **Short background.** Award introductions reach the specific problem fast (the gap appears by paragraph 2). Keep generic field background to at most two sentences before the specific setting or credit.
 12. **No implementation details** (layer counts, grid sizes, data pipelines, hyperparameters) unless they are the contribution.
 
@@ -198,7 +198,7 @@ Expert note:
 1. It is often good if the first paragraph already states what problem you want to solve, instead of requiring several paragraphs of prior work before the challenge appears.
 2. This style needs the right conditions and is less common.
 3. Typical Version 4 flow: Part 1 (task + application and directly expose challenge via previous methods 1) -> Part 2 (previous methods 2 try to solve it but still fail) -> Part 3 (our method).
-4. More common general flow: Part 1 (task + application) -> Part 2 (previous methods 1 + limitation) -> Part 3 (previous methods 2 + limitation; here the target challenge emerges) -> Part 4 (our method).
+4. The other common flow: Part 1 (task + application) -> Part 2 (previous methods + limitation; the target challenge emerges here) -> Part 3 (our method).
 
 Local cite:
 
@@ -227,22 +227,20 @@ Important warning :
 
 ### Technical-Challenge Version 1, `B:V1` (existing task, with existing methods)
 
-`Version 1: For existing tasks, discuss the challenge chain from general challenge -> traditional methods -> recent methods -> remaining challenge that we solve.`
+`Version 1: For existing tasks, discuss the challenge chain from general challenge -> recent methods -> remaining challenge that we solve.` Keep the chain short: generic background takes at most two sentences and the gap appears by paragraph 2.
 
 Writing structure:
 
 1. Start with a general challenge statement for this task.
-2. Briefly summarize traditional methods and their limitation.
-3. Briefly summarize recent methods (1) and their limitation with technical reason.
-4. Briefly summarize recent methods (2) and their limitation with technical reason.
-5. Ensure the final limitation is exactly the challenge your method solves.
+2. Briefly summarize recent methods (1) and their limitation with technical reason.
+3. Briefly summarize recent methods (2) and their limitation with technical reason.
+4. Ensure the final limitation is exactly the challenge your method solves.
 
 Sentence skeleton:
 
 1. `This problem is particularly challenging due to ...`
-2. `To overcome these challenges, traditional methods ... However, they ...`
-3. `Recently, ... methods ... However, they ... because ...`
-4. `To overcome this challenge, ... methods ... However, they ... because ...`
+2. `Recently, ... methods ... However, they ... because ...`
+3. `To overcome this challenge, ... methods ... However, they ... because ...`
 
 Local cite:
 
@@ -554,11 +552,8 @@ The authors write the list. Use these rules to check it, or when an author asks 
 
 Check: `grep -n '\\item' <intro file>` and read each item but the last for benchmark names.
 
-What the award-paper corpus shows about the list (the rules above win where they differ):
-
-- Optional. A single strong contribution can be stated in one sentence (DPO, CO3D).
-- If used: 2–4 bullets, each verifiable and pointing to a section/table; modules of one method go in one bullet; analysis findings or resources get their own bullet.
-- The list must match the abstract and the alignment matrix.
+5. The Introduction always ends with the list ("Section Skeleton"). Items may run to several sentences; modules of one method go in one item, and analysis findings or resources get their own.
+6. The list states the same claims, at the same strength, as the abstract.
 
 ## Example Bank
 1. `references/examples/introduction-examples.md`
@@ -586,14 +581,14 @@ What the award-paper corpus shows about the list (the rules above win where they
 - [ ] Credit to specific prior work precedes the gap; the component blamed later is described first.
 - [ ] Gap = what fails/is missing + technical reason + condition, set up as a tension.
 - [ ] A contrast paragraph or sentence names the closest work and one checkable difference.
-- [ ] The insight is stated as an observation; at most one “key insight”-type formula, none in the abstract.
+- [ ] The insight is stated as an observation.
 - [ ] The handle appears where the idea is introduced; the core idea is asserted, not hypothesised.
 - [ ] One concrete example in paragraph 1 or 2.
 - [ ] No limitations, failure cases or disclaimers; mixed results scoped to the wins.
 - [ ] Every gap ↔ one contribution.
 - [ ] Results as claims with headline numbers; wording is the strongest the claim map allows; the work is promoted with evidence.
 - [ ] A stance sentence if the results support one; no implementation details; no defensive qualifiers.
-- [ ] Each claim appears in one paragraph only; contributions do not repeat the results paragraph; generic background ≤ 2 sentences.
+- [ ] Each claim appears in one paragraph only; generic background ≤ 2 sentences.
 - [ ] The cause has its own sentence (“The main reason is that …”); the tension and the idea are stated in short, quotable sentences.
 - [ ] Sentences average 20–24 words with short pivots; no run of three short sentences; no sentence over ~35 words; a claim and its number share a sentence.
 - [ ] No dashes; few trailing participial clauses.

@@ -26,13 +26,13 @@ Convince reviewers with complete evidence on effectiveness, causality, and pract
    - If the task is new and no directly related baseline exists, construct baselines from variants of our method (the notes' example: NeRF in the Wild, arXiv 2008.02268).
 2. Which modules/design choices make the gain?
    - Run ablation studies for each key module/design choice.
-   - Use remove/replace/disable variants and report delta to full model.
+   - Use remove/replace/disable variants. Print each variant's value next to the full model's; with both values printed, do not also print their difference.
    - Include component interaction ablations when modules are coupled.
 3. How far can the method generalize under harder settings?
    - Once the method works on the target data, run demos/evaluations on newer, harder or out-of-distribution data to find its limit. Readers want to see how far a method goes; showing it is a contribution in itself.
    - Aim demos and applications at the downstream research community: work out what that community wants to see. This strongly affects the paper's impact.
    - Add stress-test scenarios (more complex scenes, rarer cases, noisier inputs, or stricter constraints).
-   - Report both gains and failure modes to show realistic boundaries.
+   - When the paper discusses limitations, report failure modes next to the gains to show realistic boundaries.
 
 ## Experiment Planning
 **Evidence map first.** Before writing, list every claim from the abstract, introduction and method, and the table/figure that proves it. A claim without evidence is softened in the introduction or gets an experiment `[TODO]`; an experiment that proves no claim moves to the appendix. The decisive experiment for each main-text claim stays in the main text; the appendix only adds settings and breakdowns.
@@ -76,7 +76,7 @@ flowchart TB
 
 **E4 · Analysis, generalisation, applications.** What else the method enables or reveals: scaling, transfer, efficiency, new applications, human study. Each with its own claim-first paragraph.
 
-**E5 · Limitations.** Honest failure modes with a figure, at the end of the experiments or in a separate section (never in the abstract or introduction, by author preference).
+**E5 · Limitations (usually not written; use when the venue or the paper calls for it).** Honest failure modes with a figure, at the end of the experiments or in a separate section (never in the abstract or introduction, by author preference).
 > “Our method employs a Gaussian filter as an approximation to a box filter for efficiency. However, this approximation introduces errors …” (Mip-Splatting)
 
 ## Skeleton
@@ -87,16 +87,16 @@ flowchart TB
 \subsection{<Benchmark 2 or second task>}  % E2
 \subsection{Ablation study}                % E3: one question per design claim, Tab.
 \subsection{Analysis / Applications}       % E4
-\subsection{Limitations}                   % E5 (or a separate section)
+\subsection{Limitations}                   % E5, optional (or a separate section)
 ```
 
 ## Writing Rules
 1. **Claim-first paragraphs.** “Ours outperforms X on all metrics (Tab. 1), with the largest gain in Y” rather than “Table 1 shows the results.” Use “As shown in Tab. 1” sparingly.
-2. **Numbers belong here.** Report margins, not only rankings; the abstract/introduction number limits do not apply. Keep at most two or three numbers per sentence; the rest stay in the table.
+2. **Numbers belong here.** Report margins, not only rankings; the abstract/introduction number limits do not apply. Keep at most one or two numbers per sentence; the rest stay in the table.
 3. **Fair comparison is stated once, in the setup** (same data, official code, same backbone); do not repeat qualifiers in every results sentence.
 4. **Explain, do not only report.** After each comparison, one sentence on why, tied to the mechanism (“because the 3D filter bounds the frequency …”).
 5. **Qualitative figures** show the claim the text makes (failure of the baseline, our fix), and their captions state the takeaway first. Layout, method order, insets and plot style: `figures.md`, "Result Figures".
-6. **Limitations** are written here, concretely, with a cause and, where possible, a figure.
+6. **Limitations**, when the paper has them, are written here, concretely, with a cause and, where possible, a figure.
 7. Style: past tense for what was done (“we trained”), present tense for what the results show (“Ours outperforms”). No dashes; colons are fine for run-in lists.
 
 ## Ablations
@@ -120,7 +120,7 @@ Readers care most about how the core contributions affect performance, and wonde
 3. Do not use double rules or dense `\hline` stacks.
 4. Use `booktabs` style (`\toprule`, `\midrule`, `\bottomrule`) for clean structure.
 5. Use as few horizontal rules as possible; lines should separate groups, not every row.
-6. Highlight key numbers (best/second-best or target rows) with subtle color emphasis.
+6. Mark the best number in bold and the second best with an underline. Give every row that is our method a pale background (`\rowcolor` from `colortbl`), its intermediate variants included, e.g. the row with only the first component and the row with both.
 
 ### Readability rules from review practice
 
@@ -131,8 +131,8 @@ Readers care most about how the core contributions affect performance, and wonde
 5. Group multi-dataset or multi-setting results using `\multicolumn` + `\cmidrule`, not vertical separators.
 6. One table, one message: do not mix unrelated results in a single table.
 7. If rows represent different attributes/ablations, encode that explicitly in row names or attribute columns.
-8. Keep caption focused on setting/protocol/notation, not long discussion.
-9. If there is little detail to explain, use one concise sentence to summarize the main result.
+8. Open the caption with the takeaway in one sentence, then give setting, protocol and notation. No long discussion.
+9. If there is little to explain, the takeaway sentence alone is the caption.
 10. For single-column figures/tables in two-column papers, prefer placing them in the right column when layout allows, so readers can enter the page from the left-top text without breaking reading flow.
 
 ### Minimal LaTeX checklist
@@ -140,18 +140,18 @@ Readers care most about how the core contributions affect performance, and wonde
 1. Add packages in preamble: `\usepackage{booktabs}`, `\usepackage{colortbl,xcolor}` (and optionally `\usepackage{siunitx}` for decimal alignment).
 2. Replace `\hline`-heavy style with `\toprule/\midrule/\bottomrule`.
 3. Put `\caption{...}` before `\label{...}` and keep caption above.
-4. Use restrained highlighting; never color too many cells.
+4. Use restrained highlighting: one pale colour, on our rows only.
 
 ### From the award papers
 
-**Tables:** booktabs, best in bold, second underlined if useful, ↑/↓ in headers, units, the setting in the caption. Missing numbers are `\TODO{}` cells, never estimates.
+**Tables:** booktabs, best in bold, second underlined, our rows on a pale background, ↑/↓ in headers, units, the setting in the caption. Missing numbers are `\TODO{}` cells, never estimates.
 
 ### Table skeleton
 
 ```latex
 \begin{table}[t]
 \centering
-\caption{<Takeaway first>. <Setting>. Best in \textbf{bold}.}
+\caption{<Takeaway first>. <Setting, protocol, notation>. Best in \textbf{bold}, second best \underline{underlined}; our rows shaded.}
 \label{tab:main}
 \small
 \begin{tabular}{lccc}
@@ -170,10 +170,9 @@ Ours & \textbf{\TODO{}} & \textbf{\TODO{}} & \TODO{} \\
 - [ ] Are metrics sufficient and standard for this task?
 - [ ] Is ablation tied to every key design claim?
 - [ ] Are claims in Abstract/Introduction supported by reported numbers, with at least one or two of them in the main text rather than only in the appendix?
-- [ ] Are limitations of evaluation scope explicitly stated?
 - [ ] Every claim of the paper has a table or figure; every table supports a claim.
 - [ ] Setup states datasets, metrics (↑/↓), baselines and how they were run, once.
 - [ ] Results paragraphs open with the finding and explain the reason.
 - [ ] One ablation per design claim, named by the change.
-- [ ] Limitations are concrete and placed here or in their own section.
+- [ ] Limitations, if written, are concrete and placed here or in their own section.
 - [ ] No invented numbers: missing values are `\TODO{}`.

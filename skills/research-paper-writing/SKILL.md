@@ -78,7 +78,7 @@ Clarify the paper story before any sentence-level edit: answer the four backward
 Write these for yourself (they go into `report.md`, not the paper):
 - **Claim**: `We show that [method/finding] [achieves what] [under which setting], because [key reason].`
 - **Tension type**: tradeoff / capability-missing / obvious-fix-too-costly / unexplained-phenomenon / open-question / belief-overturned (`routing.md`).
-- **Insight**: the observation about the problem the method follows from, written as a plain statement (not “Our key insight is …”).
+- **Insight**: the observation about the problem the method follows from, written as a plain statement.
 - **Handle** (optional): a short phrase naming the idea, distinct from the method’s name. Use the user’s term if they have one; otherwise propose one in the report. When there is a handle, put it in the title.
 - **Closest work**: 1–2 works and the checkable difference (mechanism, scope, cost, assumption, input, output, evaluation).
 - **Stance** (optional): what the work changes for the field, only if the results support more than “better on benchmark B”.
@@ -96,7 +96,7 @@ Load `references/introduction.md` and `references/abstract.md`. One line per par
 - **always**: credit to specific prior work → gap with reason → method → results;
 - **usual**: opening setting or concrete scene; the insight just before the method;
 - **for method papers**: a contrast with the closest work after the method;
-- **optional**: contributions list, stance (at the end).
+- **always last**: the contribution list, written by the authors (`introduction.md`, "Contribution List"); a stance before it is optional.
 The abstract defaults to Setting → Gap → Method → Result (`abstract.md`, "Versions").
 Mark the **pivot sentences** (the bottleneck, the cause, the tension, the idea); they will be short and quotable. Then make a **claim index**: list every claim (gap, insight, each advantage, each result, stance) and the one paragraph where it appears. A claim listed under two paragraphs is merged into one. Generic field background gets at most two sentences.
 
@@ -108,7 +108,7 @@ For each paragraph, read 2–3 award-paper paragraphs with the same function and
 1. Extend the claim map into an **evidence map**: claim → method subsection → experiment (table/figure) → ablation, each evidence entry marked main text or appendix. Claims without evidence are softened in the introduction or get an experiment `[TODO]`; a claim whose evidence is all in the appendix gets its decisive table, figure or number moved into the main text (Hard rules).
 2. Method: follow `references/method.md` (opener, preliminaries, one subsection per component with need → mechanism → property, objective, optional discussion). Mechanisms, equations and losses the user has not given are `[TODO]`; never invent them.
 3. Experiments: follow `references/experiments.md` (opener, setup, claim-first results per benchmark, ablations that mirror the claims, analysis, limitations). Tables use booktabs with `\TODO{}` cells for missing numbers.
-4. Limitations belong in the experiments or a separate section; the author preference excludes them only from the abstract and introduction.
+4. Limitations are usually not written. When a paper needs them, they go in the experiments or a separate section, never in the abstract or introduction.
 
 ### Step 5c — Figure plan and figures (whenever Method/Experiments are written, or when asked)
 Load `references/figures.md`.
@@ -123,7 +123,7 @@ Load `references/figures.md`.
 - The paper text contains no move labels, workflow comments, or bracketed notes other than `[TODO: …]` / `\todo{…}`.
 
 ### Step 7 — Check
-1. Run `python3 scripts/check_draft.py <files>` on the abstract and the introduction. Fix every `ERROR`. Each `WARN` means the draft is outside the range of 90% of award papers (connectors, numbers, hedges, boosters, “key insight” formulas, sentence length, runs of short sentences, trailing participial clauses) or shows a known AI-draft habit — revise or justify it in the report. `NOTE`s are information (e.g., the draft promotes the work less than award papers do). `python3 scripts/style_metrics.py <files>` shows every metric with its corpus percentile.
+1. Run `python3 scripts/check_draft.py <files>` on the abstract and the introduction. Fix every `ERROR`. Each `WARN` means the draft is outside the range of 90% of award papers (connectors, numbers, hedges, boosters, sentence length, runs of short sentences, trailing participial clauses) or shows a known AI-draft habit — revise or justify it in the report. `NOTE`s are information (e.g., the draft promotes the work less than award papers do). `python3 scripts/style_metrics.py <files>` shows every metric with its corpus percentile.
 2. If the paper has figures, run `python3 scripts/check_figures.py main.tex`: fix every `ERROR`; each `WARN` (caption length, long first sentence, raster plots, absolute widths, too many floats) is fixed or justified; `NOTE`s list the placeholders still to fill.
 3. Semantic checks:
    - Specific prior work is credited before the gap; the gap is concrete (what fails, when, why) and the tension is resolved by the idea.
@@ -133,7 +133,7 @@ Load `references/figures.md`.
    - No limitation, failure case or disclaimer in the Abstract or Introduction; mixed results are scoped to the wins.
    - No defensive qualifiers about the protocol; no implementation details.
    - Abstract, introduction and contributions state the same claims with the same strength.
-   - Nothing is said twice inside the introduction (insight, research questions, results, advantages); the contributions do not repeat the results paragraph.
+   - Nothing is said twice inside the introduction (insight, research questions, results, advantages).
    - Read the draft aloud once: if several consecutive sentences each carry one bare fact, merge them so that each sentence carries a relation (cause, contrast, means, consequence).
 
 4. Reverse-outline each section after writing it (Paragraph Clarity Check below).
@@ -144,7 +144,7 @@ Load `references/figures.md`.
 2. `report.md` for the authors: claim, tension type, insight, handle, closest work, route, claim map, `check_draft` summary, `[TODO]` list, questions, **notes for the Limitations section** (weaknesses deliberately left out of the abstract/introduction), and, when figures were planned, the **figure plan** table with the material each placeholder needs and the `check_figures` summary.
 3. When asked to rewrite or draft a section, the reply itself carries:
    - A compact section outline (3-7 bullets). For the Introduction, the outline is the answers to the four backward questions, the four-step forward story and the paragraph-level plan (`references/introduction.md`). Take the contributions for backward question (2) from the authors' contribution list; never draft them.
-   - Revised paragraphs with explicit paragraph roles (opening/challenge/method/advantage/evidence/limitation).
+   - Revised paragraphs with explicit paragraph roles (opening/challenge/method/advantage/evidence).
    - A short self-review checklist covering clarity, flow, terminology consistency, unsupported claims, and missing evidence.
    - A claim-evidence map for each major claim in the revised text using `Claim: ... | Main-text evidence: ... | Appendix evidence: ... | Status: supported / appendix only / needs evidence`. A claim marked `appendix only` gets its decisive evidence moved into the main text (Execution Rule 6).
 
@@ -206,7 +206,7 @@ Use `references/paper-review.md` for the full checklist and workflow.
 - Never cite a key that is not in the user’s bibliography; mark missing references with `[TODO: cite …]`.
 - No limitations, self-undermining sentences or defensive qualifiers in the Abstract or Introduction.
 - The Abstract and Introduction tell the story; tables tell the numbers.
-- No generic openings (“has attracted increasing attention”, bare “plays an important role”) and no adjectives about the method without a concrete follow-up.
+- No generic openings (“has attracted increasing attention”, bare “plays an important role”).
 - **No dashes** in the title, abstract or introduction (author preference): no em dash (—, `---`) and no spaced en dash. Rewrite with a colon, a comma, a short second sentence or parentheses. Numeric ranges (2–3) and hyphenated compounds (image–motion, train–test) are fine. `check_draft.py` reports each dash as an ERROR. Colons are allowed.
 - **Name mechanisms, not abstractions.** When the input does not say how a component works (who inspects, what is compared, how something moves), write `[TODO: …]` and ask; do not fill the gap with abstract nouns (“state”, “record”, “inspection”, “protocol”) that sound complete but say nothing.
 - **Describe components by their relation**, not as parallel items: what problem each one answers and what the next one fixes (“A keeps …; because A alone lets errors persist across edits, B …”), rather than “A does … . B does … . C does … .”
