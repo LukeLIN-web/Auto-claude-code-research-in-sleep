@@ -24,7 +24,6 @@
 # Fork-local skills are still subject to every non-parity rule (Agent-grant
 # hygiene, frontmatter shape); only upstream parity is waived.
 
-bestpaper-writing
 paper-figure-craft
 paper-float-compact
 paper-jargon-pass

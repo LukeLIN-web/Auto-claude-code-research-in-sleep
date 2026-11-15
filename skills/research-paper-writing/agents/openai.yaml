@@ -1,4 +1,4 @@
 interface:
   display_name: "Research Paper Writing"
-  short_description: "Academic paper writing and section-level refinement"
+  short_description: "Introduction structure, Experiments and figures, from Peng Sida's notes and award-paper patterns"
   default_prompt: "Use $research-paper-writing to improve my paper's structure, flow, and section writing quality."

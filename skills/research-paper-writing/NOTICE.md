@@ -10,9 +10,9 @@ abstract versions and the claim–evidence output contract) are adapted from:
 - whose writing knowledge comes from **Prof. Peng Sida (彭思达)**’s open study notes:
   https://pengsida.notion.site/c1a22465a0fa4b15a12985223916048e and https://github.com/pengsida/learning_research
 
-The MIT licence text of the base skill is reproduced in `LICENSE-base-skill`.
+The MIT licence text of the base skill is reproduced in `LICENSE`.
 
-## This skill
+## Award-paper material
 Routing by paper type and motivation type, claim calibration, style rules, exemplar cards, the exemplar bank
 and the checking script are original to this project and are released under CC BY 4.0, like the rest of the
 parent repository.

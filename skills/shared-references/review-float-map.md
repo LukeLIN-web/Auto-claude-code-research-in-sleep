@@ -10,8 +10,8 @@ Two user rulings, the two directions of one map between arguments and evidence:
   itself. The appendix may add evidence (more settings, breakdowns, protocol
   details); it never holds all of it, and "see Appendix C" alone supports nothing.
 
-This file owns both rules, for writing and for review. The writing skills
-(`research-paper-writing`, `bestpaper-writing`) apply them when they build a
+This file owns both rules, for writing and for review. The writing skill
+(`research-paper-writing`) applies them when it builds a
 paper's claim–evidence map; a page limit never moves an argument's decisive
 evidence to the appendix, so cut elsewhere. A reviewer prompt over a manuscript
 carries the block below verbatim at the end of the prompt (after SCOPE LIMITS

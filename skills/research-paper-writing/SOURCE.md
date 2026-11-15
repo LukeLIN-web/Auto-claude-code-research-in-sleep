@@ -1,4 +1,8 @@
-# Source
+# Sources
+
+This skill merges two upstream skills (merged 2026-11-15, user: one skill, not two).
+
+## 1. Research-Paper-Writing-Skills (Peng Sida's notes)
 
 Copied from https://github.com/Master-cai/Research-Paper-Writing-Skills
 (`research-paper-writing/`, commit 77e7c2c1ba06f7d71844873147665437a03aac1b, 2026-11-01; still upstream HEAD on 2026-11-03).
@@ -8,7 +12,7 @@ https://pengsida.notion.site/c1a22465a0fa4b15a12985223916048e (「论文写作�
 To update: re-copy from upstream, then re-apply the local changes below (`diff -r` against a fresh upstream clone
 shows them).
 
-## Local changes
+### Local changes
 
 1. `SKILL.md`: `description` rewritten and a "Scope in this fork" section added after the title, restricting use to
    introduction structure, Experiments and figures (user ruling 2026-11-01).
@@ -31,3 +35,22 @@ Not ported: the deadline timeline and lab progress table, the Copilot/GPT prompt
 template, the linked PDFs (Bill Freeman, SIGGRAPH paper chairs, Writing Science), the Related Work and Method
 parts of 「写作思路典例」, and the notes' call to discuss traditional methods in the Introduction (ported 2026-11-03,
 removed the same day: the user does not want it).
+
+## 2. Best-Paper-Writing-Skill (award-paper corpus)
+
+Copied from https://github.com/gulucaptain/Best-Paper-Writing-Skill
+(`skills/bestpaper-writing/`, commit b9eff99a2130bea960ef1050eacf9f40cb792dd4, 2026-11-01).
+CC BY 4.0 (repository `LICENSE`, copied here as `LICENSE-CC-BY-4.0`); parts MIT (the base skill is source 1, `LICENSE`), see `NOTICE.md`.
+Exemplar sentences under `references/exemplars/` are quoted from published papers and must not be copied into new papers.
+To update, diff a fresh upstream clone against the files listed below and re-apply.
+
+Where its files went:
+
+- `scripts/`, `assets/`, `evals/`, `references/{routing,claim-calibration,style-rules,corpus-profile,intake-form,latex-output}.md`,
+  `references/corpus/`, `references/exemplars/`: moved here unchanged.
+- `references/{introduction,abstract,method,experiments,figures}.md`: appended to the file of the same name as its
+  "Award-Paper Patterns" part, section numbers kept. Dropped as duplicates of source 1: `introduction.md` §1
+  (backward then forward) and `abstract.md` §1 (pre-writing questions); `introduction.md` §6 (contributions list)
+  moved into "Contribution List".
+- `SKILL.md`: its workflow (Steps 0 to 8), hard rules and file table are the "Award-Paper Workflow" part of `SKILL.md`.
+- `LICENSE-base-skill`: identical to `LICENSE`, dropped.
