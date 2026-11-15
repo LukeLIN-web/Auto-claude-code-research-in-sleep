@@ -9,7 +9,8 @@ Position your work against the most relevant lines of research, and make your no
 1. List directly competing and recent baseline papers first.
 2. Group literature by technical topic (not by publication year alone).
 3. For each topic: summarize common paradigm, then key limitation relevant to your challenge.
-4. End each topic by clarifying your distinction.
+4. End each topic by clarifying your distinction. For the two or three closest papers, how to write it and what
+   to check in them: `distinguish-prior-work.md`.
 
 ## Topic Design
 

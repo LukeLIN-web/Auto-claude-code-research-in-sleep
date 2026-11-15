@@ -1,17 +1,22 @@
 ---
 name: research-paper-writing
-description: Structure an ML/CV paper's Introduction, write its Experiments section, and plan and polish its figures, following Peng Sida's writing notes (technical challenge = limitation + reason, claim-evidence alignment). Use when planning the introduction's paragraph structure, drafting or revising Experiments, or improving figures. Never for the title, Abstract or contribution list (the authors write those), nor Method, Related Work or Conclusion.
+description: Structure an ML/CV paper's Introduction, write its Experiments section, and plan and polish its figures, following Peng Sida's writing notes (technical challenge = limitation + reason, claim-evidence alignment). Use when planning the introduction's paragraph structure, drafting or revising Experiments, improving figures, or distinguishing the paper from its closest prior work. Never for the title, Abstract or contribution list (the authors write those), nor Method, Related Work or Conclusion.
 ---
 # Research Paper Writing
 
 ## Scope in this fork (user ruling 2026-11-01)
 
-Use this skill **only** for three things:
+Use this skill **only** for four things:
 
 1. **Introduction structure**: the paragraph plan, the order of motivation, gap / technical challenge, insight and
    results, and how each paragraph opens. Not the contribution list.
 2. **The Experiments section**: setup, results per benchmark, ablations, analysis.
 3. **Figures**: the figure plan, Figure 1 / teaser / showcase choice, overview and result figures, captions.
+4. **Distinguishing the paper from its closest prior work** (user ruling 2026-11-15): the two or three sentences,
+   in the Introduction's gap paragraph or in Related Work, that introduce a close paper and say what it leaves
+   undone; and what to check in that paper beyond its mechanism (released code and weights, proprietary
+   models, evaluation on its own training tasks). `references/distinguish-prior-work.md`. The rest of Related
+   Work stays out of scope.
 
 Never draft or rewrite the **title, Abstract or contribution list**: the authors write those themselves, and an
 agent only transcribes them verbatim. Steps or references below that target the title, Abstract, contributions,
@@ -93,6 +98,7 @@ Load only the needed section file:
 - Introduction: `references/introduction.md`
 - Abstract: `references/abstract.md`
 - Related Work: `references/related-work.md`
+- Distinguishing from the closest prior work: `references/distinguish-prior-work.md`
 - Method: `references/method.md`
 - Experiments: `references/experiments.md`
 - Figures: `references/figures.md`
