@@ -74,9 +74,9 @@ The reviewer has the paper and round 1, nothing else. A Codex stress test of the
 VQToken sent three nudge posts aimed at one reviewer plus two to all reviewers within Aug 2–8, most repeating "Do you still have any concerns?". The reviewer replied to the content posts and kept 2. The NeurIPS 2025 PCs reported "reviewers increasing their scores just to end back-and-forth discussion with the authors, but being silent or critical in private discussions with the AC" and attributed it to "reviewer fatigue". ICLR's author guide asks authors to "remain civil and considerate of the reviewers time".
 
 Rules:
-- A nudge carries content: one line per point that changed since the reviewer last wrote, plus one question. An empty "any remaining concerns?" post is not a nudge, it is noise.
+- A nudge carries content: one line per point that changed since the reviewer last wrote, plus one question. An empty "any remaining concerns?" post to one reviewer is not a nudge, it is noise. The one post without content is the all-reviewer thank-you (§ 8).
 - At most one nudge per reviewer after ~3 days of silence, and one more 24–48 h before the discussion closes. No other reminders.
-- One all-reviewer post at the start ("responses are posted per thread") and none in the middle.
+- All-reviewer posts: a general response posted with round 1, if the rebuttal has one, and the thank-you of § 8 about 24 h later. None other in the middle.
 
 ## 7. Score requests
 
@@ -88,3 +88,24 @@ Rules:
 - No appeal to personal stakes ("would mean a great deal to our team and our work's visibility").
 - No deference line after a request or closing (user 2026-11-14「However, we fully respect your final judgment. 感觉有点生硬 … 把这句删了吧」): no "However, we fully respect your final judgment", "we respect whatever decision you make", "of course, the final decision is yours". It reads stiff, and "However" sets it against the sentence before it. Delete it, do not reword it; the reply ends on the thanks line (§ 3).
 - Whether a reviewer's score moved is recorded in `REBUTTAL_STATE.md`.
+
+## 8. All-reviewer thank-you, 24 h after round 1
+
+User 2026-11-14:「准备一个给所有reviewer 的信息，感谢他们的review和suggestion来帮助我们提升论文，我们try our best去address他们的concerns，let us know if they have any remaining concerns, 说我们致力于解决他们所有的concern, 一般第一次交后24小时后发」.
+
+About 24 h after the round-1 replies are posted (every thread answered), post one official comment at the top of the forum, readers everyone. It goes up once, as is, in every rebuttal. It thanks the reviewers for the reviews and suggestions that helped improve the paper, says we tried our best to address their concerns, asks for remaining concerns, and commits to resolving all of them. It names no reviewer, carries no result and adds no deference line (§ 7). Record the posting time in `REBUTTAL_STATE.md`.
+
+Title (OpenReview Title field, Title Case, no `**`): `Thank You to All Reviewers`
+
+> Dear Reviewers,
+>
+> **Thank you for your thoughtful reviews and constructive suggestions, which have helped us improve our paper!**
+>
+> We have tried our best to address each of your concerns in our point-by-point responses. If you have any remaining concerns or further questions, please let us know. We are fully committed to resolving all of your concerns.
+>
+> Thank you again for your time and valuable feedback!
+>
+> Best regards,
+> The Authors
+
+中文对照：各位审稿人：**感谢各位细致的审稿意见和建设性的建议，帮助我们提升了论文！** 我们已在逐条回复中尽力回应了各位的每一个问题。如果您还有任何问题，请告诉我们。我们会尽全力解决您的所有问题。再次感谢各位的时间和宝贵意见！此致，全体作者
