@@ -16,7 +16,8 @@ CONNECTORS = ['however', 'therefore', 'thus', 'hence', 'consequently', 'moreover
               'in particular', 'more specifically', 'as such', 'importantly', 'finally', 'to summarize']
 HEDGES = ['may', 'might', 'could', 'likely', 'possibly', 'suggest', 'suggests', 'appear to', 'appears to',
           'seem to', 'seems to', 'potentially']
-BOOSTERS = ['significantly', 'substantially', 'dramatically', 'remarkably', 'notably', 'surprisingly',
+# 'significantly' is not listed: in an empirical paper it is the word for a statistical test
+BOOSTERS = ['substantially', 'dramatically', 'remarkably', 'notably', 'surprisingly',
             'strikingly', 'drastically', 'considerably', 'greatly']
 PRAISE = ['novel', 'effective', 'efficient', 'powerful', 'superior', 'state-of-the-art', 'SOTA', 'outperform',
           'outperforms', 'first']
@@ -53,7 +54,7 @@ def number_tokens(t):
     t = CITE.sub(' ', t)
     t = re.sub(r'\([^)]*\)', lambda m: re.sub(r'\b(?:19|20)\d{2}\b', ' ', m.group()), t)
     t = REF.sub(' ', t)
-    t = re.sub(r'\b[A-Za-z][A-Za-z0-9]*(?:[-_][A-Za-z0-9]+)*\b', lambda m: ' ' if any(c.isdigit() for c in m.group()) else m.group(), t)
+    t = re.sub(r'\b[A-Za-z][A-Za-z0-9]*(?:[-_.][A-Za-z0-9]+)*\b', lambda m: ' ' if any(c.isdigit() for c in m.group()) else m.group(), t)
     t = re.sub(r'\b\d+([A-Za-z][A-Za-z0-9-]*)\b', lambda m: m.group() if m.group(1) in {'Hz', 'kHz', 'MHz', 'GHz', 'fps', 's', 'ms', 'cm', 'mm', 'k', 'M', 'B', 'x'} else ' ', t)
     return NUM.findall(t)
 
@@ -131,6 +132,25 @@ def short_run_max(paras, th=15):
     return best
 
 
+# commands that take no argument and print nothing; every other bare \name is kept as a word
+SILENT = {'item', 'centering', 'small', 'footnotesize', 'scriptsize', 'tiny', 'normalsize', 'large', 'noindent', 'par',
+          'medskip', 'smallskip', 'bigskip', 'newline', 'linebreak', 'hfill', 'vfill', 'quad', 'qquad', 'xspace',
+          'toprule', 'midrule', 'bottomrule', 'hline', 'maketitle', 'newpage', 'clearpage', 'left', 'right', 'displaystyle',
+          'times', 'cdot', 'to', 'rightarrow', 'leq', 'geq', 'le', 'ge', 'approx', 'sim', 'pm', 'ldots', 'dots', 'cdots'}
+
+
+def drop_lists(t):
+    """Remove itemize/enumerate blocks (in an introduction: the contribution list, which the authors write)."""
+    return re.sub(r'\\begin\{(itemize|enumerate)\}.*?\\end\{\1\}', ' ', t, flags=re.S)
+
+
+def expand_macros(t):
+    """Drop subscripts/superscripts (not reported numbers) and keep a bare macro such as \\method as the word 'Method',
+    so that a sentence keeps its subject and its capital first letter."""
+    t = re.sub(r'[_^]\{[^{}]*\}|[_^][A-Za-z0-9]', '', t)
+    return re.sub(r'\\([A-Za-z]+)\*?(?![A-Za-z*\[{])', lambda m: '' if m.group(1) in SILENT else m.group(1).capitalize(), t)
+
+
 def clean_tex(t):
     t = re.sub(r'(?<!\\)%.*', '', t)
     t = re.sub(r'\\todo\{(?:[^{}]|\{[^{}]*\})*\}', ' ', t)
@@ -141,12 +161,15 @@ def clean_tex(t):
     t = re.sub(r'\\item\s*', '\n\n• ', t)
     t = t.replace('---', '—').replace('--', '–').replace('``', '“').replace("''", '”').replace('~', ' ').replace('\\times', '×')
     t = re.sub(r'\\(?:textbf|textit|emph|mathrm|text)\{([^{}]*)\}', r'\1', t)
+    t = expand_macros(t)
     t = re.sub(r'\\[A-Za-z]+\*?', '', t).replace('{', '').replace('}', '').replace('$', '')
     return t
 
 
 def file_kind(raw):
     """Kind of a .tex section file: 'abstract', 'intro' or 'body' (method, experiments, …)."""
+    if isinstance(raw, Path):
+        raw = raw.read_text(encoding='utf-8')
     if '\\begin{abstract}' in raw:
         return 'abstract'
     m = re.search(r'\\section\*?\{([^}]*)\}', raw)
@@ -162,7 +185,7 @@ def sections(path):
     if str(path).endswith('.tex'):
         kind = file_kind(raw)
         if kind != 'body':
-            secs[kind] = clean_tex(raw)
+            secs[kind] = clean_tex(drop_lists(raw) if kind == 'intro' else raw)
     else:
         cur = None
         for ln in raw.splitlines():

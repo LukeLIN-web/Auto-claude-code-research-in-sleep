@@ -50,7 +50,6 @@ NOTE_PHRASES = {
     r"\b(very|extremely|outstanding)\b": "intensifier; a number or mechanism is usually stronger",
     r"\bin order to\b": "'to' is usually enough",
     r"\bnovel\b": "fine if the sentence also says what is new",
-    r"\bsignificant(ly)?\b": "fine with a number or a test nearby",
     r"state[- ]of[- ]the[- ]art|\bSOTA\b": "name the benchmark/baselines in the same sentence",
     r"\bthe first\b|\bfor the first time\b": "make sure the scope is stated",
     r"\beliminat(e|es|ing)\b": "absolute; check the claim map",
@@ -76,6 +75,7 @@ def strip_latex(t):
     t = re.sub(r"\\item\s*", "\n- ", t)
     t = t.replace("\\times", "×").replace("~", " ").replace("---", "—").replace("--", "–")
     t = re.sub(r"\\[a-zA-Z]+\*?(\[[^\]]*\])?\{([^{}]*)\}", r"\2", t)
+    t = sm.expand_macros(t)
     t = re.sub(r"\\[a-zA-Z]+", "", t)
     t = t.replace("$", "").replace("{", "").replace("}", "")
     return t
@@ -85,6 +85,9 @@ def load_lines(path):
     raw = Path(path).read_text(encoding="utf-8")
     labels = 0
     if path.endswith(".tex"):
+        if sm.file_kind(raw) == "intro":
+            # the contribution list is written by the authors; keep line numbers
+            raw = re.sub(r"\\begin\{(itemize|enumerate)\}.*?\\end\{\1\}", lambda m: "\n" * m.group().count("\n"), raw, flags=re.S)
         labels = len(re.findall(r"\\paragraph\*?\{|^\s*\\textbf\{[^}]{1,80}\}", raw, flags=re.M))
         raw = strip_latex(raw)
     lines = []
@@ -136,12 +139,15 @@ def bank_ngrams():
                    "our main contributions are as follows", "we make the following contributions", "code and models are publicly available"}
 
 
+CHECK_ABSTRACT = False  # the abstract is the authors'; --abstract turns its checks on
+
+
 def corpus_checks(path):
     """Compare section-level style metrics with the award-paper distribution."""
     stats = sm.load_stats()["style"]
     issues = []
     for sec, paras in sm.sections(path).items():
-        if not paras:
+        if not paras or (sec == "abstract" and not CHECK_ABSTRACT):
             continue
         m, _ = sm.metric(paras)
         d = stats[sec]
@@ -160,7 +166,7 @@ def corpus_checks(path):
             issues.append(("NOTE", 0, f"{name}: refers to figures/tables beyond Figure 1 / Table 1 ({m['late_figure_refs']}×); keep only if those figures exist in this paper (numbers copied from notes or an intake form usually do not)", ""))
         over("participle_tail_ratio", "share of sentences ending in a participial clause (', making …', ', extending …'); merge with because/while/by/which or end the sentence")
         over("hedge_count", "hedging words (may/could/suggest/…)")
-        over("booster_count", "boosters (significantly/remarkably/…)")
+        over("booster_count", "boosters (remarkably/dramatically/…)")
         over("sentences", "sentences", "NOTE")
         over("words", "words", "NOTE")
         if m["sent_len_mean"] < d["sent_len_mean"]["p10"]:
@@ -238,6 +244,8 @@ def check(path, bank, max_words):
             issues.append(("NOTE", n, "comparison without a number or table/figure reference (fine for mechanisms; results need evidence)", s))
         if not body and re.search(DETAIL, s, flags=re.I):
             issues.append(("WARN", n, "implementation detail in abstract/introduction", s))
+        if body and len(sm.number_tokens(s)) > 2:
+            issues.append(("WARN", n, f"{len(sm.number_tokens(s))} numbers in one sentence (one or two result numbers per sentence, the rest stay in the table; protocol constants in the setup are exempt)", s))
         if len(s.split()) > max_words:
             issues.append(("WARN", n, f"long sentence ({len(s.split())} words)", s))
         ov = ngrams(s) & bank
@@ -255,12 +263,18 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("files", nargs="+")
     ap.add_argument("--max-words", type=int, default=60)
+    ap.add_argument("--abstract", action="store_true", help="also check abstracts (off by default: the authors write the abstract)")
     a = ap.parse_args()
+    global CHECK_ABSTRACT
+    CHECK_ABSTRACT = a.abstract
     bank = bank_ngrams()
     total_e = total_w = total_n = 0
     for f in a.files:
-        issues = check(f, bank, a.max_words)
         print(f"== {f}")
+        if f.endswith(".tex") and sm.file_kind(Path(f)) == "abstract" and not a.abstract:
+            print("skipped: abstract (pass --abstract to check it)")
+            continue
+        issues = check(f, bank, a.max_words)
         if not issues:
             print("OK: no issues found")
         order = {"ERROR": 0, "WARN": 1, "NOTE": 2}
