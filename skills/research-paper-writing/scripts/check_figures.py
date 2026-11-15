@@ -8,7 +8,8 @@ and reports:
   ERROR  figure without caption or label; label never referenced; dash in a caption
   WARN   caption length outside p10-p90 of award papers; first caption sentence too long;
          first reference in a later section than the figure; raster plot; absolute width;
-         more floats than 90% of award papers
+         more floats than 90% of award papers; table caption below the tabular; a table that
+         ranks (second best underlined) with no shaded row (references/experiments.md, Hard rules 6)
   NOTE   placeholders and figure plans left; no Figure 1 before the method; bold title style mixed
 """
 import argparse, json, os, re, sys
@@ -170,6 +171,17 @@ def main():
             w = re.search(r"width\s*=\s*([\d.]+)\s*(cm|mm|in|pt)", opts)
             if w:
                 add("WARN", f"absolute width {w.group(1)}{w.group(2)}; use a fraction of \\linewidth", f)
+    # our rows are shaded with \rowcolor / \cellcolor, directly or through a macro that wraps one
+    shaders = ["rowcolor", "cellcolor"] + re.findall(
+        r"\\(?:(?:re)?newcommand\*?\{?\\|def\\)([A-Za-z]+)\}?[^\n]*\\(?:rowcolor|cellcolor)", text)
+    shaded = re.compile(r"\\(?:%s)(?![A-Za-z])" % "|".join(shaders))
+    for f in tabs:
+        tab = re.search(r"\\begin\{(tabular|tabularx|longtable)", f["body"])
+        cap = re.search(r"\\caption", f["body"])
+        if tab and cap and cap.start() > tab.start():
+            add("WARN", "caption below the tabular; put \\caption and \\label above it", f)
+        if "\\underline{" in f["body"] and not shaded.search(f["body"]):
+            add("WARN", "table ranks methods but no row is shaded; give our method's rows a pale \\rowcolor", f)
     if figs and figs[0]["env"] != "strip" and method_pos is not None and figs[0]["pos"] > method_pos:
         add("NOTE", "no figure before the method section; award papers put Figure 1 on page 1 (two-column) or 2 (one-column)")
     if bold and 0 < sum(bold) < len(bold):
