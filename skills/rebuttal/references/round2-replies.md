@@ -22,26 +22,35 @@ Long replies: split into `[PART 1/2]`, `[PART 2/2]` comments when over the per-c
 
 ## 3. Shape of a round-2 reply
 
-In this order; drop the parts that do not apply:
+In this order; drop the parts that do not apply. The closing reply to a reviewer already asked for a higher rating (§ 4) has its own two-sentence shape instead.
 
 1. **Title**, only for a reviewer who confirms an accepting rating: `Thank You for Confirming the Acceptance Rating` (§ 4), in the OpenReview Title field, not in the body.
 2. **Bold thanks for every good thing the reviewer wrote**, in the reviewer's own words, then one plain sentence of thanks for the follow-up.
 3. **Agree with the reviewer's framing** where we can: "we agree that X is a proxy for Y" (求同存异). "Agree" is fine; "admit", "acknowledge a limitation", "we concede" are not (user 2026-11-14「admit 就不好听, agree 就还行」).
 4. **The answer** (§ 5 when it carries a new analysis).
-5. **Rating request, followed by an invitation to ask more**, in the same paragraph (pick the request from the forms in § 7): "If these additional analyses address your remaining concern, we would be grateful if you could consider increasing your rating in light of the strengthened evidence. If you have any further questions, please let us know, and we will address them." (中文「如果您还有其他问题，请告诉我们，我们会进一步解决。」) (user 2026-11-14「应该写在这里 "…恳请您考虑据此提高评分。if you have any further questions. 请进一步让我们知道 我们可以解决."」). The invitation goes right after the request, not at the very end; without a rating request it still goes before the thanks line. It says we will address the questions, not just that we look forward to thoughts (an earlier "We look forward to any of your further thoughts!" at the end was moved here and reworded).
+5. **Rating request, followed by an invitation to ask more**, in the same paragraph (pick the request from the forms in § 7; one request per reviewer for the whole discussion, so leave it out once this reviewer has been asked): "If these additional analyses address your remaining concern, we would be grateful if you could consider increasing your rating in light of the strengthened evidence. If you have any further questions, please let us know, and we will address them." (中文「如果您还有其他问题，请告诉我们，我们会进一步解决。」) (user 2026-11-14「应该写在这里 "…恳请您考虑据此提高评分。if you have any further questions. 请进一步让我们知道 我们可以解决."」). The invitation goes right after the request, not at the very end; without a rating request it still goes before the thanks line. It says we will address the questions, not just that we look forward to thoughts (an earlier "We look forward to any of your further thoughts!" at the end was moved here and reworded).
 6. **Thanks line**, last: "Thank you again for your time, valuable feedback, and continued support!"
 
 No deference line anywhere ("However, we fully respect your final judgment"): delete it, do not reword it (§ 7, lint 24).
 
 ## 4. A reviewer who confirms an accepting rating
 
-When a follow-up confirms acceptance or keeps a positive rating ("I consider the work suitable for acceptance and maintain my positive rating") and leaves a minor concern, the reply thanks first and answers without arguing (user 2026-11-14「能解决你就回消息，title 大写加粗 thank you for confirming acceptance rating 然后不要反驳他，就简短回答问题 他写你的好话，比如什么达到接收标准什么的黑体加粗感谢」「你要是解决不了就简单感谢」):
+**Already asked for a higher rating (§ 7) and the score did not move: the closing reply.** Post it and nothing more to that reviewer; the next nudge goes to another reviewer (§ 6) (user 2026-11-15「第二轮问了一次, 不加分, 别催了 … 换个人 你两句话感谢他的专业判断，标题里写thank you so much for confirmation of acceptance and professional and insightful suggestions 拍彩虹屁 标题是为了黑体加粗一眼能让AC和其他审稿人看到 … 不要解释了就纯夸 … 不要过长 … 主要意思就让ac看到这里没问题他愿意champion你」). The reply is written for the AC and the other reviewers: the bold title tells them at a glance that this reviewer stands behind acceptance and nothing is open in this thread.
+
+- Title (OpenReview Title field, Title Case, no `**`): `Thank You So Much for Confirming Acceptance and for Your Professional and Insightful Suggestions`
+- Body: two sentences of pure praise, thanking their professional judgment. Nothing else: no answer to a point the reviewer still raised, no explanation, no second rating request, no invitation to ask more, no thanks line, no deference line.
+
+> **Thank you so much for confirming that our paper is suitable for acceptance!** We sincerely appreciate your professional judgment and insightful suggestions, which have made our paper much stronger.
+
+中文对照：**非常感谢您确认我们的论文达到接收标准！** 我们由衷感谢您专业的判断和富有洞见的建议，它们让我们的论文更加完善。
+
+**Otherwise** — a follow-up that confirms acceptance or keeps a positive rating ("I consider the work suitable for acceptance and maintain my positive rating") and leaves a minor concern, from a reviewer not yet asked for a higher rating — the reply thanks first and answers without arguing (user 2026-11-14「能解决你就回消息，title 大写加粗 thank you for confirming acceptance rating 然后不要反驳他，就简短回答问题 他写你的好话，比如什么达到接收标准什么的黑体加粗感谢」「你要是解决不了就简单感谢」):
 
 1. **Title**, Title Case, plain text in the OpenReview comment's Title field: `Thank You for Confirming the Acceptance Rating`. OpenReview bolds the title itself, so no `**`; not upper case (reads as shouting; user 2026-11-14「全大写会不会不好看」→「改.」「openreview 标题不需要 **, 自动会加粗.」). The body starts with the bold thanks. The paste page gives the title its own copy button.
 2. **Bold thanks quoting their praise**: `**Thank you so much for finding the work suitable for acceptance, and the benchmark and judge useful for advancing physically realistic video generation!**` A co-author who rewrites the opening may drop the title or turn the quoted praise into generic thanks ("Thank you so much for your thoughtful follow-up and positive assessment!"); put both back (user 2026-11-14, same request a second time after a co-author rewrite).
 3. **Can we resolve the remaining concern with evidence we already have?** No: stop after the thanks, the invitation to ask more and the thanks line; no answer, no promise, no "future work" paragraph. Yes: answer it. Short by default (one to three plain sentences, verdict first, one number at most per claim). When new analyses of data we already have answer the concern, the longer reply is allowed (user 2026-11-14「为啥要缩回 … 保留这一版」): findings as bold headings (§ 5), a promise to add them to the appendix, an optional rating request.
 4. **Never rebut, and do not state our position** (user 2026-11-14「所以也不要说我们的立场」). No "by design" defence, no "we respectfully disagree", no sentence explaining why our view of the concern is right, not even as a neutral design statement; no restating a position the reviewer did not accept. Agreeing with the reviewer's framing is fine (§ 3 item 3). A limitation the reviewer did not ask about is not volunteered (C34).
-5. Do not discuss the score beyond the title and an optional closing request (§ 7).
+5. Do not discuss the score beyond the title and an optional closing request (§ 7), which is this reviewer's one request.
 
 Worked example, short form (a benchmark paper, 2026-11; concern: "semantic alignment is a proxy for event completion, and the criterion scores still combine event realization with physical plausibility"):
 
@@ -71,12 +80,32 @@ The reviewer has the paper and round 1, nothing else. A Codex stress test of the
 
 ## 6. Nudges
 
-VQToken sent three nudge posts aimed at one reviewer plus two to all reviewers within Aug 2–8, most repeating "Do you still have any concerns?". The reviewer replied to the content posts and kept 2. The NeurIPS 2025 PCs reported "reviewers increasing their scores just to end back-and-forth discussion with the authors, but being silent or critical in private discussions with the AC" and attributed it to "reviewer fatigue". ICLR's author guide asks authors to "remain civil and considerate of the reviewers time".
+VQToken sent three nudge posts aimed at one reviewer plus two to all reviewers within Aug 2–8, most repeating "Do you still have any concerns?". The reviewer replied to the content posts and kept 2. The NeurIPS 2025 PCs reported "reviewers increasing their scores just to end back-and-forth discussion with the authors, but being silent or critical in private discussions with the AC" and attributed it to "reviewer fatigue". ICLR's author guide asks authors to "remain civil and considerate of the reviewers time". Hence one nudge per reviewer, never a series.
 
-Rules:
-- A nudge carries content: one line per point that changed since the reviewer last wrote, plus one question. An empty "any remaining concerns?" post to one reviewer is not a nudge, it is noise. The one post without content is the all-reviewer thank-you (§ 8).
-- At most one nudge per reviewer after ~3 days of silence, and one more 24–48 h before the discussion closes. No other reminders.
-- All-reviewer posts: a general response posted with round 1, if the rebuttal has one, and the thank-you of § 8 about 24 h later. None other in the middle.
+The sequence (user 2026-11-15「你先发个全体message显示你催过了 然后一个一个单独发 催正分的让他们confirm … 一次发一个 半天看一次 如果正分不回复不管他 … 负分不回复 催AC」):
+
+1. **All reviewers first.** The all-reviewer thank-you (§ 8) goes up before any individual nudge. It asks every reviewer for remaining concerns, so it is also the visible record that everyone was nudged. The only other all-reviewer post is a general response posted with round 1, if the rebuttal has one.
+2. **Then one reviewer per post**, in the posting order (highest score first, negative-score reviewers last; [posting-and-endgame.md](posting-and-endgame.md) § 1), a few hours apart (user「你等几个小时换一个审稿人问下」). Check the forum about every half day, and answer whatever came in before the next nudge goes up.
+3. **One nudge per reviewer.** A reviewer who does not answer it gets no second one.
+4. **The nudge to a positive-score reviewer asks them to confirm.** It thanks them for the positive rating in support of acceptance and for their insightful suggestions, says we are committed to resolving all of their concerns, and asks whether any remain. Polite, and no rating request (user「委婉点，问很感谢他们的insightful suggesting我们致力于解决他们所有问题，问他们有没有remaining concerns」「你催的时候写清楚感谢他们正分支持接受」):
+
+   Title (OpenReview Title field, Title Case, no `**`): `Thank You for Supporting the Acceptance of Our Paper`
+
+   > **Thank you so much for your positive rating in support of accepting our paper, and for your insightful suggestions!**
+   >
+   > We are fully committed to resolving all of your concerns. Could you kindly let us know whether you have any remaining concerns? We would be glad to address them.
+   >
+   > Thank you again for your time and valuable feedback!
+
+   中文对照：**非常感谢您给出支持接收的正面评分，以及富有洞见的建议！** 我们致力于解决您的所有问题。能否请您告诉我们是否还有其他问题？我们很乐意进一步解决。再次感谢您的时间和宝贵意见！
+
+5. **Their answer decides the next post** (user「他们回复没有就使劲夸他们 有的话就赶紧解决到没意见可以提」「如果正分不回复不管他」):
+   - *No remaining concerns*: praise them warmly, bold thanks quoting what they wrote (with the § 4 title when they confirm their rating); if no request was made to them yet, the one request follows (§ 7, form 5), then the invitation to ask more and the thanks line.
+   - *A concern*: answer it at once (§§ 2–5), and keep answering until nothing is left to raise. The reply that closes it carries the one request if none was made yet.
+   - *Kept the score after the request*: the closing reply of § 4, then nothing more to this reviewer.
+   - *Silent*: leave them alone. The positive rating stands; a second nudge only spends goodwill.
+6. **A negative-score reviewer is nudged last**, with the same post minus the rating: title `Thank You for Your Insightful Suggestions`, opening "**Thank you so much for your insightful suggestions!**". If it stays silent — no answer by the half-day check after its nudge, with every positive-score reviewer already confirmed or left silent — **nudge the AC, not the reviewer** (user「负分不回复 催AC，说为什么其他审稿人都说很好，然后积极engage，就这个负分的意见有问题123，然后不回复」). The note says that the other reviewers rate the paper positively and engaged in the discussion (who confirmed or replied; true counts only), lists the problems in this review numbered, most serious first (each quotes the review and gives what the submission or our reply contains, and where), and states as a fact that the reviewer has not replied. It follows the letter of [misconduct-reporting.md](misconduct-reporting.md) § 4, goes through the channel of § 3 there (readers Area Chairs, never reviewers), and is the one AC note for that reviewer: for a `bad_faith_suspected` reviewer it is the misconduct note itself, not a second letter. Draft it; the user sends it.
+7. Record each nudge (time, reviewer), each reply and any score change in `REBUTTAL_STATE.md`, so a resumed session knows who has been nudged and who has been asked for a rating.
 
 ## 7. Score requests
 
@@ -95,13 +124,14 @@ Rules:
   Each form is followed by the invitation to ask more (§ 3 item 5).
 - No appeal to personal stakes ("would mean a great deal to our team and our work's visibility").
 - No deference line after a request or closing (user 2026-11-14「However, we fully respect your final judgment. 感觉有点生硬 … 把这句删了吧」): no "However, we fully respect your final judgment", "we respect whatever decision you make", "of course, the final decision is yours". It reads stiff, and "However" sets it against the sentence before it. Delete it, do not reword it; the reply ends on the thanks line (§ 3).
-- Whether a reviewer's score moved is recorded in `REBUTTAL_STATE.md`.
+- **One request per reviewer for the whole discussion** (user 2026-11-15「比如第二轮问了一次, 不加分, 别催了 … 换个人」). Once a reviewer has been asked and the score did not move, there is no second request and no further nudge: their next reply gets the closing reply of § 4, and the next post goes to another reviewer.
+- Who has been asked, and whether their score moved, is recorded in `REBUTTAL_STATE.md`.
 
 ## 8. All-reviewer thank-you, 24 h after round 1
 
 User 2026-11-14:「准备一个给所有reviewer 的信息，感谢他们的review和suggestion来帮助我们提升论文，我们try our best去address他们的concerns，let us know if they have any remaining concerns, 说我们致力于解决他们所有的concern, 一般第一次交后24小时后发」.
 
-About 24 h after the round-1 replies are posted (every thread answered), post one official comment at the top of the forum, readers everyone. It goes up once, as is, in every rebuttal. It thanks the reviewers for the reviews and suggestions that helped improve the paper, says we tried our best to address their concerns, asks for remaining concerns, and commits to resolving all of them. It names no reviewer, carries no result and adds no deference line (§ 7). Record the posting time in `REBUTTAL_STATE.md`.
+About 24 h after the round-1 replies are posted (every thread answered), post one official comment at the top of the forum, readers everyone. It goes up once, as is, in every rebuttal, before any individual nudge (§ 6). It thanks the reviewers for the reviews and suggestions that helped improve the paper, says we tried our best to address their concerns, asks for remaining concerns, and commits to resolving all of them. It names no reviewer, carries no result and adds no deference line (§ 7). Record the posting time in `REBUTTAL_STATE.md`.
 
 Title (OpenReview Title field, Title Case, no `**`): `Thank You to All Reviewers`
 

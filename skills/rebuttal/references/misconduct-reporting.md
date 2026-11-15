@@ -1,6 +1,6 @@
 # Bad-faith, LLM-generated or abusive reviews: how to report
 
-Read when an issue card carries `reviewer_stance: bad_faith_suspected` (Phase 2) or the user asks to report a reviewer.
+Read when an issue card carries `reviewer_stance: bad_faith_suspected` (Phase 2), the user asks to report a reviewer, or a negative-score reviewer stays silent after its nudge ([round2-replies.md](round2-replies.md) § 6: the AC note uses the letter of § 4).
 A report is an outward-facing act on the user's paper: **draft it, show it, and let the user send it.** Never post it yourself.
 
 Policy sources (checked 2026-11-09; re-check the venue's current guide before each use):
@@ -59,7 +59,7 @@ Rules:
 **ICLR (2027 rules):**
 1. **Confidential comment to the AC on the submission's forum.** Author Guidelines: "Authors who encounter potential violations of the Code of Ethics, e.g., as part of the review or public discussion, should raise these issues in a private message to their papers' Area Chair through the open review interface." Set *Readers* to the Area Chairs (and Senior Area Chairs / Program Chairs if offered); **never** include reviewers.
 2. **Program Chairs by email**, only if the AC does not resolve it: "In cases that cannot be resolved together with the Area Chair, please contact the Program Chairs through email. Prefix your title as [Authors-to-PCs]." ICLR's policy posts list program-chairs@iclr.cc; confirm the address in the current guide.
-3. **Timing.** ICLR 2027 author–reviewer discussion runs Nov 05 – Nov 18 '26 (AoE); reviewer–AC discussion and meta-reviewing begin Nov 19. Reviewers flag CoE concerns by Nov 18. Send the AC note as soon as the evidence pack is solid — early enough that the AC can still ask the reviewer to fix the review before reviewer–AC discussion starts. Do not wait for the reviewer to answer the rebuttal first.
+3. **Timing: last, after the positive-score reviewers are secured** (user 2026-11-15「AC 的举报信现在可以发了吗 举报那个一分 一般都是搞定所有正分审稿人 最后搞这个一分 那再等一等」). Send the note once every positive-score reviewer has confirmed or been left silent after their nudge, and the reported reviewer has had its own nudge ([round2-replies.md](round2-replies.md) § 6). The note's strongest support is the other reviewers' confirmed ratings and their engagement, which exist only once they have confirmed; a reported reviewer still silent by then adds its non-reply as a fact (§ 4). It must still go out inside the author–reviewer discussion (ICLR 2027: Nov 05 – Nov 18 '26 AoE; reviewer–AC discussion and meta-reviewing begin Nov 19; reviewers flag CoE concerns by Nov 18), so the AC can still prompt the reviewer. This replaces the earlier "send as soon as the evidence pack is solid".
 
 **NeurIPS:** the 2025 reviewer acknowledgement states that "Area Chairs will be able to flag up Insufficient Reviews … [and] grossly irresponsible reviewers (including but not limited to possibly LLM-generated reviews)". Use the venue's AC-only comment, or the author note to the AC (VQToken's forum shows an "Author Final Remarks" note); check that year's author guide for which one exists.
 
@@ -69,11 +69,11 @@ Rules:
 
 One message, written like a normal letter (user 2026-11-12: 「怎么举报是需要学习的, 就正常写就行」), not a charge sheet. It asks the AC to weigh the review, not to punish anyone. Structure, in this order (user 2026-11-12: 「你先把其他正常的审稿人夸一遍，然后说他们怎么怎么好，然后 bring attention to reviewer xxx 然后后面就说事情」):
 
-1. **Thank the AC, then praise the other reviewers by name, specifically.** Say what each one did well, with a short verbatim quote or the concrete thing they checked ("Reviewer A checks the fine-tuning gains against two specific tables"). Generic thanks ("all reviewers were helpful") does not count. Only reviewers whose review is normal; skip the one being reported.
+1. **Thank the AC, then praise the other reviewers by name, specifically.** Say what each one did well, with a short verbatim quote or the concrete thing they checked ("Reviewer A checks the fine-tuning gains against two specific tables"). Generic thanks ("all reviewers were helpful") does not count. Only reviewers whose review is normal; skip the one being reported. Add that they engaged actively in the discussion, naming who confirmed a rating or replied, when that is true (user 2026-11-15「说为什么其他审稿人都说很好，然后积极engage」).
 2. **"We would like to bring to your attention Reviewer X's review"**, with its rating / soundness / confidence.
 3. **The facts, numbered, most serious first**, one per point (user 2026-11-12, moving the anonymity point ahead of W4: 「把第二点提到第一点，这个比较重要」). Each point: the reviewer's verbatim words, what the submission contains and where.
 4. **Support from the other reviewers, inside each point** (user 2026-11-12: 「最好能从别的审稿人那里找一点支持你的结论」). For every point, search the other reviews for text that backs it and quote it verbatim: a reviewer who lists as a strength the very evidence the reported review says is missing is the strongest support; next, the other reviewers' sub-scores on the dimension the reported review attacks (e.g. "the other four rate soundness 2 or 3; two state 'no substantive concerns about the paper's soundness'"). Never cite a reviewer who raised the same concern as the reported one, and do not mention a point where the other reviewers agree with it (answer it in the public thread only).
-5. **Close**: ask the AC to take the points into account and to encourage the reviewer to engage. Do not add a sentence about the review's other points ("We address the substance of the reviewer's other points (W3 …, W5 …) in our response"): "substance" grants that they have merit, and naming them points the AC at the places where the reviewer may be right (user 2026-11-13: 「感觉也不该说? 等于承认他还是个好人.」).
+5. **Close**: if the reviewer has not replied to our response or to our follow-up, say so in one factual sentence with the dates ("Reviewer <ID> has not yet responded to our response of <date> or our follow-up of <date>."; user「就这个负分的意见有问题123，然后不回复」). Then ask the AC to take the points into account and to encourage the reviewer to engage. Do not add a sentence about the review's other points ("We address the substance of the reviewer's other points (W3 …, W5 …) in our response"): "substance" grants that they have merit, and naming them points the AC at the places where the reviewer may be right (user 2026-11-13: 「感觉也不该说? 等于承认他还是个好人.」).
 
 ```
 Title: Submission <N>: Reviewer <ID>, <point 1>, <point 2>, ...
@@ -84,7 +84,8 @@ Thank you for handling our submission. We are grateful to all reviewers
 for their time, and would like to thank Reviewers <A>, <B> and <C> in
 particular for reviews that engage closely with the paper: Reviewer <A>
 <concrete thing they checked>; Reviewer <B> finds "<verbatim praise>";
-Reviewer <C> <...>.
+Reviewer <C> <...>. <Only if true: Reviewers <A> and <B> also engaged
+actively in the discussion and confirmed their ratings.>
 
 We would like to bring to your attention <N> points in Reviewer <ID>'s
 review (rating <r>, soundness <s>, confidence <c>). <Optional, only if
@@ -98,7 +99,8 @@ true: The other reviewers rate soundness <x> to <y>; Reviewers <B> and
    evidence as a strength: "<verbatim>".
 2. <...>
 
-We would be
+<Only if true: Reviewer <ID> has not yet responded to our response of
+<date> or our follow-up of <date>.> We would be
 grateful if you could take these points into account when weighing the
 review, and encourage Reviewer <ID> to engage with them during the
 discussion.
