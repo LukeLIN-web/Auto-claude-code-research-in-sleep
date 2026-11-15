@@ -36,6 +36,7 @@ This skill only orchestrates. The rules live in the skills it calls:
   - in a paper: the abstract and contribution list, unless the user names them as in scope (`/paper-prose-tighten` class 13 reports, never edits, those).
 - **Overlay** (optional): a caller's file section whose rules win where they differ from the called skills — for example `rebuttal/references/wording-pass.md` § 3 and § 4.1. Pass the whole section; the editor reads it before the skills.
 - **Ledger** (optional): a blind-read ledger the caller already produced. If given, step 1 is skipped.
+- **Writing rules** (papers): the rule files a manuscript review checks, as listed in `../shared-references/review-writing-rules.md` ("What the brief lists"), by absolute path. The polish never breaks them and fixes what it may (user 2026-11-15).
 
 ## 1. Blind read
 
@@ -53,12 +54,14 @@ Spawn one fresh subagent per unit. Its prompt contains:
 2. the frozen-span list;
 3. the overlay section, if any;
 4. the ledger with the step-2 dispositions;
-5. this instruction, verbatim:
+5. for a paper, the writing rule files under `Writing rules`, paths only;
+6. this instruction, verbatim:
 
 > Read the overlay first; it wins where it differs. Then:
 > **Step 3 — cut only.** Invoke `/paper-prose-tighten` and follow it on the target. Do not rewrite for style in this step.
 > **Step 4 — reword, then rewrite.** Invoke `/paper-jargon-pass` and run only its second pass (查证 + 改写) on the ledger's A 组 / C 组 entries whose sentence is still there; its pass 0 and blind read are already done. Then read `<skills>/paper-polish/references/rewrite.md` and rewrite the surviving sentences: active voice with "we" where the authors acted, cohesion, clarity. The rewrite never cuts a sentence; report a sentence that looks empty.
 > If a skill is not in your skill list, read it by path (`<skills>/paper-prose-tighten/SKILL.md`, `<skills>/paper-jargon-pass/SKILL.md`) and follow it the same way.
+> If the prompt lists files under "Writing rules", read them before step 3; where a project rule file and a general one disagree, the project rule holds. No edit in steps 3 or 4 may break one of these rules. Text that already breaks one is fixed only by an edit its step already allows (a cut under a `/paper-prose-tighten` class, a reword, a rewrite); every other violation, including the ones outside prose (table shading and marks, caption placement, figure type size), goes in your list of what you would change but may not, with the rule (file, section) and the place.
 > Frozen spans are copied character for character. Never change a number, a citation, an address (table / figure / appendix / §), or the claim of a paragraph. Add no term, no hedge, no caveat, no sentence. Do not compile, push, or touch files outside the scratch copy.
 > Return: the edited text; a change list with one row per edit (paragraph id, before, after, step 3 class / step 4 term / rewrite § 1–3); a list of what you would change but may not (frozen spans, scope you cannot verify).
 
@@ -74,6 +77,7 @@ Take the editor's text one paragraph at a time. A paragraph's edits are taken on
 - the `/paper-prose-tighten` hard stops hold (no null turned into a win, no scoping denominator lost, no protocol difference left unstated);
 - no new hedge, caveat, concession or meta-narration (re-run the called skills' greps on the result);
 - the unit is not longer than the text the editor was given;
+- in a paper, no edit adds a writing-rule warning: run `research-paper-writing/scripts/check_draft.py` (and `check_figures.py` when a caption changed) on the text before and after, and reject an edit that brings in an ERROR or WARN the text did not have;
 - the overlay's own checks pass (the rebuttal overlay adds: house-style items present, verdict sentence bare, lint 10).
 
 A rejected edit is dropped, not repaired: keep the earlier sentence. Do not hand-merge half of an edited sentence into the old one. Then apply the taken edits to the real files; for a paper, change generated captions in their generator, rebuild, compile, and run the short-last-line gate (`/paper-prose-tighten` class 12). Save the change list, each row marked taken or rejected with the check that rejected it, next to the ledger as `edits-<unit>.md`.
@@ -84,7 +88,7 @@ A second fresh subagent rereads the final text with the step-1 isolation (`/pape
 
 ## Report
 
-In this order: (1) structural findings and bugs from steps 1–2 (contradictions, number clashes) for the user to rule on; (2) what the editor flagged but could not touch; (3) cuts by `/paper-prose-tighten` class, with the kept list; (4) term fixes; (5) rewrites by `rewrite.md` section (voice / cohesion / clarity); (6) rejected edits and why; (7) the suggested-experiments table below. No "% shorter" headline.
+In this order: (1) structural findings and bugs from steps 1–2 (contradictions, number clashes) for the user to rule on; (2) what the editor flagged but could not touch, writing-rule violations included, each with its rule and place (the owner fixes a generated table or caption in its generator); (3) cuts by `/paper-prose-tighten` class, with the kept list; (4) term fixes; (5) rewrites by `rewrite.md` section (voice / cohesion / clarity); (6) rejected edits and why; (7) the suggested-experiments table below. No "% shorter" headline.
 
 **Suggested experiments** (user 2026-11-15「最后加一个 返回一个建议实验的表」). The report ends with one table. It has one row per finding from (1) or (2) that needs new evidence, not new wording. Typical cases:
 
