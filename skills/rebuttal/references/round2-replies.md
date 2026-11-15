@@ -97,7 +97,7 @@ The sequence (user 2026-11-15「你先发个全体message显示你催过了 然�
    >
    > Thank you again for your time and valuable feedback!
 
-   The second bold sentence restates the review's own strengths field (e.g. ICLR's Critical Strengths) in the reviewer's words, woven into one "you found our X good, our Y useful, …" sentence, without quotation marks (user 2026-11-15「要引用一下他原话的Critical Strengths」, then「不要加引号.」). Leave out any strength that names a cost, a limitation or a null result, even as praise ("the paper is honest about cost", "honestly reports negative results"): it points the AC at the weakness (Never expose a weakness). No numbers.
+   The second bold sentence restates the review's own strengths field (e.g. ICLR's Critical Strengths) in the reviewer's words, woven into one sentence ("you appreciated our X, and found our Y genuinely useful and our Z informative"), without quotation marks (user 2026-11-15「要引用一下他原话的Critical Strengths」, then「不要加引号.」). A bare verdict word such as "good" does not go into "you found our X good" (user「found our evaluations good, 感觉有点尬」); fold it into the verb ("you appreciated our evaluations against …"). Leave out any strength that names a cost, a limitation or a null result, even as praise ("the paper is honest about cost", "honestly reports negative results"): it points the AC at the weakness (Never expose a weakness). No numbers.
 
    中文对照：**非常感谢您给出支持接收的正面评分，以及富有洞见的建议！我们尤其感谢您认为〈原话 1〉、〈原话 2〉以及〈原话 3〉。** 我们致力于解决您的所有问题。能否请您告诉我们是否还有其他问题？我们很乐意进一步解决。再次感谢您的时间和宝贵意见！
 
