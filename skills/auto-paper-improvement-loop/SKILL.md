@@ -1,7 +1,7 @@
 ---
 name: auto-paper-improvement-loop
-description: "Autonomously improve a generated paper via GPT-6-Astra xhigh review → implement fixes → recompile, for 2 rounds. With `— mode: polish` it calls no reviewer and instead repeats /paper-polish on the writing-rule details (table shading, captions, numbers per sentence, ...) until a round changes nothing or MAX_POLISH_ROUNDS. Use when user says \"改论文\", \"improve paper\", \"论文润色循环\", \"auto improve\", \"反复 polish\", \"polish 到收敛\", or wants to iteratively polish a generated paper."
-argument-hint: "[paper-directory] [— mode: polish] [— style-ref: <source>] [— edit-whitelist <path>]"
+description: "Autonomously improve a generated paper via GPT-6-Astra xhigh review → implement fixes → recompile, for 2 rounds. Use when user says \"改论文\", \"improve paper\", \"论文润色循环\", \"auto improve\", or wants to iteratively polish a generated paper."
+argument-hint: "[paper-directory] [— style-ref: <source>] [— edit-whitelist <path>]"
 allowed-tools: Bash(*), Read, Write, Edit, Grep, Glob, Skill, mcp__codex__codex, mcp__codex__codex-reply, mcp__antigravity__antigravity, mcp__antigravity__antigravity-reply, mcp__grok__grok, mcp__grok__grok-reply, mcp__claude-review__review, mcp__claude-review__review_reply, mcp__claude-review__review_start, mcp__claude-review__review_reply_start, mcp__claude-review__review_status, mcp__model-worker__worker, mcp__model-worker__worker_reply
 ---
 
@@ -47,26 +47,7 @@ Unlike `/auto-review-loop` (which iterates on **research** — running experimen
 - **HUMAN_CHECKPOINT = false** — When `true`, pause after each round's review and present score + weaknesses to the user. The user can approve fixes, provide custom modification instructions, skip specific fixes, or stop early. When `false` (default), runs fully autonomously.
 - **EDIT_WHITELIST = `null`** — Optional path to a YAML/JSON whitelist file constraining which paths and operations the fix-implementation step may touch. When `null` (default), all edits proceed unconstrained. When set via `— edit-whitelist <path>` (also accepts `— edit_whitelist <path>`), the loop loads the file at startup and consults it before each edit; rejected edits are logged to `PAPER_IMPROVEMENT_LOG.md` rather than silently dropped. See "Optional: Edit Whitelist" below.
 
-- **MAX_POLISH_ROUNDS = 3** — Polish mode only: the most rounds before it stops without converging. Round 2 on only polishes what round 1 changed, so the scope shrinks each round.
-
-> 💡 Override: `/auto-paper-improvement-loop "paper/" — human checkpoint: true`, `— mode: polish — max polish rounds: 5`
-
-## Polish mode (`— mode: polish`, opt-in)
-
-User 2026-11-15: 「auto-paper-improvement-loop 你加个 polish 模式, 就是反复 polish 这些细节 直到收敛 或达到max 次数」, after ruling the same day that the reviewer does not look at writing details. **Default OFF: without `— mode: polish` the loop runs exactly as below.**
-
-The default mode improves what a reviewer scores. Polish mode fixes the details: the writing rules `/paper-polish` takes as its "Writing rules" input (`research-paper-writing`, `paper-table-craft`, `paper-figure-craft`, the project's paper rules) and the warnings of the `research-paper-writing` checkers. No reviewer is called and nothing is scored. The rules stay in their own files; this mode only repeats the pass.
-
-Each round:
-
-1. **Check.** Recompile. Run `research-paper-writing/scripts/check_draft.py` on the introduction and experiments `.tex`, `check_figures.py` on the entry `.tex`, and the project's own compile gates if it has them. Keep the warnings.
-2. **Polish.** Run `/paper-polish` on the round's scope. Round 1: every section in scope (default every main-text and appendix section; frozen spans as `/paper-polish` § 0 lists them). Round 2 on: only the paragraphs and floats the previous round changed, plus those a step-1 warning points at. `/paper-polish` is one-pass on a given text, so a round never re-polishes text the previous round left alone.
-3. **Fix the rest.** `/paper-polish` § 5 has the owner fix the violations outside prose (table shading and marks, caption placement, figure type size) in their generator. Recompile and rerun step 1.
-4. **Log.** Append the round to `PAPER_IMPROVEMENT_LOG.md`: edits taken and rejected, violations fixed outside prose, checker warnings before and after. Write `PAPER_IMPROVEMENT_STATE.json` with `"mode": "polish"` and the round number.
-
-**Stop** when a round converges, i.e. it takes no edit and fixes nothing outside prose, or after `MAX_POLISH_ROUNDS`. Then report what is left: the checker warnings still standing and what the editor could not touch, each with its rule and place. A warning no edit can clear (a count outside the award-paper range that the paper needs) is reported, not chased.
-
-Polish mode skips the reviewer rounds (Steps 2–7) and the kill-argument exercise. It keeps Step 0, Step 8's format check after the last round and Step 9's documentation.
+> 💡 Override: `/auto-paper-improvement-loop "paper/" — human checkpoint: true`
 
 ## Optional: Style reference (`— style-ref: <source>`, opt-in)
 

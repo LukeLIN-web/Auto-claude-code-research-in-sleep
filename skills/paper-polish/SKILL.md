@@ -46,6 +46,8 @@ If no ledger was passed: a fresh subagent runs `/paper-jargon-pass` 第 0 趟 (p
 
 Follow `/paper-jargon-pass` 第二趟's first part: numbers first against the result files and tables, B 组 (contradictions, number clashes, count mismatches) straight to the user, never smoothed over. Mark each ledger entry: report / C 组 → step 3 / A 组 term → step 4 / no change. A real mismatch stops the polish of that unit until the user rules.
 
+For a paper, also run the `research-paper-writing` checkers once here, before any edit: `scripts/check_draft.py` on the introduction and experiments `.tex`, `scripts/check_figures.py` on the entry `.tex`. A warning is a pointer, not a finding: read what it points at. One that holds in prose joins the ledger for step 3 or 4; one outside prose goes to § 5. One pass is enough (user 2026-11-15「跑脚本 + polish 感觉一次就行了」): § 5 rejects any edit that adds a warning, so nothing is left for a second round.
+
 ## 3–4. The editor
 
 Spawn one fresh subagent per unit. Its prompt contains:
@@ -80,7 +82,7 @@ Take the editor's text one paragraph at a time. A paragraph's edits are taken on
 - in a paper, no edit adds a writing-rule warning: run `research-paper-writing/scripts/check_draft.py` (and `check_figures.py` when a caption changed) on the text before and after, and reject an edit that brings in an ERROR or WARN the text did not have;
 - the overlay's own checks pass (the rebuttal overlay adds: house-style items present, verdict sentence bare, lint 10).
 
-A rejected edit is dropped, not repaired: keep the earlier sentence. Do not hand-merge half of an edited sentence into the old one. Then apply the taken edits to the real files. For a paper, also fix the writing-rule violations the editor listed outside prose (table shading and marks, caption placement, figure type size): yourself, in their generator, unless the fix would change a number, a claim or what a float shows, which goes to the user. Change generated captions in their generator, rebuild, compile, and run the short-last-line gate (`/paper-prose-tighten` class 12). Save the change list, each row marked taken or rejected with the check that rejected it, next to the ledger as `edits-<unit>.md`.
+A rejected edit is dropped, not repaired: keep the earlier sentence. Do not hand-merge half of an edited sentence into the old one. Then apply the taken edits to the real files. For a paper, also fix the writing-rule violations outside prose (table shading and marks, caption placement, figure type size) that the editor listed or a step-2 checker warning showed: yourself, in their generator, unless the fix would change a number, a claim or what a float shows, which goes to the user. Change generated captions in their generator, rebuild, compile, and run the short-last-line gate (`/paper-prose-tighten` class 12). Save the change list, each row marked taken or rejected with the check that rejected it, next to the ledger as `edits-<unit>.md`.
 
 ## 6. Acceptance
 
