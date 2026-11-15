@@ -62,7 +62,7 @@ command grep -nE '(Moreover|Furthermore|Additionally|In addition),' $FILES
 | More than four commas in one sentence, or an aside wedged mid-sentence between commas (`A outperforms B and, when X holds, C.`) | Split into two sentences, or move the aside to the end (`A outperforms B. It also outperforms C when X holds.`). At most four commas per sentence; commas inside `\cite{}`, math and numbers do not count |
 | Nominalizations (`a comparison is made`, `leads to an improvement in`, `the computation of`) | The verb: `we compare`, `improves`, `we compute` |
 | `because` joining a reason to a claim (`because the VLA is trained without the orchestrator, fine-tuning degrades …`) | `as` or `since`: `because` asserts the cause outright, and papers rarely use it; keep it only where the text reports a test of that cause. If neither the softer word nor the evidence fits, the clause is a claim change: leave it and report |
-| Vague scope (`across settings`, `in most cases`) | The concrete scope the evidence has (`on all four benchmarks`, `in three of four`), only when the text already states it somewhere; otherwise leave it and report |
+| Vague scope (`across settings`, `in most cases`) | The concrete scope the evidence has (`on all four benchmarks`, `in three of four`), checked in the text or the evidence files; report it only when they do not settle it |
 
 ```bash
 command grep -niE '\bbecause\b' $FILES

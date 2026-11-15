@@ -36,6 +36,7 @@ This skill only orchestrates. The rules live in the skills it calls:
   - in a paper: the abstract and contribution list, unless the user names them as in scope (`/paper-prose-tighten` class 13 reports, never edits, those).
 - **Overlay** (optional): a caller's file section whose rules win where they differ from the called skills — for example `rebuttal/references/wording-pass.md` § 3 and § 4.1. Pass the whole section; the editor reads it before the skills.
 - **Ledger** (optional): a blind-read ledger the caller already produced. If given, step 1 is skipped.
+- **Evidence** (user 2026-11-15「不是应该去核对吗」): the result files the text's numbers and scopes come from, and for a paper the table and figure generators and the draft's sources, read-only. The editor checks a fact there before an edit that needs it. Only the blind readers (steps 1 and 6) are kept away from the evidence.
 - **Writing rules** (papers; user 2026-11-15): the absolute paths of `research-paper-writing/SKILL.md` with its `references/introduction.md`, `experiments.md`, `figures.md` and `distinguish-prior-work.md`; `paper-table-craft/SKILL.md` and `paper-figure-craft/SKILL.md`; the paper's `CLAUDE.md`, the `CLAUDE.md` of its tables, figures and scripts directories where they exist, and every rule file these point to. The rules stay in those files. The polish never breaks them and fixes every violation it finds: prose by the editor, the rest by the owner (§ 5).
 
 ## 1. Blind read
@@ -57,15 +58,17 @@ Spawn one fresh subagent per unit. Its prompt contains:
 3. the overlay section, if any;
 4. the ledger with the step-2 dispositions;
 5. for a paper, the writing rule files under `Writing rules`, paths only;
-6. this instruction, verbatim:
+6. the evidence paths under `Evidence`;
+7. this instruction, verbatim:
 
 > Read the overlay first; it wins where it differs. Then:
 > **Step 3 — cut only.** Invoke `/paper-prose-tighten` and follow it on the target. Do not rewrite for style in this step.
 > **Step 4 — reword, then rewrite.** Invoke `/paper-jargon-pass` and run only its second pass (查证 + 改写) on the ledger's A 组 / C 组 entries whose sentence is still there; its pass 0 and blind read are already done. Then read `<skills>/paper-polish/references/rewrite.md` and rewrite the surviving sentences: active voice with "we" where the authors acted, cohesion, clarity. The rewrite never cuts a sentence; report a sentence that looks empty.
 > If a skill is not in your skill list, read it by path (`<skills>/paper-prose-tighten/SKILL.md`, `<skills>/paper-jargon-pass/SKILL.md`) and follow it the same way.
 > If the prompt lists files under "Writing rules", read them before step 3; where a project rule file and a general one disagree, the project rule holds. No edit in steps 3 or 4 may break one of these rules. Text that already breaks one is fixed only by an edit its step already allows (a cut under a `/paper-prose-tighten` class, a reword, a rewrite); every other violation, including the ones outside prose (table shading and marks, caption placement, figure type size), goes in your list of what you would change but may not, with the rule (file, section) and the place.
+> When an edit needs a fact the text does not state (a scope, a comparator, a training set, a step count), look it up in the files listed under "Evidence" and make the edit if they settle it; name the file and table in the change list. Read those files; never edit them.
 > Frozen spans are copied character for character. Never change a number, a citation, an address (table / figure / appendix / §), or the claim of a paragraph. Add no term, no hedge, no caveat, no sentence. Do not compile, push, or touch files outside the scratch copy.
-> Return: the edited text; a change list with one row per edit (paragraph id, before, after, step 3 class / step 4 term / rewrite § 1–3); a list of what you would change but may not (frozen spans, scope you cannot verify).
+> Return: the edited text; a change list with one row per edit (paragraph id, before, after, step 3 class / step 4 term / rewrite § 1–3); a list of what you would change but may not (frozen spans, a fact the evidence files do not settle, an edit a writing rule forbids, with the rule).
 
 Paper-only parts of the called skills that need the real repository (paragraph-map script, compile, short-last-line gate, figure generators, two clones) are run by the owner after step 5, not by the editor.
 
@@ -75,10 +78,9 @@ Take the editor's text one paragraph at a time. A paragraph's edits are taken on
 
 - every frozen span is byte-identical (diff them);
 - the multiset of numbers, citations / `\cite` keys, `\ref` labels and addresses is unchanged, except numbers step 3 deleted under a named `/paper-prose-tighten` class (and, in a paper, still present in a table) — extract and compare, do not eyeball;
-- the claim is unchanged: one line per changed paragraph, what it claimed before and after. A strengthened or weakened scope, an added reason, a dropped qualifier, or a qualifier moved so that it scopes another clause rejects the edit;
+- the claim is unchanged: one line per changed paragraph, what it claimed before and after. A strengthened or weakened scope, an added reason, a dropped qualifier, or a qualifier moved so that it scopes another clause rejects the edit. A scope the text left implicit and the edit now states passes only if the owner finds exactly that scope in the file the change list names;
 - the `/paper-prose-tighten` hard stops hold (no null turned into a win, no scoping denominator lost, no protocol difference left unstated);
 - no new hedge, caveat, concession or meta-narration (re-run the called skills' greps on the result);
-- the unit is not longer than the text the editor was given;
 - in a paper, no edit adds a writing-rule warning: run `research-paper-writing/scripts/check_draft.py` (and `check_figures.py` when a caption changed) on the text before and after, and reject an edit that brings in an ERROR or WARN the text did not have;
 - the overlay's own checks pass (the rebuttal overlay adds: house-style items present, verdict sentence bare, lint 10).
 
