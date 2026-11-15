@@ -41,7 +41,7 @@ Each sentence is correct, but the reader has to work out how it connects to the 
 |---------|-------|
 | A sentence opens with a new term and ends with the known one (`A held-out generator family is what the second test uses`) | Known first, new last: `The second test uses a held-out generator family.` |
 | A paragraph starts with no link to the question or the previous paragraph | First sentence says the relation: `To test whether …, we …`, `This result also holds for unseen prompts: …` |
-| `Moreover, … Furthermore, … Additionally, …` opening consecutive sentences | A connective that names the relation (`therefore`, `because`, `for example`, `first … then`), or none |
+| `Moreover, … Furthermore, … Additionally, …` opening consecutive sentences | A connective that names the relation (`therefore`, `since`, `for example`, `first … then`), or none |
 | The same thing called by a new name each time to avoid repetition | One noun throughout; this is `/paper-jargon-pass`'s 同物异名 rule |
 | `This` / `It` with two possible antecedents | Add the noun (`This gap shows`); this is `/paper-jargon-pass`'s 悬空指代 rule |
 
@@ -60,7 +60,12 @@ command grep -nE '(Moreover|Furthermore|Additionally|In addition),' $FILES
 | Two independent claims in one sentence joined by `and` / `;` | Split: one claim per sentence (`/paper-jargon-pass`'s 一句话塞太多 is the extreme case) |
 | A long qualifying clause between subject and verb | Move the clause after the verb, or into its own sentence |
 | Nominalizations (`a comparison is made`, `leads to an improvement in`, `the computation of`) | The verb: `we compare`, `improves`, `we compute` |
+| `because` joining a reason to a claim (`because the VLA is trained without the orchestrator, fine-tuning degrades …`) | `as` or `since`: `because` asserts the cause outright, and papers rarely use it; keep it only where the text reports a test of that cause. If neither the softer word nor the evidence fits, the clause is a claim change: leave it and report |
 | Vague scope (`across settings`, `in most cases`) | The concrete scope the evidence has (`on all four benchmarks`, `in three of four`), only when the text already states it somewhere; otherwise leave it and report |
+
+```bash
+command grep -niE '\bbecause\b' $FILES
+```
 
 **Hold the scope.** A split or reorder must not move a qualifier so that it seems to scope a different clause (`on two benchmarks` drifting to the end of a sentence, where it reads as scoping only the last clause).
 
