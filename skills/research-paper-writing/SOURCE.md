@@ -1,6 +1,6 @@
 # Sources
 
-This skill merges two upstream skills (merged 2026-11-15, user: one skill, not two).
+This skill fuses two upstream skills (2026-11-15, user: one skill, not two).
 
 ## 1. Research-Paper-Writing-Skills (Peng Sida's notes)
 
@@ -48,9 +48,11 @@ Where its files went:
 
 - `scripts/`, `assets/`, `evals/`, `references/{routing,claim-calibration,style-rules,corpus-profile,intake-form,latex-output}.md`,
   `references/corpus/`, `references/exemplars/`: moved here unchanged.
-- `references/{introduction,abstract,method,experiments,figures}.md`: appended to the file of the same name as its
-  "Award-Paper Patterns" part, section numbers kept. Dropped as duplicates of source 1: `introduction.md` §1
-  (backward then forward) and `abstract.md` §1 (pre-writing questions); `introduction.md` §6 (contributions list)
-  moved into "Contribution List".
-- `SKILL.md`: its workflow (Steps 0 to 8), hard rules and file table are the "Award-Paper Workflow" part of `SKILL.md`.
+- `references/{introduction,abstract,method,experiments,figures}.md`: fused with the file of the same name from
+  source 1 under one outline (2026-11-15). Its numbered sections became named ones; pointers elsewhere use the names.
+  Dropped as duplicates of source 1: the backward-then-forward section and the label table of `introduction.md`
+  (labels `A:V1` etc. now sit on the headings of Parts A to C), the "before writing" questions of `abstract.md`.
+  From source 1, the "Experiment Section Decomposition" diagram was dropped in favour of the six-move skeleton.
+- `SKILL.md`: its Steps 0 to 8 are the workflow; source 1's core workflow, execution rules and output contract are
+  folded into Steps 1, 4, 5, 7 and 8 and into "Rules".
 - `LICENSE-base-skill`: identical to `LICENSE`, dropped.

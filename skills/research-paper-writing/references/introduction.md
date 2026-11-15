@@ -1,15 +1,50 @@
 # Introduction Writing Guide
 
-## Goal
+Two sources are fused here: Peng Sida's notes (how to plan the story, Parts A to C) and a sentence-level annotation of 55 award papers (what such introductions contain, routes by paper type, moves; `corpus-profile.md`). Labels such as `A:V1` and `C:V2` name the versions of Parts A to C; `routing.md` and the exemplar cards use them.
 
+## Goal
 Write a strong introduction in three steps:
 
 1. Think through the introduction logic.
 2. Apply a suitable template below.
 3. Revise the introduction repeatedly, at the plan level (step 3 of the Paragraph Clarity Check in `SKILL.md`).
 
-## Introduction Logic Map
+## What Award Introductions Contain (55 papers)
+Each sentence of 55 award introductions was labelled with its function. Presence = number of papers in which the function occurs; position = where it first appears (0 = first sentence, 1 = last).
 
+| Function | Papers | First appears at | Tier |
+|---|---|---|---|
+| Credit to prior work (specific achievements) | **55** | 0.03 | **always** |
+| Gap (limitation, its reason, the tension) | 54 | 0.10 | **always** |
+| Method | 54 | 0.41 | **always** |
+| Results | 51 | 0.67 | **always** |
+| Setting / task / concrete scene | 47 | 0.00 | usual |
+| Insight or goal (usually just before the method) | 43 | 0.38 | usual |
+| Contributions (list 16, prose 17, none 22) | 33 | 0.83 | common |
+| Contrast with specific prior work | 32 | 0.58 | common — **write it for every method paper** |
+| Stance | 28–35 | 0.88 | optional, at the end |
+
+Shape:
+- 6 prose paragraphs (p10–p90: 3–8), ~610 words (430–900), 26 sentences (17–38).
+- The gap appears by paragraph 2 (median); the last paragraph is contributions (18), results (15) or a stance (7).
+- One message per paragraph; the first sentence states it.
+- No limitations paragraph (limitations go to report.md for the Limitations section).
+
+## What Makes It Persuasive
+1. **Tension before idea.** The gap is set up as a conflict the idea resolves. Award papers use: two goals that pull apart (*tradeoff*, 21/55), a missing capability (13), an obvious fix that is too expensive (8), an unexplained phenomenon (6), an open question (4), a belief the results overturn (2).
+2. **Credit, then gap.** Every award introduction credits prior work with a specific achievement before criticising it, and describes the component it later blames.
+3. **The insight as an observation, not a formula.** 43/55 state an insight or goal, usually just before the method, but only 4/55 use “our key insight is”. Write the observation itself: “The highest frequency a scene can contain is bounded by the sampling rate of its views.”, “We find that …”, “The main idea is …”, “Our work is based on the observation that …”, “Surprisingly, …”. Use a formula at most once, never in the abstract.
+4. **A handle when there is one.** 27/55 name the idea itself (“next-brick prediction”, “foundation datasets”) — distinct from the method’s name. Name it once, where it is introduced, and reuse the same words.
+5. **Position against the closest work.** After the method (median position 0.58), name the closest work and state one checkable difference — mechanism (most common), scope, cost, evaluation, assumption, input or output. Forms: “Unlike X, which …, our …”, “In contrast to X, which requires …, Y …”, “Previous work addresses … by …, which is not applicable to …”, “While X …, we …”. Reviewers will look for this paragraph.
+6. **One concrete example.** 36/55 use a concrete example (an input that breaks prior work, a scene, a striking number, an analogy), usually in paragraph 1–2. A list of application domains is not an example.
+7. **Promote the work.** Award introductions use evaluative words (*outperforms*, *efficient*, *first*, *effective*) about three times; back each with evidence. Do not be more modest than the evidence allows.
+8. **Plain connective tissue, full sentences.** Award introductions use about one logical connector (however/therefore/thus/moreover/specifically/…) per 100 words (p10–p90: 0.4–1.4); sentences average 23 words. Let paragraph order and old→new information flow carry most of the logic, but keep relations inside sentences (*while*, *by*, *which*, *because*) rather than splitting every fact into its own short sentence or appending “, making …” clauses. Put short sentences at the pivots (the bottleneck, the cause, the idea) and keep the mean around 20–24 words. Colons are fine; dashes are not used (author preference; `style-rules.md` §1).
+9. **Story, not tables.** A result sentence carries 0–2 numbers; the introduction carries a median of 4 numbers. Ablation values and protocol details stay in the experiments.
+10. **Say each thing once.** Assign every claim (the gap, the insight, each advantage, each result) to exactly one paragraph. Do not restate the insight after the method, do not re-list the research questions, and do not let the contributions repeat the results paragraph — if a contributions list is used, its items are one line each and point to sections; otherwise end with results or a stance. Repetition was the most common weakness found by blind reviewers.
+11. **Short background.** Award introductions reach the specific problem fast (the gap appears by paragraph 2). Keep generic field background to at most two sentences before the specific setting or credit.
+12. **No implementation details** (layer counts, grid sizes, data pipelines, hyperparameters) unless they are the contribution.
+
+## Introduction Logic Map
 ```mermaid
 graph LR
   L1[What task are we solving]
@@ -48,7 +83,6 @@ graph LR
 ```
 
 ## How to Think About Introduction: Backward First, Then Forward
-
 ### Backward reasoning (answer these first)
 
 1. What technical problem do we solve, and why is there no well-established solution? (important)
@@ -76,7 +110,6 @@ Plan the Introduction together with the comparison experiments and ablation stud
 Worked example (ManhattanSDF, paragraph and sentence plans): `references/examples/introduction/writing-plan-manhattansdf.md`
 
 ## Section Skeleton
-
 ```latex
 \section{Introduction}
 % Task and application
@@ -87,8 +120,7 @@ Worked example (ManhattanSDF, paragraph and sentence plans): `references/example
 ```
 
 ## Part A: Introduce Task and Application
-
-### Version 1
+### Version 1 (`A:V1`)
 
 `Version 1: If the task is relatively niche, introduce the task first, then introduce applications.`
 
@@ -107,7 +139,7 @@ Local cite:
 
 1. `references/examples/introduction/version-1-task-then-application.md`
 
-### Version 2
+### Version 2 (`A:V2`)
 
 `Version 2: If the task is already familiar to most readers, introduce applications directly.`
 
@@ -125,7 +157,7 @@ Local cite:
 
 1. `references/examples/introduction/version-2-application-first.md`
 
-### Version 3
+### Version 3 (`A:V3`)
 
 `Version 3: Introduce applications of the general task first, then introduce the specific task setting. (Personally recommended when the setting is relatively new.)`
 
@@ -144,7 +176,7 @@ Local cite:
 
 1. `references/examples/introduction/version-3-general-to-specific-setting.md`
 
-### Version 4
+### Version 4 (`A:V4`)
 
 `Version 4: If the task is familiar, introduce applications directly and expose the target technical challenge in the opening paragraph via previous methods (failure cases / target metric improvements).`
 
@@ -173,7 +205,6 @@ Local cite:
 1. `references/examples/introduction/version-4-open-with-challenge.md`
 
 ## Part B: Introduce Technical Challenge for Previous Methods (Very Important)
-
 Purpose:
 
 1. Discuss around the exact technical challenge we solved.
@@ -192,8 +223,9 @@ Important warning :
 2. That writing makes the work look like a low-score incremental patch.
 3. Even if the work is actually incremental, do not write it this way.
 4. Why: this writing style can erase reader curiosity and make the idea look straightforward only because the writing hand-holds the reader.
+5. Ruling out an obvious alternative with a quantified reason is different and allowed (the `cost` route below).
 
-### Technical-Challenge Version 1 (existing task, with existing methods)
+### Technical-Challenge Version 1, `B:V1` (existing task, with existing methods)
 
 `Version 1: For existing tasks, discuss the challenge chain from general challenge -> traditional methods -> recent methods -> remaining challenge that we solve.`
 
@@ -216,7 +248,7 @@ Local cite:
 
 1. `references/examples/introduction/technical-challenge-version-1-existing-task.md`
 
-### Technical-Challenge Version 2 (existing task + our insight seen in traditional methods)
+### Technical-Challenge Version 2, `B:V2` (existing task + our insight seen in traditional methods)
 
 `Version 2: For existing tasks, when our insight has historical roots in traditional methods, use that line as conceptual backing and then show why new methods still fail.`
 
@@ -239,7 +271,7 @@ Local cite:
 
 1. `references/examples/introduction/technical-challenge-version-2-existing-task-insight-backed-by-traditional.md`
 
-### Technical-Challenge Version 3 (novel task, no direct methods)
+### Technical-Challenge Version 3, `B:V3` (novel task, no direct methods)
 
 `Version 3: For novel tasks without direct prior methods, define the challenge directly and decompose it into several concrete challenge points.`
 
@@ -262,6 +294,7 @@ Local cite:
 1. `references/examples/introduction/technical-challenge-version-3-novel-task.md`
 
 ## Part C: Introduce Our Pipeline for Solving the Challenge
+Introduce two or three components through the problem each one solves and how they depend on one another (Pipeline Version 2 is the model). Avoid three same-shaped sentences in a row ("A does … . B does … . C does … .").
 
 Key questions before writing:
 
@@ -278,7 +311,7 @@ Key questions before writing:
 2. What is our technical contribution?
 3. Why can our method work in essence?
 
-### Pipeline Version 1
+### Pipeline Version 1 (`C:V1`)
 
 `Version 1: One contribution with multiple advantages, and one teaser figure to present the basic idea.`
 
@@ -303,7 +336,7 @@ Local cite:
 
 1. `references/examples/introduction/pipeline-version-1-one-contribution-multi-advantages.md`
 
-### Pipeline Version 2
+### Pipeline Version 2 (`C:V2`)
 
 `Version 2: Two contributions, and one teaser figure to present the basic idea.`
 
@@ -329,7 +362,7 @@ Local cite:
 
 1. `references/examples/introduction/pipeline-version-2-two-contributions.md`
 
-### Pipeline Version 3
+### Pipeline Version 3 (`C:V3`)
 
 `Version 3: Build on a prior pipeline and introduce one new module, with a teaser figure for the basic idea.`
 
@@ -353,7 +386,7 @@ Local cite:
 
 1. `references/examples/introduction/pipeline-version-3-new-module-on-existing-pipeline.md`
 
-### Pipeline Version 4
+### Pipeline Version 4 (`C:V4`)
 
 `Version 4: Contribution comes from one important observation. Introduce key innovation first, then a listener-friendly observation as motivation, then method details, then benefits.`
 
@@ -395,125 +428,9 @@ Local cite:
 
 1. `references/examples/introduction/pipeline-not-recommended-abstract-only.md`
 
-## Contribution List
+## Route Paragraph Plans
 
-The authors write the list. Use these rules to check it, or when an author asks for an edit to it (user 2026-11-15).
-
-1. Method and finding items name no specific benchmark. They say what the method does and what was found in
-   general terms (`on a public benchmark`, `on unseen tasks`, `without the extra module`).
-2. Benchmark names and numbers go in the results item, the last one. A comparison that carries a number is
-   stated there once: `... on <Benchmark> (<ours>\% against <baseline>\%)`.
-3. The results item is titled with the improvement, not `Experimental results`:
-   `Significant improvements on six benchmarks`, where the count matches the benchmarks the item lists.
-4. A result appears in one item only. Before adding it to one item, check the others for the same comparison.
-
-Check: `grep -n '\\item' <intro file>` and read each item but the last for benchmark names.
-
-What the award-paper corpus shows about the list (the rules above win where they differ):
-
-- Optional. A single strong contribution can be stated in one sentence (DPO, CO3D).
-- If used: 2–4 bullets, each verifiable and pointing to a section/table; modules of one method go in one bullet; analysis findings or resources get their own bullet.
-- The list must match the abstract and the alignment matrix.
-
-## Example Bank
-
-1. `references/examples/introduction-examples.md`
-2. `references/examples/introduction/version-1-task-then-application.md`
-3. `references/examples/introduction/version-2-application-first.md`
-4. `references/examples/introduction/version-3-general-to-specific-setting.md`
-5. `references/examples/introduction/version-4-open-with-challenge.md`
-6. `references/examples/introduction/technical-challenge-version-1-existing-task.md`
-7. `references/examples/introduction/technical-challenge-version-2-existing-task-insight-backed-by-traditional.md`
-8. `references/examples/introduction/technical-challenge-version-3-novel-task.md`
-9. `references/examples/introduction/pipeline-version-1-one-contribution-multi-advantages.md`
-10. `references/examples/introduction/pipeline-version-2-two-contributions.md`
-11. `references/examples/introduction/pipeline-version-3-new-module-on-existing-pipeline.md`
-12. `references/examples/introduction/pipeline-version-4-observation-driven.md`
-13. `references/examples/introduction/pipeline-not-recommended-abstract-only.md`
-14. `references/examples/introduction/writing-plan-manhattansdf.md`
-
-## Quick Quality Checklist
-
-1. Does the first sentence of each paragraph state its message?
-2. Does each paragraph carry one message only?
-3. Are technical challenge, technical reason, and solved mechanism all explicit?
-4. Are claims in Introduction aligned with experiment evidence?
-5. Is terminology stable across all sections?
-6. Do the contribution items before the results item name no benchmark, and does the results item's title state the improvement?
-
-# Award-Paper Patterns
-
-From the sentence-level annotation of 55 award papers (`corpus-profile.md`). Section numbers are kept as other files point to them (`introduction.md` §2, §4); §1 was the backward-then-forward method, now only above.
-
-## 2. What award introductions contain (55 papers)
-
-Each sentence of 55 award introductions was labelled with its function. Presence = number of papers in which the function occurs; position = where it first appears (0 = first sentence, 1 = last).
-
-| Function | Papers | First appears at | Tier |
-|---|---|---|---|
-| Credit to prior work (specific achievements) | **55** | 0.03 | **always** |
-| Gap (limitation, its reason, the tension) | 54 | 0.10 | **always** |
-| Method | 54 | 0.41 | **always** |
-| Results | 51 | 0.67 | **always** |
-| Setting / task / concrete scene | 47 | 0.00 | usual |
-| Insight or goal (usually just before the method) | 43 | 0.38 | usual |
-| Contributions (list 16, prose 17, none 22) | 33 | 0.83 | common |
-| Contrast with specific prior work | 32 | 0.58 | common — **write it for every method paper** |
-| Stance | 28–35 | 0.88 | optional, at the end |
-
-Shape:
-- 6 prose paragraphs (p10–p90: 3–8), ~610 words (430–900), 26 sentences (17–38).
-- The gap appears by paragraph 2 (median); the last paragraph is contributions (18), results (15) or a stance (7).
-- One message per paragraph; the first sentence states it.
-- No limitations paragraph (limitations go to report.md for the Limitations section).
-
-## 2b. What makes it read like an award paper
-1. **Tension before idea.** The gap is set up as a conflict the idea resolves. Award papers use: two goals that pull apart (*tradeoff*, 21/55), a missing capability (13), an obvious fix that is too expensive (8), an unexplained phenomenon (6), an open question (4), a belief the results overturn (2).
-2. **Credit, then gap.** Every award introduction credits prior work with a specific achievement before criticising it, and describes the component it later blames.
-3. **The insight as an observation, not a formula.** 43/55 state an insight or goal, usually just before the method, but only 4/55 use “our key insight is”. Write the observation itself: “The highest frequency a scene can contain is bounded by the sampling rate of its views.”, “We find that …”, “The main idea is …”, “Our work is based on the observation that …”, “Surprisingly, …”. Use a formula at most once, never in the abstract.
-4. **A handle when there is one.** 27/55 name the idea itself (“next-brick prediction”, “foundation datasets”) — distinct from the method’s name. Name it once, where it is introduced, and reuse the same words.
-5. **Position against the closest work.** After the method (median position 0.58), name the closest work and state one checkable difference — mechanism (most common), scope, cost, evaluation, assumption, input or output. Forms: “Unlike X, which …, our …”, “In contrast to X, which requires …, Y …”, “Previous work addresses … by …, which is not applicable to …”, “While X …, we …”. Reviewers will look for this paragraph.
-6. **One concrete example.** 36/55 use a concrete example (an input that breaks prior work, a scene, a striking number, an analogy), usually in paragraph 1–2. A list of application domains is not an example.
-7. **Promote the work.** Award introductions use evaluative words (*outperforms*, *efficient*, *first*, *effective*) about three times; back each with evidence. Do not be more modest than the evidence allows.
-8. **Plain connective tissue, full sentences.** Award introductions use about one logical connector (however/therefore/thus/moreover/specifically/…) per 100 words (p10–p90: 0.4–1.4); sentences average 23 words. Let paragraph order and old→new information flow carry most of the logic, but keep relations inside sentences (*while*, *by*, *which*, *because*) rather than splitting every fact into its own short sentence or appending “, making …” clauses. Put short sentences at the pivots (the bottleneck, the cause, the idea) and keep the mean around 20–24 words. Colons are fine; dashes are not used (author preference; `style-rules.md` §1).
-9. **Story, not tables.** A result sentence carries 0–2 numbers; the introduction carries a median of 4 numbers. Ablation values and protocol details stay in the experiments.
-10. **Say each thing once.** Assign every claim (the gap, the insight, each advantage, each result) to exactly one paragraph. Do not restate the insight after the method, do not re-list the research questions, and do not let the contributions repeat the results paragraph — if a contributions list is used, its items are one line each and point to sections; otherwise end with results or a stance. Repetition was the most common weakness found by blind reviewers.
-11. **Short background.** Award introductions reach the specific problem fast (the gap appears by paragraph 2). Keep generic field background to at most two sentences before the specific setting or credit.
-12. **No implementation details** (layer counts, grid sizes, data pipelines, hyperparameters) unless they are the contribution.
-
-## 3. Building blocks: label key
-
-A compact key to Parts A, B and C above. `routing.md` and the exemplar cards use these labels (`A:V1`, `C:V2`).
-
-### Part A — Opening
-| Version | Use when | Skeleton |
-|---|---|---|
-| A:V1 task → applications | niche task | `[Task] aims to recover [output] from [input]. It enables [A], [B] and [C].` |
-| A:V2 applications/credit first | familiar task | `[Task/Method] has [specific success] …` |
-| A:V3 general → specific setting | new setting of a known task | `[General task] … This paper focuses on [setting], recovering [output] from [input].` |
-| A:V4 open with the challenge | familiar task, sharp failure | `[Importance]. Given [input], previous methods usually … Although they work in many cases, they fail at … because …` |
-
-### Part B — Technical challenge (limitation **and** technical reason)
-| Version | Use when | Skeleton |
-|---|---|---|
-| B:V1 challenge chain | existing task | `This problem is challenging due to … Traditional methods … However, they … Recently, … However, they … because …` |
-| B:V2 insight with classical roots | your idea echoes classical work | `A typical approach is [insight], long explored in … However, … because … Newer methods … still … because …` |
-| B:V3 decomposed challenges | novel task | `Our goal is … This is challenging for three reasons. First, … Second, … Finally, …` |
-
-Do not present a naive solution and then patch it. Ruling out an obvious alternative with a quantified reason is different and allowed (`cost` route).
-
-### Part C — Our solution
-Introduce two or three components through the problem each one solves and how they depend on one another (C:V2 is the model). Avoid three same-shaped sentences in a row (“A does … . B does … . C does … .”).
-| Version | Use when | Skeleton |
-|---|---|---|
-| C:V1 one contribution, several advantages | single core idea | `We propose [Name], a [category] for … (Fig. 1). Specifically, … In contrast to …, … Another advantage is …` |
-| C:V2 two contributions | second component fixes a problem left by the first | `… Specifically, … However, [remaining problem]. To address it, …` |
-| C:V3 new module in an existing pipeline | module paper | `Following [pipeline], … Our key component is … We observe that … In contrast to [generic alternative], …` |
-| C:V4 observation-driven | one key observation | `We observe that … Based on this, we … This leads to …` |
-
-Avoid: describing only abstract insights with many new terms while hiding what the method actually does.
-
-## 4. Route paragraph plans
+One plan per route of `routing.md`.
 
 ### `failure` (card: mip-splatting)
 1. Task → lineage ending at the method you fix; credit it with specifics.
@@ -592,7 +509,9 @@ Coarse arc: Credit/common belief → question → our test → findings → stan
 3. Our test (controlled comparison, new metric) in one paragraph.
 4. Findings, then a stance that follows from them (“X is a property of the metric, not of the model”).
 
-## 5. Sentence-level moves (retrieve examples from `exemplars/moves.jsonl`)
+## Sentence-Level Moves and Exemplars
+
+Retrieve examples of a move from `exemplars/moves.jsonl`.
 
 | Move id | Purpose |
 |---|---|
@@ -620,10 +539,50 @@ Coarse arc: Credit/common belief → question → our test → findings → stan
 | `abstract.open.*` | abstract first sentences by opening type |
 | `pattern.*` | reusable sentence patterns |
 
-## 6b. Paragraph-level examples
 `python3 scripts/find_exemplars.py --para <function> [--type L7]` prints award-paper paragraphs whose main function is `scene`, `task`, `credit`, `history`, `gap`, `reason`, `tension`, `question`, `goal`, `insight`, `method`, `mechanism`, `contrast`, `result`, `theory-result`, `stance`, `scope`, `contribution`, `outline`, with a note on why each works. `--phrases <function>` prints sentence frames with examples. Study the order of information, never copy wording.
 
-## 7. Checklist
+## Contribution List
+The authors write the list. Use these rules to check it, or when an author asks for an edit to it (user 2026-11-15).
+
+1. Method and finding items name no specific benchmark. They say what the method does and what was found in
+   general terms (`on a public benchmark`, `on unseen tasks`, `without the extra module`).
+2. Benchmark names and numbers go in the results item, the last one. A comparison that carries a number is
+   stated there once: `... on <Benchmark> (<ours>\% against <baseline>\%)`.
+3. The results item is titled with the improvement, not `Experimental results`:
+   `Significant improvements on six benchmarks`, where the count matches the benchmarks the item lists.
+4. A result appears in one item only. Before adding it to one item, check the others for the same comparison.
+
+Check: `grep -n '\\item' <intro file>` and read each item but the last for benchmark names.
+
+What the award-paper corpus shows about the list (the rules above win where they differ):
+
+- Optional. A single strong contribution can be stated in one sentence (DPO, CO3D).
+- If used: 2–4 bullets, each verifiable and pointing to a section/table; modules of one method go in one bullet; analysis findings or resources get their own bullet.
+- The list must match the abstract and the alignment matrix.
+
+## Example Bank
+1. `references/examples/introduction-examples.md`
+2. `references/examples/introduction/version-1-task-then-application.md`
+3. `references/examples/introduction/version-2-application-first.md`
+4. `references/examples/introduction/version-3-general-to-specific-setting.md`
+5. `references/examples/introduction/version-4-open-with-challenge.md`
+6. `references/examples/introduction/technical-challenge-version-1-existing-task.md`
+7. `references/examples/introduction/technical-challenge-version-2-existing-task-insight-backed-by-traditional.md`
+8. `references/examples/introduction/technical-challenge-version-3-novel-task.md`
+9. `references/examples/introduction/pipeline-version-1-one-contribution-multi-advantages.md`
+10. `references/examples/introduction/pipeline-version-2-two-contributions.md`
+11. `references/examples/introduction/pipeline-version-3-new-module-on-existing-pipeline.md`
+12. `references/examples/introduction/pipeline-version-4-observation-driven.md`
+13. `references/examples/introduction/pipeline-not-recommended-abstract-only.md`
+14. `references/examples/introduction/writing-plan-manhattansdf.md`
+
+## Checklist
+- [ ] Does the first sentence of each paragraph state its message?
+- [ ] Does each paragraph carry one message only?
+- [ ] Are technical challenge, technical reason, and solved mechanism all explicit?
+- [ ] Are claims in Introduction aligned with experiment evidence?
+- [ ] Is terminology stable across all sections?
+- [ ] Do the contribution items before the results item name no benchmark, and does the results item's title state the improvement?
 - [ ] Credit to specific prior work precedes the gap; the component blamed later is described first.
 - [ ] Gap = what fails/is missing + technical reason + condition, set up as a tension.
 - [ ] A contrast paragraph or sentence names the closest work and one checkable difference.
@@ -632,8 +591,6 @@ Coarse arc: Credit/common belief → question → our test → findings → stan
 - [ ] One concrete example in paragraph 1 or 2.
 - [ ] No limitations, failure cases or disclaimers; mixed results scoped to the wins.
 - [ ] Every gap ↔ one contribution.
-- [ ] The component blamed for the failure was described before it is blamed.
-- [ ] Closest work named; difference is specific.
 - [ ] Results as claims with headline numbers; wording is the strongest the claim map allows; the work is promoted with evidence.
 - [ ] A stance sentence if the results support one; no implementation details; no defensive qualifiers.
 - [ ] Each claim appears in one paragraph only; contributions do not repeat the results paragraph; generic background ≤ 2 sentences.

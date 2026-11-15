@@ -1,4 +1,4 @@
-# bestpaper-writing matplotlib style (see references/figures.md §5, §7).
+# matplotlib style (see references/figures.md, "Result Figures" and "Layout and Typography").
 # Sizes are for print: column 3.25 in, full width 6.875 in (CVPR); use plot_style.figsize().
 font.family: sans-serif
 font.sans-serif: Helvetica, Arial, DejaVu Sans

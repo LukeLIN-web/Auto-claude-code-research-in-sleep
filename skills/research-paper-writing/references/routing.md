@@ -6,10 +6,10 @@
 2. Main deliverable is a dataset/benchmark/platform → **L7 resource** (plan `resource`)
 3. New sensor/optics/physical measurement → **L8 measurement** (plan `measurement`)
 4. Re-examines a popular claim → **L4 re-examination** (plan `re-examination`); explains a known phenomenon → **L5 analysis/mechanism** (plan `mechanism`)
-5. Systematic sweep yielding an empirical law/recipe, or scaling an ingredient → **L3 empirical scaling** (plan in `introduction.md` §4)
+5. Systematic sweep yielding an empirical law/recipe, or scaling an ingredient → **L3 empirical scaling** (plan in `introduction.md`, "Route Paragraph Plans")
 6. Enables something previously impossible → **L2 new capability**; does an existing task better → **L1 method improvement**
 
-All plans are in `introduction.md` §4. Plans for L4/L6/L7/L8 are derived from 3–5 award papers each; treat them as tested starting points and read the paragraph exemplars of the same type (`find_exemplars.py --para … --type L7`). `corpus/corpus_stats.json → structure.sequences_by_type` lists the coarse arcs of every award paper by type.
+All plans are in `introduction.md`, "Route Paragraph Plans". Plans for L4/L6/L7/L8 are derived from 3–5 award papers each; treat them as tested starting points and read the paragraph exemplars of the same type (`find_exemplars.py --para … --type L7`). `corpus/corpus_stats.json → structure.sequences_by_type` lists the coarse arcs of every award paper by type.
 
 ## 2. Motivation type (L1/L2)
 

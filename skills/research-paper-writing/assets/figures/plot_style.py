@@ -1,4 +1,4 @@
-"""Plot helpers that keep every chart of a paper consistent (references/figures.md §5).
+"""Plot helpers that keep every chart of a paper consistent (references/figures.md, "Result Figures").
 
     import plot_style as ps
     ps.use()
