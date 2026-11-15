@@ -175,10 +175,6 @@ def corpus_checks(path):
                     issues.append(("NOTE", 0, f"{name}: fewer {what} than 90% of award papers ({m[key]:.2f}); aim near the median ({d[key]['p50']}), not zero", ""))
         if sec == "abstract" and m["self_praise_count"] == 0:
             issues.append(("NOTE", 0, "abstract makes no evaluative claim (outperforms, first, efficient, …); add one that the evidence supports", ""))
-        if sec == "abstract" and m["insight_formula_count"] >= 1:
-            issues.append(("WARN", 0, "abstract uses a formula such as 'key insight'/'key idea' (4 of 55 award papers do this anywhere); state the insight directly", ""))
-        if sec == "intro" and m["insight_formula_count"] >= 2:
-            issues.append(("WARN", 0, f"introduction uses 'key insight'-type formulas {m['insight_formula_count']}×; use at most one, prefer stating the observation directly", ""))
         if sec == "intro" and m["self_praise_count"] < d["self_praise_count"]["p10"]:
             issues.append(("NOTE", 0, "introduction promotes the work less than 90% of award papers (no 'outperforms', 'efficient', 'first', …); state the strongest supported advantage confidently", ""))
     return issues

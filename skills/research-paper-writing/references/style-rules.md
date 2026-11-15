@@ -47,7 +47,6 @@ simple yet effective · comprehensive experiments.
 | Hedges (*may, might, could, likely, suggest*) | 0 (1) | 1 (3.6) |
 | Boosters (*significantly, remarkably, notably, …*) | 0 (1) | 1 (3) |
 | Evaluative words (*outperforms, efficient, effective, first, novel, state-of-the-art*) | 1 (3) | 3 (7.6) — 90% use at least one |
-| “key insight”-type formulas | 0 | 0 (only 4 of 55 papers) |
 | Sentence length (words) | 24 | 23 |
 
 AI drafts typically exceed the connector range and fall below the evaluative-word range. **Aim near the median, not at zero.** Removing every connector produces the opposite tell, a string of short, unconnected sentences.
