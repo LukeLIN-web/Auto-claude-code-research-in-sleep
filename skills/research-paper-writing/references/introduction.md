@@ -395,6 +395,20 @@ Local cite:
 
 1. `references/examples/introduction/pipeline-not-recommended-abstract-only.md`
 
+## Contribution List
+
+The authors write the list. Use these rules to check it, or when an author asks for an edit to it (user 2026-11-15).
+
+1. Method and finding items name no specific benchmark. They say what the method does and what was found in
+   general terms (`on a public benchmark`, `on unseen tasks`, `without the extra module`).
+2. Benchmark names and numbers go in the results item, the last one. A comparison that carries a number is
+   stated there once: `... on <Benchmark> (<ours>\% against <baseline>\%)`.
+3. The results item is titled with the improvement, not `Experimental results`:
+   `Significant improvements on six benchmarks`, where the count matches the benchmarks the item lists.
+4. A result appears in one item only. Before adding it to one item, check the others for the same comparison.
+
+Check: `grep -n '\\item' <intro file>` and read each item but the last for benchmark names.
+
 ## Example Bank
 
 1. `references/examples/introduction-examples.md`
@@ -419,3 +433,4 @@ Local cite:
 3. Are technical challenge, technical reason, and solved mechanism all explicit?
 4. Are claims in Introduction aligned with experiment evidence?
 5. Is terminology stable across all sections?
+6. Do the contribution items before the results item name no benchmark, and does the results item's title state the improvement?
