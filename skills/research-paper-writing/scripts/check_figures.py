@@ -14,10 +14,12 @@ and reports:
 import argparse, json, os, re, sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-# corpus ranges (data/figure_stats.json in the repository); kept inline so the skill folder is self-contained
+# corpus ranges (data/figure_stats.json in the repository); kept inline so the skill folder is self-contained.
+# The upper caption bounds are set below the corpus p90 (two-column 91 / 100 for Figure 1, one-column 102 / 153)
+# on purpose: a caption near p90 is already long (user 2026-11-15).
 RANGES = {
-    "two": dict(cap=(10, 91), cap1=(32, 100), first=20, figs=(3, 9), tabs=(0, 5)),
-    "one": dict(cap=(14, 102), cap1=(21, 153), first=21, figs=(3, 6), tabs=(0, 2)),
+    "two": dict(cap=(10, 75), cap1=(32, 85), first=20, figs=(3, 9), tabs=(0, 5)),
+    "one": dict(cap=(14, 85), cap1=(21, 120), first=21, figs=(3, 6), tabs=(0, 2)),
 }
 DASH = re.compile(r"—|---|\s–\s|\s--\s")
 PLOTNAME = re.compile(r"(plot|curve|chart|graph|bar|loss|scaling|ablation|hist)", re.I)
@@ -148,7 +150,7 @@ def main():
         if "Figure placeholder" in f["body"] or "\\figplaceholder" in f["body"] or "\\bpplacebox" in f["body"] or "\\FigPlan" in cap:
             add("NOTE", "placeholder or figure plan still in this figure", f)
         elif not lo <= len(words) <= hi:
-            add("WARN", f"caption has {len(words)} words; award papers: {lo}-{hi} (p10-p90){' for Figure 1' if k == 0 else ''}", f)
+            add("WARN", f"caption has {len(words)} words; keep it within {lo}-{hi}{' for Figure 1' if k == 0 else ''}", f)
         if len(first) > R["first"]:
             add("WARN", f"first caption sentence has {len(first)} words (p90 {R['first']}); open with the takeaway", f)
         if DASH.search(cap):

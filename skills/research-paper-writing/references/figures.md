@@ -150,7 +150,7 @@ The caption does not point to other sections or floats and does not explain why 
 
 - The **first sentence is the takeaway**, not a description: “Decoding on demand.”, “3D Gaussian Splatting aliases when zooming out.”, not “Results on dataset X.” (median 7 words, p90 20).
 - Bold title in about half of two-column papers and a third of NeurIPS papers; either is fine, but be consistent across the paper.
-- Length: median 42 words; Figure 1 longer (median 65). Below 10 words a caption explains nothing; above about 100 the content belongs in the text.
+- Length: median 42 words; Figure 1 longer (median 65). Below 10 words a caption explains nothing; above 75 (85 for Figure 1) in a two-column paper the content belongs in the text; `check_figures.py` warns there.
 - **Name the colours** used in the figure and write the key words in those colours if the template allows (Mip-Splatting colours its key terms in the caption to match the figure).
 - Name sub-panels with (a), (b) or left/right when there is more than one.
 - Same no-dash rule as the text (author preference); no workflow notes except `\TODO{}`.
