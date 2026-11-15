@@ -84,7 +84,19 @@ A second fresh subagent rereads the final text with the step-1 isolation (`/pape
 
 ## Report
 
-In this order: (1) structural findings and bugs from steps 1–2 (contradictions, number clashes) for the user to rule on; (2) what the editor flagged but could not touch; (3) cuts by `/paper-prose-tighten` class, with the kept list; (4) term fixes; (5) rewrites by `rewrite.md` section (voice / cohesion / clarity); (6) rejected edits and why. No "% shorter" headline.
+In this order: (1) structural findings and bugs from steps 1–2 (contradictions, number clashes) for the user to rule on; (2) what the editor flagged but could not touch; (3) cuts by `/paper-prose-tighten` class, with the kept list; (4) term fixes; (5) rewrites by `rewrite.md` section (voice / cohesion / clarity); (6) rejected edits and why; (7) the suggested-experiments table below. No "% shorter" headline.
+
+**Suggested experiments** (user 2026-11-15「最后加一个 返回一个建议实验的表」). The report ends with one table. It has one row per finding from (1) or (2) that needs new evidence, not new wording. Typical cases:
+
+- a claim whose table cell is missing, or rests on fewer episodes or tasks than the table says;
+- a gain or speedup credited to one component when two changed between the compared rows;
+- a comparison across different training data, pools or protocols when a matched one is possible.
+
+| Finding | Experiment | What it decides | Cost | Status | Zero-cost alternative |
+|---|---|---|---|---|---|
+| where, in one line | the smallest run that settles it, holding everything else fixed | which sentence stays, changes or goes, under each outcome | GPU-hours and API spend, from a measured per-episode or per-step rate when one exists | already run (point to the result), queued, or new | the rewrite that holds on the evidence already in hand |
+
+A finding that wording alone can fix gets no row. The table only proposes. Nothing is launched; the user picks the rows.
 
 ## Never
 
