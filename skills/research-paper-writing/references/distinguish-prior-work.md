@@ -18,7 +18,8 @@ Two moves per close paper, in this order.
    would accept it. A reader who does not know the paper must be able to follow the next sentence.
 2. **State what it leaves undone, as one general sentence.** Name the consequence of its design, then the
    question that design leaves open, the one your paper answers. Let the second sentence grow out of the
-   first (`so`, `thus`, `which leaves open whether ...`, `only to ...`).
+   first (`rather than ..., leaving ... unexplored`, `which leaves open whether ...`, `only to ...`). A bare
+   "so it does not ..." is still a negation with a connective in front; say what remains open instead.
 
 Do not itemize negations. "It does not do A, keep B, or test on C" is a checklist of your own features with
 "not" in front. Find the one property of the prior work that all three follow from and say that.
@@ -26,7 +27,7 @@ Do not itemize negations. "It does not do A, keep B, or test on C" is a checklis
 | Stiff | Natural |
 |---|---|
 | "A fine-tunes the policy on its own successes; it does not keep the planner, train on the planner's subgoals, or test on new tasks." | "A fine-tunes the policy on its own successes. The planner serves only to collect data: the policy is deployed without it and evaluated where it collected, which leaves open whether such training helps a system that keeps its planner or transfers to new tasks." |
-| "B, whose recipe we follow, distills a large model into a small agent; it has no learned policy and trains no executor." | "B distills a large model into a small agent. Its agent acts through hand-written tools, so it does not study how a distilled agent works with a learned policy." |
+| "B, whose recipe we follow, distills a large model into a small agent; it has no learned policy and trains no executor." | "B distills a large model into a small agent. Its agent acts through hand-written tools, leaving the pairing of a distilled agent with a learned policy unexplored." |
 
 Three things the left column gets wrong, each a separate rule:
 
