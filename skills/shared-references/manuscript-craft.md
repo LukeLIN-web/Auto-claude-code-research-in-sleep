@@ -131,6 +131,42 @@ User ruling 2026-11-16, from a review the user forwarded:
 - Analysis prose is the lowest-value text in the paper — tables and figures carry
   the argument.
 
+User ruling 2026-11-16, from a review the user forwarded:
+
+- **A results paragraph states a finding; it does not narrate the tests.** The
+  first sentence gives the finding for a kind of setting ("the gain holds on
+  every long-horizon benchmark"), then one or two representative numbers, then
+  the reason. Group the benchmarks by what they test and give each group one
+  verdict, the one that holds for every member; name a single benchmark only
+  where it departs from its group or carries the reason. The values stay in the
+  table. Three sentences in one paragraph in the frame "X (significantly)
+  outperforms Y on A, B and C, and outperforms it on D", or one comparison
+  sentence naming four or more benchmarks, is a test log pasted into prose.
+- **The reason comes from the paper's own evidence.** A sentence on why a gain
+  occurs cites a measurement in the paper (an ablation, a breakdown of failure
+  states) or a property the data have by construction. A mechanism a reviewer
+  proposes is checked against the method's definitions first (what the
+  training data actually contain); with no evidence, no reason sentence.
+- **One row, one training condition, or mark the columns.** When a row's model
+  differs by column (trained in that domain for some columns, transferred for
+  others), a symbol defined in the caption marks those columns, or the row
+  splits in two. Every transfer claim in the Abstract or Introduction ("trained
+  in one domain, it outperforms on another") points to a main-text cell
+  produced exactly that way, never only to an appendix table.
+- **The main Setup defines what the main text uses, and only that.** A variant
+  or data subset the final method does not use is defined with its ablation,
+  not in the main Setup, unless a main-text float reports it; every term a
+  main-text sentence or float uses is defined in the main text at first use. A
+  main-text pointer to such an ablation names the variant by what it changes
+  ("pre-selecting objects by success rate"), not by a name defined only in the
+  appendix, and a difference that was not significant is not written as "brings
+  no gain".
+- **A claim that names several instances has a main-text cell for each.** "With
+  two models" or "on three simulators" needs each model or simulator in a
+  main-text float; an instance whose only evidence is an appendix table makes
+  the claim appendix-only, and the claim is narrowed or the decisive row moves
+  up.
+
 ### Background / Related Work
 
 - Related Work is read by almost nobody; do not spend the page budget defending
@@ -274,6 +310,11 @@ Additional rules:
       alternative as a named variant; every filter in an equation has its
       reason; one model or one per domain is stated before the first results table.
 - [ ] Exactly one Experiments section; speedups reported as ratios.
+- [ ] Results paragraphs: finding first, one or two numbers, a reason from the
+      paper's own evidence; one verdict per group of benchmarks, no roll call. A
+      row whose training differs by column is marked; every transfer claim, and
+      every instance a claim names, points to a main-text cell; the main Setup
+      defines only what the main text uses.
 - [ ] Every appendix section is referenced from the main text.
 - [ ] Every float sits on/next to the page of first discussion, in order.
 - [ ] Main (hero) figure on page 2; every citation before the Experiments is

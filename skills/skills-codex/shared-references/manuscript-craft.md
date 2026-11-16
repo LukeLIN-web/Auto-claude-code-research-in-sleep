@@ -11,6 +11,9 @@ distilled into rules. Venue instructions always override this file.
 ## When to Read
 
 - `paper-write`: before drafting Method / Experiments, and during the final pass.
+- `research-paper-writing`: before drafting the Introduction, a Method, or an
+  Abstract the authors asked for.
+- `research-review`: the structure reviewer judges every section against §2.
 - `paper-compile`: when fixing overfull boxes, float placement, or citation style.
 - `resubmit-pipeline` / `paper-writing`: during submission-readiness checks.
 
@@ -25,6 +28,53 @@ table, not to re-narrate it. Time saved here goes into figures.
 
 ## 2. Section policy
 
+### Abstract
+
+User ruling 2026-11-16.
+
+- **One or two headline numbers**: the results a reader should remember,
+  usually the main comparison against the simplest strong baseline and the one
+  that isolates the core component. No number at all, or a third comparison,
+  is a defect.
+- **Each component by what it does, not how.** A method sentence says what a
+  component achieves and why it is needed. Selection rules, per-frame labels,
+  data mixtures and which weights change belong to the Method; "keeps the
+  episodes that succeed with no tool running, each frame labeled with the
+  planner's subgoal" interrupts the abstract.
+- **Results in at most two sentences, each in its own frame, then the
+  take-home message.** Result sentences that repeat one predicate ("X
+  significantly outperforms Y" three times running) read like a lab report;
+  merge them. The last sentence says what the reader should take away, a stance
+  the results support; it is not one more comparison and not generic impact.
+
+### Introduction
+
+User ruling 2026-11-16, from a review the user forwarded.
+
+- **Nothing before it is introduced.** No component of the method ("our
+  distilled planner") appears before the paragraph that presents the method:
+  state the motivating evidence without it, or move that evidence later. A set
+  is named where it is counted: "four planners" says which four, or what they
+  are ("one proprietary and three open models").
+- **A reason joins the gap to the method.** Between the paragraph where the
+  obvious fix fails and the one that presents the method, one sentence says why
+  the method avoids that failure. It states a cause that the cited work or the
+  paper's own ablation supports, or a property the method has by construction;
+  never a mechanism nothing tested.
+- **The method paragraph is not a Method summary.** It says what each
+  component does and why it is needed. The benchmark the training data comes
+  from, mixing ratios, the code base the method builds on, and the names of
+  baselines or ablation rows ("Ours (frozen backbone)") stay in the Method and
+  Experiments.
+- **The results paragraph states conclusions, not a table.** Summarize by kind
+  of generalization (new tasks, other simulators or datasets, other embodiments
+  or models), with the one or two headline numbers and a pointer to the table;
+  never a roll call of benchmark names. No "slightly": a result that cannot be
+  stated without it is folded into its category or left to the tables.
+- **Contributions are takeaways.** Each item runs at most about six printed
+  lines (about 60 words) and repeats no sentence of the Introduction's prose;
+  the cap on the whole list is under Method below.
+
 ### Method
 
 - Open with a **road-map paragraph** that states what the section will build,
@@ -38,10 +88,39 @@ table, not to re-narrate it. Time saved here goes into figures.
   comparison in a dedicated **Advantages** paragraph or subsection that contrasts
   against prior work in one place.
 - Structure the contribution as ~3 novelty points — typically two technical and
-  one empirical. Write those first; the supporting results follow.
+  one empirical. Write those first; the supporting results follow. The
+  contribution list runs **at most 263 words**: the p90 of award papers'
+  lists, whose median is 87 (user ruling 2026-11-16).
 - If two techniques are introduced, write the **connection** between them.
   Presenting them side by side signals "two unrelated tricks bolted together";
   presenting the mechanism that links them signals one method.
+
+User ruling 2026-11-16, from a review the user forwarded:
+
+- **The Method describes the configuration the main rows run.** When a
+  component can take its input from two sources (a ground-truth signal or a
+  learned judge, a privileged input or a deployable one), say which one the
+  method's reported rows use, and introduce the other as a variant under the
+  name its table row carries, with a pointer to the experiment. A capability
+  the Abstract or Introduction claims ("needs no X") reads in the Method as
+  what that variant does, never as the default pipeline while the main rows
+  use X; otherwise a reviewer finds the main table running on X and charges
+  the paper with overclaiming.
+- **Every filter or exclusion in an equation carries its reason, next to the
+  equation.** The reason is a property the design has by construction (what
+  triggers the excluded event, what the kept data are guaranteed to contain),
+  cited work, or the paper's own ablation with a significant difference; never
+  a plausible mechanism nothing tested, and never an ablation cell that did not
+  reach significance. A by-construction reason is checked against the code or
+  prompt that defines the trigger, and that trigger is described where the
+  component is introduced.
+- **The unit of training is stated before the first results table.** Whether
+  one set of trained weights serves every benchmark or each domain (simulator,
+  embodiment, dataset) gets its own run, from which starting weights and with
+  which data in place of the default ones, is said in the Method subsection
+  that defines training. Not first in the Setup, an Advantages paragraph or the
+  appendix: a table that mixes domains otherwise reads as one model sweeping
+  all of them.
 
 ### Experiments
 
@@ -51,6 +130,42 @@ table, not to re-narrate it. Time saved here goes into figures.
   A reviewer wants `2.3$\times$ faster`, not two tables to divide mentally.
 - Analysis prose is the lowest-value text in the paper — tables and figures carry
   the argument.
+
+User ruling 2026-11-16, from a review the user forwarded:
+
+- **A results paragraph states a finding; it does not narrate the tests.** The
+  first sentence gives the finding for a kind of setting ("the gain holds on
+  every long-horizon benchmark"), then one or two representative numbers, then
+  the reason. Group the benchmarks by what they test and give each group one
+  verdict, the one that holds for every member; name a single benchmark only
+  where it departs from its group or carries the reason. The values stay in the
+  table. Three sentences in one paragraph in the frame "X (significantly)
+  outperforms Y on A, B and C, and outperforms it on D", or one comparison
+  sentence naming four or more benchmarks, is a test log pasted into prose.
+- **The reason comes from the paper's own evidence.** A sentence on why a gain
+  occurs cites a measurement in the paper (an ablation, a breakdown of failure
+  states) or a property the data have by construction. A mechanism a reviewer
+  proposes is checked against the method's definitions first (what the
+  training data actually contain); with no evidence, no reason sentence.
+- **One row, one training condition, or mark the columns.** When a row's model
+  differs by column (trained in that domain for some columns, transferred for
+  others), a symbol defined in the caption marks those columns, or the row
+  splits in two. Every transfer claim in the Abstract or Introduction ("trained
+  in one domain, it outperforms on another") points to a main-text cell
+  produced exactly that way, never only to an appendix table.
+- **The main Setup defines what the main text uses, and only that.** A variant
+  or data subset the final method does not use is defined with its ablation,
+  not in the main Setup, unless a main-text float reports it; every term a
+  main-text sentence or float uses is defined in the main text at first use. A
+  main-text pointer to such an ablation names the variant by what it changes
+  ("pre-selecting objects by success rate"), not by a name defined only in the
+  appendix, and a difference that was not significant is not written as "brings
+  no gain".
+- **A claim that names several instances has a main-text cell for each.** "With
+  two models" or "on three simulators" needs each model or simulator in a
+  main-text float; an instance whose only evidence is an appendix table makes
+  the claim appendix-only, and the claim is narrowed or the decisive row moves
+  up.
 
 ### Background / Related Work
 
@@ -77,6 +192,8 @@ stays simple: no detail, no new qualifiers — plain enough for a non-specialist
 It is short, a few sentences that restate the claim; it does not re-list the
 benchmarks, settings or numbers the body already reports (user ruling
 2026-11-16: 「conclusion 就不应该这么一堆 benchmark 枚举, 应该简短一点」).
+It runs **at most 110 words**; CVPR/ICCV award papers' conclusions without
+a limitations part have a median of 94 (user ruling 2026-11-16).
 
 ### Terminology
 
@@ -180,9 +297,24 @@ Additional rules:
 
 ## 6. Final pass checklist
 
+- [ ] Abstract: one or two headline numbers, no implementation detail, results
+      in at most two differently framed sentences, ending on the take-home message.
+- [ ] Introduction: no method component before the method paragraph, every
+      counted set named; one sentence of reason between gap and method; no
+      ratio, data source or baseline name in the method paragraph; results by
+      kind of generalization, no benchmark roll call, no "slightly";
+      contribution items about 60 words each.
 - [ ] Method has a road-map paragraph and (near-)zero citations; comparisons live
       in a dedicated Advantages paragraph.
+- [ ] Method names the configuration the main rows run and presents the
+      alternative as a named variant; every filter in an equation has its
+      reason; one model or one per domain is stated before the first results table.
 - [ ] Exactly one Experiments section; speedups reported as ratios.
+- [ ] Results paragraphs: finding first, one or two numbers, a reason from the
+      paper's own evidence; one verdict per group of benchmarks, no roll call. A
+      row whose training differs by column is marked; every transfer claim, and
+      every instance a claim names, points to a main-text cell; the main Setup
+      defines only what the main text uses.
 - [ ] Every appendix section is referenced from the main text.
 - [ ] Every float sits on/next to the page of first discussion, in order.
 - [ ] Main (hero) figure on page 2; every citation before the Experiments is

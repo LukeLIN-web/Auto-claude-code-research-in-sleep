@@ -212,6 +212,31 @@ def line_kinds(path, n_lines):
     return kinds
 
 
+FRAME = r"\boutperform|\bsurpass|\bbeats?\b"
+LIST_ITEM_SEP = re.compile(r",\s+(?:and\s+)?|\s+and\s+")
+
+
+def roll_call_checks(lines, kinds):
+    """Body paragraphs that read as a test log (manuscript-craft.md §2, Experiments)."""
+    issues, start = [], 1
+    for block in "\n".join(lines).split("\n\n"):
+        n = start
+        start += block.count("\n") + 2
+        if kinds.get(n, "front") != "body" or not block.strip():
+            continue
+        sents = sm.split_sentences(" ".join(block.split()))
+        frame = [s for s in sents if re.search(FRAME, s, re.I)]
+        if len(frame) >= 3:
+            issues.append(("WARN", n, f"{len(frame)} sentences of one paragraph repeat the 'outperforms' frame; give one verdict per group of benchmarks and leave the values to the table", frame[-1]))
+        for s in frame:
+            for m in re.finditer(r"\b(?:on|across|in)\s+([^.;:()]+?\s+and\s+[^,.;:()]+)", s):
+                items = [x for x in LIST_ITEM_SEP.split(m.group(1)) if x.strip()]
+                if len(items) >= 4:
+                    issues.append(("WARN", n, f"one comparison names {len(items)} settings; group them by what they test", s))
+                    break
+    return issues
+
+
 def check(path, bank, max_words):
     lines, labels = load_lines(path)
     kinds = line_kinds(path, len(lines))
@@ -260,8 +285,9 @@ def check(path, bank, max_words):
         ov = ngrams(s) & bank
         if ov:
             issues.append(("ERROR", n, f"copies exemplar wording: '{sorted(ov)[0]}'", s))
+    issues += roll_call_checks(lines, kinds)
     paras = [p.strip() for p in "\n".join(lines).split("\n\n") if p.strip()]
-    firsts = [w[0].lower() for w in (re.findall(r"[A-Za-z]+", p)[:1] for p in paras) if w]
+    firsts =[w[0].lower() for w in (re.findall(r"[A-Za-z]+", p)[:1] for p in paras) if w]
     for w in set(firsts):
         if firsts.count(w) > 3 and w not in {"the", "a", "c"} and not is_body_file:
             issues.append(("WARN", 0, f"{firsts.count(w)} paragraphs start with '{w}'", ""))

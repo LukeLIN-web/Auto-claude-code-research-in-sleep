@@ -35,7 +35,7 @@ Convince reviewers with complete evidence on effectiveness, causality, and pract
    - When the paper discusses limitations, report failure modes next to the gains to show realistic boundaries.
 
 ## Experiment Planning
-**Evidence map first.** Before writing, list every claim from the abstract, introduction and method, and the table/figure that proves it. A claim without evidence is softened in the introduction or gets an experiment `[TODO]`; an experiment that proves no claim moves to the appendix. The decisive experiment for each main-text claim stays in the main text; the appendix only adds settings and breakdowns.
+**Evidence map first.** Before writing, list every claim from the abstract, introduction and method, and the table/figure that proves it. A claim without evidence is softened in the introduction or gets an experiment `[TODO]`; an experiment that proves no claim moves to the appendix. The decisive experiment for each main-text claim stays in the main text; the appendix only adds settings and breakdowns. A claim that names several instances ("with two models", "on three simulators") needs a main-text cell for each instance, and a transfer claim ("trained in one domain, it wins on another") needs a main-text cell produced exactly that way (`../../shared-references/manuscript-craft.md` §2, Experiments).
 
 ```mermaid
 flowchart TB
@@ -63,12 +63,22 @@ flowchart TB
 > “We first present the implementation details of Mip-Splatting. We then assess its performance on the Blender dataset and the challenging Mip-NeRF 360 dataset. Finally, we discuss the limitations of our approach.” (Mip-Splatting)
 > “… we ask: how efficiently does DPO trade off maximizing reward and minimizing KL-divergence with the reference policy …?” (DPO)
 
-**E1 · Setup.** Datasets (size, split, why chosen), metrics (with direction ↑/↓), baselines (why these, how they were run: official code, same data), implementation (base code, iterations, hardware). Run-in headings are normal here (`\paragraph{Datasets.}`).
+**E1 · Setup.** Datasets (size, split, why chosen), metrics (with direction ↑/↓), baselines (why these, how they were run: official code, same data), implementation (base code, iterations, hardware). Run-in headings are normal here (`\paragraph{Datasets.}`). The Setup defines what the main text uses and nothing else: a variant or data subset the final method does not use is defined beside its ablation, wherever that ablation sits.
 > “We build our method upon the popular open-source 3DGS code base. Following [18], we train our models for 30K iterations across all scenes and use the same loss function …” (Mip-Splatting)
 > “We compare our results with Textual Inversion, the recent concurrent work of Gal et al., using the hyperparameters provided in their work.” (DreamBooth)
 
 **E2 · Main results: claim first, then evidence, then reason.** Start the paragraph with the finding, cite the table, quantify the most important margin, then explain why with reference to the method, then point to the qualitative figure.
 > “We report quantitative results in Table 1. Our method outperforms the baselines on all metrics, with especially significant improvements in perceptual distance (LPIPS). … Compared to the baselines, our method is better at capturing fine details and correctly inferring 3D structure …” (pixelSplat)
+
+With many benchmarks, the finding is stated per kind of setting, not per benchmark: group the benchmarks by what they test and give each group one verdict, the one that holds for every member. The table holds the values; a benchmark is named alone only where it departs from its group or carries the reason.
+
+```text
+Avoid (a test log):  Ours significantly outperforms B on A1, A2 and A3, and outperforms it on A4.
+                     It significantly outperforms C on A1 and A5, and outperforms it on A2 (Table 1).
+Write (a finding):   Ours outperforms both baselines on every long-horizon benchmark (Table 1),
+                     by <the one margin that carries the claim>. <Reason from a measurement in
+                     the paper or a property the data have by construction.>
+```
 
 **E3 · Ablations mirror the claims.** One variant per design claim from the method, named by what is removed or replaced (“w/o prior preservation”, “No invertible”), each answering a question.
 > “We perform ablations on RealEstate10k to answer the following questions: Is our epipolar encoder responsible for our model’s ability to handle scale ambiguity? …” (pixelSplat)
@@ -94,10 +104,12 @@ flowchart TB
 1. **Claim-first paragraphs.** “Ours outperforms X on all metrics (Tab. 1), with the largest gain in Y” rather than “Table 1 shows the results.” Use “As shown in Tab. 1” sparingly.
 2. **Numbers belong here.** Report margins, not only rankings; the abstract/introduction number limits do not apply. Keep at most one or two numbers per sentence; the rest stay in the table.
 3. **Fair comparison is stated once, in the setup** (same data, official code, same backbone); do not repeat qualifiers in every results sentence.
-4. **Explain, do not only report.** After each comparison, one sentence on why, tied to the mechanism (“because the 3D filter bounds the frequency …”).
+4. **Explain, do not only report.** After each comparison, one sentence on why, tied to the mechanism (“because the 3D filter bounds the frequency …”). The reason cites the paper's own evidence: an ablation, a breakdown of failures, or a property the data or model have by construction. A reason a reviewer proposes is checked against the method's definitions first (what the training data actually contain); with no evidence, write no reason sentence.
 5. **Qualitative figures** show the claim the text makes (failure of the baseline, our fix), and their captions state the takeaway first. Layout, method order, insets and plot style: `figures.md`, "Result Figures".
 6. **Limitations**, when the paper has them, are written here, concretely, with a cause and, where possible, a figure.
 7. Style: past tense for what was done (“we trained”), present tense for what the results show (“Ours outperforms”). No dashes; colons are fine for run-in lists.
+8. **No roll call.** Three sentences in one paragraph in the frame “X (significantly) outperforms Y on A, B and C”, or one comparison sentence naming four or more benchmarks, is the table rewritten as prose; merge them into one verdict per group of benchmarks (E2). `scripts/check_draft.py` flags both shapes in Method and Experiments files.
+9. **Name a dropped variant by what it changes.** A main-text pointer to an ablation the final method did not adopt says what the variant does (“pre-selecting objects by success rate”), not a name defined only in the appendix. A difference that was not significant is not written as “brings no gain” or “is unnecessary”.
 
 ## Ablations
 **Every ablation answers one question** and is named by the change. Pair each with the method subsection it validates. (Move E3.)
@@ -134,6 +146,9 @@ Readers care most about how the core contributions affect performance, and wonde
 8. Open the caption with the takeaway in one sentence, then give setting, protocol and notation. No long discussion.
 9. If there is little to explain, the takeaway sentence alone is the caption.
 10. For single-column figures/tables in two-column papers, prefer placing them in the right column when layout allows, so readers can enter the page from the left-top text without breaking reading flow.
+11. **One row, one training condition.** When our row's model differs by column (trained in that domain for some columns, transferred for others), a symbol defined in the caption marks those columns, or the row splits into two. A reader must be able to read off every cell how its model was trained.
+12. **Look at the table at its printed width.** In the compiled PDF no two header cells touch and no value wraps or slips a row. A table too wide for its column at `\small` goes full width (`table*`), splits by setting, or moves a column group to its own table.
+13. **Verify a reported rendering defect before fixing it.** A missing glyph shows in the log as `Missing character` (`grep "Missing character" main.log`) and as a gap in the PDF's text layer; when both are clean, the defect came from the reader's tool, and nothing changes.
 
 ### Minimal LaTeX checklist
 
@@ -172,7 +187,11 @@ Ours & \textbf{\TODO{}} & \textbf{\TODO{}} & \TODO{} \\
 - [ ] Are claims in Abstract/Introduction supported by reported numbers, with at least one or two of them in the main text rather than only in the appendix?
 - [ ] Every claim of the paper has a table or figure; every table supports a claim.
 - [ ] Setup states datasets, metrics (↑/↓), baselines and how they were run, once.
-- [ ] Results paragraphs open with the finding and explain the reason.
+- [ ] Results paragraphs open with the finding and explain the reason from the paper's own evidence; one verdict per group of benchmarks, no roll call (`check_draft.py` passes).
+- [ ] Every claim that names several instances, and every transfer claim, has a main-text cell for each instance, produced the way the claim says.
+- [ ] Every row of a results table is one training condition, or the columns that differ are marked.
+- [ ] The main Setup defines only what the main text uses; every term in a main-text sentence or float is defined in the main text.
+- [ ] Every table fits its printed width with no touching headers; the log has no `Missing character`.
 - [ ] One ablation per design claim, named by the change.
 - [ ] Limitations, if written, are concrete and placed here or in their own section.
 - [ ] No invented numbers: missing values are `\TODO{}`.
