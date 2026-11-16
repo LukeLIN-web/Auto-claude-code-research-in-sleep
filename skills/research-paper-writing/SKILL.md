@@ -1,12 +1,12 @@
 ---
 name: research-paper-writing
-description: Structure an ML/CV paper's Introduction, write its Experiments section, and plan, draw and polish its figures (Figure 1 / teaser / showcase, overview, result figures), from Peng Sida's writing notes (technical challenge = limitation + reason, claim-evidence alignment) and from the patterns of 60 CVPR/ICCV/NeurIPS award papers (exemplar bank, style and figure checkers). Use when planning the introduction's paragraph structure, drafting or revising Experiments, choosing or redesigning a figure, or distinguishing the paper from its closest prior work. Never for the title, Abstract or contribution list (the authors write those), nor Method, Related Work, Conclusion, rebuttals or proofreading.
+description: Structure an ML/CV paper's Introduction, write its Method and Experiments sections, and plan, draw and polish its figures (Figure 1 / teaser / showcase, overview, result figures), from Peng Sida's writing notes (technical challenge = limitation + reason, claim-evidence alignment) and from the patterns of 60 CVPR/ICCV/NeurIPS award papers (exemplar bank, style and figure checkers). Use when planning the introduction's paragraph structure, drafting or revising the Method or Experiments, choosing or redesigning a figure, or distinguishing the paper from its closest prior work. Never for the title, Abstract or contribution list (the authors write those), nor Related Work, Conclusion, rebuttals or proofreading.
 ---
 # Research Paper Writing
 
 ## Scope in this fork (user ruling 2026-11-01)
 
-Use this skill **only** for four things:
+Use this skill **only** for five things:
 
 1. **Introduction structure**: the paragraph plan, the order of motivation, gap / technical challenge, insight and
    results, and how each paragraph opens. Not the contribution list.
@@ -17,13 +17,15 @@ Use this skill **only** for four things:
    undone; and what to check in that paper beyond its mechanism (released code and weights, proprietary
    models, evaluation on its own training tasks). `references/distinguish-prior-work.md`. The rest of Related
    Work stays out of scope.
+5. **The Method section** (user ruling 2026-11-16): `references/method.md`, under the author rulings in
+   `../shared-references/manuscript-craft.md` §2 (Method).
 
 Never draft or rewrite the **title, Abstract or contribution list**: the authors write those themselves, and an
 agent only transcribes them verbatim. When the authors ask for one by name, write it as a Markdown draft beside
 the paper, never into its source, following `references/abstract.md` and
 `../shared-references/manuscript-craft.md` §2 (user 2026-11-16); once the authors' version is in the source,
 delete the draft. Steps or references below that target the title, Abstract, contributions,
-Method, Related Work or Conclusion do not apply. Where this skill conflicts with the project's own paper rules
+Related Work or Conclusion do not apply. Where this skill conflicts with the project's own paper rules
 (its paper `CLAUDE.md`, memory, or the `paper-*` skills), the project wins.
 
 ## Two sources, one skill
