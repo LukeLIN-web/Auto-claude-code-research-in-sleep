@@ -396,7 +396,8 @@ Additional rules:
       every instance a claim names, has main-text evidence; the main Setup
       defines only what the main text uses.
 - [ ] Every appendix section is referenced from the main text.
-- [ ] Every float sits on/next to the page of first discussion, in order.
+- [ ] Every float sits on/next to the page of first discussion, in order: first references
+      come in numbering order, Figure 4 never cited before Figure 3 (`paper-compile`'s `check_tex.py`).
 - [ ] Main (hero) figure on page 2; every citation before the Experiments is
       one the reader needs there.
 - [ ] No `\cite`/`\ref` without a preceding `~`.

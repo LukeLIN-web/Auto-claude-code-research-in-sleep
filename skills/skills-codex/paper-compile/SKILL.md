@@ -160,7 +160,12 @@ python3 "$S/check_runts.py" main.pdf
 - `check_tex.py` reads `main.tex` and every file it `\input`s. It enforces the caption rule owned by
   `paper-table-craft` / `paper-figure-craft` (no pointer at another float, 1200 chars) on generated and
   hand-written captions alike, and rejects any line, comments included, that names a repo-internal
-  path: the `.tex` ships to Overleaf, co-authors and the submission source as is.
+  path: the `.tex` ships to Overleaf, co-authors and the submission source as is. It also reads the
+  compile's `.aux` (`--aux`, default beside `main.tex`; pass `--aux <outdir>/main.aux` when latexmk
+  builds elsewhere) and fails when a float's first reference comes before that of a lower-numbered
+  float of its series (Figure 4 cited before Figure 3; an appendix's A.1, A.2 is its own series), a
+  never-referenced float counting as cited last. Fix by moving the float's source or reordering the
+  sentences, never by citing the earlier float out of context.
 - `check_runts.py` flags a paragraph whose last line is shorter than half its column (one- or
   two-column layouts). Fix by cutting words until the line is absorbed into the one above, holding
   every claim; never `\looseness`, `\vspace` or spacing tricks.
