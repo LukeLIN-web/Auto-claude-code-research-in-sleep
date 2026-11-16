@@ -88,7 +88,7 @@ A rejected edit is dropped, not repaired: keep the earlier sentence. Do not hand
 
 ## 6. Acceptance
 
-A second fresh subagent rereads the final text with the step-1 isolation (`/paper-jargon-pass` 验收 4, or the caller's blind-read file). Done when it produces no new load-bearing entry. It only looks for stalls; it does not cut or rewrite.
+A second fresh subagent rereads the final text with the step-1 isolation (`/paper-jargon-pass` 验收 4, or the caller's blind-read file). Done when it produces no new load-bearing entry, or after the second acceptance read of the same change, whichever comes first. A reread of fixes counts as a round. After the second read, the owner fixes only real errors (a wrong number, an overclaim, a contradiction), lists the rest for the user, and sends no third reader. Each fresh reader finds something new, so "read until clean" never stops. It only looks for stalls; it does not cut or rewrite.
 
 ## Report
 
