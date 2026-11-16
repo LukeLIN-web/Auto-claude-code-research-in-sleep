@@ -21,7 +21,8 @@ Use this skill **only** for four things:
 Never draft or rewrite the **title, Abstract or contribution list**: the authors write those themselves, and an
 agent only transcribes them verbatim. When the authors ask for one by name, write it as a Markdown draft beside
 the paper, never into its source, following `references/abstract.md` and
-`../shared-references/manuscript-craft.md` §2 (user 2026-11-16). Steps or references below that target the title, Abstract, contributions,
+`../shared-references/manuscript-craft.md` §2 (user 2026-11-16); once the authors' version is in the source,
+delete the draft. Steps or references below that target the title, Abstract, contributions,
 Method, Related Work or Conclusion do not apply. Where this skill conflicts with the project's own paper rules
 (its paper `CLAUDE.md`, memory, or the `paper-*` skills), the project wins.
 
