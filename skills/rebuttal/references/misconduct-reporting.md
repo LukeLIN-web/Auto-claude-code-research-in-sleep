@@ -1,6 +1,6 @@
 # Bad-faith, LLM-generated or abusive reviews: how to report
 
-Read when an issue card carries `reviewer_stance: bad_faith_suspected` (Phase 2), the user asks to report a reviewer, or a negative-score reviewer stays silent after its nudge ([round2-replies.md](round2-replies.md) § 6: the AC note uses the letter of § 4).
+Read when an issue card carries `reviewer_stance: bad_faith_suspected` (Phase 2), the user asks to report a reviewer, or a negative-score reviewer stays silent after its nudge ([round2-replies.md](round2-replies.md) § 6: the AC note uses the letter of § 4, except the last silent negative-score reviewer in the last days, who gets the short engagement note of § 6 there).
 A report is an outward-facing act on the user's paper: **draft it, show it, and let the user send it.** Never post it yourself.
 
 Policy sources (checked 2026-11-09; re-check the venue's current guide before each use):
