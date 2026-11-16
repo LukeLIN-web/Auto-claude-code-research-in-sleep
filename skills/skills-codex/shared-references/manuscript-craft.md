@@ -57,11 +57,13 @@ From a second review the user forwarded, 2026-11-16 (「更新 paper review skil
   it was given at each moment, not the task instruction"). Its mechanics
   (selection thresholds, per-frame bookkeeping) stay in the Method.
 - **Each headline number says which comparison it belongs to.** The sentence
-  names what the two sides share and the one thing that differs. When the
-  contribution is a component, the first number is the comparison that changes
-  only that component; the full system's gain over the bare baseline changes
-  several components at once, so it comes after and is framed as the whole
-  system's, never as evidence that the component works.
+  names what the two sides share and the one thing that differs. The full
+  system's gain over the bare baseline changes several components at once, so
+  it is framed as the whole system's, never as evidence that one component
+  works; the comparison that changes only that component says so. Which of
+  the two comes first is the authors' call (user ruling 2026-11-16, 「这个顺序
+  还是让 user 定」): a reviewer raises the order as a question, never as a
+  defect, and an agent does not swap it unasked.
 - **A number beside a property was obtained with that property.** When a
   sentence highlights a setting ("needs no privileged signal") and the next
   gives the best number, the number comes from that setting. If the best
@@ -370,8 +372,8 @@ Additional rules:
 - [ ] Abstract: one or two headline numbers, no implementation detail, results
       in at most two differently framed sentences, ending on the take-home message.
       The ingredient that separates the method from the recipe it resembles is
-      named; each headline number says its comparison, the one isolating the
-      core component first; a number beside a property comes from that
+      named; each headline number says its comparison (their order is the
+      authors' call); a number beside a property comes from that
       setting; background at most two sentences; it ends on its first page.
 - [ ] Introduction: no method component before the method paragraph, every
       counted set named; one sentence of reason between gap and method; no

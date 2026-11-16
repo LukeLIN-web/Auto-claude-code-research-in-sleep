@@ -69,7 +69,7 @@ Questions 6–7 follow `../../shared-references/manuscript-craft.md` §2 (Introd
 2. Is absolute performance competitive enough for the target venue?
 3. Are gains consistent across multiple datasets/settings/metrics?
 4. Do we report both strengths and failure cases honestly?
-5. Which comparison does each headline number belong to? Does the one that changes only the core component come first, with the full system's gain over the bare baseline framed as the whole system's?
+5. Which comparison does each headline number belong to? Is the full system's gain over the bare baseline framed as the whole system's, and does the comparison that changes only the core component say so? (Their order is the authors' call: ask, do not flag.)
 6. Is every number placed beside a property ("without a privileged signal") obtained in that setting, and if the best number needs the signal, are both given with their settings?
 7. Is every failure breakdown used as motivation, not as proof that one component is to blame?
 

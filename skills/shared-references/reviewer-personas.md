@@ -417,9 +417,9 @@ instructions; the venue wins where they differ.
    with the point it makes. The Introduction runs one chain (problem, why the
    obvious fix fails, why the method's ingredient may work, method,
    validation); a second motivation given its own paragraph inside that chain
-   is flagged. In the Abstract and Introduction, the comparison that isolates
-   the core component comes before the full system's gain over the bare
-   baseline.
+   is flagged. The order of the full system's gain over the bare baseline and
+   the comparison isolating the core component is the authors' call: ask, do
+   not flag.
 4. Repetition. The same content at the same level of detail in two places,
    beyond the intended cascade (section opening -> introduction -> abstract,
    each a stricter summary of the one below), including two contribution items
