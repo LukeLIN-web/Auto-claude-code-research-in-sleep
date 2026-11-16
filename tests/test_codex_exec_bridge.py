@@ -14,6 +14,7 @@ keep working unchanged. These tests pin:
     created with (`codex exec resume` alone would drop them)
   - a silent child still gets progress, and ping / cancel are honoured
     while it runs
+  - calls run concurrently, their launches spaced LAUNCH_STAGGER_SEC apart
 
 A fake `codex` on CODEX_BIN stands in for the real CLI.
 """
@@ -39,7 +40,7 @@ FAKE_CODEX = textwrap.dedent(
     argv = sys.argv[1:]
     prompt = sys.stdin.read()
     with open(os.environ["FAKE_CODEX_LOG"], "a") as fh:
-        fh.write(json.dumps({"argv": argv, "cwd": os.getcwd(), "prompt": prompt}) + "\\n")
+        fh.write(json.dumps({"argv": argv, "cwd": os.getcwd(), "prompt": prompt, "t": time.time()}) + "\\n")
     def emit(o):
         sys.stdout.write(json.dumps(o) + "\\n"); sys.stdout.flush()
     tid = argv[argv.index("resume") + 1] if "resume" in argv else "thread-" + str(abs(hash(prompt)) % 10000)
@@ -112,6 +113,7 @@ class BridgeProcess:
         self.proc = subprocess.Popen([sys.executable, str(SERVER)], stdin=subprocess.PIPE, stdout=subprocess.PIPE,
                                      stderr=subprocess.PIPE, text=True, bufsize=1, env=env, cwd=cwd)
         self.notifications = []
+        self.responses = {}   # answers read while waiting for another id: calls finish in any order
 
     def send(self, obj):
         self.proc.stdin.write(json.dumps(obj) + "\n")
@@ -119,14 +121,17 @@ class BridgeProcess:
 
     def recv(self, want_id, timeout=30):
         deadline = time.time() + timeout
-        while time.time() < deadline:
+        while want_id not in self.responses and time.time() < deadline:
             line = self.proc.stdout.readline()
             if not line:
                 break
             msg = json.loads(line)
-            if msg.get("id") == want_id and ("result" in msg or "error" in msg):
-                return msg
-            self.notifications.append(msg)
+            if "id" in msg and ("result" in msg or "error" in msg):
+                self.responses[msg["id"]] = msg
+            else:
+                self.notifications.append(msg)
+        if want_id in self.responses:
+            return self.responses.pop(want_id)
         raise AssertionError(f"no response for id={want_id}; notifications={self.notifications[-3:]}")
 
     def call(self, rid, name, arguments, meta=None):
@@ -156,6 +161,7 @@ class BridgeTests(unittest.TestCase):
             "CODEX_BIN": str(fake),
             "CODEX_EXEC_STATE_DIR": str(self.tmp / "state"),
             "CODEX_EXEC_PROGRESS_INTERVAL_SEC": "0.5",
+            "CODEX_EXEC_LAUNCH_STAGGER_SEC": "0",
             "FAKE_CODEX_LOG": str(self.log),
         })
         self.bridge = BridgeProcess(self.env, cwd=str(self.tmp))
@@ -163,6 +169,18 @@ class BridgeTests(unittest.TestCase):
                           "params": {"protocolVersion": "2025-06-18", "capabilities": {}, "clientInfo": {"name": "t", "version": "0"}}})
         self.init = self.bridge.recv(1)
         self.bridge.send({"jsonrpc": "2.0", "method": "notifications/initialized"})
+
+    def restart(self, **env):
+        self.env.update(env)
+        self.bridge.close()
+        self.bridge = BridgeProcess(self.env, cwd=str(self.tmp))
+        self.bridge.send({"jsonrpc": "2.0", "id": 1, "method": "initialize",
+                          "params": {"protocolVersion": "2025-06-18", "capabilities": {}, "clientInfo": {"name": "t", "version": "0"}}})
+        self.bridge.recv(1)
+
+    def start_call(self, rid, prompt):
+        self.bridge.send({"jsonrpc": "2.0", "id": rid, "method": "tools/call",
+                          "params": {"name": "codex", "arguments": {"prompt": prompt}}})
 
     def tearDown(self):
         self.bridge.close()
@@ -225,21 +243,44 @@ class BridgeTests(unittest.TestCase):
         self.assertTrue(r["result"]["isError"])
         self.assertEqual(r["result"]["content"][0]["text"], "terminal failure")
 
-    def test_request_arriving_mid_call_is_answered_afterwards(self):
-        self.env["FAKE_CODEX_SLEEP"] = "2"
-        self.bridge.close()
-        self.bridge = BridgeProcess(self.env, cwd=str(self.tmp))
-        self.bridge.send({"jsonrpc": "2.0", "id": 1, "method": "initialize",
-                          "params": {"protocolVersion": "2025-06-18", "capabilities": {}, "clientInfo": {"name": "t", "version": "0"}}})
-        self.bridge.recv(1)
-        self.bridge.send({"jsonrpc": "2.0", "id": 16, "method": "tools/call",
-                          "params": {"name": "codex", "arguments": {"prompt": "SLOW"}}})
+    def test_request_arriving_mid_call_is_answered_at_once(self):
+        self.restart(FAKE_CODEX_SLEEP="2")
+        self.start_call(16, "SLOW")
         time.sleep(0.8)
         self.bridge.send({"jsonrpc": "2.0", "id": 17, "method": "tools/list"})
+        listing = self.bridge.recv(17, timeout=1)   # before the 2 s child is done
+        self.assertEqual([tool["name"] for tool in listing["result"]["tools"]], ["codex", "codex-reply"])
         done = self.bridge.recv(16)
         self.assertEqual(done["result"]["structuredContent"]["content"], "echo:SLOW")
-        listing = self.bridge.recv(17, timeout=5)   # must not be stranded once the call has returned
-        self.assertEqual([tool["name"] for tool in listing["result"]["tools"]], ["codex", "codex-reply"])
+
+    def test_calls_run_concurrently(self):
+        self.restart(FAKE_CODEX_SLEEP="2")
+        started = time.time()
+        self.start_call(20, "SLOW one")
+        self.start_call(21, "SLOW two")
+        answers = {self.bridge.recv(rid)["result"]["structuredContent"]["content"] for rid in (20, 21)}
+        self.assertEqual(answers, {"echo:SLOW one", "echo:SLOW two"})
+        self.assertLess(time.time() - started, 3.5, "two 2 s children run side by side, not one after the other")
+
+    def test_launches_are_staggered(self):
+        self.restart(CODEX_EXEC_LAUNCH_STAGGER_SEC="1")
+        self.start_call(22, "first")
+        self.start_call(23, "second")
+        self.bridge.recv(22)
+        self.bridge.recv(23)
+        first, second = sorted(call["t"] for call in self.fake_calls())
+        self.assertGreaterEqual(second - first, 0.9)
+
+    def test_cancel_while_waiting_to_launch(self):
+        self.restart(FAKE_CODEX_SLEEP="2", CODEX_EXEC_LAUNCH_STAGGER_SEC="10")
+        self.start_call(24, "SLOW")
+        self.start_call(25, "never launched")
+        time.sleep(0.5)
+        self.bridge.send({"jsonrpc": "2.0", "method": "notifications/cancelled", "params": {"requestId": 25}})
+        r = self.bridge.recv(25, timeout=2)
+        self.assertIn("cancelled", r["result"]["content"][0]["text"])
+        self.bridge.recv(24)
+        self.assertEqual([call["prompt"] for call in self.fake_calls()], ["SLOW"])
 
     def test_reply_reapplies_thread_settings(self):
         work = self.tmp / "work"
@@ -266,12 +307,7 @@ class BridgeTests(unittest.TestCase):
         self.assertEqual(r["result"]["structuredContent"]["threadId"], tid)
 
     def test_silent_child_gets_progress_and_answers_ping(self):
-        self.env["FAKE_CODEX_SLEEP"] = "2"
-        self.bridge.close()
-        self.bridge = BridgeProcess(self.env, cwd=str(self.tmp))
-        self.bridge.send({"jsonrpc": "2.0", "id": 1, "method": "initialize",
-                          "params": {"protocolVersion": "2025-06-18", "capabilities": {}, "clientInfo": {"name": "t", "version": "0"}}})
-        self.bridge.recv(1)
+        self.restart(FAKE_CODEX_SLEEP="2")
         self.bridge.send({"jsonrpc": "2.0", "id": 11, "method": "tools/call",
                           "params": {"_meta": {"progressToken": "p11"}, "name": "codex", "arguments": {"prompt": "SLOW"}}})
         time.sleep(0.8)
@@ -285,14 +321,8 @@ class BridgeTests(unittest.TestCase):
         self.assertEqual(progress[0]["params"]["progressToken"], "p11")
 
     def test_cancel_terminates_child(self):
-        self.env["FAKE_CODEX_SLEEP"] = "20"
-        self.bridge.close()
-        self.bridge = BridgeProcess(self.env, cwd=str(self.tmp))
-        self.bridge.send({"jsonrpc": "2.0", "id": 1, "method": "initialize",
-                          "params": {"protocolVersion": "2025-06-18", "capabilities": {}, "clientInfo": {"name": "t", "version": "0"}}})
-        self.bridge.recv(1)
-        self.bridge.send({"jsonrpc": "2.0", "id": 13, "method": "tools/call",
-                          "params": {"name": "codex", "arguments": {"prompt": "SLOW"}}})
+        self.restart(FAKE_CODEX_SLEEP="20")
+        self.start_call(13, "SLOW")
         time.sleep(0.8)
         started = time.time()
         self.bridge.send({"jsonrpc": "2.0", "method": "notifications/cancelled", "params": {"requestId": 13}})

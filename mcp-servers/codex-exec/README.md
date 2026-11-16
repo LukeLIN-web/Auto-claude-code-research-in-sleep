@@ -43,6 +43,14 @@ A failed turn (unknown model, auth, API error) comes back as `isError: true`
 with codex's own error text, so the capability fallback in
 `skills/shared-references/reviewer-routing.md` keys on the same wording as before.
 
+Calls run concurrently, each in its own `codex exec` child: a skill that opens
+two review threads in one turn gets both at once, and `ping`, `tools/list` and
+cancellations are answered while calls run. Launches are spaced 15 s apart
+(`CODEX_EXEC_LAUNCH_STAGGER_SEC`): every child uses the same login, its refresh
+token is single-use, and a child makes its first model request (where a due
+refresh happens) within seconds of starting. A host that loaded an older copy of
+`server.py` keeps it until the MCP connection is restarted (`/mcp` in Claude Code).
+
 While a review runs the bridge streams `codex/event` notifications and, when the
 host passes a `progressToken`, a `notifications/progress` heartbeat every 15 s
 (`CODEX_EXEC_PROGRESS_INTERVAL_SEC`), answers `ping`, and honours

@@ -21,12 +21,17 @@ Differences from the removed entry point, all deliberate:
     falls back to config.toml defaults and the caller's cwd, and ARIS's
     routing contract relies on a continued thread keeping its reviewer
     model and effort.
+  * Calls run concurrently, each in its own thread and `codex exec` child, so
+    a skill that opens two review threads in one turn gets them in parallel.
+    Launches are spaced LAUNCH_STAGGER_SEC apart: the children share one
+    login, and its refresh token is single-use, so two children refreshing
+    at the same moment would void it. A child makes its first model request
+    within seconds of starting, which is when a due refresh happens.
 """
 from __future__ import annotations
 
 import json
 import os
-import queue
 import shutil
 import subprocess
 import sys
@@ -42,11 +47,16 @@ CODEX_BIN = os.environ.get("CODEX_BIN", "codex")
 STATE_DIR = Path(os.environ.get("CODEX_EXEC_STATE_DIR", str(Path.home() / ".codex" / "state" / SERVER_NAME)))
 THREADS_DIR = STATE_DIR / "threads"
 PROGRESS_INTERVAL_SEC = float(os.environ.get("CODEX_EXEC_PROGRESS_INTERVAL_SEC", "15"))
+LAUNCH_STAGGER_SEC = float(os.environ.get("CODEX_EXEC_LAUNCH_STAGGER_SEC", "15"))
 DEBUG_LOG = os.environ.get("CODEX_EXEC_DEBUG_LOG", "")
 
 SANDBOX_MODES = ["read-only", "workspace-write", "danger-full-access"]
 
 _stdout_lock = threading.Lock()
+_launch_lock = threading.Lock()   # held while a launch waits out the stagger
+_last_launch = float("-inf")
+_running_lock = threading.Lock()
+_running: Dict[Any, "CallOutcome"] = {}   # request id -> call in flight, for cancellation
 
 
 # ─── stdio framing (same as mcp-servers/claude-review) ───────────────────────
@@ -174,21 +184,49 @@ class CallOutcome:
         self.error: Optional[str] = None
         self.completed = False   # turn.completed seen
         self.failed = False      # turn.failed seen — terminal, never cleared
-        self.cancelled = False
+        self.cancel = threading.Event()
+        self.proc: Optional[subprocess.Popen] = None   # set under _running_lock
 
 
-def run_codex(argv: List[str], prompt: str, request_id: Any, progress_token: Any,
-              inbox: "queue.Queue[Dict[str, Any]]", deferred: List[Dict[str, Any]],
-              cwd: Optional[str] = None) -> CallOutcome:
-    """Run codex exec, streaming events as notifications and answering pings meanwhile."""
-    outcome = CallOutcome()
-    debug_log("EXEC " + " ".join(argv))
-    try:
+def cancel_call(request_id: Any) -> None:
+    with _running_lock:
+        outcome = _running.get(request_id)
+        if outcome is None:
+            return
+        outcome.cancel.set()
+        proc = outcome.proc
+    if proc is not None and proc.poll() is None:
+        proc.terminate()
+
+
+def launch(argv: List[str], cwd: Optional[str], outcome: CallOutcome) -> Optional[subprocess.Popen]:
+    """Start the child once LAUNCH_STAGGER_SEC has passed since the previous launch (see module doc)."""
+    global _last_launch
+    with _launch_lock:
+        if outcome.cancel.wait(max(0.0, _last_launch + LAUNCH_STAGGER_SEC - time.monotonic())):
+            return None
         proc = subprocess.Popen(
             argv, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=cwd or None,
         )
+        _last_launch = time.monotonic()
+    with _running_lock:
+        outcome.proc = proc
+    if outcome.cancel.is_set():   # cancelled between the wait and the registration above
+        proc.terminate()
+    return proc
+
+
+def run_codex(argv: List[str], prompt: str, outcome: CallOutcome, request_id: Any, progress_token: Any,
+              cwd: Optional[str] = None) -> CallOutcome:
+    """Run codex exec, streaming its events as notifications."""
+    debug_log("EXEC " + " ".join(argv))
+    try:
+        proc = launch(argv, cwd, outcome)
     except OSError as exc:
         outcome.error = f"could not start {argv[0]}: {exc}"
+        return outcome
+    if proc is None:
+        outcome.error = "cancelled by client"
         return outcome
 
     stderr_chunks: List[bytes] = []
@@ -232,34 +270,13 @@ def run_codex(argv: List[str], prompt: str, request_id: Any, progress_token: Any
             },
         })
 
-    def service_inbox() -> None:
-        """Answer pings and honor a cancellation while the child runs."""
-        while True:
-            try:
-                msg = inbox.get_nowait()
-            except queue.Empty:
-                return
-            method = msg.get("method", "")
-            if method == "ping" and msg.get("id") is not None:
-                send_message({"jsonrpc": "2.0", "id": msg["id"], "result": {}})
-            elif method == "notifications/cancelled" and msg.get("params", {}).get("requestId") == request_id:
-                outcome.cancelled = True
-                proc.terminate()
-            else:
-                deferred.append(msg)
-
     stop_ticker = threading.Event()
 
     def ticker() -> None:
-        # pings and cancellations are answered within a second; progress goes
-        # out every PROGRESS_INTERVAL_SEC so a silent reasoning phase still
-        # looks alive to the host
-        last_progress = time.monotonic()
-        while not stop_ticker.wait(min(1.0, PROGRESS_INTERVAL_SEC)):
-            service_inbox()
-            if time.monotonic() - last_progress >= PROGRESS_INTERVAL_SEC:
-                progress("working")
-                last_progress = time.monotonic()
+        # progress goes out every PROGRESS_INTERVAL_SEC so a silent reasoning
+        # phase still looks alive to the host
+        while not stop_ticker.wait(PROGRESS_INTERVAL_SEC):
+            progress("working")
 
     ticker_thread = threading.Thread(target=ticker, daemon=True)
     ticker_thread.start()
@@ -295,14 +312,13 @@ def run_codex(argv: List[str], prompt: str, request_id: Any, progress_token: Any
                 "params": {"_meta": {"requestId": request_id, "threadId": outcome.thread_id}, "msg": event},
             })
             progress(etype)
-            service_inbox()
     finally:
         stop_ticker.set()
         proc.wait()
-        ticker_thread.join()   # nothing may touch the inbox after we hand control back
+        ticker_thread.join()
         stderr_thread.join()
 
-    if outcome.cancelled:
+    if outcome.cancel.is_set():
         outcome.error = "cancelled by client"
     elif outcome.failed:
         pass  # terminal failure: the codex error text stands
@@ -376,8 +392,7 @@ def error_response(request_id: Any, code: int, message: str) -> Dict[str, Any]:
     return {"jsonrpc": "2.0", "id": request_id, "error": {"code": code, "message": message}}
 
 
-def handle_call(request: Dict[str, Any], inbox: "queue.Queue[Dict[str, Any]]",
-                deferred: List[Dict[str, Any]]) -> Dict[str, Any]:
+def handle_call(request: Dict[str, Any], outcome: CallOutcome) -> Dict[str, Any]:
     request_id = request.get("id")
     params = request.get("params") or {}
     name = params.get("name")
@@ -392,7 +407,7 @@ def handle_call(request: Dict[str, Any], inbox: "queue.Queue[Dict[str, Any]]",
             argv = build_argv(args)
         except ValueError as exc:
             return error_response(request_id, -32602, str(exc))
-        outcome = run_codex(argv, prompt, request_id, progress_token, inbox, deferred)
+        run_codex(argv, prompt, outcome, request_id, progress_token)
         if outcome.thread_id:
             remember_thread(outcome.thread_id, {
                 "model": args.get("model"),
@@ -408,16 +423,15 @@ def handle_call(request: Dict[str, Any], inbox: "queue.Queue[Dict[str, Any]]",
             return error_response(request_id, -32602, "threadId is required")
         remembered = recall_thread(thread_id)
         argv = build_argv(remembered, resume_thread=thread_id)
-        outcome = run_codex(argv, prompt, request_id, progress_token, inbox, deferred,
-                            cwd=remembered.get("cwd"))
+        run_codex(argv, prompt, outcome, request_id, progress_token, cwd=remembered.get("cwd"))
         outcome.thread_id = outcome.thread_id or thread_id
         return tool_result(request_id, outcome)
 
     return error_response(request_id, -32601, f"unknown tool: {name}")
 
 
-def handle_request(request: Dict[str, Any], inbox: "queue.Queue[Dict[str, Any]]",
-                   deferred: List[Dict[str, Any]]) -> Optional[Dict[str, Any]]:
+def handle_request(request: Dict[str, Any]) -> Optional[Dict[str, Any]]:
+    """Everything but tools/call: answered at once on the reading thread."""
     request_id = request.get("id")
     method = request.get("method", "")
     params = request.get("params") or {}
@@ -440,40 +454,56 @@ def handle_request(request: Dict[str, Any], inbox: "queue.Queue[Dict[str, Any]]"
         return {"jsonrpc": "2.0", "id": request_id, "result": {}}
     if method == "tools/list":
         return {"jsonrpc": "2.0", "id": request_id, "result": {"tools": TOOLS}}
-    if method == "tools/call":
-        return handle_call(request, inbox, deferred)
     return error_response(request_id, -32601, f"method not found: {method}")
+
+
+def serve_call(request: Dict[str, Any], outcome: CallOutcome) -> None:
+    """One tools/call, on its own thread."""
+    request_id = request.get("id")
+    try:
+        response = handle_call(request, outcome)
+    except Exception:
+        debug_log(traceback.format_exc())
+        response = error_response(request_id, -32603, "internal error; see CODEX_EXEC_DEBUG_LOG")
+    finally:
+        with _running_lock:
+            _running.pop(request_id, None)
+    send_message(response)
 
 
 def main() -> None:
     _configure_stdio_for_mcp()
     if shutil.which(CODEX_BIN) is None:
         debug_log(f"{CODEX_BIN} not on PATH")
-    inbox: "queue.Queue[Dict[str, Any]]" = queue.Queue()
-    deferred: List[Dict[str, Any]] = []
-
-    def reader() -> None:
-        while True:
-            msg = read_message()
-            if msg is None:
-                inbox.put({"__eof__": True})
-                return
-            if msg:
-                inbox.put(msg)
-
-    threading.Thread(target=reader, daemon=True).start()
     debug_log(f"=== {SERVER_NAME} starting ===")
     while True:
-        request = deferred.pop(0) if deferred else inbox.get()
-        if request.get("__eof__"):
+        request = read_message()
+        if request is None:
             break
+        if not request:
+            continue
+        method = request.get("method", "")
+        if method == "tools/call" and request.get("id") is not None:
+            outcome = CallOutcome()
+            with _running_lock:   # registered before the thread starts, so a cancel can always find it
+                _running[request["id"]] = outcome
+            threading.Thread(target=serve_call, args=(request, outcome), daemon=True).start()
+            continue
+        if method == "notifications/cancelled":
+            cancel_call((request.get("params") or {}).get("requestId"))
+            continue
         try:
-            response = handle_request(request, inbox, deferred)
+            response = handle_request(request)
         except Exception:
             debug_log(traceback.format_exc())
             response = error_response(request.get("id"), -32603, "internal error; see CODEX_EXEC_DEBUG_LOG")
         if response is not None:
             send_message(response)
+    # the host closed stdin: nobody will read the answers, so stop the children
+    with _running_lock:
+        pending = list(_running)
+    for request_id in pending:
+        cancel_call(request_id)
 
 
 if __name__ == "__main__":
