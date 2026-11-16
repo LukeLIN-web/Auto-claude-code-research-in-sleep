@@ -71,7 +71,7 @@ Use each question to trigger concrete edits before submission.
 5. Are comparison and ablation protocols clearly documented?
 6. Does each results paragraph give one verdict per group of benchmarks, one or two numbers and a reason from the paper's own evidence, or does it walk the table benchmark by benchmark?
 7. Can a reader tell from every cell of a results table how its model was trained? A row whose training differs by column without a mark lets a reviewer read in-domain results as transfer.
-8. Does every transfer claim, and every instance a claim names ("with two models"), point to a main-text cell produced that way?
+8. Does every transfer claim, and every instance a claim names ("with two models"), have main-text evidence produced that way?
 9. Does the main Setup define only what the main text uses, with every term of a main-text sentence or float defined in the main text?
 
 Questions 6–9 follow `../../shared-references/manuscript-craft.md` §2 (Experiments); `experiments.md` (E2, Writing Rules 8–9, Readability rules 11–13) shows the fix for each.

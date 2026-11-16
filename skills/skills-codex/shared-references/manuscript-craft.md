@@ -151,8 +151,8 @@ User ruling 2026-11-16, from a review the user forwarded:
   differs by column (trained in that domain for some columns, transferred for
   others), a symbol defined in the caption marks those columns, or the row
   splits in two. Every transfer claim in the Abstract or Introduction ("trained
-  in one domain, it outperforms on another") points to a main-text cell
-  produced exactly that way, never only to an appendix table.
+  in one domain, it outperforms on another") has main-text evidence produced
+  exactly that way, never only an appendix table.
 - **The main Setup defines what the main text uses, and only that.** A variant
   or data subset the final method does not use is defined with its ablation,
   not in the main Setup, unless a main-text float reports it; every term a
@@ -161,11 +161,13 @@ User ruling 2026-11-16, from a review the user forwarded:
   ("pre-selecting objects by success rate"), not by a name defined only in the
   appendix, and a difference that was not significant is not written as "brings
   no gain".
-- **A claim that names several instances has a main-text cell for each.** "With
-  two models" or "on three simulators" needs each model or simulator in a
-  main-text float; an instance whose only evidence is an appendix table makes
-  the claim appendix-only, and the claim is narrowed or the decisive row moves
-  up.
+- **Each instance a claim names is an argument of its own.** "With two models"
+  or "on three simulators" needs main-text evidence for each model or
+  simulator, under the self-contained rule of `review-float-map.md` (a float
+  cell, or the decisive number with its comparison in the prose). Before
+  flagging one, read which instance the claim means: the second model of a
+  claim may be one a main-text table already carries, not the one an appendix
+  table shows.
 
 ### Background / Related Work
 
@@ -313,7 +315,7 @@ Additional rules:
 - [ ] Results paragraphs: finding first, one or two numbers, a reason from the
       paper's own evidence; one verdict per group of benchmarks, no roll call. A
       row whose training differs by column is marked; every transfer claim, and
-      every instance a claim names, points to a main-text cell; the main Setup
+      every instance a claim names, has main-text evidence; the main Setup
       defines only what the main text uses.
 - [ ] Every appendix section is referenced from the main text.
 - [ ] Every float sits on/next to the page of first discussion, in order.

@@ -35,7 +35,7 @@ Convince reviewers with complete evidence on effectiveness, causality, and pract
    - When the paper discusses limitations, report failure modes next to the gains to show realistic boundaries.
 
 ## Experiment Planning
-**Evidence map first.** Before writing, list every claim from the abstract, introduction and method, and the table/figure that proves it. A claim without evidence is softened in the introduction or gets an experiment `[TODO]`; an experiment that proves no claim moves to the appendix. The decisive experiment for each main-text claim stays in the main text; the appendix only adds settings and breakdowns. A claim that names several instances ("with two models", "on three simulators") needs a main-text cell for each instance, and a transfer claim ("trained in one domain, it wins on another") needs a main-text cell produced exactly that way (`../../shared-references/manuscript-craft.md` §2, Experiments).
+**Evidence map first.** Before writing, list every claim from the abstract, introduction and method, and the table/figure that proves it. A claim without evidence is softened in the introduction or gets an experiment `[TODO]`; an experiment that proves no claim moves to the appendix. The decisive experiment for each main-text claim stays in the main text; the appendix only adds settings and breakdowns. A claim that names several instances ("with two models", "on three simulators") needs main-text evidence for each instance, and a transfer claim ("trained in one domain, it wins on another") needs main-text evidence produced exactly that way (`../../shared-references/manuscript-craft.md` §2, Experiments; what counts as main-text evidence: `../../shared-references/review-float-map.md`).
 
 ```mermaid
 flowchart TB
@@ -188,7 +188,7 @@ Ours & \textbf{\TODO{}} & \textbf{\TODO{}} & \TODO{} \\
 - [ ] Every claim of the paper has a table or figure; every table supports a claim.
 - [ ] Setup states datasets, metrics (↑/↓), baselines and how they were run, once.
 - [ ] Results paragraphs open with the finding and explain the reason from the paper's own evidence; one verdict per group of benchmarks, no roll call (`check_draft.py` passes).
-- [ ] Every claim that names several instances, and every transfer claim, has a main-text cell for each instance, produced the way the claim says.
+- [ ] Every claim that names several instances, and every transfer claim, has main-text evidence for each instance, produced the way the claim says.
 - [ ] Every row of a results table is one training condition, or the columns that differ are marked.
 - [ ] The main Setup defines only what the main text uses; every term in a main-text sentence or float is defined in the main text.
 - [ ] Every table fits its printed width with no touching headers; the log has no `Missing character`.
