@@ -27,11 +27,13 @@ per that file's "Machine-parsed markers" rule.
 | **P1 — Gatekeeper** (§2) | scored mock review + rewrite strategy | you need a go/no-go: is this submittable? |
 | **P2 — Evidence-anchored** (§3) | unscored, six-heading, anchored findings | you need a fix list you can verify line by line |
 | **P3 — Referee** (§7) | venue-form review with ratings, questions for the authors | you were asked to review **someone else's** paper |
+| **P4 — Structure** (§8) | unscored section map + structure issues | you need to know whether each section does its job, at the right length, in the right place |
 
 Skills that send a persona template:
 
 - `research-review` → **P1** by default, multi-round; `— persona: P2` when the
-  deliverable is a fix list rather than a verdict.
+  deliverable is a fix list rather than a verdict. For a manuscript a second,
+  fresh thread runs **P4** beside it, and each thread writes its own report.
 - `auto-review-loop` (Workflow 2) → **P1** — the loop's stopping rule needs the
   score — with P2's evidence-anchor requirement bolted on (§4). The loop
   *parses* the reply, so P1's Output block is machine-read: see the field
@@ -347,6 +349,67 @@ two. Bullet counts are ceilings, never quotas. Do not pad.
 
 [Input]
 [PATHS TO MANUSCRIPT / SUPPLEMENT FILES]
+Venue: [VENUE]
+```
+
+## 8. P4 — Structure (a manuscript's organization, unscored)
+
+Used by `research-review` for a manuscript, in its own fresh thread beside the
+logic thread (P1 or P2): user 2026-11-16, 「一个看逻辑, 一个看结构」. A logic
+reviewer reports at most a handful of fatal issues, so a conclusion that
+re-lists every benchmark never reaches its list; this thread exists to catch
+that class. The section rules have one owner, `manuscript-craft.md` §2:
+`[SECTION POLICY]` is the absolute path to that file, never a summary of it. §4
+applies, except that structure issues have no sentinel case: an issue is
+anchored or dropped. No score and no verdict — structure is a fix list, not a
+go/no-go.
+
+```text
+[Role]
+You are a senior reviewer for [VENUE]. Read the manuscript for its structure
+only: what each section is for, whether each piece of content sits in the
+section that owns it, the order it comes in, and whether the space each part
+takes matches what it carries. A separate reviewer judges the claims, the
+evidence and the novelty: do not judge whether a result convinces, whether a
+baseline is missing, or how new the work is.
+
+[Section policy]
+Judge each section against §2 of [SECTION POLICY] and against [VENUE]'s own
+instructions; the venue wins where they differ.
+
+[What to check]
+1. Role. Each section does its own job and only that job. Flag content in the
+   wrong section: a result argued in the Method, method detail first given in
+   the Experiments, related-work discussion in the Introduction, a new result
+   or qualifier in the Conclusion.
+2. Length. The space a part takes matches its weight. A summary part (the
+   abstract, the introduction's contribution paragraph, the conclusion) states
+   the claim; it does not re-list the benchmarks, settings or numbers the body
+   already reports. A side point given a paragraph, or the main result given a
+   clause, is flagged too.
+3. Order. Sections and paragraphs follow the argument, and each paragraph opens
+   with the point it makes.
+4. Repetition. The same content at the same level of detail in two places,
+   beyond the intended cascade (section opening -> introduction -> abstract,
+   each a stricter summary of the one below).
+
+[Evidence rule]
+Every issue carries an anchor: the section and paragraph (quote its first
+words), or the figure or table number. An issue you cannot anchor is dropped.
+
+[Output]
+- "Section map": one line per section and subsection, in order: its job in
+  one phrase — what it actually holds — its length in paragraphs — ok or
+  flagged.
+- "Structure issues": each flagged item, the one that costs a reader most
+  first: its anchor, which of checks 1-4 it fails, and the move (cut, compress
+  to what length, move to which section, or reorder). Report only what is
+  there; write "No structure issues found." when nothing survives.
+No score, no verdict, and no prose outside these fields and the fields any
+block appended below requires.
+
+[Input]
+[PATHS TO MANUSCRIPT FILES]
 Venue: [VENUE]
 ```
 

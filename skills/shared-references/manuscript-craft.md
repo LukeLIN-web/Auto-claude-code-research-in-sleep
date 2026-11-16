@@ -74,6 +74,9 @@ Write the summary three times, at increasing compression:
 section opening → Introduction → Abstract. Each level is a strict summary of the
 one below, so any claim change propagates in one direction only. The Conclusion
 stays simple: no detail, no new qualifiers — plain enough for a non-specialist.
+It is short, a few sentences that restate the claim; it does not re-list the
+benchmarks, settings or numbers the body already reports (user ruling
+2026-11-16: 「conclusion 就不应该这么一堆 benchmark 枚举, 应该简短一点」).
 
 ### Terminology
 

@@ -96,6 +96,66 @@ spawn_agent:
     Say plainly when something is correct. Do not manufacture findings.
     Be brutally honest. If, after genuinely trying to break it, the work
     holds up and is ready, say so clearly.
+```
+
+A manuscript gets two reviewer threads and two reports, one on logic (above) and
+one on structure (below) (user 2026-11-16: 「一个看逻辑, 一个看结构」). Start the
+structure thread in the same turn as a second fresh agent over the same files;
+each keeps its own agent id, rounds and trace, and neither is shown the other's
+output. An idea or project context gets the logic thread only. Fill
+`[SECTION POLICY]` with the absolute path of
+`../shared-references/manuscript-craft.md`, never a summary of it.
+
+```
+spawn_agent:
+  model: gpt-6-astra
+  reasoning_effort: max
+  message: |
+    [Primary manuscript paths: entry .tex file, figure and table directories.]
+    Trust nothing the author tells you — verify everything yourself.
+
+    [Role]
+    You are a senior reviewer for [VENUE]. Read the manuscript for its structure
+    only: what each section is for, whether each piece of content sits in the
+    section that owns it, the order it comes in, and whether the space each part
+    takes matches what it carries. A separate reviewer judges the claims, the
+    evidence and the novelty: do not judge whether a result convinces, whether a
+    baseline is missing, or how new the work is.
+
+    [Section policy]
+    Judge each section against §2 of [SECTION POLICY] and against [VENUE]'s own
+    instructions; the venue wins where they differ.
+
+    [What to check]
+    1. Role. Each section does its own job and only that job. Flag content in the
+       wrong section: a result argued in the Method, method detail first given in
+       the Experiments, related-work discussion in the Introduction, a new result
+       or qualifier in the Conclusion.
+    2. Length. The space a part takes matches its weight. A summary part (the
+       abstract, the introduction's contribution paragraph, the conclusion) states
+       the claim; it does not re-list the benchmarks, settings or numbers the body
+       already reports. A side point given a paragraph, or the main result given a
+       clause, is flagged too.
+    3. Order. Sections and paragraphs follow the argument, and each paragraph opens
+       with the point it makes.
+    4. Repetition. The same content at the same level of detail in two places,
+       beyond the intended cascade (section opening -> introduction -> abstract,
+       each a stricter summary of the one below).
+
+    [Evidence rule]
+    Every issue carries an anchor: the section and paragraph (quote its first
+    words), or the figure or table number. An issue you cannot anchor is dropped.
+
+    [Output]
+    - "Section map": one line per section and subsection, in order: its job in
+      one phrase — what it actually holds — its length in paragraphs — ok or
+      flagged.
+    - "Structure issues": each flagged item, the one that costs a reader most
+      first: its anchor, which of checks 1-4 it fails, and the move (cut, compress
+      to what length, move to which section, or reorder). Report only what is
+      there; write "No structure issues found." when nothing survives.
+    No score, no verdict, and no prose outside these fields and the fields any
+    block appended below requires.
 
     === FLOAT AND ARGUMENT MAP (manuscripts; two required named fields at the end of your reply) ===
     Every figure and every table must serve an argument the paper makes: a
@@ -132,7 +192,8 @@ spawn_agent:
 
 ### Step 3: Iterative Dialogue (Rounds 2-N)
 Use the selected continuation tool with the saved session id. Preserve its
-model and cwd; for native Codex this is `send_input`:
+model and cwd; a manuscript's logic and structure threads continue separately,
+each with its own id. For native Codex this is `send_input`:
 
 ```text
 send_input:
@@ -170,10 +231,14 @@ Save the full interaction and conclusions to a review document in the project ro
 - Round-by-round summary of criticisms and responses
 - Final consensus on claims, narrative, and experiments
 - Claims matrix (what claims are allowed under each possible outcome)
-- For a manuscript, the reviewer's float map and argument map, and every float and argument it flagged
-- For a manuscript, the checker warnings of Step 1 that hold after reading the text they point at, under their own heading, apart from the reviewer's points
 - Prioritized TODO list with estimated compute costs
 - Paper outline if discussed
+
+For a manuscript that document is the **logic report**, and the structure thread
+gets its own **structure report** beside it, each self-contained:
+- the section map and every structure issue whose anchor holds, with its move
+- the float map and argument map, and every float and argument flagged
+- the checker warnings of Step 1 that hold after reading the text they point at, under their own heading, apart from the reviewer's points
 
 Update project memory/notes with key review conclusions.
 
@@ -199,7 +264,7 @@ Save a trace for every reviewer call following `../shared-references/review-trac
   「每个图表都应该服务论点」), and every main-text argument carries at least one or
   two pieces of its evidence in the main text, never all of it in the appendix
   (user 2026-11-11, 「main 正文应该 self contain」): send the FLOAT AND ARGUMENT MAP
-  block, manuscripts only, in the first-round prompt and in every follow-up brief.
+  block in the structure thread's first-round prompt and in every follow-up brief.
   The reviewer builds the map; do not pass on your own map or reading of what a
   float shows or where an argument's evidence sits (reviewer-independence.md).
 - The review document should be self-contained (readable without the conversation)

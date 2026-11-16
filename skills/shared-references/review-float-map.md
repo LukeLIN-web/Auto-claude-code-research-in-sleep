@@ -16,7 +16,8 @@ paper's claim–evidence map; a page limit never moves an argument's decisive
 evidence to the appendix, so cut elsewhere. A reviewer prompt over a manuscript
 carries the block below verbatim at the end of the prompt (after SCOPE LIMITS
 where the prompt has it), in every round, so each round rebuilds the map against
-the current files. Callers: `research-review` and `auto-paper-improvement-loop`.
+the current files. Callers: `research-review`, in its structure thread after the
+P4 persona (`reviewer-personas.md` §8), and `auto-paper-improvement-loop`.
 The Codex, gemini-review and claude-review mirrors inline the block, as they
 inline SCOPE LIMITS.
 
