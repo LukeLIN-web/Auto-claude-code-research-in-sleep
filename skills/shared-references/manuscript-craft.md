@@ -11,6 +11,9 @@ distilled into rules. Venue instructions always override this file.
 ## When to Read
 
 - `paper-write`: before drafting Method / Experiments, and during the final pass.
+- `research-paper-writing`: before drafting the Introduction, or an Abstract the
+  authors asked for.
+- `research-review`: the structure reviewer judges every section against §2.
 - `paper-compile`: when fixing overfull boxes, float placement, or citation style.
 - `resubmit-pipeline` / `paper-writing`: during submission-readiness checks.
 
@@ -24,6 +27,53 @@ Results prose is the least-read part of the paper; it exists to point at the
 table, not to re-narrate it. Time saved here goes into figures.
 
 ## 2. Section policy
+
+### Abstract
+
+User ruling 2026-11-16.
+
+- **One or two headline numbers**: the results a reader should remember,
+  usually the main comparison against the simplest strong baseline and the one
+  that isolates the core component. No number at all, or a third comparison,
+  is a defect.
+- **Each component by what it does, not how.** A method sentence says what a
+  component achieves and why it is needed. Selection rules, per-frame labels,
+  data mixtures and which weights change belong to the Method; "keeps the
+  episodes that succeed with no tool running, each frame labeled with the
+  planner's subgoal" interrupts the abstract.
+- **Results in at most two sentences, each in its own frame, then the
+  take-home message.** Result sentences that repeat one predicate ("X
+  significantly outperforms Y" three times running) read like a lab report;
+  merge them. The last sentence says what the reader should take away, a stance
+  the results support; it is not one more comparison and not generic impact.
+
+### Introduction
+
+User ruling 2026-11-16, from a review the user forwarded.
+
+- **Nothing before it is introduced.** No component of the method ("our
+  distilled planner") appears before the paragraph that presents the method:
+  state the motivating evidence without it, or move that evidence later. A set
+  is named where it is counted: "four planners" says which four, or what they
+  are ("one proprietary and three open models").
+- **A reason joins the gap to the method.** Between the paragraph where the
+  obvious fix fails and the one that presents the method, one sentence says why
+  the method avoids that failure. It states a cause that the cited work or the
+  paper's own ablation supports, or a property the method has by construction;
+  never a mechanism nothing tested.
+- **The method paragraph is not a Method summary.** It says what each
+  component does and why it is needed. The benchmark the training data comes
+  from, mixing ratios, the code base the method builds on, and the names of
+  baselines or ablation rows ("Ours (frozen backbone)") stay in the Method and
+  Experiments.
+- **The results paragraph states conclusions, not a table.** Summarize by kind
+  of generalization (new tasks, other simulators or datasets, other embodiments
+  or models), with the one or two headline numbers and a pointer to the table;
+  never a roll call of benchmark names. No "slightly": a result that cannot be
+  stated without it is folded into its category or left to the tables.
+- **Contributions are takeaways.** Each item runs at most about six printed
+  lines (about 60 words) and repeats no sentence of the Introduction's prose;
+  the cap on the whole list is under Method below.
 
 ### Method
 
@@ -184,6 +234,13 @@ Additional rules:
 
 ## 6. Final pass checklist
 
+- [ ] Abstract: one or two headline numbers, no implementation detail, results
+      in at most two differently framed sentences, ending on the take-home message.
+- [ ] Introduction: no method component before the method paragraph, every
+      counted set named; one sentence of reason between gap and method; no
+      ratio, data source or baseline name in the method paragraph; results by
+      kind of generalization, no benchmark roll call, no "slightly";
+      contribution items about 60 words each.
 - [ ] Method has a road-map paragraph and (near-)zero citations; comparisons live
       in a dedicated Advantages paragraph.
 - [ ] Exactly one Experiments section; speedups reported as ratios.

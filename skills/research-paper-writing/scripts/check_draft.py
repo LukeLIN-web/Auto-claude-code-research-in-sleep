@@ -152,6 +152,13 @@ def corpus_checks(path):
         m, _ = sm.metric(paras)
         d = stats[sec]
         name = SECNAME[sec]
+        # author preference (manuscript-craft.md §2 Abstract / Introduction)
+        if sec == "abstract" and m["numbers"] == 0:
+            issues.append(("WARN", 0, "abstract has no number; give the one or two headline results a reader should remember", ""))
+        for p in paras:
+            frame = [s for s in sm.split_sentences(p) if re.search(r"\boutperform", s, re.I)]
+            if len(frame) >= 3:
+                issues.append(("WARN", 0, f"{name}: {len(frame)} sentences of one paragraph repeat the 'outperforms' frame; merge the comparisons and end on the take-home message", frame[-1]))
         def over(key, msg, level="WARN"):
             if m[key] > d[key]["p90"]:
                 issues.append((level, 0, f"{name}: {msg} ({m[key]:.2f}; 90% of award papers ≤ {d[key]['p90']})", ""))
@@ -244,6 +251,8 @@ def check(path, bank, max_words):
             issues.append(("NOTE", n, "comparison without a number or table/figure reference (fine for mechanisms; results need evidence)", s))
         if not body and re.search(DETAIL, s, flags=re.I):
             issues.append(("WARN", n, "implementation detail in abstract/introduction", s))
+        if not body and re.search(r"\bslightly\b", low):
+            issues.append(("WARN", n, "'slightly' hedges a result in abstract/introduction; state the result plainly or leave it to the tables", s))
         if body and len(sm.number_tokens(s)) > 2:
             issues.append(("WARN", n, f"{len(sm.number_tokens(s))} numbers in one sentence (one or two result numbers per sentence, the rest stay in the table; protocol constants in the setup are exempt)", s))
         if len(s.split()) > max_words:

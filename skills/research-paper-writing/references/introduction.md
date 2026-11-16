@@ -43,6 +43,7 @@ Shape:
 10. **Say each thing once.** Assign every claim (the gap, the insight, each advantage, each result) to exactly one paragraph. Do not restate the insight after the method and do not re-list the research questions. The contribution list is written by its own rules ("Contribution List"). Repetition was the most common weakness found by blind reviewers.
 11. **Short background.** Award introductions reach the specific problem fast (the gap appears by paragraph 2). Keep generic field background to at most two sentences before the specific setting or credit.
 12. **No implementation details** (layer counts, grid sizes, data pipelines, hyperparameters) unless they are the contribution.
+13. **Author rulings win over this list** (`../../shared-references/manuscript-craft.md` §2, Introduction): no method component before the method paragraph and every counted set named; one sentence of reason between the failed fix and the method; no data source, ratio, code base or baseline name in the method paragraph; results by kind of generalization with one or two numbers, no benchmark roll call, no "slightly"; contribution items of about 60 words.
 
 ## Introduction Logic Map
 ```mermaid
@@ -548,7 +549,7 @@ The authors write the list. Use these rules to check it, or when an author asks 
    stated there once: `... on <Benchmark> (<ours>\% against <baseline>\%)`.
 3. The results item is titled with the improvement, not `Experimental results`:
    `Significant improvements on six benchmarks`, where the count matches the benchmarks the item lists.
-4. A result appears in one item only. Before adding it to one item, check the others for the same comparison.
+4. A result appears in one item only, and not also in the Introduction's prose. Before adding it to one item, check the others and the prose for the same comparison.
 
 Check: `grep -n '\\item' <intro file>` and read each item but the last for benchmark names.
 

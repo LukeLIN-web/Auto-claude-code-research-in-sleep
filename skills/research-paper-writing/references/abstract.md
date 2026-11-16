@@ -135,14 +135,15 @@ Version 3 local cite:
 | L8 measurement | Setting → Method (sensing principle) → Mechanism → Result (prototype) |
 
 ## Rules
+- The author rulings in `../../shared-references/manuscript-craft.md` §2 (Abstract) win over this list: one or two headline numbers; each component by what it does, not how; results in at most two differently framed sentences, then the take-home message.
 - About 130–220 words in 6–9 sentences averaging ~20–25 words; one message per sentence, with its reason or evidence inside the sentence. One short sentence for the idea is welcome. Do not split a result from its number or a design from its benefit.
 - Each element appears once: do not restate the gap or the benefit in a second sentence.
-- Numbers: the headline result(s) and, if essential, one number that defines the scale. No ablation numbers or implementation details.
+- Numbers: one or two headline results and, if essential, one number that defines the scale. No ablation numbers or implementation details.
 - At most one logical connector (however, thus, …) in most abstracts; sentence order carries the logic. No dashes (author preference); a colon is fine where it introduces the idea or a list. No sentence ends with “, making …” or a similar participial restatement.
 - Every adjective about the method is made concrete in the same sentence.
 - Results name the benchmark/baseline or state the scope; wording follows the claim map.
 - Include at least one evaluative claim backed by evidence (“outperforms X”, “the first … that …”, “20× faster”); 37 of 55 award abstracts use such a word, and the rest state a comparison in numbers.
-- End with the strongest evidence, a concrete secondary result, a stance supported by the results, or the release of code/data — not with generic impact (“opens new avenues”).
+- End with the take-home message: a stance the results support, or the strongest evidence stated as what it means; not with one more comparison and not with generic impact (“opens new avenues”).
 - No limitations, costs or losses in the abstract; scope mixed results to where the method wins.
 
 ## Example Bank

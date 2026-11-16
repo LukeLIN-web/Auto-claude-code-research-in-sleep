@@ -381,7 +381,9 @@ instructions; the venue wins where they differ.
 1. Role. Each section does its own job and only that job. Flag content in the
    wrong section: a result argued in the Method, method detail first given in
    the Experiments, related-work discussion in the Introduction, a new result
-   or qualifier in the Conclusion.
+   or qualifier in the Conclusion, implementation detail in the Abstract, a
+   data ratio or a baseline's name in the Introduction's method paragraph, a
+   method component named before the paragraph that introduces it.
 2. Length. The space a part takes matches its weight. A summary part (the
    abstract, the introduction's contribution paragraph, the conclusion) states
    the claim; it does not re-list the benchmarks, settings or numbers the body

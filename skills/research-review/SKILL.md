@@ -119,11 +119,12 @@ Before calling the external reviewer, compile a comprehensive briefing:
    reviewer is called, and keep their output:
    ```bash
    W=<skills dir>/research-paper-writing/scripts
-   python3 $W/check_draft.py <introduction .tex> <experiments .tex>
+   python3 $W/check_draft.py --abstract <abstract .tex> <introduction .tex> <experiments .tex>
    python3 $W/check_figures.py --layout two <entry .tex>     # --layout one for a one-column venue
    ```
-   `check_draft.py` compares the introduction with award papers (logical connectors per 100 words,
-   sentence length, runs of short sentences) and flags experiments sentences with more than two numbers;
+   `check_draft.py` compares the abstract and introduction with award papers (logical connectors per 100 words,
+   sentence length, runs of short sentences), flags an abstract with no number, three sentences of one paragraph
+   in the "outperforms" frame and "slightly" in either, and flags experiments sentences with more than two numbers;
    `check_figures.py` flags long captions and long first caption sentences, table captions below the
    tabular, and ranking tables with no shaded row. These are counts, not
    judgements: do not send them to the reviewer, and do not treat one as a finding until the sentence
