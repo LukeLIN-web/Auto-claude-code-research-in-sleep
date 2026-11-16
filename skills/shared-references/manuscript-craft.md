@@ -38,7 +38,9 @@ table, not to re-narrate it. Time saved here goes into figures.
   comparison in a dedicated **Advantages** paragraph or subsection that contrasts
   against prior work in one place.
 - Structure the contribution as ~3 novelty points — typically two technical and
-  one empirical. Write those first; the supporting results follow.
+  one empirical. Write those first; the supporting results follow. The
+  contribution list runs **at most 263 words**: the p90 of award papers'
+  lists, whose median is 87 (user ruling 2026-11-16).
 - If two techniques are introduced, write the **connection** between them.
   Presenting them side by side signals "two unrelated tricks bolted together";
   presenting the mechanism that links them signals one method.
@@ -77,6 +79,8 @@ stays simple: no detail, no new qualifiers — plain enough for a non-specialist
 It is short, a few sentences that restate the claim; it does not re-list the
 benchmarks, settings or numbers the body already reports (user ruling
 2026-11-16: 「conclusion 就不应该这么一堆 benchmark 枚举, 应该简短一点」).
+It runs **at most 110 words**; CVPR/ICCV award papers' conclusions without
+a limitations part have a median of 94 (user ruling 2026-11-16).
 
 ### Terminology
 
