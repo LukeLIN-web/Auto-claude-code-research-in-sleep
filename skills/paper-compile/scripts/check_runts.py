@@ -7,8 +7,9 @@ paragraph, so a runt fixed by hand comes back unnoticed unless something reads
 the PDF. The fix is cutting words until the line is absorbed into the one above,
 never \\looseness, \\vspace or spacing tricks.
 
-Body-size text only (the most common font size by characters); captions and
-tables set smaller are not read. Works for one- and two-column layouts: a line
+Body-size text only (within SIZE_TOL of the most common font size by
+characters, so microtype's font expansion, which spreads body spans over a few
+tenths of a point, stays in); captions and tables set smaller are not read. Works for one- and two-column layouts: a line
 that ends left of the page middle is in the left column, one that starts right
 of it in the right column, and one that crosses it is full width; each column
 gets its own margins. A runt is a body line that starts at its column's left
@@ -25,6 +26,7 @@ import sys
 import pymupdf
 
 HEADING = re.compile(r"^([A-Z]|\d+)(\.\d+)*(\s|$)")
+SIZE_TOL = 0.35  # pt: microtype expansion moves 10 pt body spans by up to ±0.2; 9 pt captions stay out
 
 
 def body_size(doc):
@@ -44,7 +46,8 @@ def columns_of(page, body):
     for b in page.get_text("dict")["blocks"]:
         for line in b.get("lines", []):
             spans = [s for s in line["spans"] if s["text"].strip()]
-            if spans and collections.Counter(round(s["size"], 1) for s in spans).most_common(1)[0][0] == body:
+            if spans and 2 * sum(len(s["text"]) for s in spans if abs(s["size"] - body) <= SIZE_TOL) > sum(
+                    len(s["text"]) for s in spans):
                 lines.append((line["bbox"], spans))
     # A page is two-column when body lines start right of the middle; on a one-column page a short last
     # line ends left of the middle too, so the column has to be decided per page, not per line.
