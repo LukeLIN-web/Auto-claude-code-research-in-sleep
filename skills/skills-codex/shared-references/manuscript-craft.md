@@ -142,11 +142,20 @@ User ruling 2026-11-16, from a review the user forwarded:
   table. Three sentences in one paragraph in the frame "X (significantly)
   outperforms Y on A, B and C, and outperforms it on D", or one comparison
   sentence naming four or more benchmarks, is a test log pasted into prose.
+  Merging the list into a verdict keeps every scope word it carried: each
+  benchmark against several combined, the averaged metric, `slightly`, a
+  control's matching condition ("for as many steps as ours"). After the
+  rewrite a fresh reader compares old and new claim by claim.
 - **The reason comes from the paper's own evidence.** A sentence on why a gain
   occurs cites a measurement in the paper (an ablation, a breakdown of failure
   states) or a property the data have by construction. A mechanism a reviewer
   proposes is checked against the method's definitions first (what the
   training data actually contain); with no evidence, no reason sentence.
+  What a component does by construction is not why the gain occurred: when the
+  compared systems differ in several components, a reason naming one of them
+  needs a variant that changes only that one. Where the gain concentrates is a
+  verdict, not a reason; it stands when the comparison that changes only that
+  variable is significant on each benchmark of the group.
 - **One row, one training condition, or mark the columns.** When a row's model
   differs by column (trained in that domain for some columns, transferred for
   others), a symbol defined in the caption marks those columns, or the row
