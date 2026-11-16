@@ -46,6 +46,10 @@ Use each question to trigger concrete edits before submission.
 3. Is the technical idea genuinely non-obvious beyond well-explored practice?
 4. Is our gain surprising or insightful rather than a predictable improvement?
 5. Is there at least one clear novelty type (task/pipeline/module/design finding/insight)?
+6. Does the Abstract name the ingredient that separates the method from the generic recipe it resembles (its training signal or labels), or can a reader take it for that recipe?
+7. Are the contribution items independent, and does an empirical item claim only the factors its controls isolate ("better than alternative recipes" is not "X is the primary driver")?
+
+Questions 6–7 follow `../../shared-references/manuscript-craft.md` §2 (Abstract, Introduction). Ask the questions that decide whether a reviewer understands the contribution (Contribution 6, Experimental Strength 5–6) before the prose questions.
 
 ### 2. Writing Clarity
 
@@ -54,6 +58,10 @@ Use each question to trigger concrete edits before submission.
 3. Is the motivation of every module explicit and logically connected to a challenge?
 4. Are terms and notation consistent across sections?
 5. Does each paragraph carry one clear message with smooth transitions?
+6. Does the Introduction run one chain (problem, why the obvious fix fails, why the ingredient may work, method, validation), with a second motivation entering as what a component makes possible?
+7. Does every universal qualifier in the Abstract, Introduction and contribution list ("all new data", "only W changes", "without demonstrations") hold for every stage of the system, with its reference point stated?
+
+Questions 6–7 follow `../../shared-references/manuscript-craft.md` §2 (Introduction).
 
 ### 3. Experimental Strength
 
@@ -61,6 +69,11 @@ Use each question to trigger concrete edits before submission.
 2. Is absolute performance competitive enough for the target venue?
 3. Are gains consistent across multiple datasets/settings/metrics?
 4. Do we report both strengths and failure cases honestly?
+5. Which comparison does each headline number belong to? Does the one that changes only the core component come first, with the full system's gain over the bare baseline framed as the whole system's?
+6. Is every number placed beside a property ("without a privileged signal") obtained in that setting, and if the best number needs the signal, are both given with their settings?
+7. Is every failure breakdown used as motivation, not as proof that one component is to blame?
+
+Questions 5–7 follow `../../shared-references/manuscript-craft.md` §2 (Abstract, Introduction).
 
 ### 4. Evaluation Completeness
 

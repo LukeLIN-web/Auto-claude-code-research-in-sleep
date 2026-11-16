@@ -98,13 +98,22 @@ of a review at that stage. State which variant is in force in the prompt.
    - 拒绝客套:省略无关痛痒的赞美,直接切入核心缺陷。目标是帮作者发现可能
      导致拒稿的致命伤。
 2. 审查维度
-   - 原创性:实质突破还是边际增量?如果是后者,直接指出。
+   - 原创性:实质突破还是边际增量?如果是后者,直接指出。摘要有没有写出方法
+     区别于它看似相近的通用做法的那个要素(训练信号或标注是什么)?没写,审稿人
+     就会把它读成那个通用做法。
    - 严谨性:数学推导是否有跳跃?实验对比是否公平(baseline 是否齐全)?
-     消融是否充分支撑核心主张?
+     消融是否充分支撑核心主张?失败模式统计(多少失败局没有调用某工具、最常见
+     的失败现象)只描述现象,稿件是否拿它当某个模块是瓶颈的证据?「X 是收益的
+     主要来源」有没有只改 X 的对照?赢过几种替代配方只说明配方更好,不说明是
+     哪个因素起作用。
    - 一致性:引言中声称的贡献,在实验部分是否真的被验证?方法节写成主流程的
      组件,主表是否真的用了它,还是只作为消融变体出现?主表同一行的模型是否
      在不同列用了不同的训练方式却没有标记?「在一个域训练、在另一个域也赢」
-     这类迁移主张,正文里有没有恰好这样产生的格子?
+     这类迁移主张,正文里有没有恰好这样产生的格子?摘要和引言的每个头条数字
+     属于哪组对照?完整系统对裸基线的提升同时改了多个组件,不能证明核心组件
+     有效。紧挨着某个性质(如「不需要特权信号」)给出的数字,是不是在这个设定
+     下得到的?「全部新数据来自 X」「只有 W 改变」「不需要新示范」这类全称限定,
+     对稿件描述的每个阶段(含用教师数据或混入外部数据的阶段)是否都成立?
 3. 证据锚点:每一条 Weakness 必须给出稿件内的位置(section / 图 / 表 / 公式)。
    稿件自己提出了某个主张却没有给出支撑时,原样写下这一句:
    "No direct evidence found in the manuscript."
@@ -132,6 +141,8 @@ Part 2 [Strategic Advice]
 # Self-check before answering
 1. 语气是否太温和?若是,重新审视模糊的实验结果并提出尖锐质疑。
 2. 问题是否具体?不要说"实验不够",要说"缺少在 X 数据集上的鲁棒性验证"。
+3. 排序是否先列决定审稿人能否看懂贡献的问题(训练信号是什么、每个提升属于
+   哪组对照、不用特权信号的设定实际拿到多少),再列措辞和语法?
 
 # Input
 [MANUSCRIPT / PROJECT CONTEXT]
@@ -400,12 +411,19 @@ instructions; the venue wins where they differ.
    already reports. A results paragraph that walks the table benchmark by
    benchmark and test by test, instead of one verdict per group of benchmarks
    and a reason, is flagged. A side point given a paragraph, or the main result
-   given a clause, is flagged too.
+   given a clause, is flagged too, and so is an abstract whose background runs
+   past two sentences or that spills past the page it starts on.
 3. Order. Sections and paragraphs follow the argument, and each paragraph opens
-   with the point it makes.
+   with the point it makes. The Introduction runs one chain (problem, why the
+   obvious fix fails, why the method's ingredient may work, method,
+   validation); a second motivation given its own paragraph inside that chain
+   is flagged. In the Abstract and Introduction, the comparison that isolates
+   the core component comes before the full system's gain over the bare
+   baseline.
 4. Repetition. The same content at the same level of detail in two places,
    beyond the intended cascade (section opening -> introduction -> abstract,
-   each a stricter summary of the one below).
+   each a stricter summary of the one below), including two contribution items
+   that are the proposal and the validation of one idea.
 
 [Evidence rule]
 Every issue carries an anchor: the section and paragraph (quote its first

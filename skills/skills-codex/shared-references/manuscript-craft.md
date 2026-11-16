@@ -47,6 +47,35 @@ User ruling 2026-11-16.
   merge them. The last sentence says what the reader should take away, a stance
   the results support; it is not one more comparison and not generic impact.
 
+From a second review the user forwarded, 2026-11-16 (「更新 paper review skill」):
+
+- **Name what separates the method from the recipe it resembles.** The one
+  exception to "what, not how": when a component, stated by what it does,
+  reads as a generic recipe ("fine-tunes on the episodes it completes" reads
+  as success-filtered behavior cloning), the abstract names in a phrase the
+  ingredient that differs, by what it replaces ("supervised with the subgoal
+  it was given at each moment, not the task instruction"). Its mechanics
+  (selection thresholds, per-frame bookkeeping) stay in the Method.
+- **Each headline number says which comparison it belongs to.** The sentence
+  names what the two sides share and the one thing that differs. When the
+  contribution is a component, the first number is the comparison that changes
+  only that component; the full system's gain over the bare baseline changes
+  several components at once, so it comes after and is framed as the whole
+  system's, never as evidence that the component works.
+- **A number beside a property was obtained with that property.** When a
+  sentence highlights a setting ("needs no privileged signal") and the next
+  gives the best number, the number comes from that setting. If the best
+  number needs the privileged signal, give the number the deployable setting
+  reaches and the best one, each with its setting; the two settings of one
+  comparison count as one comparison under the headline-number cap.
+- **Background in at most two sentences, naming the specific difficulty.**
+  "Instructions that must be interpreted" is true of every instruction; write
+  the kind the method targets ("vague or knowledge-intensive instructions").
+  Verbs say what the method does to its object: distillation trains a local
+  model on a teacher's outputs; it does not "move" the teacher. When the
+  abstract spills past the page it starts on, cut background and repeated
+  conclusions first, the results last.
+
 ### Introduction
 
 User ruling 2026-11-16, from a review the user forwarded.
@@ -74,6 +103,36 @@ User ruling 2026-11-16, from a review the user forwarded.
 - **Contributions are takeaways.** Each item runs at most about six printed
   lines (about 60 words) and repeats no sentence of the Introduction's prose;
   the cap on the whole list is under Method below.
+
+From a second review the user forwarded, 2026-11-16:
+
+- **One spine.** The Introduction runs one chain: the problem, why the obvious
+  fix fails, why the method's ingredient may work, the method, how it is
+  validated. A second motivation (cost, privacy, running locally) enters as
+  what a component makes possible (large-scale collection, local deployment),
+  beside that component; a paragraph of its own between the failed fix and
+  the method breaks the chain.
+- **A failure breakdown is a phenomenon, not an attribution.** "No tool ran in
+  most failed episodes" or "the most common failure releases the object off
+  its target" says what failures look like, not which component caused them:
+  a wrong subgoal, a wrong completion judgment or a missed tool call from the
+  planner ends the same way. State it as the motivation for studying the
+  component the method changes; a sentence that blames that component needs an
+  intervention that changes only it.
+- **Universal qualifiers hold for every stage**, here, in the Abstract and in
+  the contribution list. "All new training data come from X", "only W
+  changes" and "without new demonstrations" are checked against each stage
+  the paper describes, including stages trained on a teacher's outputs or
+  mixed with external data. One that holds for a single stage names that stage
+  ("the executor stage collects no expert demonstrations"), and "only W
+  changes" names its reference point ("relative to the agent before
+  fine-tuning").
+- **Contribution items are independent, and an empirical item claims only what
+  its controls isolate.** Proposing a method and showing that it works are one
+  item. Beating alternative recipes shows that the recipe is better, not that
+  one of its factors ("the model's own data") is "the primary driver"; that
+  needs a variant changing only that factor. Otherwise state the item as a
+  controlled comparison and name the factors it controlled.
 
 ### Method
 
@@ -310,11 +369,19 @@ Additional rules:
 
 - [ ] Abstract: one or two headline numbers, no implementation detail, results
       in at most two differently framed sentences, ending on the take-home message.
+      The ingredient that separates the method from the recipe it resembles is
+      named; each headline number says its comparison, the one isolating the
+      core component first; a number beside a property comes from that
+      setting; background at most two sentences; it ends on its first page.
 - [ ] Introduction: no method component before the method paragraph, every
       counted set named; one sentence of reason between gap and method; no
       ratio, data source or baseline name in the method paragraph; results by
       kind of generalization, no benchmark roll call, no "slightly";
-      contribution items about 60 words each.
+      contribution items about 60 words each. One spine, a second motivation
+      entering as a component's property; a failure breakdown stated as
+      motivation, not blame; every "all / only / without" holds for each stage;
+      contribution items independent, an empirical one claiming only what its
+      controls isolate.
 - [ ] Method has a road-map paragraph and (near-)zero citations; comparisons live
       in a dedicated Advantages paragraph.
 - [ ] Method names the configuration the main rows run and presents the
