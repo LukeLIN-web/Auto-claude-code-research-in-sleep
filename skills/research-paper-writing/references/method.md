@@ -194,6 +194,27 @@ Local cite:
 8. **No results in the method**, apart from a pointer (“we verify this in Sec. 5.3”).
 9. **Mechanisms the author has not given are `[TODO]`**, never filled with plausible-sounding inventions. Ask for equations, losses and algorithm steps.
 10. Style: present tense, “we” for decisions, the method name as subject for what it does. No dashes (author preference); colons are fine before an enumeration or equation.
+11. **Author rulings win over this list** (`../../shared-references/manuscript-craft.md` §2, Method, user 2026-11-16). They close three gaps a reviewer attacks between the Method and the experiments; "Configuration, Filters and Training Unit" below shows how to write each.
+
+## Configuration, Filters and Training Unit
+
+Three things the Method must say before the reader meets the results tables.
+
+**1. Which configuration the main rows run.** List every component that has more than one possible source (a ground-truth label or a learned judge, a privileged input or a deployable one). For each, find the source the method's reported rows use in the results table, and write that one into the pipeline. The other source is a variant, named as its table row is named, with a pointer:
+- `<Method> takes <signal> from <source A>; <source B> can supply it instead, as in the variant <row name> (Sec. <k>).`
+
+Check the Abstract and Introduction: a capability claimed there ("needs no X") must match a variant here, not the default. Do not move the variant's result into the Method (Rule 8); the pointer is enough.
+
+**2. Why each filter.** For every condition under a set-builder, sum or union in an equation (a success label, an excluded event, a threshold), write one sentence of reason next to the equation. Allowed reasons, in order of preference:
+- by construction: what triggers the excluded event, or what the kept data are then guaranteed to contain. Read the code or prompt that defines the trigger before writing it, and describe the trigger where the component is introduced if the Method has not;
+- cited work;
+- the paper's own ablation, only where its difference is significant.
+
+A mechanism that sounds right but nothing tested is `[TODO]` (Rule 9). An ablation cell that did not reach significance is not a reason; leave it in its table.
+- `We drop every <sample> in which <event>: <component> causes <event> only when <condition>, so such a <sample> contains <what the filter removes>.`
+
+**3. One model or one per domain.** When the results tables span domains (simulators, embodiments, datasets), say in the subsection that defines training whether one set of weights serves all of them or each domain gets its own run, and for a per-domain run, from which starting weights, on which data and with which data replacing the default replay. Write only what holds for every domain; per-domain specifics and counts go to the appendix with a pointer. This sentence does not belong in an Advantages paragraph or first in the experiments' Setup.
+- `We run the same <loop> once in each of <domains>, starting from the weights we evaluate there, and in each <Method> runs the weights trained there.`
 
 ## Implementation Details
 `Implementation details include hyperparameters (e.g., layer count, feature dimensions), coordinate transforms/normalization, and other practical details. Put them in the experiments setup or the appendix, not in Method, unless they are the contribution.`
@@ -235,3 +256,6 @@ Local cite:
 - [ ] The delta to the base method is explicit; the obvious alternative is ruled out where relevant.
 - [ ] Every introduction claim maps to a subsection and to an experiment.
 - [ ] No hyperparameters or results; no invented mechanisms (`[TODO]` instead); no dashes.
+- [ ] The pipeline is the configuration the main rows run; each alternative source is a named variant with a pointer.
+- [ ] Every filter in an equation has its reason beside it: by construction (checked against the code), cited, or a significant ablation.
+- [ ] Before the first results table, the reader knows whether one model serves every benchmark or each domain has its own.

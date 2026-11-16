@@ -77,6 +77,11 @@ Use each question to trigger concrete edits before submission.
 3. Is the method robust without heavy per-case hyperparameter retuning?
 4. Do benefits outweigh added complexity and new limitations?
 5. Could reviewers reasonably argue that the net benefit is negative?
+6. Does the Method describe the configuration the main rows actually run? A component the Abstract or Introduction highlights that the tables use only as a variant reads as an overclaim.
+7. Does every filter or exclusion in the method's equations state its reason beside the equation: by construction, by citation, or by an ablation with a significant difference?
+8. Can a reader tell from the Method alone, before the first results table, whether one trained model serves every benchmark or each domain has its own?
+
+Questions 6–8 follow `../../shared-references/manuscript-craft.md` §2 (Method); `method.md`, "Configuration, Filters and Training Unit", shows the fix for each.
 
 ## Adversarial Writing Workflow
 

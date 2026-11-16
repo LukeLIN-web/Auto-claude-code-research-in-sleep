@@ -11,8 +11,8 @@ distilled into rules. Venue instructions always override this file.
 ## When to Read
 
 - `paper-write`: before drafting Method / Experiments, and during the final pass.
-- `research-paper-writing`: before drafting the Introduction, or an Abstract the
-  authors asked for.
+- `research-paper-writing`: before drafting the Introduction, a Method, or an
+  Abstract the authors asked for.
 - `research-review`: the structure reviewer judges every section against §2.
 - `paper-compile`: when fixing overfull boxes, float placement, or citation style.
 - `resubmit-pipeline` / `paper-writing`: during submission-readiness checks.
@@ -94,6 +94,33 @@ User ruling 2026-11-16, from a review the user forwarded.
 - If two techniques are introduced, write the **connection** between them.
   Presenting them side by side signals "two unrelated tricks bolted together";
   presenting the mechanism that links them signals one method.
+
+User ruling 2026-11-16, from a review the user forwarded:
+
+- **The Method describes the configuration the main rows run.** When a
+  component can take its input from two sources (a ground-truth signal or a
+  learned judge, a privileged input or a deployable one), say which one the
+  method's reported rows use, and introduce the other as a variant under the
+  name its table row carries, with a pointer to the experiment. A capability
+  the Abstract or Introduction claims ("needs no X") reads in the Method as
+  what that variant does, never as the default pipeline while the main rows
+  use X; otherwise a reviewer finds the main table running on X and charges
+  the paper with overclaiming.
+- **Every filter or exclusion in an equation carries its reason, next to the
+  equation.** The reason is a property the design has by construction (what
+  triggers the excluded event, what the kept data are guaranteed to contain),
+  cited work, or the paper's own ablation with a significant difference; never
+  a plausible mechanism nothing tested, and never an ablation cell that did not
+  reach significance. A by-construction reason is checked against the code or
+  prompt that defines the trigger, and that trigger is described where the
+  component is introduced.
+- **The unit of training is stated before the first results table.** Whether
+  one set of trained weights serves every benchmark or each domain (simulator,
+  embodiment, dataset) gets its own run, from which starting weights and with
+  which data in place of the default ones, is said in the Method subsection
+  that defines training. Not first in the Setup, an Advantages paragraph or the
+  appendix: a table that mixes domains otherwise reads as one model sweeping
+  all of them.
 
 ### Experiments
 
@@ -243,6 +270,9 @@ Additional rules:
       contribution items about 60 words each.
 - [ ] Method has a road-map paragraph and (near-)zero citations; comparisons live
       in a dedicated Advantages paragraph.
+- [ ] Method names the configuration the main rows run and presents the
+      alternative as a named variant; every filter in an equation has its
+      reason; one model or one per domain is stated before the first results table.
 - [ ] Exactly one Experiments section; speedups reported as ratios.
 - [ ] Every appendix section is referenced from the main text.
 - [ ] Every float sits on/next to the page of first discussion, in order.

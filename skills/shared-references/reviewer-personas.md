@@ -101,7 +101,8 @@ of a review at that stage. State which variant is in force in the prompt.
    - 原创性:实质突破还是边际增量?如果是后者,直接指出。
    - 严谨性:数学推导是否有跳跃?实验对比是否公平(baseline 是否齐全)?
      消融是否充分支撑核心主张?
-   - 一致性:引言中声称的贡献,在实验部分是否真的被验证?
+   - 一致性:引言中声称的贡献,在实验部分是否真的被验证?方法节写成主流程的
+     组件,主表是否真的用了它,还是只作为消融变体出现?
 3. 证据锚点:每一条 Weakness 必须给出稿件内的位置(section / 图 / 表 / 公式)。
    稿件自己提出了某个主张却没有给出支撑时,原样写下这一句:
    "No direct evidence found in the manuscript."
@@ -383,7 +384,11 @@ instructions; the venue wins where they differ.
    the Experiments, related-work discussion in the Introduction, a new result
    or qualifier in the Conclusion, implementation detail in the Abstract, a
    data ratio or a baseline's name in the Introduction's method paragraph, a
-   method component named before the paragraph that introduces it.
+   method component named before the paragraph that introduces it, a variant
+   the Method presents as the pipeline while the main rows run another
+   configuration, a filter in an equation whose reason is given only in an
+   ablation or nowhere, and whether one model or one per domain is trained
+   first stated after the first results table.
 2. Length. The space a part takes matches its weight. A summary part (the
    abstract, the introduction's contribution paragraph, the conclusion) states
    the claim; it does not re-list the benchmarks, settings or numbers the body
