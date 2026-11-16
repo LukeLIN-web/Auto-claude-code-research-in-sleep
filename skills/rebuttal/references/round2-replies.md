@@ -106,7 +106,28 @@ The sequence (user 2026-11-15「你先发个全体message显示你催过了 然�
    - *A concern*: answer it at once (§§ 2–5), and keep answering until nothing is left to raise. The reply that closes it carries the one request if none was made yet.
    - *Kept the score after the request*: the closing reply of § 4, then nothing more to this reviewer.
    - *Silent*: leave them alone. The positive rating stands; a second nudge only spends goodwill.
-6. **A negative-score reviewer is nudged last**, with the same post minus the rating: title `Thank You for Your Insightful Suggestions`, opening "**Thank you so much for your insightful suggestions!**". If it stays silent — no answer by the half-day check after its nudge, with every positive-score reviewer already confirmed or left silent — **nudge the AC, not the reviewer** (user「负分不回复 催AC，说为什么其他审稿人都说很好，然后积极engage，就这个负分的意见有问题123，然后不回复」). The note says that the other reviewers rate the paper positively and engaged in the discussion (who confirmed or replied; true counts only), lists the problems in this review numbered, most serious first (each quotes the review and gives what the submission or our reply contains, and where), and states as a fact that the reviewer has not replied. It follows the letter of [misconduct-reporting.md](misconduct-reporting.md) § 4, goes through the channel of § 3 there (readers Area Chairs, never reviewers), and is the one AC note for that reviewer: for a `bad_faith_suspected` reviewer it is the misconduct note itself, not a second letter. Draft it; the user sends it.
+6. **A negative-score reviewer is nudged last, briefly: which of their concerns we resolved, then whether that addresses them** (user 2026-11-15「催一个2 分的, 就简短的催下，说明我们解决了他的哪些问题 然后问下他是否address your concern」). No strengths restated and no rating request; the one request goes with the reply that closes their concerns (§ 7, form 6).
+
+   Title (OpenReview Title field, Title Case, no `**`): `Thank You for Your Insightful Suggestions`
+
+   > Dear Reviewer <ID>,
+   >
+   > **Thank you so much for your insightful suggestions!** In our responses, we have addressed each of your concerns:
+   >
+   > 1. **<The concern, in the review's terms> (W1).** <One sentence: what our reply showed, and the table or section that carries it.>
+   > 2. **<…> (W2, Q1).** <…>
+   >
+   > Could you kindly let us know whether our responses have addressed your concerns? If you have any further questions, please let us know, and we will address them.
+   >
+   > Thank you again for your time and valuable feedback!
+
+   - One item per weakness or question, merged where the round-1 reply answered them together, labeled as in the review. Every concern gets an item; leaving one out tells the AC it is still open.
+   - Each item restates the posted reply (§ 1): its conclusion, at most one number, the table or section. No new result and no number the thread does not already show.
+   - A result that holds on only some benchmarks is stated by the reply's own conclusion or by one benchmark where it holds, never as a count ("on three of the four") (Never expose a weakness).
+
+   中文对照：**非常感谢您富有洞见的建议！** 我们在回复中逐条回应了您的问题：1. **〈问题〉(W1)。** 〈一句话〉…… 能否请您告诉我们，我们的回复是否解决了您的问题？如果您还有其他问题，请告诉我们，我们会进一步解决。再次感谢您的时间和宝贵意见！
+
+   **If it stays silent, write to the AC and ask the AC to prompt the reviewer; the reviewer gets no second nudge** (user 2026-11-15「要是再不回负分不回复就给ac写信, 让ac去催」; earlier「负分不回复 催AC，说为什么其他审稿人都说很好，然后积极engage，就这个负分的意见有问题123，然后不回复」). Silent means no answer by the half-day check after its nudge, with every positive-score reviewer already confirmed or left silent. The note says that the other reviewers rate the paper positively and engaged in the discussion (who confirmed or replied; true counts only), lists the reviewer's points numbered, most serious first (each quotes the review and gives what the submission or our reply contains, and where; "A factual error in W<n>" only where the submission contradicts the review), states as a fact that the reviewer has not replied to our response or our nudge (with both dates), and asks the AC to encourage the reviewer to respond before the discussion closes. It follows the letter of [misconduct-reporting.md](misconduct-reporting.md) § 4, goes through the channel of § 3 there (readers Area Chairs, never reviewers), and is the one AC note for that reviewer: for a `bad_faith_suspected` reviewer it is the misconduct note itself, not a second letter. Draft it; the user sends it.
 7. Record each nudge (time, reviewer), each reply and any score change in `REBUTTAL_STATE.md`, so a resumed session knows who has been nudged and who has been asked for a rating.
 
 ## 7. Score requests
