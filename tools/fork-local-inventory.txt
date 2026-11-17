@@ -27,6 +27,7 @@
 paper-figure-craft
 paper-float-compact
 paper-jargon-pass
+paper-polish
 paper-prose-tighten
 paper-table-craft
 peer-review
