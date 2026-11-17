@@ -62,11 +62,13 @@ command grep -nE '(Moreover|Furthermore|Additionally|In addition),' $FILES
 | More than four commas in one sentence, or an aside wedged mid-sentence between commas (`A outperforms B and, when X holds, C.`) | Split into two sentences, or move the aside to the end (`A outperforms B. It also outperforms C when X holds.`). At most four commas per sentence; commas inside `\cite{}`, math and numbers do not count |
 | Nominalizations (`a comparison is made`, `leads to an improvement in`, `the computation of`) | The verb: `we compare`, `improves`, `we compute` |
 | `because` joining a reason to a claim (`because the VLA is trained without the orchestrator, fine-tuning degrades …`) | `as` or `since`: `because` asserts the cause outright, and papers rarely use it; keep it only where the text reports a test of that cause. If neither the softer word nor the evidence fits, the clause is a claim change: leave it and report |
+| A number pair trailing the sentence after a comma or colon (`…, our method significantly lifts the agent, a\% against b\%.`): it reads like a sports score (user 2026-11-16, from a forwarded review) | The pair goes into the predicate with its metric named: `significantly raises overall success from b\% to a\%` when ours is the compared system plus the method's change; between two separate systems, in parentheses after the comparison (`outperforms X (a\% against b\%)`). The numbers, the significance word and the compared system stay as they were (`manuscript-craft.md` §2, Introduction) |
 | Vague scope (`across settings`, `in most cases`) | The concrete scope the evidence has (`on all four benchmarks`, `in three of four`), checked in the text or the evidence files; report it only when they do not settle it |
 
 ```bash
 command grep -niE '\bbecause\b' $FILES
 command grep -nE '^([^,]*,){5,}' $FILES   # lines with five or more commas (one sentence per line); discount \cite, math, numbers
+command grep -nE '[,:] *(in )?[0-9.]+\\?% (against|versus|vs\.?) [0-9.]' $FILES   # number pair trailing after a comma or colon
 ```
 
 **Hold the scope.** A split or reorder must not move a qualifier so that it seems to scope a different clause (`on two benchmarks` drifting to the end of a sentence, where it reads as scoping only the last clause).

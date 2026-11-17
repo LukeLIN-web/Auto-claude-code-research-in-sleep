@@ -165,6 +165,22 @@ From a third review the user forwarded, 2026-11-16 (「更新 skill」):
   internal arm name) is described in words ("on held-out tasks") unless the
   prose has introduced it.
 
+From a fourth review the user forwarded, 2026-11-16 (「更新 skill」):
+
+- **No evaluation protocol in the Introduction.** Episodes or trials per
+  task, seeds, step or time caps and the statistical test belong to the Setup
+  and the protocol table. A result sentence opened by one ("With ten episodes
+  per task on B, ours lifts ...") spends the Introduction on a detail and reads
+  as trivia; it becomes "On B, ours lifts ...". The Experiments keep the
+  protocol where the comparison needs it.
+- **A result sentence carries its numbers in the predicate.** "Raises
+  overall success from b% to a%" when ours is the compared system plus the
+  method's change; between two separate systems, the pair in parentheses after
+  the comparison. A pair trailing the sentence after a comma ("..., ours
+  significantly lifts the agent, a% against b%.") reads like a sports score.
+  This holds in every section; the rewrite pattern is `paper-polish`'s
+  `references/rewrite.md` §3, and `check_draft.py` flags the trailing form.
+
 ### Method
 
 - Open with a **road-map paragraph** that states what the section will build,
@@ -485,7 +501,8 @@ Additional rules:
       controls isolate. The method item names the whole method, its stages in
       order and the capabilities the prose argues for; every title is a short
       noun phrase, never a finding; no name in the list that the prose has not
-      introduced.
+      introduced. No evaluation protocol (episodes per task, seeds, caps) in
+      the Introduction.
 - [ ] Method has a road-map paragraph and (near-)zero citations; comparisons live
       in a dedicated Advantages paragraph.
 - [ ] Method names the configuration the main rows run and presents the
@@ -496,7 +513,8 @@ Additional rules:
       paper's own evidence; one verdict per group of benchmarks, one answer per
       ablation question, at most four number pairs per paragraph, no roll call of
       benchmarks or variants; a measurement that explains a gain sits beside it
-      as its reason; no section of one repeated sentence frame. A
+      as its reason; no section of one repeated sentence frame; every number
+      pair in the predicate or in parentheses, never trailing after a comma. A
       row whose training differs by column is marked; every transfer claim, and
       every instance a claim names, has main-text evidence; the main Setup
       defines only what the main text uses.

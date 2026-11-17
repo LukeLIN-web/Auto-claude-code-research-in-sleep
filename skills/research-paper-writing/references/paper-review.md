@@ -61,8 +61,9 @@ Questions 6–8 follow `../../shared-references/manuscript-craft.md` §2 (Abstra
 5. Does each paragraph carry one clear message with smooth transitions?
 6. Does the Introduction run one chain (problem, why the obvious fix fails, why the ingredient may work, method, validation), with a second motivation entering as what a component makes possible?
 7. Does every universal qualifier in the Abstract, Introduction and contribution list ("all new data", "only W changes", "without demonstrations") hold for every stage of the system, with its reference point stated?
+8. Does the Introduction leave the evaluation protocol (episodes per task, seeds, caps) to the Setup, and does every result sentence carry its numbers in the predicate ("from b% to a%") or in parentheses, never trailing after a comma?
 
-Questions 6–7 follow `../../shared-references/manuscript-craft.md` §2 (Introduction).
+Questions 6–8 follow `../../shared-references/manuscript-craft.md` §2 (Introduction).
 
 ### 3. Experimental Strength
 

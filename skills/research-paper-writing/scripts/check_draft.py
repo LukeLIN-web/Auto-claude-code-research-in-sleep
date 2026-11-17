@@ -60,6 +60,8 @@ WARN_PHRASES = {
     r"\bin our setup\b": "hedge-like phrase",
 }
 DETAIL = r"\b\d+ (layers?|heads?|views?|steps?|epochs?|tokens? per)\b|\d+\s*[×x]\s*\d+\s*[×x]\s*\d+|\bbatch size\b|\blearning rate of\b|\bhidden (size|dimension)\b"
+# evaluation protocol ("with ten episodes per task"): the Setup carries it (manuscript-craft.md §2, Introduction)
+PROTOCOL = r"\b(?:\d+|one|two|three|four|five|six|seven|eight|nine|ten|twenty|fifty|a hundred)\s+(?:episodes?|trials?|rollouts?|runs?|seeds?)\s+(?:per|for each|on each|of each)\b"
 NUMBER = r"(?<![A-Za-z\d.])\d+(?:[.,]\d+)*(?![A-Za-z\d])"
 PARAS = ROOT / "references/exemplars/paragraphs.jsonl"
 PHRASES = ROOT / "references/exemplars/phrasebank.csv"
@@ -214,8 +216,12 @@ def line_kinds(path, n_lines):
 
 FRAME = r"\boutperform|\bsurpass|\bbeats?\b"
 LIST_ITEM_SEP = re.compile(r",\s+(?:and\s+)?|\s+and\s+")
-# "65.0\% against 51.9\%", "a median 6.08\,s against 7.25\,s", "927 against 909"
-PAIR = re.compile(r"\d[\d.,]*\s*(?:\\?%|\\,s\b|s\b|×)?\s*\)?\s+(?:against|versus|vs\.?)\s+(?:an?\s+)?(?:median\s+)?\d", re.I)
+# "65.0\% against 51.9\%", "a median 6.08\,s against 7.25\,s", "927 against 909", "from 51.9\% to 65.0\%"
+UNIT = r"(?:\\?%|\\,s\b|s\b|×)?"
+AGAINST = rf"\d[\d.,]*\s*{UNIT}\s*\)?\s+(?:against|versus|vs\.?)\s+(?:an?\s+)?(?:median\s+)?\d"
+PAIR = re.compile(rf"{AGAINST}|\bfrom\s+(?:an?\s+)?(?:median\s+)?\d[\d.,]*\s*{UNIT}\s+to\s+\d", re.I)
+# "..., it lifts the agent, 32.9\% against 26.3\%." (manuscript-craft.md §2, Introduction)
+PAIR_TAIL = re.compile(rf"[,:]\s*(?:in\s+)?{AGAINST}", re.I)
 
 
 def roll_call_checks(lines, kinds):
@@ -233,7 +239,7 @@ def roll_call_checks(lines, kinds):
             issues.append(("WARN", n, f"{len(frame)} sentences of one paragraph repeat the 'outperforms' frame; give one verdict per group of benchmarks (one answer per ablation question), a reason, and leave the values to the table", frame[-1]))
         pairs = [s for s in sents if PAIR.search(s)]
         if len(PAIR.findall(flat)) > 4:
-            issues.append(("WARN", n, f"{len(PAIR.findall(flat))} number pairs ('a against b') in one paragraph; keep at most four, the ones the claim turns on; the rest stay in the table", pairs[-1]))
+            issues.append(("WARN", n, f"{len(PAIR.findall(flat))} number pairs ('a against b', 'from b to a') in one paragraph; keep at most four, the ones the claim turns on; the rest stay in the table", pairs[-1]))
         for s in frame:
             for m in re.finditer(r"\b(?:on|across|in)\s+([^.;:()]+?\s+and\s+[^,.;:()]+)", s):
                 items = [x for x in LIST_ITEM_SEP.split(m.group(1)) if x.strip()]
@@ -282,6 +288,10 @@ def check(path, bank, max_words):
             issues.append(("NOTE", n, "comparison without a number or table/figure reference (fine for mechanisms; results need evidence)", s))
         if not body and re.search(DETAIL, s, flags=re.I):
             issues.append(("WARN", n, "implementation detail in abstract/introduction", s))
+        if not body and re.search(PROTOCOL, s, flags=re.I):
+            issues.append(("WARN", n, "evaluation protocol (episodes per task, seeds) in abstract/introduction; the Setup carries it", s))
+        if PAIR_TAIL.search(s):
+            issues.append(("WARN", n, "number pair trailing after a comma ('..., a% against b%') reads like a sports score; put it in the predicate ('raises success from b% to a%') or in parentheses after the comparison", s))
         if not body and re.search(r"\bslightly\b", low):
             issues.append(("WARN", n, "'slightly' hedges a result in abstract/introduction; state the result plainly or leave it to the tables", s))
         if body and len(sm.number_tokens(s)) > 2:
