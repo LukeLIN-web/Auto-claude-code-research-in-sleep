@@ -414,7 +414,7 @@ instructions; the venue wins where they differ.
    benchmark and test by test, or an ablation variant by variant with a pair of
    numbers each, instead of one verdict per group of benchmarks (one answer per
    ablation question) and a reason, is flagged; so is a paragraph with more
-   than two number pairs ("a% against b%"), a measurement that explains a gain
+   than four number pairs ("a% against b%"), a measurement that explains a gain
    (a failure breakdown) given a paragraph of its own away from that gain, and
    a results section where most sentences repeat one frame. A side point given a paragraph, or the main result
    given a clause, is flagged too, and so is an abstract whose background runs

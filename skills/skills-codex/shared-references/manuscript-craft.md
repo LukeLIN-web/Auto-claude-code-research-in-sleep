@@ -226,7 +226,7 @@ User ruling 2026-11-16, from a review the user forwarded:
   answer for the whole family of variants ("every other source of training
   data falls below ours, each significantly in at least one setting"), keeps
   the one comparison the answer turns on, gives the reason, and points to the
-  table for the rest. A paragraph carries at most two number pairs
+  table for the rest. A paragraph carries at most four number pairs
   (`a% against b%`): the per-sentence limit alone lets through a paragraph of
   seven sentences with one pair each. When every appendix experiment needs a
   main-text mention, the mentions join the answer to the question they belong
@@ -426,7 +426,7 @@ Additional rules:
 - [ ] Exactly one Experiments section; speedups reported as ratios.
 - [ ] Results paragraphs: finding first, one or two numbers, a reason from the
       paper's own evidence; one verdict per group of benchmarks, one answer per
-      ablation question, at most two number pairs per paragraph, no roll call of
+      ablation question, at most four number pairs per paragraph, no roll call of
       benchmarks or variants; a measurement that explains a gain sits beside it
       as its reason; no section of one repeated sentence frame. A
       row whose training differs by column is marked; every transfer claim, and

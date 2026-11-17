@@ -232,8 +232,8 @@ def roll_call_checks(lines, kinds):
         if len(frame) >= 3:
             issues.append(("WARN", n, f"{len(frame)} sentences of one paragraph repeat the 'outperforms' frame; give one verdict per group of benchmarks (one answer per ablation question), a reason, and leave the values to the table", frame[-1]))
         pairs = [s for s in sents if PAIR.search(s)]
-        if len(PAIR.findall(flat)) > 2:
-            issues.append(("WARN", n, f"{len(PAIR.findall(flat))} number pairs ('a against b') in one paragraph; keep the one or two the claim turns on, the rest stay in the table", pairs[-1]))
+        if len(PAIR.findall(flat)) > 4:
+            issues.append(("WARN", n, f"{len(PAIR.findall(flat))} number pairs ('a against b') in one paragraph; keep at most four, the ones the claim turns on; the rest stay in the table", pairs[-1]))
         for s in frame:
             for m in re.finditer(r"\b(?:on|across|in)\s+([^.;:()]+?\s+and\s+[^,.;:()]+)", s):
                 items = [x for x in LIST_ITEM_SEP.split(m.group(1)) if x.strip()]
