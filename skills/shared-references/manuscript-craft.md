@@ -315,9 +315,16 @@ User ruling 2026-11-16, from a review the user forwarded:
   unexplained. It goes into the behavior-and-cost subsection, in a paragraph
   that opens with the gain it explains and gives the measurement as its
   reason ("the fine-tuned policy's gain comes from fewer stalled episodes and
-  fewer wrong-object grasps"), which holds when the two systems differ only in
-  the component the measurement concerns and the breakdown's difference is
-  significant. When no
+  fewer wrong-object grasps"). That sentence holds only when the two systems
+  differ only in the component the measurement concerns, the breakdown's
+  difference is significant, and the breakdown accounts for the gain: its
+  classes split the failed episodes one class each, so their differences add
+  up to the success difference. States that overlap one another or also occur
+  in successful episodes (stalled at some point, released the object once)
+  cannot add up to a gain; nor can exclusive classes whose differences are
+  not significant. Then the paragraph opens on the breakdown's own finding
+  against the same comparison ("with the fine-tuned policy, the agent stalls in
+  significantly fewer episodes"), with no "comes from". When no
   measurement in the paper explains a main gain, a breakdown of the episodes
   already run (by failure kind, by task kind) can supply one; until then the
   paragraph gives its verdict with no reason, never a mechanism the data do not
