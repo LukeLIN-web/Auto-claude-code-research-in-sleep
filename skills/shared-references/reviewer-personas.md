@@ -105,7 +105,9 @@ of a review at that stage. State which variant is in force in the prompt.
      消融是否充分支撑核心主张?失败模式统计(多少失败局没有调用某工具、最常见
      的失败现象)只描述现象,稿件是否拿它当某个模块是瓶颈的证据?「X 是收益的
      主要来源」有没有只改 X 的对照?赢过几种替代配方只说明配方更好,不说明是
-     哪个因素起作用。
+     哪个因素起作用。实验节的每个主要提升有没有给出原因(稿件里的测量,如失败
+     类型分解、哪类任务收益最大),还是只逐个 benchmark、逐个消融变体罗列
+     「a% against b%」?只报数不解释,就是缺乏机理洞察。
    - 一致性:引言中声称的贡献,在实验部分是否真的被验证?方法节写成主流程的
      组件,主表是否真的用了它,还是只作为消融变体出现?主表同一行的模型是否
      在不同列用了不同的训练方式却没有标记?「在一个域训练、在另一个域也赢」
@@ -409,8 +411,12 @@ instructions; the venue wins where they differ.
    abstract, the introduction's contribution paragraph, the conclusion) states
    the claim; it does not re-list the benchmarks, settings or numbers the body
    already reports. A results paragraph that walks the table benchmark by
-   benchmark and test by test, instead of one verdict per group of benchmarks
-   and a reason, is flagged. A side point given a paragraph, or the main result
+   benchmark and test by test, or an ablation variant by variant with a pair of
+   numbers each, instead of one verdict per group of benchmarks (one answer per
+   ablation question) and a reason, is flagged; so is a paragraph with more
+   than two number pairs ("a% against b%"), a measurement that explains a gain
+   (a failure breakdown) given a paragraph of its own away from that gain, and
+   a results section where most sentences repeat one frame. A side point given a paragraph, or the main result
    given a clause, is flagged too, and so is an abstract whose background runs
    past two sentences or that spills past the page it starts on.
 3. Order. Sections and paragraphs follow the argument, and each paragraph opens

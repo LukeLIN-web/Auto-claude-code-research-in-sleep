@@ -84,6 +84,17 @@ Write (a finding):   Ours outperforms both baselines on every long-horizon bench
 > “We perform ablations on RealEstate10k to answer the following questions: Is our epipolar encoder responsible for our model’s ability to handle scale ambiguity? …” (pixelSplat)
 > “No invertible is a model variant that replaces our invertible mapping network … with separate forward and backward mapping networks …” (OmniMotion)
 
+In the prose an ablation paragraph answers its question once for the whole family of variants; the table holds one row per variant, and the paragraph does not walk them.
+
+```text
+Avoid (a variant log): Ours significantly outperforms variant A on B1, a% against b%. It also
+                       outperforms variant B on B2, c% against d%. Against variant C, ours ...
+Write (an answer):     Every other source of training data falls below ours, each significantly
+                       in at least one setting (Table 3); against <the variant the answer turns
+                       on>, a% against b%. <Reason: the measurement that explains the gain,
+                       e.g. fewer stalled episodes.>
+```
+
 **E4 · Analysis, generalisation, applications.** What else the method enables or reveals: scaling, transfer, efficiency, new applications, human study. Each with its own claim-first paragraph.
 
 **E5 · Limitations (usually not written; use when the venue or the paper calls for it).** Honest failure modes with a figure, at the end of the experiments or in a separate section (never in the abstract or introduction, by author preference).
@@ -102,13 +113,13 @@ Write (a finding):   Ours outperforms both baselines on every long-horizon bench
 
 ## Writing Rules
 1. **Claim-first paragraphs.** “Ours outperforms X on all metrics (Tab. 1), with the largest gain in Y” rather than “Table 1 shows the results.” Use “As shown in Tab. 1” sparingly.
-2. **Numbers belong here.** Report margins, not only rankings; the abstract/introduction number limits do not apply. Keep at most one or two numbers per sentence; the rest stay in the table.
+2. **Numbers belong here.** Report margins, not only rankings; the abstract/introduction number limits do not apply. Keep at most one or two numbers per sentence and at most two number pairs (`a% against b%`) per paragraph; the rest stay in the table.
 3. **Fair comparison is stated once, in the setup** (same data, official code, same backbone); do not repeat qualifiers in every results sentence.
-4. **Explain, do not only report.** After each comparison, one sentence on why, tied to the mechanism (“because the 3D filter bounds the frequency …”). The reason cites the paper's own evidence: an ablation, a breakdown of failures, or a property the data or model have by construction. A reason a reviewer proposes is checked against the method's definitions first (what the training data actually contain); with no evidence, write no reason sentence. What a component does by construction is not why the gain occurred: when the compared systems differ in several components, a reason naming one of them (“as the planner turns the instruction into subgoals”) needs a variant that changes only that one. Where the gain concentrates (“largest where the instruction must be interpreted”) is a verdict, not a reason; it stands when the comparison that changes only that variable is significant on each benchmark of the group.
+4. **Explain, do not only report.** After each comparison, one sentence on why, tied to the mechanism (“because the 3D filter bounds the frequency …”). The reason cites the paper's own evidence: an ablation, a breakdown of failures, or a property the data or model have by construction. A reason a reviewer proposes is checked against the method's definitions first (what the training data actually contain); with no evidence, write no reason sentence. What a component does by construction is not why the gain occurred: when the compared systems differ in several components, a reason naming one of them (“as the planner turns the instruction into subgoals”) needs a variant that changes only that one. Where the gain concentrates (“largest where the instruction must be interpreted”) is a verdict, not a reason; it stands when the comparison that changes only that variable is significant on each benchmark of the group. A measurement that explains a gain (a breakdown of failure kinds, which object the policy acts on first) is written as that gain's reason in the gain's paragraph, not as a comparison in a paragraph of its own; with no such measurement, a breakdown of the episodes already run can supply one (`../../shared-references/manuscript-craft.md` §2, Experiments).
 5. **Qualitative figures** show the claim the text makes (failure of the baseline, our fix), and their captions state the takeaway first. Layout, method order, insets and plot style: `figures.md`, "Result Figures".
 6. **Limitations**, when the paper has them, are written here, concretely, with a cause and, where possible, a figure.
 7. Style: past tense for what was done (“we trained”), present tense for what the results show (“Ours outperforms”). No dashes; colons are fine for run-in lists.
-8. **No roll call.** Three sentences in one paragraph in the frame “X (significantly) outperforms Y on A, B and C”, or one comparison sentence naming four or more benchmarks, is the table rewritten as prose; merge them into one verdict per group of benchmarks (E2). `scripts/check_draft.py` flags both shapes in Method and Experiments files. The merge keeps every scope word the list carried: each benchmark against several combined, the averaged metric, “slightly”, a control's matching condition (“for as many steps as ours”). After the rewrite a fresh reader compares old and new claim by claim.
+8. **No roll call.** Three sentences in one paragraph in the frame “X (significantly) outperforms Y on A, B and C”, or one comparison sentence naming four or more benchmarks, is the table rewritten as prose; merge them into one verdict per group of benchmarks (E2). Variants count too: a paragraph comparing ours with one more variant per sentence, each with its pair of numbers, is the ablation table in prose; it answers its question once (E3). A section where most sentences share one frame reads to reviewers as script-generated text, and synonyms do not fix it. `scripts/check_draft.py` flags the repeated frame, the long settings list and a paragraph with more than two number pairs in Method and Experiments files. The merge keeps every scope word the list carried: each benchmark against several combined, the averaged metric, “slightly”, a control's matching condition (“for as many steps as ours”). After the rewrite a fresh reader compares old and new claim by claim.
 9. **Name a dropped variant by what it changes.** A main-text pointer to an ablation the final method did not adopt says what the variant does (“pre-selecting objects by success rate”), not a name defined only in the appendix. A difference that was not significant is not written as “brings no gain” or “is unnecessary”.
 
 ## Ablations
@@ -187,7 +198,8 @@ Ours & \textbf{\TODO{}} & \textbf{\TODO{}} & \TODO{} \\
 - [ ] Are claims in Abstract/Introduction supported by reported numbers, with at least one or two of them in the main text rather than only in the appendix?
 - [ ] Every claim of the paper has a table or figure; every table supports a claim.
 - [ ] Setup states datasets, metrics (↑/↓), baselines and how they were run, once.
-- [ ] Results paragraphs open with the finding and explain the reason from the paper's own evidence; one verdict per group of benchmarks, no roll call (`check_draft.py` passes).
+- [ ] Results paragraphs open with the finding and explain the reason from the paper's own evidence; one verdict per group of benchmarks, one answer per ablation question, at most two number pairs per paragraph, no roll call (`check_draft.py` passes).
+- [ ] Every measurement that explains a gain (failure kinds, what the policy acts on first) sits beside that gain as its reason, not in a paragraph of its own.
 - [ ] Every claim that names several instances, and every transfer claim, has main-text evidence for each instance, produced the way the claim says.
 - [ ] Every row of a results table is one training condition, or the columns that differ are marked.
 - [ ] The main Setup defines only what the main text uses; every term in a main-text sentence or float is defined in the main text.

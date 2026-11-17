@@ -214,6 +214,8 @@ def line_kinds(path, n_lines):
 
 FRAME = r"\boutperform|\bsurpass|\bbeats?\b"
 LIST_ITEM_SEP = re.compile(r",\s+(?:and\s+)?|\s+and\s+")
+# "65.0\% against 51.9\%", "a median 6.08\,s against 7.25\,s", "927 against 909"
+PAIR = re.compile(r"\d[\d.,]*\s*(?:\\?%|\\,s\b|s\b|×)?\s*\)?\s+(?:against|versus|vs\.?)\s+(?:an?\s+)?(?:median\s+)?\d", re.I)
 
 
 def roll_call_checks(lines, kinds):
@@ -224,10 +226,14 @@ def roll_call_checks(lines, kinds):
         start += block.count("\n") + 2
         if kinds.get(n, "front") != "body" or not block.strip():
             continue
-        sents = sm.split_sentences(" ".join(block.split()))
+        flat = " ".join(block.split())
+        sents = sm.split_sentences(flat)
         frame = [s for s in sents if re.search(FRAME, s, re.I)]
         if len(frame) >= 3:
-            issues.append(("WARN", n, f"{len(frame)} sentences of one paragraph repeat the 'outperforms' frame; give one verdict per group of benchmarks and leave the values to the table", frame[-1]))
+            issues.append(("WARN", n, f"{len(frame)} sentences of one paragraph repeat the 'outperforms' frame; give one verdict per group of benchmarks (one answer per ablation question), a reason, and leave the values to the table", frame[-1]))
+        pairs = [s for s in sents if PAIR.search(s)]
+        if len(PAIR.findall(flat)) > 2:
+            issues.append(("WARN", n, f"{len(PAIR.findall(flat))} number pairs ('a against b') in one paragraph; keep the one or two the claim turns on, the rest stay in the table", pairs[-1]))
         for s in frame:
             for m in re.finditer(r"\b(?:on|across|in)\s+([^.;:()]+?\s+and\s+[^,.;:()]+)", s):
                 items = [x for x in LIST_ITEM_SEP.split(m.group(1)) if x.strip()]

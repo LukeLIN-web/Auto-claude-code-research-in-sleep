@@ -217,6 +217,40 @@ User ruling 2026-11-16, from a review the user forwarded:
   needs a variant that changes only that one. Where the gain concentrates is a
   verdict, not a reason; it stands when the comparison that changes only that
   variable is significant on each benchmark of the group.
+- **An ablation paragraph answers its question once; it does not walk the
+  variants.** A paragraph whose sentences each compare ours with one more
+  variant, each with its own pair of numbers ("it significantly outperforms A,
+  a% against b%. It also outperforms B, c% against d%."), is the ablation
+  table in prose even when each sentence names one benchmark, and a topic
+  sentence in front of the walk does not change that. The paragraph gives the
+  answer for the whole family of variants ("every other source of training
+  data falls below ours, each significantly in at least one setting"), keeps
+  the one comparison the answer turns on, gives the reason, and points to the
+  table for the rest. A paragraph carries at most two number pairs
+  (`a% against b%`): the per-sentence limit alone lets through a paragraph of
+  seven sentences with one pair each. When every appendix experiment needs a
+  main-text mention, the mentions join the answer to the question they belong
+  to, one pointer sentence per question, not one sentence per variant.
+- **A measurement that explains a gain is that gain's reason, written beside
+  it.** A breakdown of failure kinds, which object the policy acts on first,
+  or which kind of task gains most is the paper's insight. Given its own
+  paragraph as one more comparison ("Failure kinds. Ours stalls in
+  significantly fewer episodes"), it reads as more log, and the gain it
+  explains stays unexplained. It goes into the paragraph of the gain as the
+  reason ("the gain comes from fewer stalled episodes and fewer wrong-object
+  grasps"), which holds when the two systems differ only in the component the
+  measurement concerns and the breakdown's difference is significant. When no
+  measurement in the paper explains a main gain, a breakdown of the episodes
+  already run (by failure kind, by task kind) can supply one; until then the
+  paragraph gives its verdict with no reason, never a mechanism the data do not
+  show.
+- **A section of one repeated frame reads as generated.** When most sentences
+  of a results section share one frame ("With X, ours (significantly)
+  outperforms Y on Z, a% against b%"), reviewers take it for text generated
+  from a results script and say so, the more readily when the paper carries an
+  LLM usage statement. Swapping synonyms does not fix it. Each paragraph is
+  rebuilt as question, answer and reason under the two rules above, and every
+  scope word survives the rebuild as in the roll-call rule.
 - **One row, one training condition, or mark the columns.** When a row's model
   differs by column (trained in that domain for some columns, transferred for
   others), a symbol defined in the caption marks those columns, or the row
@@ -391,7 +425,10 @@ Additional rules:
       reason; one model or one per domain is stated before the first results table.
 - [ ] Exactly one Experiments section; speedups reported as ratios.
 - [ ] Results paragraphs: finding first, one or two numbers, a reason from the
-      paper's own evidence; one verdict per group of benchmarks, no roll call. A
+      paper's own evidence; one verdict per group of benchmarks, one answer per
+      ablation question, at most two number pairs per paragraph, no roll call of
+      benchmarks or variants; a measurement that explains a gain sits beside it
+      as its reason; no section of one repeated sentence frame. A
       row whose training differs by column is marked; every transfer claim, and
       every instance a claim names, has main-text evidence; the main Setup
       defines only what the main text uses.
