@@ -303,7 +303,10 @@ was measured on, not even as a group ("the benchmarks in simulator A",
 "every benchmark built on engine B", "on newly generated tasks"): the
 Conclusion generalizes, saying what the method beats, and the body says where
 (user ruling 2026-11-16: 「conclusion 不应该有具体的 benchmark 名字」, then
-「不对, … 这些细节也不应该有」 and 「conclusion 就是要概括」).
+「不对, … 这些细节也不应该有」 and 「conclusion 就是要概括」). Nor does it list
+the baselines it beats: it names them as one class ("the alternatives to the
+core component"), true of every member (user ruling 2026-11-16: 「不要枚举,
+记住, 论文枚举越少越好」).
 It runs **at most 110 words**; CVPR/ICCV award papers' conclusions without
 a limitations part have a median of 94 (user ruling 2026-11-16).
 
