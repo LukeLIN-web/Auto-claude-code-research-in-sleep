@@ -52,6 +52,27 @@ No deference line anywhere ("However, we fully respect your final judgment"): de
 4. **Never rebut, and do not state our position** (user 2026-11-14「所以也不要说我们的立场」). No "by design" defence, no "we respectfully disagree", no sentence explaining why our view of the concern is right, not even as a neutral design statement; no restating a position the reviewer did not accept. Agreeing with the reviewer's framing is fine (§ 3 item 3). A limitation the reviewer did not ask about is not volunteered (C34).
 5. Do not discuss the score beyond the title and an optional closing request (§ 7), which is this reviewer's one request.
 
+**Thanks-only form** — the "No" branch of item 3: the reviewer keeps an accepting rating, lists reservations we have no new evidence for, and asks nothing (user 2026-11-16「回一个感谢」, then「怎么就写了这么点, 她不是有Critical Strengths …吗」「也不要废话太多 太细节」). Four short paragraphs:
+
+1. `Dear Reviewer <ID>,` then the bold thanks quoting the praise in the follow-up itself (e.g. "thorough", "meaningful experiments rather than simply providing explanations") and the kept rating; one plain sentence thanking the follow-up.
+2. **One sentence thanking the strengths of the original review** (its Strengths section), in the reviewer's own words, as a list of three or so items. A thanks that covers only the follow-up is too thin. No numbers, no table / figure / appendix addresses, no benchmark-by-benchmark detail: the AC needs to see that the reviewer praised the work, not the evidence again.
+3. Professional-judgment thanks, one sentence that the suggestions made the paper stronger, then the invitation to ask more.
+4. The thanks line.
+
+Leave out: any mention of the reservations (not even "we respect your reservations", which concedes and is a deference line, lint 24); a praised strength whose restatement brings back a cost or a weak result the reviewer still holds against us (e.g. "honest about cost", "reports null results" when efficiency is a kept reservation); a quantifier from the praise that implies the opposite case ("gains across *most* categories", "addresses *most* concerns"); a list of the reviewer's suggestions by name; the rating request (§ 7: keep the one request for a reply that closes a concern).
+
+> Title: Thank You for Confirming the Acceptance Rating
+>
+> Dear Reviewer X,
+>
+> **Thank you so much for finding our rebuttal thorough, for recognizing that we reported meaningful experiments rather than simply providing explanations, and for maintaining your rating in support of acceptance!** We are very grateful for your thoughtful follow-up.
+>
+> We are also deeply grateful for the strengths you highlighted in your review: our evaluations against suitable and compatible pipelines, the significant gains at hour scale where bounded per-pass context is genuinely useful, and our informative diagnostic analyses.
+>
+> We sincerely appreciate your careful and professional judgment throughout the review and discussion process. Your precise suggestions have made our evidence more complete and our paper stronger. If you have any further questions, please let us know, and we will address them.
+>
+> Thank you again for your time, valuable feedback, and continued support!
+
 Worked example, short form (a benchmark paper, 2026-11; concern: "semantic alignment is a proxy for event completion, and the criterion scores still combine event realization with physical plausibility"):
 
 > Title: Thank You for Confirming the Acceptance Rating
