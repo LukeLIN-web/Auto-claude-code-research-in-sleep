@@ -12,8 +12,9 @@ characters, so microtype's font expansion, which spreads body spans over a few
 tenths of a point, stays in); captions and tables set smaller are not read. Works for one- and two-column layouts: a line
 that ends left of the page middle is in the left column, one that starts right
 of it in the right column, and one that crosses it is full width; each column
-gets its own margins. A runt is a body line that starts at its column's left
-margin, is under half the column width, follows a full justified line, is not
+gets its own margins. A runt is a body line that starts at its paragraph's left
+edge (the column margin, or the text edge of a list item whose label line sits
+above it), is under half the width from that edge, follows a full justified line, is not
 bold (run-in \\paragraph heads) or a section number, and ends its paragraph:
 the next line in the column starts at most 2.5 em from the margin (an indented
 or flush new paragraph, a heading) or there is none. A line followed by a
@@ -26,6 +27,7 @@ import sys
 import pymupdf
 
 HEADING = re.compile(r"^([A-Z]|\d+)(\.\d+)*(\s|$)")
+LABEL = re.compile(r"^(•|–|−|∗|·|◦|\(?\d+[.)]|\(?[a-z][.)])")  # itemize / enumerate label
 SIZE_TOL = 0.35  # pt: microtype expansion moves 10 pt body spans by up to ±0.2; 9 pt captions stay out
 
 
@@ -64,6 +66,22 @@ def columns_of(page, body):
     return {c: rows for c, rows in out.items() if rows}  # a column holding only the page number has no margins
 
 
+def edge_of(rows, i, L, body):
+    """The left edge line i's paragraph runs at: the column margin L, or, for a line indented under a
+    list label, the item's text edge; None for any other indent (a paragraph's first line, a display)."""
+    x0 = rows[i][1]
+    if abs(x0 - L) <= 3:
+        return L
+    if not 0 < x0 - L <= 4 * body:
+        return None
+    j = i - 1
+    while j >= 0 and abs(rows[j][1] - x0) <= 3:  # the item's earlier continuation lines
+        j -= 1
+    if j >= 0 and rows[j][1] < x0 - 3 and LABEL.match(rows[j][3].strip()):
+        return x0
+    return None
+
+
 def main(pdf):
     doc = pymupdf.open(pdf)
     body = body_size(doc)
@@ -81,7 +99,8 @@ def main(pdf):
         for c, rows in cols.items():
             L, R = margins[c]
             for i, (y, x0, x1, text, bold) in enumerate(rows):
-                if i == 0 or bold or abs(x0 - L) > 3 or x1 - x0 >= (R - L) / 2:
+                E = edge_of(rows, i, L, body)
+                if i == 0 or bold or E is None or x1 - E >= (R - E) / 2:
                     continue
                 if HEADING.match(text.strip()) and len(text.strip()) < 12 or text.strip().isupper():
                     continue
