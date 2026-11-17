@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build the blind-read inputs of a polish (step 1 and the acceptance read), split across parallel readers.
+"""Build the blind-read inputs of a polish (step 1), split across parallel readers.
 
 usage: blind_pack.py <clone> <compiled.pdf> <compiled.aux> <scope.tsv> <outdir>
                      [--readers N] [--macro '\\method=OurMethod' ...]
