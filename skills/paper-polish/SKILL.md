@@ -33,7 +33,8 @@ This skill only orchestrates. The rules live in the skills it calls:
   - quoted text: a reviewer's words, another paper's sentence, quoted revised-paper text;
   - every sentence a co-author wrote or edited in a shared draft (never reworded or deleted; mark it instead — `rebuttal/references/collaboration.md` § 4 has the convention);
   - wording the user ruled on verbatim;
-  - in a paper: the abstract and contribution list, unless the user names them as in scope (`/paper-prose-tighten` class 13 reports, never edits, those).
+  - in a paper: the abstract and contribution list, unless the user names them as in scope (`/paper-prose-tighten` class 13 reports, never edits, those);
+  - in a paper: the Conclusion, unless the user names it as in scope; the editor lists what it would change there instead (user 2026-11-16「polish skill 不要改 conclusion」).
 - **Overlay** (optional): a caller's file section whose rules win where they differ from the called skills — for example `rebuttal/references/wording-pass.md` § 3 and § 4.1. Pass the whole section; the editor reads it before the skills.
 - **Ledger** (optional): a blind-read ledger the caller already produced. If given, step 1 is skipped.
 - **Evidence** (user 2026-11-15「不是应该去核对吗」): the result files the text's numbers and scopes come from, and for a paper the table and figure generators and the draft's sources, read-only. The editor checks a fact there before an edit that needs it. Only the blind readers (steps 1 and 6) are kept away from the evidence.
