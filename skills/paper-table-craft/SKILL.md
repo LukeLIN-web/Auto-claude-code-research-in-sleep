@@ -63,7 +63,8 @@ fact are one row.
 ## What a caption is
 
 **First sentence: the takeaway** (user, 2026-11-01), the table's one conclusion in
-the prose's own words, no number. Then the legend for *this* float: what is
+the prose's own words, no number. A takeaway that carries two conclusions may be
+two bold sentences (user 2026-11-16「能拆成两句粗体」). Then the legend for *this* float: what is
 measured, the symbols, the definition of each column. Nothing that defers to
 prose; a takeaway is not a restatement of rows, but a row-by-row recital is.
 
