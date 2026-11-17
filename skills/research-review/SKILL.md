@@ -44,6 +44,12 @@ threadId, rounds and trace, and neither is shown the other's output:
 
 An idea or project context has no sections: it gets the logic thread only.
 
+**Report each thread as it lands** (user 2026-11-16: 「先汇报出来的, 这样节约时间」).
+The threads finish at different times. When one returns, spot-check its anchors,
+save its trace, write its report, and give the user its findings at once. Do not
+hold one thread's results until the other returns. The thread still running is
+named as running, never summarized ahead of its reply.
+
 ## Persona
 
 Send the persona template **verbatim** from `reviewer-personas.md` (§2 for P1,
@@ -239,7 +245,8 @@ Save the full interaction and conclusions to a review document in the project ro
 - Paper outline if discussed
 
 For a manuscript that document is the **logic report**, and the structure thread
-gets its own **structure report** beside it, each self-contained:
+gets its own **structure report** beside it, each self-contained and each written
+when its own thread returns (see *Two reports for a manuscript*):
 - the section map and every structure issue whose anchor holds, with its move
 - the float map and argument map, and every float and argument flagged
 - the checker warnings of Step 1 that hold after reading the text they point at, under their own heading, apart from the reviewer's points

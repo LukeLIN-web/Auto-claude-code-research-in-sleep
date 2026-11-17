@@ -106,6 +106,12 @@ output. An idea or project context gets the logic thread only. Fill
 `[SECTION POLICY]` with the absolute path of
 `../shared-references/manuscript-craft.md`, never a summary of it.
 
+**Report each thread as it lands** (user 2026-11-16: 「先汇报出来的, 这样节约时间」).
+When one thread returns, spot-check its anchors, save its trace, write its report,
+and give the user its findings at once; do not hold them until the other thread
+returns. The thread still running is named as running, never summarized ahead of
+its reply.
+
 ```
 spawn_agent:
   model: gpt-6-astra
@@ -235,7 +241,8 @@ Save the full interaction and conclusions to a review document in the project ro
 - Paper outline if discussed
 
 For a manuscript that document is the **logic report**, and the structure thread
-gets its own **structure report** beside it, each self-contained:
+gets its own **structure report** beside it, each self-contained and each written
+when its own thread returns:
 - the section map and every structure issue whose anchor holds, with its move
 - the float map and argument map, and every float and argument flagged
 - the checker warnings of Step 1 that hold after reading the text they point at, under their own heading, apart from the reviewer's points
