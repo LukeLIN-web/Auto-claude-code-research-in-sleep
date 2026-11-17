@@ -410,8 +410,8 @@ instructions; the venue wins where they differ.
 2. Length. The space a part takes matches its weight. A summary part (the
    abstract, the introduction's contribution paragraph, the conclusion) states
    the claim; it does not re-list the benchmarks, settings or numbers the body
-   already reports. The conclusion names no specific benchmark, only the
-   simulator or physics engine a group of benchmarks runs in. A results paragraph that walks the table benchmark by
+   already reports. The conclusion names no benchmark, simulator or physics
+   engine, not even as a group. A results paragraph that walks the table benchmark by
    benchmark and test by test, or an ablation variant by variant with a pair of
    numbers each, instead of one verdict per group of benchmarks (one answer per
    ablation question) and a reason, is flagged; so is a paragraph with more

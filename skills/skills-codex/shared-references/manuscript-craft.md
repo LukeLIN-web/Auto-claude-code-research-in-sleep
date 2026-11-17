@@ -298,12 +298,10 @@ stays simple: no detail, no new qualifiers — plain enough for a non-specialist
 It is short, a few sentences that restate the claim; it does not re-list the
 benchmarks, settings or numbers the body already reports (user ruling
 2026-11-16: 「conclusion 就不应该这么一堆 benchmark 枚举, 应该简短一点」).
-It names no specific benchmark: a group of benchmarks is named by the
-simulator or physics engine it runs in ("the benchmarks in simulator A",
-"every benchmark built on engine B"). The group name must hold for every
-benchmark it covers; where the claim holds on only part of a group, narrow
-the group with a qualifier ("without collecting on them"), never by naming
-its members (user ruling 2026-11-16: 「conclusion 不应该有具体的 benchmark 名字」).
+It names no benchmark, simulator or physics engine, not even as a group
+("the benchmarks in simulator A", "every benchmark built on engine B"): it
+says what the method beats, and the body says where (user ruling 2026-11-16:
+「conclusion 不应该有具体的 benchmark 名字」, then 「不对, … 这些细节也不应该有」).
 It runs **at most 110 words**; CVPR/ICCV award papers' conclusions without
 a limitations part have a median of 94 (user ruling 2026-11-16).
 
