@@ -745,7 +745,8 @@ Rule of thumb: cut what proves *diligence*; keep what bounds *scope*.
    command grep -nE '(on|at) [A-Z][A-Za-z-]+, \$?[-+0-9]' sections/*.tex | command grep -v '&'
    # class 12 wordy phrases: recall aid only, read every sentence (class 12)
    command grep -niE 'carr(y|ies|ied) out|refer(s|red)? to .* as|for the first time|together with|none of them|loosely worded|in order to|(less|more) often|half and half|has been reported to|are what make' sections/*.tex
-   # class 14 exception clauses (captions too: the generator strings, then the rendered tables/*.tex)
+   # class 14 exception clauses (captions too: the generator strings, then the rendered tables/*.tex);
+   # high recall: a plain contrastive `but` matches too, keep only claims about every member that then take members back
    command grep -niE '\bexcept\b|\ball but\b|\b(every|all|each|any)\b[^.]{0,60}\bbut\b|\bbut (on |for )?[A-Z$\\]|save for|apart from|aside from|with the exception|\bexcluding\b|\bbarring\b' sections/*.tex tables/*.tex
    # class 13: every sentence that compares against one baseline, across all sections
    # (run once per baseline noun; read the list for split sentences and for copies that disagree)
