@@ -90,5 +90,5 @@ command grep -nE ' (on|in|from|with|for|at|by|of|about)( *~?\\cite\{[^}]*\})? *(
 | A sentence is cut while rewriting voice or cohesion | Cutting and rewriting are separate steps (user 2026-11-12「删和改不要放一个」); report it |
 | "We find that" is put before a result to make it active | The result sentence is already active and is the claim; `we` goes where the authors acted |
 | An unknown-actor passive is forced active ("Annotators rated each video three times" invented from "each video is rated by three annotators") | Passive stays when the actor is unknown or irrelevant; never invent an actor |
-| A synonym is swapped in so the text does not repeat a noun | One noun per thing; repetition is cohesion |
+| A synonym is swapped in so the text does not repeat a noun | One noun per thing; repetition is cohesion. Comparison verbs are the exception: `outperforms` may rotate within the list in `manuscript-craft.md` §2, Experiments (`performs better than`, `achieves a higher success rate than`, …), with `significantly` kept on exactly the comparisons that had it |
 | A transition sentence or recap is added for flow | Cohesion comes from order and first words; no new sentences |

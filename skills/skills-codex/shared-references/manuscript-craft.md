@@ -336,6 +336,28 @@ User ruling 2026-11-16, from a review the user forwarded:
   LLM usage statement. Swapping synonyms does not fix it. Each paragraph is
   rebuilt as question, answer and reason under the two rules above, and every
   scope word survives the rebuild as in the roll-call rule.
+- **Comparison verbs may rotate; the significance word may not.** When the
+  Setup defines `outperforms` (higher on the metric) and `significantly
+  outperforms` (higher, and the test is significant), the statistical claim
+  sits in `significantly`, which stays on exactly the comparisons that had
+  it; a comparison without it stays without. The verb may vary so that a
+  dense results section reads less mechanically, mainly among three (user
+  2026-11-16, on a forwarded review):
+  - `outperforms` / `significantly outperforms`;
+  - `performs better than` / `performs significantly better than`: the most
+    natural direct replacement;
+  - `achieves a higher <metric> than` / `achieves a significantly higher
+    success rate than`: the most precise, since it names the metric.
+
+  Also fine: `surpasses` (takes a method or model as its object; better for
+  that than `exceeds`), `improves upon` (where ours builds on the compared
+  system, such as the frozen baseline it extends), `yields better results
+  than` (less precise than naming the metric). `exceeds` takes a metric
+  (`a success rate exceeding that of the baseline`), not a method or model
+  directly. Never `dominates` (overclaims), `beats` (colloquial) or `excels`
+  (not a direct comparison). Rotating the verb does not fix a roll call or a
+  section of one repeated frame (the rules above). The priority is low:
+  keeping `outperforms` throughout is also correct.
 - **One row, one training condition, or mark the columns.** When a row's model
   differs by column (trained in that domain for some columns, transferred for
   others), a symbol defined in the caption marks those columns, or the row

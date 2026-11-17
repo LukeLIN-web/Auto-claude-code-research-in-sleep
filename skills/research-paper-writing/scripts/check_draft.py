@@ -58,6 +58,7 @@ WARN_PHRASES = {
     r"\bto the best of our knowledge\b": "only with a scoped claim",
     r"\btables? \d+ (reports|shows)\b|\btab\.\s*\d+ (reports|shows)\b": "put the claim first and cite the table",
     r"\bin our setup\b": "hedge-like phrase",
+    r"\b(?:dominates|beats?|excels?)\b": "comparison verb that overclaims, is colloquial or does not compare; use outperforms / performs better than / achieves a higher <metric> than (manuscript-craft.md §2)",
 }
 DETAIL = r"\b\d+ (layers?|heads?|views?|steps?|epochs?|tokens? per)\b|\d+\s*[×x]\s*\d+\s*[×x]\s*\d+|\bbatch size\b|\blearning rate of\b|\bhidden (size|dimension)\b"
 # evaluation protocol ("with ten episodes per task"): the Setup carries it (manuscript-craft.md §2, Introduction)
@@ -158,7 +159,7 @@ def corpus_checks(path):
         if sec == "abstract" and m["numbers"] == 0:
             issues.append(("WARN", 0, "abstract has no number; give the one or two headline results a reader should remember", ""))
         for p in paras:
-            frame = [s for s in sm.split_sentences(p) if re.search(r"\boutperform", s, re.I)]
+            frame = [s for s in sm.split_sentences(p) if re.search(FRAME, s, re.I)]
             if len(frame) >= 3:
                 issues.append(("WARN", 0, f"{name}: {len(frame)} sentences of one paragraph repeat the 'outperforms' frame; merge the comparisons and end on the take-home message", frame[-1]))
         def over(key, msg, level="WARN"):
@@ -214,7 +215,9 @@ def line_kinds(path, n_lines):
     return kinds
 
 
-FRAME = r"\boutperform|\bsurpass|\bbeats?\b"
+# the comparison verbs manuscript-craft.md §2 lets rotate still count as one frame: rotating does not fix a roll call
+FRAME = (r"\boutperform|\bsurpass|\bbeats?\b|\bimprove[sd]? (?:up)?on\b|\bimprove[sd]? over\b|\bexceed"
+         r"|\b(?:performs?|performed|yields?|yielded) (?:\w+ )?better\b|\bachieve[sd]? (?:an? )?(?:\w+ )?higher\b")
 LIST_ITEM_SEP = re.compile(r",\s+(?:and\s+)?|\s+and\s+")
 # "65.0\% against 51.9\%", "a median 6.08\,s against 7.25\,s", "927 against 909", "from 51.9\% to 65.0\%"
 UNIT = r"(?:\\?%|\\,s\b|s\b|×)?"
