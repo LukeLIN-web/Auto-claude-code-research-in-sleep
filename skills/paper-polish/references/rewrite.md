@@ -63,12 +63,14 @@ command grep -nE '(Moreover|Furthermore|Additionally|In addition),' $FILES
 | Nominalizations (`a comparison is made`, `leads to an improvement in`, `the computation of`) | The verb: `we compare`, `improves`, `we compute` |
 | `because` joining a reason to a claim (`because the VLA is trained without the orchestrator, fine-tuning degrades …`) | `as` or `since`: `because` asserts the cause outright, and papers rarely use it; keep it only where the text reports a test of that cause. If neither the softer word nor the evidence fits, the clause is a claim change: leave it and report |
 | A number pair trailing the sentence after a comma or colon (`…, our method significantly lifts the agent, a\% against b\%.`): it reads like a sports score (user 2026-11-16, from a forwarded review) | The pair goes into the predicate with its metric named: `significantly raises overall success from b\% to a\%` when ours is the compared system plus the method's change; between two separate systems, in parentheses after the comparison (`outperforms X (a\% against b\%)`). The numbers, the significance word and the compared system stay as they were (`manuscript-craft.md` §2, Introduction) |
+| A relative clause ending on a stranded preposition (`evaluated on the tasks it was trained on`, `tests only on tasks it collected on`, `sequences of the skills it collected on`); several in one paragraph ending on the same word read as very awkward (user 2026-11-16, from a forwarded review) | A noun phrase that names the same set: `its training tasks`, `seen tasks`, `tasks encountered during collection`, `previously practiced skills`. The set must not change (the tasks a policy collected on are not the tasks it was evaluated on). If no noun phrase names the same set, at most one such clause stays per paragraph |
 | Vague scope (`across settings`, `in most cases`) | The concrete scope the evidence has (`on all four benchmarks`, `in three of four`), checked in the text or the evidence files; report it only when they do not settle it |
 
 ```bash
 command grep -niE '\bbecause\b' $FILES
 command grep -nE '^([^,]*,){5,}' $FILES   # lines with five or more commas (one sentence per line); discount \cite, math, numbers
 command grep -nE '[,:] *(in )?[0-9.]+\\?% (against|versus|vs\.?) [0-9.]' $FILES   # number pair trailing after a comma or colon
+command grep -nE ' (on|in|from|with|for|at|by|of|about)( *~?\\cite\{[^}]*\})? *([,.;:)]|$)' $FILES   # clause ending on a stranded preposition
 ```
 
 **Hold the scope.** A split or reorder must not move a qualifier so that it seems to scope a different clause (`on two benchmarks` drifting to the end of a sentence, where it reads as scoping only the last clause).
