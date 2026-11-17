@@ -265,6 +265,28 @@ User ruling 2026-11-16, from a review the user forwarded:
   ("pre-selecting objects by success rate"), not by a name defined only in the
   appendix, and a difference that was not significant is not written as "brings
   no gain".
+- **Every number argues for a claim; a number that argues for nothing is not
+  reported.** For each number in the Experiments prose (a result pair, a
+  count, a dataset size, a cost, a latency), name the claim it supports: the
+  paragraph's verdict, the reason for a gain, a confound it rules out, or a
+  claim the Introduction or a contribution bullet makes. An implied claim is
+  stated in a few words in the number's sentence ("Less data also works: on a
+  quarter of the collection, ..."; "it wins while training on fewer episodes
+  than the demonstrations"; "it is faster because its replies are shorter").
+  With no claim the number leaves the main text; the appendix may keep it as
+  a record. The usual orphans: a cost or wall-clock line with no comparison
+  and no claim about cost; two near-equal counts printed beside a comparison
+  they do not change; a secondary measurement placed after a gain without
+  saying it is the reason; a comparison in a paragraph about something else.
+  Before cutting, check whether a sentence elsewhere (an Introduction claim, a
+  contribution bullet) rests on the number; then it stays. Stating the claim
+  never widens it: a count that holds for one control set is scoped to that
+  set, a not-significant pair keeps its plain verb, and a "because" needs the
+  evidence the reason rule above asks for. Setup constants that define what
+  is evaluated (task counts, the size of a held-out split a column uses) are
+  definitions, not reports, and stay. Table rows the authors placed for
+  context, such as reported rows of other systems, are their decision, not
+  this rule's.
 - **Each instance a claim names is an argument of its own.** "With two models"
   or "on three simulators" needs main-text evidence for each model or
   simulator, under the self-contained rule of `review-float-map.md` (a float

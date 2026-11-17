@@ -60,6 +60,13 @@ A number survives when **it is the claim**. A number dies when it is
 reading its prose; they read the tables. Counts belong in tables, in the
 artifacts, or nowhere.
 
+In a results section, write down for every number the claim it supports (the
+paragraph's verdict, a gain's reason, a confound it rules out, a contribution it
+backs). No claim → the number goes; an implied claim → the sentence states it
+in a few words, never wider than the evidence. The rule and its edge cases:
+`../shared-references/manuscript-craft.md` §2, Experiments ("Every number argues
+for a claim").
+
 ## The Escalation: Caveat Pressure Means Cut the Claim
 
 A sentence that needs one qualifying clause to be true is a sentence to fix. A
