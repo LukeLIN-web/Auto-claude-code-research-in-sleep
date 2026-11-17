@@ -67,7 +67,7 @@ Leave out: any mention of the reservations (not even "we respect your reservatio
 >
 > **Thank you so much for finding our rebuttal thorough, for recognizing that we reported meaningful experiments rather than simply providing explanations, and for maintaining your rating in support of acceptance!** We are very grateful for your thoughtful follow-up.
 >
-> We are also deeply grateful for the strengths you highlighted in your review: our evaluations against suitable and compatible pipelines, the significant gains at hour scale where bounded per-pass context is genuinely useful, and our informative diagnostic analyses.
+> We are also deeply grateful for the strengths you highlighted in your review: our evaluations and the choice of suitable, compatible baselines for comparison, the significant gains at hour scale where bounded per-pass context is genuinely useful, and our informative diagnostic analyses.
 >
 > We sincerely appreciate your careful and professional judgment throughout the review and discussion process. Your precise suggestions have made our evidence more complete and our paper stronger. If you have any further questions, please let us know, and we will address them.
 >
