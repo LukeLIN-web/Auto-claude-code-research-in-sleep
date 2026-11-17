@@ -46,7 +46,7 @@ Use each question to trigger concrete edits before submission.
 3. Is the technical idea genuinely non-obvious beyond well-explored practice?
 4. Is our gain surprising or insightful rather than a predictable improvement?
 5. Is there at least one clear novelty type (task/pipeline/module/design finding/insight)?
-6. Does the Abstract name the ingredient that separates the method from the generic recipe it resembles (its training signal or labels), or can a reader take it for that recipe?
+6. Does the Abstract state each component by its design objective, leaving its training signal, labels and teacher to the Method, and summarize each headline comparison as one range over its benchmarks?
 7. Are the contribution items independent, and does an empirical item claim only the factors its controls isolate ("better than alternative recipes" is not "X is the primary driver")?
 
 Questions 6–7 follow `../../shared-references/manuscript-craft.md` §2 (Abstract, Introduction). Ask the questions that decide whether a reviewer understands the contribution (Contribution 6, Experimental Strength 5–6) before the prose questions.

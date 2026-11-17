@@ -36,11 +36,24 @@ User ruling 2026-11-16.
   usually the main comparison against the simplest strong baseline and the one
   that isolates the core component. No number at all, or a third comparison,
   is a defect.
-- **Each component by what it does, not how.** A method sentence says what a
-  component achieves and why it is needed. Selection rules, per-frame labels,
-  data mixtures and which weights change belong to the Method; "keeps the
-  episodes that succeed with no tool running, each frame labeled with the
-  planner's subgoal" interrupts the abstract.
+- **The framework by what it can do, each component by its objective.** One
+  sentence says what the whole system can do; then "Specifically, ..." gives
+  each component's design objective, never its mechanics (user ruling
+  2026-11-16, from a co-author note: "only introduce the high-level design and
+  objective of each module"). The training signal and labels, the teacher a
+  model is distilled from, selection rules, data mixtures and which weights
+  change belong to the Method: "supervised with the planner's subgoal rather
+  than the task instruction" and "trained on a proprietary planner's calls"
+  interrupt the abstract.
+- **Each headline comparison is one range over its benchmarks.** "Across
+  several benchmarks, the method improves the backbone by a–b pp over the
+  same-stack official recipe, and transfers to a second backbone, surpassing
+  its published results by c–d pp", never "from x% to y% on A and from u% to
+  v% on B" (user ruling 2026-11-16, 「分数你应该概括一下」). A range counts
+  as one headline number. It spans every benchmark the sentence counts, its
+  significance word holds only if every one of them is significant, and each
+  endpoint is the difference of the exact rates rounded like a table cell, not
+  of two printed cells.
 - **Results in at most two sentences, each in its own frame, then the
   take-home message.** Result sentences that repeat one predicate ("X
   significantly outperforms Y" three times running) read like a lab report;
@@ -49,13 +62,6 @@ User ruling 2026-11-16.
 
 From a second review the user forwarded, 2026-11-16 (「更新 paper review skill」):
 
-- **Name what separates the method from the recipe it resembles.** The one
-  exception to "what, not how": when a component, stated by what it does,
-  reads as a generic recipe ("fine-tunes on the episodes it completes" reads
-  as success-filtered behavior cloning), the abstract names in a phrase the
-  ingredient that differs, by what it replaces ("supervised with the subgoal
-  it was given at each moment, not the task instruction"). Its mechanics
-  (selection thresholds, per-frame bookkeeping) stay in the Method.
 - **Each headline number says which comparison it belongs to.** The sentence
   names what the two sides share and the one thing that differs. The full
   system's gain over the bare baseline changes several components at once, so
@@ -416,12 +422,13 @@ Additional rules:
 
 ## 6. Final pass checklist
 
-- [ ] Abstract: one or two headline numbers, no implementation detail, results
-      in at most two differently framed sentences, ending on the take-home message.
-      The ingredient that separates the method from the recipe it resembles is
-      named; each headline number says its comparison (their order is the
-      authors' call); a number beside a property comes from that
-      setting; background at most two sentences; it ends on its first page.
+- [ ] Abstract: one or two headline numbers, each comparison one range over
+      its benchmarks; each component by its objective, no implementation
+      detail (training signal, labels, teacher); results in at most two
+      differently framed sentences, ending on the take-home message. Each
+      headline number says its comparison (their order is the authors' call);
+      a number beside a property comes from that setting; background at most
+      two sentences; it ends on its first page.
 - [ ] Introduction: no method component before the method paragraph, every
       counted set named; one sentence of reason between gap and method; no
       ratio, data source or baseline name in the method paragraph; results by

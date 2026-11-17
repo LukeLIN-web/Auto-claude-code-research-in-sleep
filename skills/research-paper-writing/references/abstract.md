@@ -135,7 +135,7 @@ Version 3 local cite:
 | L8 measurement | Setting → Method (sensing principle) → Mechanism → Result (prototype) |
 
 ## Rules
-- The author rulings in `../../shared-references/manuscript-craft.md` §2 (Abstract) win over this list: one or two headline numbers; each component by what it does, not how, except the ingredient that separates the method from the recipe it resembles, named in a phrase; each headline number says its comparison (their order is the authors' call), and a number beside a property comes from that setting; background in at most two sentences naming the specific difficulty; results in at most two differently framed sentences, then the take-home message.
+- The author rulings in `../../shared-references/manuscript-craft.md` §2 (Abstract) win over this list: one or two headline numbers, each comparison summarized as one range over its benchmarks; the framework by what it can do and each component by its objective, never its training signal, labels or teacher; each headline number says its comparison (their order is the authors' call), and a number beside a property comes from that setting; background in at most two sentences naming the specific difficulty; results in at most two differently framed sentences, then the take-home message.
 - About 130–220 words in 6–9 sentences averaging ~20–25 words; one message per sentence, with its reason or evidence inside the sentence. One short sentence for the idea is welcome. Do not split a result from its number or a design from its benefit.
 - Each element appears once: do not restate the gap or the benefit in a second sentence.
 - Numbers: one or two headline results and, if essential, one number that defines the scale. No ablation numbers or implementation details.
