@@ -309,6 +309,10 @@ core component"), true of every member (user ruling 2026-11-16: 「不要枚举,
 记住, 论文枚举越少越好」).
 It runs **at most 110 words**; CVPR/ICCV award papers' conclusions without
 a limitations part have a median of 94 (user ruling 2026-11-16).
+The cap is a ceiling, not a target: the Conclusion restates every advantage
+the Abstract claims, the success comparison and each thing the method does
+not need, and a trim never drops one to get shorter (user ruling 2026-11-16:
+「只说了一个优点? 还有两个没说? 结论也不要限制太短」).
 
 ### Terminology
 
