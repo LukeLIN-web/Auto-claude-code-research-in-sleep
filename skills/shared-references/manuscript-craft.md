@@ -181,6 +181,23 @@ From a fourth review the user forwarded, 2026-11-16 (「更新 skill」):
   This holds in every section; the rewrite pattern is `paper-polish`'s
   `references/rewrite.md` §3, and `check_draft.py` flags the trailing form.
 
+From a fifth review the user forwarded, 2026-11-16 (「更新 skill」):
+
+- **Contribution items say what we propose, validate and find, not what prior
+  work lacks.** The Related Work and the motivation paragraphs have already
+  drawn the difference. An item that opens on prior work ("Unlike prior work,
+  ...", "Prior work that does X keeps Y. In ours, ...", "Unlike naive Z, ...")
+  repeats that contrast in every item and turns the list into a defense.
+  Delete the lead-in (the whole sentence when it only describes prior work,
+  the clause when it opens a sentence about ours) and start from the item's
+  own subject: the method and its properties ("<Method> keeps ..."), what was
+  validated ("In <Method>, a <component> selects ..."), what was found
+  ("Fine-tuning on X improves ..."). A property the lead-in carried stays,
+  stated as the method's own; its citations must still appear in the
+  Introduction's prose or the Related Work. One sentence of contrast stays
+  only for a difference that is critical and that readers would otherwise
+  confuse with prior work, never one per item.
+
 ### Method
 
 - Open with a **road-map paragraph** that states what the section will build,
@@ -563,8 +580,9 @@ Additional rules:
       controls isolate. The method item names the whole method, its stages in
       order and the capabilities the prose argues for; every title is a short
       noun phrase, never a finding; no name in the list that the prose has not
-      introduced. No evaluation protocol (episodes per task, seeds, caps) in
-      the Introduction.
+      introduced. No item opens on prior work; one contrast sentence stays
+      only for a critical, easily confused difference. No evaluation protocol
+      (episodes per task, seeds, caps) in the Introduction.
 - [ ] Method has a road-map paragraph and (near-)zero citations; comparisons live
       in a dedicated Advantages paragraph.
 - [ ] Method names the configuration the main rows run and presents the

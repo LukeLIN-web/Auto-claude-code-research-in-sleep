@@ -43,7 +43,7 @@ Shape:
 10. **Say each thing once.** Assign every claim (the gap, the insight, each advantage, each result) to exactly one paragraph. Do not restate the insight after the method and do not re-list the research questions. The contribution list is written by its own rules ("Contribution List"). Repetition was the most common weakness found by blind reviewers.
 11. **Short background.** Award introductions reach the specific problem fast (the gap appears by paragraph 2). Keep generic field background to at most two sentences before the specific setting or credit.
 12. **No implementation details** (layer counts, grid sizes, data pipelines, hyperparameters) unless they are the contribution.
-13. **Author rulings win over this list** (`../../shared-references/manuscript-craft.md` §2, Introduction): no method component before the method paragraph and every counted set named; one sentence of reason between the failed fix and the method; no data source, ratio, code base or baseline name in the method paragraph; results by kind of generalization with one or two numbers, no benchmark roll call, no "slightly"; contribution items of about 60 words, independent, an empirical one claiming only what its controls isolate; one spine, a second motivation entering as what a component makes possible; a failure breakdown stated as motivation, not blame; every "all / only / without" true of each stage; no evaluation protocol (episodes per task, seeds, caps), and each result's numbers in the predicate ("from b% to a%"), never trailing after a comma.
+13. **Author rulings win over this list** (`../../shared-references/manuscript-craft.md` §2, Introduction): no method component before the method paragraph and every counted set named; one sentence of reason between the failed fix and the method; no data source, ratio, code base or baseline name in the method paragraph; results by kind of generalization with one or two numbers, no benchmark roll call, no "slightly"; contribution items of about 60 words, independent, an empirical one claiming only what its controls isolate, each starting from what we propose, validate or find rather than from prior work; one spine, a second motivation entering as what a component makes possible; a failure breakdown stated as motivation, not blame; every "all / only / without" true of each stage; no evaluation protocol (episodes per task, seeds, caps), and each result's numbers in the predicate ("from b% to a%"), never trailing after a comma.
 
 ## Introduction Logic Map
 ```mermaid
@@ -563,6 +563,13 @@ Check: `grep -n '\\item' <intro file>` and read each item but the last for bench
 9. The list introduces no name: each benchmark, split, coined term or variant name in it appears in the prose
    above. A name the paper defines itself (a subset named by its size) is described in words unless the prose
    introduced it.
+10. Items say what we propose, validate and find; none opens on prior work (`Unlike prior work, ...`,
+    `Prior work that ...`, `Unlike naive ...`). The Related Work and the motivation paragraphs draw the
+    difference. One sentence of contrast stays only for a critical difference readers would otherwise confuse,
+    never one per item (`manuscript-craft.md` §2, Introduction, fifth review).
+
+Check for 10: `awk '/begin\{itemize\}/,/end\{itemize\}/' <intro file> | grep -nE 'Unlike|In contrast|Prior work|Previous work|Existing (work|methods)'`;
+each hit is a lead-in to delete unless it is the one critical contrast.
 
 Check for 9: list the capitalized and hyphenated names inside the `itemize`, and `grep -n` each one in the
 Introduction file; a name whose first hit is inside the list breaks the rule.
@@ -591,6 +598,7 @@ Introduction file; a name whose first hit is inside the list breaks the rule.
 - [ ] Is terminology stable across all sections?
 - [ ] Do the contribution items before the results item name no benchmark, and does the results item's title state the improvement?
 - [ ] Does the method item's title name the whole method, are all titles short noun phrases, and does every name in the list appear in the prose first?
+- [ ] Does each contribution item start from what we propose, validate or find, with no prior-work lead-in except one critical, easily confused contrast?
 - [ ] Credit to specific prior work precedes the gap; the component blamed later is described first.
 - [ ] Gap = what fails/is missing + technical reason + condition, set up as a tension.
 - [ ] A contrast paragraph or sentence names the closest work and one checkable difference.
