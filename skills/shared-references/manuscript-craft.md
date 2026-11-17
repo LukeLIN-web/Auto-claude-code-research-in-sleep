@@ -142,6 +142,29 @@ From a second review the user forwarded, 2026-11-16:
   needs a variant changing only that factor. Otherwise state the item as a
   controlled comparison and name the factors it controlled.
 
+From a third review the user forwarded, 2026-11-16 (「更新 skill」):
+
+- **The method item names the whole method and carries what the prose sells.**
+  Its title says what the method is as a whole ("A fully local, <property>
+  <kind of system>"), never one of its stages, with the other stage left as a
+  clause in the body. The body states the stages in order as one pipeline,
+  each with its role. A property the Introduction's prose argues for a
+  component (that it transfers to other datasets, embodiments or models)
+  appears in that component's part of the item, stated in general terms; its
+  numbers and benchmarks stay in the prose.
+- **An item's title is a short noun phrase naming what the item contributes**:
+  the method, the subject of a finding ("Empirical insights into adapting
+  <component> within <system>"), the improvement ("Significant improvements on
+  six benchmarks"). A sentence that states a finding ("Keeping only X
+  outperforms Y and Z") is the body's first sentence, not the title. The body
+  names each compared alternative by what it is ("scripted demonstrations",
+  not a table row's label) and the property the finding is about.
+- **The list introduces no name.** Every benchmark, split, coined term and
+  variant name in an item appears in the Introduction's prose before the list.
+  A name the paper itself defines (a task subset named by its size, an
+  internal arm name) is described in words ("on held-out tasks") unless the
+  prose has introduced it.
+
 ### Method
 
 - Open with a **road-map paragraph** that states what the section will build,
@@ -459,7 +482,10 @@ Additional rules:
       entering as a component's property; a failure breakdown stated as
       motivation, not blame; every "all / only / without" holds for each stage;
       contribution items independent, an empirical one claiming only what its
-      controls isolate.
+      controls isolate. The method item names the whole method, its stages in
+      order and the capabilities the prose argues for; every title is a short
+      noun phrase, never a finding; no name in the list that the prose has not
+      introduced.
 - [ ] Method has a road-map paragraph and (near-)zero citations; comparisons live
       in a dedicated Advantages paragraph.
 - [ ] Method names the configuration the main rows run and presents the

@@ -48,8 +48,9 @@ Use each question to trigger concrete edits before submission.
 5. Is there at least one clear novelty type (task/pipeline/module/design finding/insight)?
 6. Does the Abstract state each component by its design objective, leaving its training signal, labels and teacher to the Method, and summarize each headline comparison as one range over its benchmarks?
 7. Are the contribution items independent, and does an empirical item claim only the factors its controls isolate ("better than alternative recipes" is not "X is the primary driver")?
+8. Does the method item's title name the whole method (not one stage) and its body carry the capabilities the Introduction's prose argues for; is every item title a short noun phrase rather than a finding; and does every name in the list (benchmark, split, coined term) appear in the prose first?
 
-Questions 6–7 follow `../../shared-references/manuscript-craft.md` §2 (Abstract, Introduction). Ask the questions that decide whether a reviewer understands the contribution (Contribution 6, Experimental Strength 5–6) before the prose questions.
+Questions 6–8 follow `../../shared-references/manuscript-craft.md` §2 (Abstract, Introduction). Ask the questions that decide whether a reviewer understands the contribution (Contribution 6, Experimental Strength 5–6) before the prose questions.
 
 ### 2. Writing Clarity
 

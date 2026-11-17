@@ -36,11 +36,24 @@ User ruling 2026-11-16.
   usually the main comparison against the simplest strong baseline and the one
   that isolates the core component. No number at all, or a third comparison,
   is a defect.
-- **Each component by what it does, not how.** A method sentence says what a
-  component achieves and why it is needed. Selection rules, per-frame labels,
-  data mixtures and which weights change belong to the Method; "keeps the
-  episodes that succeed with no tool running, each frame labeled with the
-  planner's subgoal" interrupts the abstract.
+- **The framework by what it can do, each component by its objective.** One
+  sentence says what the whole system can do; then "Specifically, ..." gives
+  each component's design objective, never its mechanics (user ruling
+  2026-11-16, from a co-author note: "only introduce the high-level design and
+  objective of each module"). The training signal and labels, the teacher a
+  model is distilled from, selection rules, data mixtures and which weights
+  change belong to the Method: "supervised with the planner's subgoal rather
+  than the task instruction" and "trained on a proprietary planner's calls"
+  interrupt the abstract.
+- **Each headline comparison is one range over its benchmarks.** "Across
+  several benchmarks, the method improves the backbone by a–b pp over the
+  same-stack official recipe, and transfers to a second backbone, surpassing
+  its published results by c–d pp", never "from x% to y% on A and from u% to
+  v% on B" (user ruling 2026-11-16, 「分数你应该概括一下」). A range counts
+  as one headline number. It spans every benchmark the sentence counts, its
+  significance word holds only if every one of them is significant, and each
+  endpoint is the difference of the exact rates rounded like a table cell, not
+  of two printed cells.
 - **Results in at most two sentences, each in its own frame, then the
   take-home message.** Result sentences that repeat one predicate ("X
   significantly outperforms Y" three times running) read like a lab report;
@@ -49,13 +62,6 @@ User ruling 2026-11-16.
 
 From a second review the user forwarded, 2026-11-16 (「更新 paper review skill」):
 
-- **Name what separates the method from the recipe it resembles.** The one
-  exception to "what, not how": when a component, stated by what it does,
-  reads as a generic recipe ("fine-tunes on the episodes it completes" reads
-  as success-filtered behavior cloning), the abstract names in a phrase the
-  ingredient that differs, by what it replaces ("supervised with the subgoal
-  it was given at each moment, not the task instruction"). Its mechanics
-  (selection thresholds, per-frame bookkeeping) stay in the Method.
 - **Each headline number says which comparison it belongs to.** The sentence
   names what the two sides share and the one thing that differs. The full
   system's gain over the bare baseline changes several components at once, so
@@ -135,6 +141,29 @@ From a second review the user forwarded, 2026-11-16:
   one of its factors ("the model's own data") is "the primary driver"; that
   needs a variant changing only that factor. Otherwise state the item as a
   controlled comparison and name the factors it controlled.
+
+From a third review the user forwarded, 2026-11-16 (「更新 skill」):
+
+- **The method item names the whole method and carries what the prose sells.**
+  Its title says what the method is as a whole ("A fully local, <property>
+  <kind of system>"), never one of its stages, with the other stage left as a
+  clause in the body. The body states the stages in order as one pipeline,
+  each with its role. A property the Introduction's prose argues for a
+  component (that it transfers to other datasets, embodiments or models)
+  appears in that component's part of the item, stated in general terms; its
+  numbers and benchmarks stay in the prose.
+- **An item's title is a short noun phrase naming what the item contributes**:
+  the method, the subject of a finding ("Empirical insights into adapting
+  <component> within <system>"), the improvement ("Significant improvements on
+  six benchmarks"). A sentence that states a finding ("Keeping only X
+  outperforms Y and Z") is the body's first sentence, not the title. The body
+  names each compared alternative by what it is ("scripted demonstrations",
+  not a table row's label) and the property the finding is about.
+- **The list introduces no name.** Every benchmark, split, coined term and
+  variant name in an item appears in the Introduction's prose before the list.
+  A name the paper itself defines (a task subset named by its size, an
+  internal arm name) is described in words ("on held-out tasks") unless the
+  prose has introduced it.
 
 ### Method
 
@@ -438,12 +467,13 @@ Additional rules:
 
 ## 6. Final pass checklist
 
-- [ ] Abstract: one or two headline numbers, no implementation detail, results
-      in at most two differently framed sentences, ending on the take-home message.
-      The ingredient that separates the method from the recipe it resembles is
-      named; each headline number says its comparison (their order is the
-      authors' call); a number beside a property comes from that
-      setting; background at most two sentences; it ends on its first page.
+- [ ] Abstract: one or two headline numbers, each comparison one range over
+      its benchmarks; each component by its objective, no implementation
+      detail (training signal, labels, teacher); results in at most two
+      differently framed sentences, ending on the take-home message. Each
+      headline number says its comparison (their order is the authors' call);
+      a number beside a property comes from that setting; background at most
+      two sentences; it ends on its first page.
 - [ ] Introduction: no method component before the method paragraph, every
       counted set named; one sentence of reason between gap and method; no
       ratio, data source or baseline name in the method paragraph; results by
@@ -452,7 +482,10 @@ Additional rules:
       entering as a component's property; a failure breakdown stated as
       motivation, not blame; every "all / only / without" holds for each stage;
       contribution items independent, an empirical one claiming only what its
-      controls isolate.
+      controls isolate. The method item names the whole method, its stages in
+      order and the capabilities the prose argues for; every title is a short
+      noun phrase, never a finding; no name in the list that the prose has not
+      introduced.
 - [ ] Method has a road-map paragraph and (near-)zero citations; comparisons live
       in a dedicated Advantages paragraph.
 - [ ] Method names the configuration the main rows run and presents the

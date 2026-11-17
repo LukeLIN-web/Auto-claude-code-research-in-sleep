@@ -555,6 +555,17 @@ Check: `grep -n '\\item' <intro file>` and read each item but the last for bench
 
 5. The Introduction always ends with the list ("Section Skeleton"). Items may run to several sentences; modules of one method go in one item, and analysis findings or resources get their own.
 6. The list states the same claims, at the same strength, as the abstract.
+7. The method item's title names the whole method, not one of its stages; its body gives the stages in order
+   as one pipeline and every capability the prose argues for a component (`manuscript-craft.md` §2,
+   Introduction, third review).
+8. Every title is a short noun phrase naming what the item contributes (the method, a finding's subject, the
+   improvement). A finding stated as a sentence opens the body.
+9. The list introduces no name: each benchmark, split, coined term or variant name in it appears in the prose
+   above. A name the paper defines itself (a subset named by its size) is described in words unless the prose
+   introduced it.
+
+Check for 9: list the capitalized and hyphenated names inside the `itemize`, and `grep -n` each one in the
+Introduction file; a name whose first hit is inside the list breaks the rule.
 
 ## Example Bank
 1. `references/examples/introduction-examples.md`
@@ -579,6 +590,7 @@ Check: `grep -n '\\item' <intro file>` and read each item but the last for bench
 - [ ] Are claims in Introduction aligned with experiment evidence?
 - [ ] Is terminology stable across all sections?
 - [ ] Do the contribution items before the results item name no benchmark, and does the results item's title state the improvement?
+- [ ] Does the method item's title name the whole method, are all titles short noun phrases, and does every name in the list appear in the prose first?
 - [ ] Credit to specific prior work precedes the gap; the component blamed later is described first.
 - [ ] Gap = what fails/is missing + technical reason + condition, set up as a tension.
 - [ ] A contrast paragraph or sentence names the closest work and one checkable difference.
