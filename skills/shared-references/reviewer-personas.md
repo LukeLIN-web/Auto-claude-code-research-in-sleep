@@ -416,8 +416,12 @@ instructions; the venue wins where they differ.
    numbers each, instead of one verdict per group of benchmarks (one answer per
    ablation question) and a reason, is flagged; so is a paragraph with more
    than four number pairs ("a% against b%"), a measurement that explains a gain
-   (a failure breakdown) given a paragraph of its own away from that gain, and
-   a results section where most sentences repeat one frame. A side point given a paragraph, or the main result
+   (a failure breakdown) written as one more comparison without naming the
+   gain it explains, a results section where most sentences repeat one frame,
+   and results paragraphs under run-in headings or squeezed into one
+   subsection (Experiments is Setup plus three results subsections of similar
+   length: end-to-end performance and generalization, dissecting the
+   pipeline, behavior and cost). A side point given a paragraph, or the main result
    given a clause, is flagged too, and so is an abstract whose background runs
    past two sentences or that spills past the page it starts on.
 3. Order. Sections and paragraphs follow the argument, and each paragraph opens

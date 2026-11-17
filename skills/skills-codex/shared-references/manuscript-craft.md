@@ -237,6 +237,37 @@ User ruling 2026-11-16, from a review the user forwarded:
 - Analysis prose is the lowest-value text in the paper — tables and figures carry
   the argument.
 
+User ruling 2026-11-16, on the section's shape:
+
+- **Setup, then three results subsections of similar length, each answering
+  one reader question.** Setup keeps run-in headings (`\paragraph{Benchmarks
+  and protocol.}`, `\paragraph{Systems.}`, `\paragraph{Variants.}`); the
+  significance definition is the last sentence of the protocol paragraph, not
+  a paragraph of its own. The results follow in this order:
+  1. *End-to-end performance and generalization*: the full method against the
+     simplest strong baseline and the published alternatives, what the
+     component kept at deployment adds, and transfer to other simulators,
+     robots or models.
+  2. *Dissecting the method's pipeline*: the ablations in pipeline order
+     (against the unmodified model, where the training data come from and how
+     they are labeled, how they are selected, the training recipe, the data
+     scale).
+  3. *Behavior and cost*: the change in behavior behind the gains (failure and
+     recovery breakdowns, which object the policy acts on), then what the gains
+     cost (time per episode, latency).
+  Subsections follow these questions, not the contribution list: a
+  contribution whose evidence is one paragraph is that paragraph, found by its
+  topic sentence, not a subsection of its own. "Main Results" plus one
+  subsection holding every other result, and a subsection of one paragraph,
+  are both wrong shapes.
+- **No run-in headings in the results.** After Setup, paragraphs carry no
+  `\paragraph{}`; a bold heading on every results paragraph fragments the
+  section. Each paragraph opens with a topic sentence that states its finding
+  and carries the transition from the paragraph before. When a heading is
+  removed and the paragraph's first sentence is a definition or a baseline's
+  behavior, the paragraph gets a topic sentence built from its own finding,
+  with no claim the paragraph does not already make.
+
 User ruling 2026-11-16, from a review the user forwarded:
 
 - **A results paragraph states a finding; it does not narrate the tests.** The
@@ -276,15 +307,17 @@ User ruling 2026-11-16, from a review the user forwarded:
   seven sentences with one pair each. When every appendix experiment needs a
   main-text mention, the mentions join the answer to the question they belong
   to, one pointer sentence per question, not one sentence per variant.
-- **A measurement that explains a gain is that gain's reason, written beside
-  it.** A breakdown of failure kinds, which object the policy acts on first,
-  or which kind of task gains most is the paper's insight. Given its own
-  paragraph as one more comparison ("Failure kinds. Ours stalls in
-  significantly fewer episodes"), it reads as more log, and the gain it
-  explains stays unexplained. It goes into the paragraph of the gain as the
-  reason ("the gain comes from fewer stalled episodes and fewer wrong-object
-  grasps"), which holds when the two systems differ only in the component the
-  measurement concerns and the breakdown's difference is significant. When no
+- **A measurement that explains a gain is that gain's reason, written as
+  one.** A breakdown of failure kinds, which object the policy acts on first,
+  or which kind of task gains most is the paper's insight. Written as one more
+  comparison with no gain named ("Ours stalls in significantly fewer
+  episodes"), it reads as more log, and the gain it explains stays
+  unexplained. It goes into the behavior-and-cost subsection, in a paragraph
+  that opens with the gain it explains and gives the measurement as its
+  reason ("the fine-tuned policy's gain comes from fewer stalled episodes and
+  fewer wrong-object grasps"), which holds when the two systems differ only in
+  the component the measurement concerns and the breakdown's difference is
+  significant. When no
   measurement in the paper explains a main gain, a breakdown of the episodes
   already run (by failure kind, by task kind) can supply one; until then the
   paragraph gives its verdict with no reason, never a mechanism the data do not

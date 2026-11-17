@@ -63,7 +63,7 @@ flowchart TB
 > “We first present the implementation details of Mip-Splatting. We then assess its performance on the Blender dataset and the challenging Mip-NeRF 360 dataset. Finally, we discuss the limitations of our approach.” (Mip-Splatting)
 > “… we ask: how efficiently does DPO trade off maximizing reward and minimizing KL-divergence with the reference policy …?” (DPO)
 
-**E1 · Setup.** Datasets (size, split, why chosen), metrics (with direction ↑/↓), baselines (why these, how they were run: official code, same data), implementation (base code, iterations, hardware). Run-in headings are normal here (`\paragraph{Datasets.}`). The Setup defines what the main text uses and nothing else: a variant or data subset the final method does not use is defined beside its ablation, wherever that ablation sits.
+**E1 · Setup.** Datasets (size, split, why chosen), metrics (with direction ↑/↓), baselines (why these, how they were run: official code, same data), implementation (base code, iterations, hardware). Run-in headings are normal here (`\paragraph{Datasets.}`), and only here: the results subsections after Setup carry none (Writing Rule 10). The Setup defines what the main text uses and nothing else: a variant or data subset the final method does not use is defined beside its ablation, wherever that ablation sits.
 > “We build our method upon the popular open-source 3DGS code base. Following [18], we train our models for 30K iterations across all scenes and use the same loss function …” (Mip-Splatting)
 > “We compare our results with Textual Inversion, the recent concurrent work of Gal et al., using the hyperparameters provided in their work.” (DreamBooth)
 
@@ -101,26 +101,35 @@ Write (an answer):     Every other source of training data falls below ours, eac
 > “Our method employs a Gaussian filter as an approximation to a box filter for efficiency. However, this approximation introduces errors …” (Mip-Splatting)
 
 ## Skeleton
+User ruling 2026-11-16: Setup, then three results subsections of similar length, each answering one reader question, in this order; subsections follow these questions, not the contribution list (`../../shared-references/manuscript-craft.md` §2, Experiments).
+
 ```text
-\section{Experiments}                      % E0: what, in which order / which questions
-\subsection{Setup}                         % E1: \paragraph{Datasets.} \paragraph{Metrics.} \paragraph{Baselines.} \paragraph{Implementation.}
-\subsection{<Main task / benchmark 1>}     % E2: claim → Tab. → margin → reason → Fig.
-\subsection{<Benchmark 2 or second task>}  % E2
-\subsection{Ablation study}                % E3: one question per design claim, Tab.
-\subsection{Analysis / Applications}       % E4
-\subsection{Limitations}                   % E5, optional (or a separate section)
+\section{Experiments}                                   % E0: what, in which order / which questions
+\subsection{Setup}                                      % E1: \paragraph{Benchmarks and protocol.} (significance defined in its last sentence)
+                                                        %     \paragraph{Systems.} \paragraph{Variants.}
+\subsection{End-to-End Performance and Generalization}  % E2: vs. the simplest strong baseline and published alternatives,
+                                                        %     what the component kept at deployment adds, transfer to other
+                                                        %     simulators / robots / models (E4's transfer lives here)
+\subsection{Dissecting the <Method> Pipeline}           % E3 in pipeline order: vs. the unmodified model, data source and
+                                                        %     labels, selection, recipe, data scale
+\subsection{Behavior and Cost}                          % E4: the behavior change behind each gain (failure / recovery
+                                                        %     breakdowns), then time and cost
+\subsection{Limitations}                                % E5, optional (or a separate section)
 ```
+
+No `\paragraph{}` after Setup: each results paragraph opens with its topic sentence. A contribution whose evidence is one paragraph stays a paragraph; "Main Results" plus one subsection holding everything else, and a one-paragraph subsection, are both wrong shapes.
 
 ## Writing Rules
 1. **Claim-first paragraphs.** “Ours outperforms X on all metrics (Tab. 1), with the largest gain in Y” rather than “Table 1 shows the results.” Use “As shown in Tab. 1” sparingly.
 2. **Numbers belong here.** Report margins, not only rankings; the abstract/introduction number limits do not apply. Keep at most one or two numbers per sentence and at most four number pairs (`a% against b%`) per paragraph; the rest stay in the table. Each number in the prose supports a claim its sentence or paragraph states; one that supports none is not reported (`../../shared-references/manuscript-craft.md` §2, Experiments).
 3. **Fair comparison is stated once, in the setup** (same data, official code, same backbone); do not repeat qualifiers in every results sentence.
-4. **Explain, do not only report.** After each comparison, one sentence on why, tied to the mechanism (“because the 3D filter bounds the frequency …”). The reason cites the paper's own evidence: an ablation, a breakdown of failures, or a property the data or model have by construction. A reason a reviewer proposes is checked against the method's definitions first (what the training data actually contain); with no evidence, write no reason sentence. What a component does by construction is not why the gain occurred: when the compared systems differ in several components, a reason naming one of them (“as the planner turns the instruction into subgoals”) needs a variant that changes only that one. Where the gain concentrates (“largest where the instruction must be interpreted”) is a verdict, not a reason; it stands when the comparison that changes only that variable is significant on each benchmark of the group. A measurement that explains a gain (a breakdown of failure kinds, which object the policy acts on first) is written as that gain's reason in the gain's paragraph, not as a comparison in a paragraph of its own; with no such measurement, a breakdown of the episodes already run can supply one (`../../shared-references/manuscript-craft.md` §2, Experiments).
+4. **Explain, do not only report.** After each comparison, one sentence on why, tied to the mechanism (“because the 3D filter bounds the frequency …”). The reason cites the paper's own evidence: an ablation, a breakdown of failures, or a property the data or model have by construction. A reason a reviewer proposes is checked against the method's definitions first (what the training data actually contain); with no evidence, write no reason sentence. What a component does by construction is not why the gain occurred: when the compared systems differ in several components, a reason naming one of them (“as the planner turns the instruction into subgoals”) needs a variant that changes only that one. Where the gain concentrates (“largest where the instruction must be interpreted”) is a verdict, not a reason; it stands when the comparison that changes only that variable is significant on each benchmark of the group. A measurement that explains a gain (a breakdown of failure kinds, which object the policy acts on first) is written as that gain's reason, in the Behavior and Cost subsection in a paragraph that opens with the gain it explains, not as one more comparison with no gain named; with no such measurement, a breakdown of the episodes already run can supply one (`../../shared-references/manuscript-craft.md` §2, Experiments).
 5. **Qualitative figures** show the claim the text makes (failure of the baseline, our fix), and their captions state the takeaway first. Layout, method order, insets and plot style: `figures.md`, "Result Figures".
 6. **Limitations**, when the paper has them, are written here, concretely, with a cause and, where possible, a figure.
 7. Style: past tense for what was done (“we trained”), present tense for what the results show (“Ours outperforms”). No dashes; colons are fine for run-in lists.
 8. **No roll call.** Three sentences in one paragraph in the frame “X (significantly) outperforms Y on A, B and C”, or one comparison sentence naming four or more benchmarks, is the table rewritten as prose; merge them into one verdict per group of benchmarks (E2). Variants count too: a paragraph comparing ours with one more variant per sentence, each with its pair of numbers, is the ablation table in prose; it answers its question once (E3). A section where most sentences share one frame reads to reviewers as script-generated text, and synonyms do not fix it. `scripts/check_draft.py` flags the repeated frame, the long settings list and a paragraph with more than four number pairs in Method and Experiments files. The merge keeps every scope word the list carried: each benchmark against several combined, the averaged metric, “slightly”, a control's matching condition (“for as many steps as ours”). After the rewrite a fresh reader compares old and new claim by claim.
 9. **Name a dropped variant by what it changes.** A main-text pointer to an ablation the final method did not adopt says what the variant does (“pre-selecting objects by success rate”), not a name defined only in the appendix. A difference that was not significant is not written as “brings no gain” or “is unnecessary”.
+10. **No run-in headings in the results** (user ruling 2026-11-16). After Setup, no `\paragraph{}`: a bold heading on every results paragraph fragments the section. Each paragraph opens with a topic sentence that states its finding and carries the transition. When removing a heading leaves a paragraph opening on a definition or a baseline's behavior, give it a topic sentence built from its own finding, claiming nothing the paragraph does not already show (`../../shared-references/manuscript-craft.md` §2, Experiments).
 
 ## Ablations
 **Every ablation answers one question** and is named by the change. Pair each with the method subsection it validates. (Move E3.)
@@ -199,7 +208,8 @@ Ours & \textbf{\TODO{}} & \textbf{\TODO{}} & \TODO{} \\
 - [ ] Every claim of the paper has a table or figure; every table supports a claim.
 - [ ] Setup states datasets, metrics (↑/↓), baselines and how they were run, once.
 - [ ] Results paragraphs open with the finding and explain the reason from the paper's own evidence; one verdict per group of benchmarks, one answer per ablation question, at most four number pairs per paragraph, no roll call (`check_draft.py` passes).
-- [ ] Every measurement that explains a gain (failure kinds, what the policy acts on first) sits beside that gain as its reason, not in a paragraph of its own.
+- [ ] Setup, then three results subsections of similar length (end-to-end performance and generalization; dissecting the pipeline; behavior and cost); no `\paragraph{}` after Setup, every results paragraph opens with its topic sentence.
+- [ ] Every measurement that explains a gain (failure kinds, what the policy acts on first) is in Behavior and Cost, in a paragraph that opens with the gain it explains, not one more comparison with no gain named.
 - [ ] Every number in the prose supports a claim its sentence or paragraph states (a verdict, a reason, a confound ruled out, a contribution); a number that supports none (a bare cost line, near-equal counts beside a comparison) is not reported in the main text (`../../shared-references/manuscript-craft.md` §2, Experiments).
 - [ ] Every claim that names several instances, and every transfer claim, has main-text evidence for each instance, produced the way the claim says.
 - [ ] Every row of a results table is one training condition, or the columns that differ are marked.

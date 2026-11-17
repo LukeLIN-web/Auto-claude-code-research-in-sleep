@@ -88,9 +88,10 @@ Questions 5–7 follow `../../shared-references/manuscript-craft.md` §2 (Abstra
 7. Can a reader tell from every cell of a results table how its model was trained? A row whose training differs by column without a mark lets a reviewer read in-domain results as transfer.
 8. Does every transfer claim, and every instance a claim names ("with two models"), have main-text evidence produced that way?
 9. Does the main Setup define only what the main text uses, with every term of a main-text sentence or float defined in the main text?
-10. Does each main gain carry its reason from a measurement in the paper (failure kinds, which kind of task gains most), written beside the gain? A section that only reports comparisons reads to a reviewer as lacking insight, and one where most sentences share one frame as text generated from a results script.
+10. Does each main gain carry its reason from a measurement in the paper (failure kinds, which kind of task gains most), in a Behavior and Cost paragraph that opens with the gain it explains? A section that only reports comparisons reads to a reviewer as lacking insight, and one where most sentences share one frame as text generated from a results script.
+11. Is the section Setup plus three results subsections of similar length (end-to-end performance and generalization; dissecting the pipeline; behavior and cost), with no `\paragraph{}` after Setup and every results paragraph opening on its topic sentence? "Main Results" plus one subsection holding everything else, or a subsection of one paragraph, is the wrong shape.
 
-Questions 6–10 follow `../../shared-references/manuscript-craft.md` §2 (Experiments); `experiments.md` (E2, E3, Writing Rules 4 and 8–9, Readability rules 11–13) shows the fix for each.
+Questions 6–11 follow `../../shared-references/manuscript-craft.md` §2 (Experiments); `experiments.md` (E2, E3, Skeleton, Writing Rules 4 and 8–10, Readability rules 11–13) shows the fix for each.
 
 ### 5. Method Design Soundness
 
