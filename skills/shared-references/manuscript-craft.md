@@ -45,15 +45,17 @@ User ruling 2026-11-16.
   change belong to the Method: "supervised with the planner's subgoal rather
   than the task instruction" and "trained on a proprietary planner's calls"
   interrupt the abstract.
-- **Each headline comparison is one range over its benchmarks.** "Across
-  several benchmarks, the method improves the backbone by a–b pp over the
-  same-stack official recipe, and transfers to a second backbone, surpassing
-  its published results by c–d pp", never "from x% to y% on A and from u% to
-  v% on B" (user ruling 2026-11-16, 「分数你应该概括一下」). A range counts
-  as one headline number. It spans every benchmark the sentence counts, its
-  significance word holds only if every one of them is significant, and each
-  endpoint is the difference of the exact rates rounded like a table cell, not
-  of two printed cells.
+- **Each headline comparison is summarized, not listed per benchmark.**
+  "Across several benchmarks, the method improves the backbone by a–b pp over
+  the same-stack official recipe, and transfers to a second backbone,
+  surpassing its published results by c–d pp", never "from x% to y% on A and
+  from u% to v% on B" (user ruling 2026-11-16, 「分数你应该概括一下」). One
+  range over every benchmark the sentence counts is the preferred form, not a
+  requirement: "by up to c pp" also stands, and a review does not flag it
+  (user ruling 2026-11-16, 「改改规则, 不强制」). Either form counts as one
+  headline number, its significance word holds only if every benchmark the
+  sentence counts is significant, and each number is the difference of the
+  exact rates rounded like a table cell, not of two printed cells.
 - **Results in at most two sentences, each in its own frame, then the
   take-home message.** Result sentences that repeat one predicate ("X
   significantly outperforms Y" three times running) read like a lab report;
@@ -108,9 +110,10 @@ User ruling 2026-11-16, from a review the user forwarded.
   or models), with the one or two headline numbers and a pointer to the table;
   never a roll call of benchmark names. No "slightly": a result that cannot be
   stated without it is folded into its category or left to the tables.
-- **Contributions are takeaways.** Each item runs at most about six printed
-  lines (about 60 words) and repeats no sentence of the Introduction's prose;
-  the cap on the whole list is under Method below.
+- **Contributions are takeaways.** Each item aims at about six printed lines
+  (about 60 words), a guide rather than a cap: a longer item is not flagged
+  (user ruling 2026-11-16, 「改改规则, 不强制」). No item repeats a sentence of
+  the Introduction's prose; the cap on the whole list is under Method below.
 
 From a second review the user forwarded, 2026-11-16:
 
@@ -277,13 +280,11 @@ User ruling 2026-11-16, on the section's shape:
   topic sentence, not a subsection of its own. "Main Results" plus one
   subsection holding every other result, and a subsection of one paragraph,
   are both wrong shapes.
-- **No run-in headings in the results.** After Setup, paragraphs carry no
-  `\paragraph{}`; a bold heading on every results paragraph fragments the
-  section. Each paragraph opens with a topic sentence that states its finding
-  and carries the transition from the paragraph before. When a heading is
-  removed and the paragraph's first sentence is a definition or a baseline's
-  behavior, the paragraph gets a topic sentence built from its own finding,
-  with no claim the paragraph does not already make.
+- **Run-in headings may stay in the results** (user ruling 2026-11-16,
+  「可以用」). A `\paragraph{}` heading names the question its paragraph
+  answers. With a heading or without one, each paragraph opens with a topic
+  sentence that states its finding and carries the transition from the
+  paragraph before.
 
 User ruling 2026-11-16, from a review the user forwarded:
 
@@ -562,8 +563,9 @@ Additional rules:
 
 ## 6. Final pass checklist
 
-- [ ] Abstract: one or two headline numbers, each comparison one range over
-      its benchmarks; each component by its objective, no implementation
+- [ ] Abstract: one or two headline numbers, each comparison summarized
+      (one range over its benchmarks preferred, not required); each
+      component by its objective, no implementation
       detail (training signal, labels, teacher); results in at most two
       differently framed sentences, ending on the take-home message. Each
       headline number says its comparison (their order is the authors' call);
@@ -573,7 +575,8 @@ Additional rules:
       counted set named; one sentence of reason between gap and method; no
       ratio, data source or baseline name in the method paragraph; results by
       kind of generalization, no benchmark roll call, no "slightly";
-      contribution items about 60 words each. One spine, a second motivation
+      contribution items about 60 words each (a guide, not a cap). One
+      spine, a second motivation
       entering as a component's property; a failure breakdown stated as
       motivation, not blame; every "all / only / without" holds for each stage;
       contribution items independent, an empirical one claiming only what its

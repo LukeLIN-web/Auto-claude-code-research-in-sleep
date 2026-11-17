@@ -46,7 +46,7 @@ Use each question to trigger concrete edits before submission.
 3. Is the technical idea genuinely non-obvious beyond well-explored practice?
 4. Is our gain surprising or insightful rather than a predictable improvement?
 5. Is there at least one clear novelty type (task/pipeline/module/design finding/insight)?
-6. Does the Abstract state each component by its design objective, leaving its training signal, labels and teacher to the Method, and summarize each headline comparison as one range over its benchmarks?
+6. Does the Abstract state each component by its design objective, leaving its training signal, labels and teacher to the Method, and summarize each headline comparison rather than list it per benchmark (one range preferred, not required)?
 7. Are the contribution items independent, and does an empirical item claim only the factors its controls isolate ("better than alternative recipes" is not "X is the primary driver")?
 8. Does the method item's title name the whole method (not one stage) and its body carry the capabilities the Introduction's prose argues for; is every item title a short noun phrase rather than a finding; and does every name in the list (benchmark, split, coined term) appear in the prose first?
 9. Does each contribution item start from what we propose, validate or find, rather than from what prior work lacks, keeping a contrast only for a critical difference readers would otherwise confuse?
