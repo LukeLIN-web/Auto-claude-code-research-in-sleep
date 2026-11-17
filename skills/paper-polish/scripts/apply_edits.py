@@ -1,21 +1,24 @@
 #!/usr/bin/env python3
-"""Apply the taken edits of one scratch file to the real file, by a three-way merge (git merge-file).
+"""Apply the taken edits of one scratch file to the real file, paragraph by paragraph.
 
 usage: apply_edits.py <base.tex> <edited.tex> <target.tex> [--reject 40-45,80] [--write]
 
-BASE is the copy the editor started from, EDITED its scratch copy, TARGET the real file, which other sessions may
-have changed since. --reject restores those lines of EDITED from BASE first (the edits step 5 rejected: dropped, not
-repaired). Lines that are exactly `%CUT` are removed after the merge. Prints the diff against TARGET; with --write
-it writes TARGET, and only when the merge has no conflict (a conflict means someone changed the same lines: re-run
-the check on their version instead of merging by hand).
+BASE is the copy the editor started from, EDITED its scratch copy (same line count), TARGET the real file, which
+other sessions may have changed since. --reject restores those lines of EDITED from BASE first (the edits step 5
+rejected: dropped, not repaired). BASE lines are matched to TARGET by a line diff, so lines other sessions added,
+removed or changed elsewhere, even next to an edit, do not get in the way. Per paragraph of BASE: if another session
+changed a line the editor also changed, all of the paragraph's edits are dropped and their version stays; if it
+changed only other lines of the paragraph, the edits are applied and the paragraph is listed for the owner to check
+again as merged (an edit may have leaned on the line they rewrote). Lines the edit made exactly `%CUT` are removed.
+Prints each paragraph's outcome and the diff against TARGET; with --write it writes TARGET. Exit 1 if any paragraph
+was dropped or needs the second check.
 """
 import argparse
-import subprocess
+import difflib
 import sys
-import tempfile
 from pathlib import Path
 
-from check_edits import ranges
+from check_edits import paragraphs, ranges
 
 
 def main():
@@ -28,23 +31,43 @@ def main():
     a = ap.parse_args()
     base = a.base.read_text(encoding="utf-8").split("\n")
     edited = a.edited.read_text(encoding="utf-8").split("\n")
+    target = a.target.read_text(encoding="utf-8").split("\n")
     if len(base) != len(edited):
         sys.exit(f"line count differs {len(base)} -> {len(edited)}: the editor must keep one line per original line")
     for i in ranges(a.reject):
         edited[i - 1] = base[i - 1]
-    with tempfile.TemporaryDirectory() as d:
-        ours, merged = Path(d, "ours"), Path(d, "merged")
-        ours.write_text("\n".join(edited), encoding="utf-8")
-        r = subprocess.run(["git", "merge-file", "-p", str(ours), str(a.base), str(a.target)], capture_output=True, text=True)
-        if r.returncode != 0:
-            print(r.stdout[:4000])
-            sys.exit(f"merge conflict ({r.returncode}) in {a.target}; nothing written")
-        merged.write_text("\n".join(l for l in r.stdout.split("\n") if l != "%CUT"), encoding="utf-8")
-        print(subprocess.run(["diff", str(a.target), str(merged)], capture_output=True, text=True).stdout)
-        if a.write:
-            a.target.write_text(merged.read_text(encoding="utf-8"), encoding="utf-8")
-            print(f"wrote {a.target}")
+    where = {}
+    for tag, i1, i2, j1, _ in difflib.SequenceMatcher(None, base, target, autojunk=False).get_opcodes():
+        if tag == "equal":
+            where.update((i1 + k, j1 + k) for k in range(i2 - i1))
+    result, cut, flagged = list(target), set(), 0
+    for para in paragraphs(base):
+        changed = [i for i in para if base[i - 1] != edited[i - 1]]
+        if not changed:
+            continue
+        theirs = [i for i in para if i - 1 not in where]
+        if set(theirs) & set(changed):
+            flagged += 1
+            print(f"DROPPED L{para[0]}-{para[-1]}: another session changed line(s) {sorted(set(theirs) & set(changed))}"
+                  " the editor changed too; their version of the paragraph stays")
+            continue
+        for i in changed:
+            j = where[i - 1]
+            result[j] = edited[i - 1]
+            if edited[i - 1] == "%CUT":
+                cut.add(j)
+        print(f"applied L{para[0]}-{para[-1]} (lines {changed})")
+        if theirs:
+            flagged += 1
+            print(f"    another session changed line(s) {theirs} of this paragraph: re-check the merged paragraph (§ 5)")
+    result = [line for j, line in enumerate(result) if j not in cut]
+    sys.stdout.writelines(difflib.unified_diff([l + "\n" for l in target], [l + "\n" for l in result],
+                                               str(a.target), "merged", n=0))
+    if a.write:
+        a.target.write_text("\n".join(result), encoding="utf-8")
+        print(f"wrote {a.target}")
+    return 1 if flagged else 0
 
 
 if __name__ == "__main__":
-    main()
+    sys.exit(main())

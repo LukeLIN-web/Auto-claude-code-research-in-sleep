@@ -9,11 +9,13 @@ it reports:
   - a frozen line that changed (the edit is rejected);
   - numbers, \\cite keys and \\ref labels whose multiset changed (a number may go only with a sentence cut under a
     named /paper-prose-tighten class, and in a paper only if a table still shows it);
-  - each line of TERMS (one term per line: a frozen name, a significance word) whose count changed;
+  - each line of TERMS (one term per line: a frozen name, a significance word) whose count changed, matched as a
+    whole word;
   - hedge, pivot or concession words the edit added, and an added em dash;
   - an edited line with more than four commas outside \\cite, math and numbers (rewrite.md section 3).
 With --check-draft (research-paper-writing/scripts/check_draft.py), it also lists ERROR and WARN messages the edited
-file has and the original did not. It prints only paragraphs that need a look; the claim line per paragraph is
+file has and the original did not, and those of the same kind whose text changed (a count that grew: the owner
+decides whether that is a new warning). It prints only paragraphs that need a look; the claim line per paragraph is
 still the owner's to write.
 """
 import argparse
@@ -49,7 +51,8 @@ def paragraphs(lines):
 
 
 def tokens(text):
-    bare = re.sub(r"\\(?:ref|eqref|[cC]ref|autoref|cite[tp]?\*?|label)\{[^}]*\}", "", text)
+    # A subscript or superscript is part of a name (\pi_{0.5}), not a number the text states; the terms file counts names.
+    bare = re.sub(r"\\(?:ref|eqref|[cC]ref|autoref|cite[tp]?\*?|label)\{[^}]*\}|[_^](?:\{[^{}]*\}|\w)", "", text)
     nums = Counter(re.findall(r"(?<![A-Za-z_\-])\d+(?:[.,]\d+)*", bare))
     cites = Counter(k.strip() for g in re.findall(r"\\cite[tp]?\*?(?:\[[^\]]*\])?\{([^}]*)\}", text) for k in g.split(","))
     refs = Counter(re.findall(r"\\(?:ref|eqref|[cC]ref|autoref)\{([^}]*)\}", text))
@@ -63,8 +66,19 @@ def commas(line):
 
 
 def draft_warnings(script, path):
+    """ERROR and WARN messages of check_draft.py by kind (digits masked, so a message whose count changed is the same
+    kind), each with its raw texts."""
     out = subprocess.run([sys.executable, script, str(path)], capture_output=True, text=True).stdout
-    return Counter(re.sub(r"line\s+\d+", "line", l.strip()) for l in out.splitlines() if re.match(r"\s*(ERROR|WARN)", l))
+    kinds = {}
+    for l in out.splitlines():
+        if re.match(r"\s*(ERROR|WARN)", l):
+            msg = re.sub(r"line\s+\d+:?\s*", "", l.strip())
+            kinds.setdefault(re.sub(r"\d+", "N", msg), []).append(msg)
+    return kinds
+
+
+def count(term, text):
+    return len(re.findall(r"(?<!\w)" + re.escape(term) + r"(?!\w)", text))
 
 
 def main():
@@ -92,7 +106,7 @@ def main():
         for kind, x, y in zip(("numbers", "cite keys", "ref labels"), tokens(before), tokens(after)):
             if x != y:
                 issues.append(f"{kind}: removed {dict(x - y)} added {dict(y - x)}")
-        issues += [f"term {t!r}: {before.count(t)} -> {after.count(t)}" for t in terms if before.count(t) != after.count(t)]
+        issues += [f"term {t!r}: {count(t, before)} -> {count(t, after)}" for t in terms if count(t, before) != count(t, after)]
         added = Counter(m.lower() for m in HEDGE.findall(after)) - Counter(m.lower() for m in HEDGE.findall(before))
         if added:
             issues.append(f"added hedge/pivot words {dict(added)}")
@@ -107,10 +121,14 @@ def main():
             for issue in issues:
                 print("   ", issue)
     if a.check_draft:
-        new = draft_warnings(a.check_draft, a.edited) - draft_warnings(a.check_draft, a.orig)
-        for msg, n in new.items():
-            print(f"new check_draft message (x{n}): {msg}")
-        flagged += bool(new)
+        old, new = draft_warnings(a.check_draft, a.orig), draft_warnings(a.check_draft, a.edited)
+        for kind, msgs in new.items():
+            if len(msgs) > len(old.get(kind, [])):
+                flagged += 1
+                print(f"new check_draft message (x{len(msgs) - len(old.get(kind, []))}): {msgs[-1]}")
+            elif sorted(msgs) != sorted(old[kind]):
+                flagged += 1
+                print(f"check_draft message changed: {' | '.join(old[kind])} -> {' | '.join(msgs)}")
     print(f"paragraphs or files needing a look: {flagged}")
     return 1 if flagged else 0
 

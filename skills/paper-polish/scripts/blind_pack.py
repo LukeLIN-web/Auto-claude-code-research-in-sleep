@@ -13,7 +13,7 @@ A macro the polish does not map stays in the text as written (\\method); pass --
 
 SCOPE.TSV is polish_scope.py's output (file, line, ...), with the rows the polish must not touch removed.
 Ids are a letter per file in reading order plus a counter (A1, A2, B1, ...). Readers get contiguous runs of
-sentences of about equal printed length, cut where the section heading changes when one is near.
+sentences of about equal printed length, cut between paragraphs, where the section heading changes when one is near.
 Without --readers, N = ceil(chars / 4000), at most 4: one reader on 3-4 KB of in-scope text took 4-8 minutes,
 on 12-13 KB 17-30 minutes in one long turn, and once ran into the output cap and lost the whole turn.
 """
@@ -99,7 +99,9 @@ def main():
         text, heads = cache[rel]
         n = int(line)
         letter = chr(ord("A") + files.index(rel)) if len(files) <= 26 else f"F{files.index(rel) + 1}_"
-        items.append({"rel": rel, "line": n, "head": heads[n], "letter": letter, "text": printed(text[n - 1], labels, macros)})
+        para = sum(not l.strip() for l in text[:n])  # blank lines above: the paragraph this line is in
+        items.append({"rel": rel, "line": n, "head": heads[n], "para": para, "letter": letter,
+                      "text": printed(text[n - 1], labels, macros)})
     counters = {}
     for it in items:
         counters[it["letter"]] = counters.get(it["letter"], 0) + 1
@@ -109,8 +111,11 @@ def main():
     n = a.readers or max(1, min(4, math.ceil(total / 4000)))
     target, groups, size = total / n, [[]], 0
     for i, it in enumerate(items):
-        new_head = i and (it["head"], it["rel"]) != (items[i - 1]["head"], items[i - 1]["rel"])
-        if len(groups) < n and groups[-1] and (size >= target or (size >= 0.8 * target and new_head)):
+        prev = items[i - 1] if i else it
+        new_head = (it["head"], it["rel"]) != (prev["head"], prev["rel"])
+        new_para = new_head or it["para"] != prev["para"]
+        # A share ends at a paragraph break (a paragraph is never split), at a heading if one comes after 80% of the target.
+        if len(groups) < n and groups[-1] and new_para and (size >= target or (size >= 0.8 * target and new_head)):
             groups.append([])
             size = 0
         groups[-1].append(it)
