@@ -1,6 +1,6 @@
 ---
 name: paper-prose-tighten
-description: "Cut filler from paper prose while holding every claim constant — bookkeeping counts, defensive meta-narration, narrated absences / 无中生有, false pivots / 错误的转折, value series / 罗列, cross-section duplication, related-work sprawl, wordy phrases where one word does, process vocabulary (\"preregistered\"), one comparison split across sentences and copies of it that disagree, and claims that survive only behind a pile of caveats. Use when user says \"论文废话太多\", \"caveat 太多\", \"越讲越乱\", \"别解释了\", \"不要罗列数量\", \"清理废话\", \"无中生有\", \"错误的转折\", \"我要删减文字\", \"不该出现这种工程的术语\", \"related work 太长\", \"能用少词就不用多词\", \"重复也太多了\", \"说一次就行\", \"前后对不上\", \"tighten the prose\", \"cut the filler\", \"too wordy\", or before submission when sections read like an audit log."
+description: "Cut filler from paper prose while holding every claim constant — bookkeeping counts, defensive meta-narration, narrated absences / 无中生有, false pivots / 错误的转折, value series / 罗列, cross-section duplication, related-work sprawl, wordy phrases where one word does, process vocabulary (\"preregistered\"), one comparison split across sentences and copies of it that disagree, exception clauses (\"all but X\", \"except X\"), and claims that survive only behind a pile of caveats. Use when user says \"不应该出现 all but / except\", \"例外从句\", \"论文废话太多\", \"caveat 太多\", \"越讲越乱\", \"别解释了\", \"不要罗列数量\", \"清理废话\", \"无中生有\", \"错误的转折\", \"我要删减文字\", \"不该出现这种工程的术语\", \"related work 太长\", \"能用少词就不用多词\", \"重复也太多了\", \"说一次就行\", \"前后对不上\", \"tighten the prose\", \"cut the filler\", \"too wordy\", or before submission when sections read like an audit log."
 argument-hint: "[paper-directory-or-section-files]"
 allowed-tools: Bash(*), Read, Write, Edit, Grep, Glob
 ---
@@ -89,7 +89,7 @@ the paragraph is unreadable in defence of a claim that never earned a paragraph.
 When an author says the explanation itself is the problem, they are exercising
 this rule — do not answer it with a better-worded explanation.
 
-## The Thirteen Cut Classes
+## The Fourteen Cut Classes
 
 ### 1. Bookkeeping enumerations
 
@@ -588,6 +588,52 @@ significant only on every-action-own completions; and the intro and conclusion
 said our method lies above $\pi_{0.5}$ alone on Bench-7, which no Results
 sentence said.
 
+### 14. Exception clauses (例外从句: `all but X`, `except X`)
+
+A claim about every member of a set, followed by the members it does not hold
+for: `leads every open-source row on all but Bench-6`, `outperforms every
+baseline except Baseline-C`, `Every row but A and B runs Policy P`, `the test
+runs over tasks, except on Bench-9`, `under every orchestrator but Model-M`,
+`every linear layer except the output head`. Whoever writes one has checked the
+table and seen the cell where the claim fails, so it reads as accurate. But the
+exception is the name the reader remembers. In a caption's bold title the
+takeaway becomes the cell the method loses, and the clause is a caveat
+(Escalation) that also lists the losing cells.
+
+The exception never goes by itself. Deleting `on all but Bench-6` and keeping
+`every` is a false claim. The exception goes together with the `every` it
+patches, or the claim is restated so it needs no exception. How depends on what
+the exception is:
+
+| The exception is | Rewrite |
+|---|---|
+| a result cell where a baseline is slightly higher and the test does not resolve it | Drop `every` and the exception together, and state the claim in a form that holds without a hole. The bold and underline marks give the per-column ranking. `significantly outperforms Baseline-A on every benchmark and leads every open-source row on all but Bench-6` → `significantly outperforms Baseline-A on every benchmark and leads the open-source rows`. The first half has no exception and keeps its `every`. |
+| a cell where a baseline is significantly higher | The `every` claim is false. Delete that claim (Escalation), or restate it over a group the paper already defines (`on the in-domain benchmarks`) when that group is exactly where it holds. Never invent a group to step around the cell. |
+| the complement is a group the paper already names | Name the group. `under every orchestrator but Model-M` → `under each of the three open models`, when the paper introduced the four as Model-M and three open models. |
+| a protocol or configuration fact that differs for a few rows, benchmarks or layers | Give each group its own plain statement. If a table column already gives the value per item, partition by that value (`over paired episodes …; over tasks …`) and point at the table. If the rows the rule skips simply lack the thing the rule is about, scope the rule to the rows that have it (`Every row but A and B runs Policy P` → `Every row with a VLA runs Policy P`, when A and B run none). If a positive list already follows, delete the exception (`every linear layer except the output head: the attention and MLP projections …` → `the attention and MLP projections …`, when the next sentence freezes every other weight). |
+
+After the rewrite, check two things. Whatever replaces the `every` must be true of
+every member it now covers: the group, the scope or the partition. And the fact
+the exception carried must still be stated somewhere. A protocol difference
+stated nowhere is a hard stop (below). A result cell the table shows needs no
+prose.
+
+**Not this class:** `other than` meaning `different from` (`holds an object
+other than the target`), and a set defined by what it leaves out when that
+definition is the column's (`Unseen leaves those tasks out`). Neither says
+something about every member and then takes members back.
+
+**Field note (2026-11-16, the ruling that created this class).** The author
+quoted a table caption's bold title and a protocol paragraph and wrote
+「论文中不应该出现这些 but <Bench>. except xxx, 应该想想怎么删除这些」. One
+draft had five. The table-title exception was a cell where a baseline was higher
+but not significantly. An earlier ruling had already said such cells do not
+narrow a claim, so the title lost the `every` and the exception. Two protocol
+exceptions became a partition by the protocol table's own column and a rule scoped
+to the rows it covers. The configuration exception was deleted because the list
+after it was already complete. The orchestrator exception became the group name
+the introduction already used. No claim got stronger.
+
 ## Hard stops
 
 Deleting text must never upgrade a claim.
@@ -647,7 +693,7 @@ Rule of thumb: cut what proves *diligence*; keep what bounds *scope*.
 
 ## Procedure
 
-1. **Map every paragraph before reading for style.** Classes 1–6, 8–10 and 12
+1. **Map every paragraph before reading for style.** Classes 1–6, 8–10, 12 and 14
    are found by grep; class 13 by the per-baseline listing in step 3; classes 7 and 11 and oversized paragraphs are found only here. Emit one row per
    paragraph — file, line span, word count, and **one line saying what it
    claims**:
@@ -684,7 +730,7 @@ Rule of thumb: cut what proves *diligence*; keep what bounds *scope*.
 
 2. **Scope.** Main text first (`\section` bodies), appendix second. Tables,
    captions and figure code belong to `paper-table-craft` / `paper-figure-craft`;
-   touch them here only to sweep class 5, 6, 8, 9 and 12 leakage, and never to decide
+   touch them here only to sweep class 5, 6, 8, 9, 12 and 14 leakage, and never to decide
    what a caption should contain.
 
 3. **Inventory.** Pull every candidate to a scratch list before editing:
@@ -699,6 +745,8 @@ Rule of thumb: cut what proves *diligence*; keep what bounds *scope*.
    command grep -nE '(on|at) [A-Z][A-Za-z-]+, \$?[-+0-9]' sections/*.tex | command grep -v '&'
    # class 12 wordy phrases: recall aid only, read every sentence (class 12)
    command grep -niE 'carr(y|ies|ied) out|refer(s|red)? to .* as|for the first time|together with|none of them|loosely worded|in order to|(less|more) often|half and half|has been reported to|are what make' sections/*.tex
+   # class 14 exception clauses (captions too: the generator strings, then the rendered tables/*.tex)
+   command grep -niE '\bexcept\b|\ball but\b|\b(every|all|each|any)\b[^.]{0,60}\bbut\b|\bbut (on |for )?[A-Z$\\]|save for|apart from|aside from|with the exception|\bexcluding\b|\bbarring\b' sections/*.tex tables/*.tex
    # class 13: every sentence that compares against one baseline, across all sections
    # (run once per baseline noun; read the list for split sentences and for copies that disagree)
    for b in 'alone' 'frozen' 'EXIMO-style' 'zero-shot' 'RECAP'; do
@@ -762,7 +810,7 @@ estimate.
 
 ## Reporting
 
-Report as: sections touched, what was cut by class (1–13), and explicitly
+Report as: sections touched, what was cut by class (1–14), and explicitly
 **what was kept and why** — the kept-list is the evidence that tightening did
 not become overclaiming. Do not report a "% reduction" as the headline; the
 headline is that the argument reads straight through.
@@ -773,7 +821,7 @@ Do not run this skill twice on the same text expecting further gain. The second
 pass finds nothing safe to cut and starts eating scope qualifiers to justify
 itself. One pass, then stop.
 
-The exception is a **class-7 and class-13** pass. Classes 1–6, 8–10 and 12 are sentence-local and
+The exception is a **class-7 and class-13** pass. Classes 1–6, 8–10, 12 and 14 are sentence-local and
 are genuinely exhausted in one run; classes 7 and 13 are not, because they are created fresh
 every time a section is rewritten or a result changes — tightening §4 to point at a table leaves the
 intro bullet that pre-plays §4 untouched, and a result added to §4 leaves the

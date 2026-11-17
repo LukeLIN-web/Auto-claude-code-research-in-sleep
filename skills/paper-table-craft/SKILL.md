@@ -64,7 +64,9 @@ fact are one row.
 
 **First sentence: the takeaway** (user, 2026-11-01), the table's one conclusion in
 the prose's own words, no number. A takeaway that carries two conclusions may be
-two bold sentences (user 2026-11-16「能拆成两句粗体」). Then the legend for *this* float: what is
+two bold sentences (user 2026-11-16「能拆成两句粗体」). A takeaway never carries an exception
+(`leads on all but Bench-6`, `except Baseline-C`); `paper-prose-tighten` class 14
+says how to restate it. Then the legend for *this* float: what is
 measured, the symbols, the definition of each column. Nothing that defers to
 prose; a takeaway is not a restatement of rows, but a row-by-row recital is.
 
