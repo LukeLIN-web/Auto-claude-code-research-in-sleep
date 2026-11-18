@@ -147,6 +147,7 @@ The sequence (user 2026-11-15「你先发个全体message显示你催过了 然�
    - One item per weakness or question, merged where the round-1 reply answered them together, labeled as in the review. Every concern gets an item; leaving one out tells the AC it is still open.
    - **A reviewer who has posted follow-up questions is nudged on those only** (user 2026-11-18「这也不是相关的吧, 你就回他最近一次问的就行」): one item per question in their latest comment(s), restating our answer to it, labeled as they labeled it ("W3 follow-up"); the round-1 weaknesses are not listed again. The opener thanks them for the follow-up questions and says our follow-up responses addressed them.
    - Each item restates the posted reply (§ 1): its conclusion, at most one number, the table or section. No new result and no number the thread does not already show.
+   - A result that was already in the submission is stated as the paper's ("The submission already shows … (Appendix J.4)"), never in a "We retrained / we ran …" past tense that reads as work done for the rebuttal (user 2026-11-18「也不对, 搞得好像我们 是 rebuttal 才做的一样」). "We ran / added" is kept for experiments that really are new.
    - A result that holds on only some benchmarks is stated by the reply's own conclusion or by one benchmark where it holds, never as a count ("on three of the four") (Never expose a weakness).
 
    中文对照：**非常感谢您富有洞见的建议！** 我们在回复中逐条回应了您的问题：1. **〈问题〉(W1)。** 〈一句话〉…… **能否请您告诉我们，我们的回复是否解决了您的问题？讨论期将于〈日期〉结束，若您能在此之前回复，我们将非常感激，这样我们仍有时间解决您尚存的任何问题。**再次感谢您的时间和宝贵意见！
