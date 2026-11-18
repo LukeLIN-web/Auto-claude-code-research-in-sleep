@@ -145,6 +145,7 @@ The sequence (user 2026-11-15「你先发个全体message显示你催过了 然�
    > Thank you again for your time and valuable feedback!
 
    - One item per weakness or question, merged where the round-1 reply answered them together, labeled as in the review. Every concern gets an item; leaving one out tells the AC it is still open.
+   - **A reviewer who has posted follow-up questions is nudged on those only** (user 2026-11-18「这也不是相关的吧, 你就回他最近一次问的就行」): one item per question in their latest comment(s), restating our answer to it, labeled as they labeled it ("W3 follow-up"); the round-1 weaknesses are not listed again. The opener thanks them for the follow-up questions and says our follow-up responses addressed them.
    - Each item restates the posted reply (§ 1): its conclusion, at most one number, the table or section. No new result and no number the thread does not already show.
    - A result that holds on only some benchmarks is stated by the reply's own conclusion or by one benchmark where it holds, never as a count ("on three of the four") (Never expose a weakness).
 
