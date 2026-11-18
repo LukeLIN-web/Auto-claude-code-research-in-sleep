@@ -61,6 +61,14 @@ main { max-width: 900px; margin: 0 auto; padding: 24px 16px 120px; }
 .en { display: none; font-size: 13.5px; line-height: 1.6; color: var(--en); margin: 2px 0 6px;
   font-family: Georgia, "Times New Roman", serif; }
 body.show-en .en { display: block; }
+body.wide main { max-width: 1240px; }
+.blk.has-ev { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); column-gap: 22px; align-items: start; }
+.blk.has-ev .col { position: relative; }
+.ev { display: flex; flex-direction: column; gap: 6px; margin: 4px 0; }
+.ev .q { font-size: 13.5px; line-height: 1.6; color: var(--muted); background: var(--code-bg); border-left: 3px solid var(--accent);
+  border-radius: 4px; padding: 6px 10px; }
+.ev .q::before { content: "证据"; display: block; font-size: 11px; font-weight: 700; letter-spacing: .05em; color: var(--accent); }
+@media (max-width: 760px) { .blk.has-ev { grid-template-columns: minmax(0, 1fr); } }
 code { font-family: ui-monospace, Menlo, monospace; font-size: .88em; background: var(--code-bg); padding: 1px 5px; border-radius: 4px; }
 mark { background: var(--hl); color: inherit; padding: 0 1px; }
 del { color: var(--accent); text-decoration-thickness: 2px; }
@@ -158,14 +166,19 @@ function autosize(ta) { ta.style.height = "auto"; ta.style.height = ta.scrollHei
 
 function render() {
   doc.innerHTML = "";
+  document.body.classList.toggle("wide", BLOCKS.some(b => b.ev && b.ev.length));
   for (const b of BLOCKS) {
     const el = document.createElement("div");
     el.className = "blk " + b.kind;
     el.dataset.i = b.i;
     if (b.level > 1) el.style.paddingLeft = (10 + (b.level - 1) * 22) + "px";
     if (b.kind === "li" || b.kind === "ol") el.style.paddingLeft = (10 + 20 + (b.level - 1) * 22) + "px";
-    el.innerHTML = `<div class="zh" contenteditable="true" spellcheck="false"></div><div class="en"></div><div class="notes"></div>
+    const inner = `<div class="zh" contenteditable="true" spellcheck="false"></div><div class="en"></div><div class="notes"></div>
       <div class="tools"><button data-t="note">＋批注</button><button data-t="revert">还原</button></div>`;
+    if (b.ev && b.ev.length) {
+      el.classList.add("has-ev");
+      el.innerHTML = `<div class="col">${inner}</div><div class="ev">${b.ev.map(q => `<div class="q">${q}</div>`).join("")}</div>`;
+    } else el.innerHTML = inner;
     const zh = $(".zh", el);
     if (b.kind === "ol") zh.dataset.num = b.num;
     zh.innerHTML = state.edits[b.i] != null ? state.edits[b.i] : b.zh;
@@ -302,6 +315,7 @@ $("#b-list").onclick = () => {
     out.push(`## ${count}. [${section}] ${b.src === "notes" ? "NOTES " : ""}第 ${b.ln || b.i + 1} 行`, "");
     if (HAS_EN && b.en) out.push(`- **英文原文**：${toMd(htmlNode(b.en), true).trim()}`);
     out.push(`- **${HAS_EN && b.en ? "原译文" : "原文"}**：${toMd(htmlNode(b.zh), true).trim()}`);
+    for (const q of b.ev || []) out.push(`- **证据**：${toMd(htmlNode(q), true).trim()}`);
     if (el.classList.contains("edited") || el.classList.contains("has-mark")) out.push(`- **批改后**：${toMd(htmlNode(cur), false).trim()}`);
     for (const n of state.notes[b.i] || []) if (n.trim()) out.push(`- **批注**：${n.trim()}`);
     out.push("");

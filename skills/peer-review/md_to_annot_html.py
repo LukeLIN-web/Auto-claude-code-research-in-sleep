@@ -13,6 +13,11 @@ ZH.md      the text the user annotates (review_*.zh.md, or NOTES_*.zh.md alone)
            (lines whose text changed are reported as lost).
 --applied  use after applying the user's annotations: the page starts clean
            (new localStorage key) instead of showing the applied edits again.
+
+Evidence column: a ZH.md line may end with one or more " ⟦证据⟧ <quote>" parts.
+The text before the first marker is the editable paragraph; each quote is shown
+read-only in a right-hand column beside it (stacked below on narrow screens) and
+is copied into 批改清单. The --en line for the same index carries no markers.
 """
 import argparse, html, json, re, sys, time
 from pathlib import Path
@@ -28,10 +33,12 @@ def inline(t):
     t = re.sub(r"\[([^\]]+)\]\((https?://[^)\s]+)\)", r'<a href="\2">\1</a>', t)
     return re.sub(r"\x00(\d+)\x00", lambda m: f"<code>{codes[int(m.group(1))]}</code>", t)
 
+EV = " ⟦证据⟧ "
+
 def parse(lines):
     out = []
     for i, raw in enumerate(lines):
-        line = raw.rstrip("\n")
+        line, *ev = raw.rstrip("\n").split(EV)
         if not line.strip():
             continue
         b = {"i": i, "kind": "p", "level": 0, "marker": "", "num": ""}
@@ -49,6 +56,7 @@ def parse(lines):
         elif m := re.fullmatch(r"`(\d+: .*)`", line.strip()):
             b["kind"], body = "rating", m.group(1)
         b["zh"] = inline(body)
+        b["ev"] = [inline(e.strip()) for e in ev if e.strip()]
         out.append(b)
     return out
 
