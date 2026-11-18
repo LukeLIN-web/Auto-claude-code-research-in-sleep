@@ -525,15 +525,17 @@ the candidate findings below (OUT_DIR, *Constants*).
   <page.html>` on the page in OUT_DIR; if empty, look in `~/Downloads` for the
   newest `*.批改快照.html`, `*.批改清单.md` or a full-page Save As copy. Only if
   none exists, ask for 保存到文件 — never ask the user to edit a `.md`.
-- **Serve, test, open.** After every rebuild, serve OUT_DIR on a fixed port
-  for this session only: `python3 -m http.server 8765 --bind 127.0.0.1`,
-  run in the background and tied to the session (no nohup, no launchd: macOS
-  blocks a launchd job from reading ~/Desktop). Test once in a headless browser
-  before handing over (Playwright blocks `file:`): check the layout, then edit,
-  reload and export, and clear the test state after. An untouched page must
-  report no state in `read_annot.py`. Then open the page for the user at
-  `http://127.0.0.1:8765/<page>.html`. Never change the port: saved
-  annotations are stored per origin, so a new port hides them.
+- **Serve and open — no browser automation.** After every rebuild, serve
+  OUT_DIR on a fixed port for this session only:
+  `python3 -m http.server 8765 --bind 127.0.0.1`, run in the background and
+  tied to the session (no nohup, no launchd: macOS blocks a launchd job from
+  reading ~/Desktop). `curl` the page for a 200 and open it for the user at
+  `http://127.0.0.1:8765/<page>.html`. Never drive or debug the page with
+  Playwright or another browser tool (user 2026-11-18「以后不要开playwright调试
+  html」); check the build from the script output (block count, lost
+  annotations) and `read_annot.py` (an untouched page reports no state).
+  Never change the port: saved annotations are stored per origin, so a new
+  port hides them.
 
 ### Step 10: Author response and follow-up (discussion phase)
 
