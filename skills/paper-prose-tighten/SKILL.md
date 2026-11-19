@@ -645,6 +645,15 @@ Deleting text must never upgrade a claim.
   still carry, and when, is the project's ruling (memory `paper-prose-rules`
   §1), not this skill's. `descriptive` and
   `post-hoc` scope a claim rather than label a null, and stay.
+- **Never let a null carry a conclusion about what the method needs.** A variant
+  that drops a component and is not significantly different from the full recipe
+  supports `achieves comparable performance`, nothing more. `does not require X`,
+  `X is unnecessary` and `works without X` are capability claims the comparison
+  did not test: write the comparison and let the reader draw it. This applies when
+  writing the sentence too, not only when cutting. (Ruling 2026-11-19: a sentence
+  opening `Selecting ... does not require <the component>:` over a row that was
+  merely undetected against the full recipe in every column was 「太强了」; it
+  became `achieves performance comparable to`.)
 - **Never delete a denominator that scopes the claim** (full-denominator rules,
   subset sizes that bound generality).
 - **Never leave a protocol difference stated nowhere** — different stack,
