@@ -61,11 +61,13 @@ No deference line anywhere ("However, we fully respect your final judgment"): de
 
 Leave out: any mention of the reservations (not even "we respect your reservations", which concedes and is a deference line, lint 24); a praised strength whose restatement brings back a cost or a weak result the reviewer still holds against us (e.g. "honest about cost", "reports null results" when efficiency is a kept reservation); a quantifier from the praise that implies the opposite case ("gains across *most* categories", "addresses *most* concerns"); a list of the reviewer's suggestions by name; the rating request (§ 7: keep the one request for a reply that closes a concern).
 
+The thanks never say the reviewer maintained or kept the rating (user 2026-11-19「以后也不要写 "thank you … for maintaining your rating in support of acceptance"，就说 thank you for support of acceptance」): write "thank you for your support of acceptance". A raise is still thanked as a raise.
+
 > Title: Thank You for Confirming the Acceptance Rating
 >
 > Dear Reviewer X,
 >
-> **Thank you so much for finding our rebuttal thorough, for recognizing that we reported meaningful experiments rather than simply providing explanations, and for maintaining your rating in support of acceptance!** We are very grateful for your thoughtful follow-up.
+> **Thank you so much for finding our rebuttal thorough, for recognizing that we reported meaningful experiments rather than simply providing explanations, and for your support of acceptance!** We are very grateful for your thoughtful follow-up.
 >
 > We are also deeply grateful for the strengths you highlighted in your review: our evaluations and the choice of suitable, compatible baselines for comparison, the significant gains at hour scale where bounded per-pass context is genuinely useful, and our informative diagnostic analyses.
 >
