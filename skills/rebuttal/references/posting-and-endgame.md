@@ -63,11 +63,13 @@ User 2026-11-17:「AC confidential message: 先写感谢AC，然后黑体一大�
 
 The one place to frame the whole discussion for the AC, readers Area Chairs (+ SACs/PCs). Draft it whenever at least one reviewer has not confirmed a positive rating; if every reviewer is a confirmed positive, § 2a is enough. It does not replace the per-reviewer AC notes already sent ([round2-replies.md](round2-replies.md) § 6, [misconduct-reporting.md](misconduct-reporting.md)); it closes them, citing their dates instead of repeating them. VQToken posted such a note as "Author Final Remarks"; the AC's meta-review followed its framing (outlier reviewer, novelty, "consensus leaned toward borderline accept").
 
+**No rating tag after a reviewer's ID in anything sent to the AC** (user 2026-11-19「以后给ac的 不要 有(rating ， 这次就报错了」). Write `Reviewer <ID>`, never `Reviewer <ID> (rating 2)`, `(2: Weak Reject)` or `(<rating>, confidence <c>)`; this holds for this message, the per-reviewer AC notes ([round2-replies.md](round2-replies.md) § 6) and the misconduct note ([misconduct-reporting.md](misconduct-reporting.md) § 4). The AC reads every rating in the forum, and a tag copied from the draft is false the moment the reviewer changes the score: one summary went up saying "Reviewer <ID> (rating 2) has not responded" an hour after that reviewer had replied and raised to 3, and the forum closed before the post could be edited. A rating appears only where the sentence is about the rating itself (a raise "from <a> to <b>", a reviewer's verbatim "maintain a Weak Accept"). Right before the user posts any AC note, reload the forum and check every "has not responded" and every score in the draft against it; if a reviewer has replied since the draft, that paragraph is rewritten first.
+
 Structure, in this order:
 1. **Thank the AC**, one or two warm sentences, for handling the submission and guiding the discussion.
 2. **The concerns raised, in bold.** One line per concern, the concern itself in bold as a lead-in, then in plain text what we did and the number or table the thread gave ("**Baseline under matched fine-tuning.** We added it (Reviewer A, W1): 57.4 vs 57.7 at 0.14 % tokens."). Group concerns several reviewers share into one line naming all of them. A reviewer-flagged item that was fixed is stated as fixed and checked, never as an error.
 3. **Where the rebuttal stands**, in a few sentences: every weakness and question answered (coverage stated with confidence, § 2a), what was added in the discussion (new analyses, a revision if one was uploaded), and how many follow-up rounds took place.
-4. **Who supports the paper**: each positive-score reviewer by ID with the final rating, and a verbatim quote where one confirmed acceptance or wrote that the concerns are addressed. Counts must be true; the AC sees the forum.
+4. **Who supports the paper**: each positive-score reviewer by ID, with a verbatim quote where one confirmed acceptance or wrote that the concerns are addressed. Counts must be true; the AC sees the forum.
 5. **Each remaining reviewer, said plainly which case it is**, one short paragraph each:
    - *No reply*: what we did for them (the concerns answered, the analyses added), then that they have not replied, with every date we posted to them ("Reviewer <ID> has not responded to our response of <date> or our follow-ups of <dates>."). We believe the concerns are resolved as far as possible.
    - *Replied, a concern still open*: the concern in their words, what we did, and why we believe it is answered.
@@ -92,10 +94,10 @@ addressed:
 Our responses answer every weakness and question. During the discussion
 we added <new analyses> <and uploaded a revision with ...>.
 
-Reviewers <A> (<rating>) and <B> (<rating>) support acceptance;
+Reviewers <A> and <B> support acceptance;
 Reviewer <A> wrote: "<verbatim confirmation>".
 
-Reviewer <C> (<rating>) has not responded to our response of <date> or
+Reviewer <C> has not responded to our response of <date> or
 our follow-ups of <dates>. We addressed each of the reviewer's concerns:
 <one line>. <Or: Reviewer <D>'s W<k> states "<verbatim>"; the submission
 reports <fact> in <Section / Table>.>
@@ -112,7 +114,7 @@ Thank you again for your time and efforts in handling our submission!
 1. Title (Title Case, no `**`), thanks first, then what the note is: `Thank You for Your Careful Oversight: Final Confidential Summary of Reviewer Assessments and Completed Evidence`. With a meta-review already out: `Final Confidential Rebuttal Summary - Thank You for Your Guidance; Completed Evidence Addressing the Metareview's Central Concern for Your Consideration`.
 2. `Dear Area Chair <ID>, SAC, and PC,` (the AC's ID when the forum shows it; otherwise `Dear Area Chair, SAC, and PC,`).
 3. **Bold thanks** for the AC's careful oversight and the time devoted to the submission; one sentence of gratitude to all reviewers for strengthening the paper; one sentence that, as the discussion concludes, this is a concise confidential summary of the reviewer record and the completed evidence.
-4. **Reviewer assessments.** One bullet per reviewer, bold lead-in `Reviewer <ID> (<rating>: <label>)`: a confirmation quoted verbatim where one was posted ("stated: \"…\""), a raised score as "raised the recommendation from <a> to <b>", a proposal we carried out ("proposed …; we ran this experiment in full"). A reviewer who did not reply: its own strengths quoted, what we completed with the dates, each invitation to identify a remaining concern with its date, any earlier AC note by date; then "No response followed." / "No further concern was raised."
+4. **Reviewer assessments.** One bullet per reviewer, bold lead-in `Reviewer <ID>` (no rating tag, see above): a confirmation quoted verbatim where one was posted ("stated: \"…\""), a raised score as "raised the recommendation from <a> to <b>", a proposal we carried out ("proposed …; we ran this experiment in full"). A reviewer who did not reply: its own strengths quoted, what we completed with the dates, each invitation to identify a remaining concern with its date, any earlier AC note by date; then "No response followed." / "No further concern was raised."
 5. **No articulated remaining concern**, when no reviewer named one after our last answers: "The discussion record therefore contains no articulated remaining concern. We respectfully ask that the pre-rebuttal objections not be treated as continuing unresolved concerns unless they are supported by the completed post-rebuttal record."
 6. **Evidence directly resolving the central concerns** (or "…the metareview's central concerns"): the concerns grouped into two to four numbered central concerns, each a bold claim sentence naming the reviewers who raised it, then the completed evidence with the numbers and appendices the threads gave. Smaller points go in one **Additional evidence** paragraph, the reviewer in brackets after each.
 7. **Taken together**: one sentence that the evidence resolves the central concerns and that the positive assessments of the supporting reviewers confirm it, then warm thanks to those reviewers by ID.

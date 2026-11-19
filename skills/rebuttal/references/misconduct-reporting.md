@@ -88,8 +88,8 @@ Reviewer <C> <...>. <Only if true: Reviewers <A> and <B> also engaged
 actively in the discussion and confirmed their ratings.>
 
 We would like to bring to your attention <N> points in Reviewer <ID>'s
-review (rating <r>, soundness <s>, confidence <c>). <Optional, only if
-true: The other reviewers rate soundness <x> to <y>; Reviewers <B> and
+review. <Optional, only if true: The review rates soundness <s>; the
+other reviewers rate soundness <x> to <y>; Reviewers <B> and
 <C> state "<verbatim>".>
 
 1. <Heading naming the complaint, e.g. "A factual inaccuracy in W4".> The
