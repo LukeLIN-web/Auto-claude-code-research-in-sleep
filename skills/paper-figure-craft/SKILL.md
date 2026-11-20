@@ -117,9 +117,11 @@ whose four parts were four greys from near-black to near-white: 「不要用这�
   authority, each checked against the hues that already carry a meaning (`ours`,
   the structural accent). Falling back to the neutrals because the palette "ran
   out" is the failure this rule names.
-- Parts that form a group (three sub-cases of one outcome against its
-  alternative) may share a hue family, with the alternative in grey: the group
-  is then the visual unit, which is usually the figure's conclusion.
+- Tints of one hue with a grey remainder do not meet this rule: the user saw
+  exactly that as the first fix and rejected it the same day (「还是太灰了」).
+  Sub-cases of one outcome still get a hue each, and so does the remainder.
+- A second panel on the same rows is coloured too, in the hue of the part whose
+  meaning it shares, not left in neutral grey.
 
 Two more things hold whatever the palette: one hue = one meaning (above), and two
 series a reader must tell apart inside one panel get a second channel — marker
