@@ -52,25 +52,12 @@ named as running, never summarized ahead of its reply.
 
 ## Passages that expose a weakness
 
-Some findings are anchored on a sentence, cell or caption in which the manuscript
-itself hands the reader the weakness: a caveat, a limitation, a disclosed
-departure, a comment on a losing cell, a row that exists only to show where the
-method falls short. Report each one and ask the user whether to delete it
-(user 2026-11-20: 「暴露缺点的应该汇报, 问 user 要不要删」):
-
-- List them in the report under their own heading, apart from the other
-  findings: location, the passage quoted verbatim, the weakness it exposes, and
-  what else in the paper reads the same fact (another sentence, a table cell, a
-  figure), since deleting one copy leaves the others.
-- Put the question to the user per passage: delete, or keep. Give your
-  recommendation with it.
-- Do not delete, soften or rewrite the passage before the user answers, and do
-  not add a new caveat to cover a finding. A passage the user keeps stays as
-  written.
-
-This covers passages the executor notices while spot-checking anchors as well as
-those the reviewer flags. A number or claim that is wrong is not this case: it
-is fixed, and `/paper-claim-audit` owns that check.
+Some findings are anchored on a passage in which the manuscript itself hands the
+reader the weakness. Whether the reviewer flags one or the executor notices it
+while spot-checking anchors, it is reported and put to the user under the rule of
+`/paper-claim-audit` (*Disclosure ledger: report, then ask*), which owns it: the
+same ledger rows, under their own heading in the logic report, and no deletion
+or rewrite before the user answers.
 
 ## Persona
 

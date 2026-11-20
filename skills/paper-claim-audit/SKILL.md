@@ -408,8 +408,8 @@ Parse the reviewer's response and write `PAPER_CLAIM_AUDIT.md`:
 
 ## Disclosure ledger (failure mode 13)
 
-| # | Location | Sentence | Class | Contradicted by / undermines |
-|---|---|---|---|---|
+| # | Location | Sentence | Class | Contradicted by / undermines | Also stated at | Delete? (recommendation) |
+|---|---|---|---|---|---|---|
 
 ## All Claims (detailed)
 
@@ -421,6 +421,26 @@ Parse the reviewer's response and write `PAPER_CLAIM_AUDIT.md`:
 ```
 
 Also write `PAPER_CLAIM_AUDIT.json` for machine consumption.
+
+### Disclosure ledger: report, then ask
+
+A ledger row is a passage in which the paper exposes its own weakness: a caveat,
+a limitation, a disclosed departure, a comment on a losing cell, a row that
+exists only to show where the method falls short. Report every row and ask the
+user whether to delete it (user 2026-11-20: 「暴露缺点的应该汇报, 问 user 要不要删」):
+
+- Quote the passage verbatim, and fill *Also stated at* with every other place
+  that reads the same fact (another sentence, a table cell, a figure): deleting
+  one copy leaves the others.
+- Put the question to the user per row, delete or keep, with your
+  recommendation.
+- Do not delete, soften or rewrite the passage before the user answers, and do
+  not add a new caveat to cover a finding. A passage the user keeps stays as
+  written.
+
+A row classed *contradicted* is also a factual conflict: the conflict is fixed
+whatever the user answers. `/research-review` reports the weakness-exposing
+passages its reviewer anchors on under this same rule.
 
 ### Step 4: Print Summary
 
