@@ -117,7 +117,7 @@ For each paragraph, read 2–3 award-paper paragraphs with the same function and
 
 ### Step 5c — Figure plan and figures (whenever Method/Experiments are written, or when asked)
 Load `references/figures.md`.
-1. Make the **figure plan** from the evidence map: one row per figure with its place, the claim it carries, its type, panels, the material needed, its status and the caption's takeaway sentence (`figures.md`, "The Figure Plan"). Every main claim has a figure or a table in the main text; every figure carries one claim.
+1. Make the **figure plan** from the evidence map: one row per figure with its place, the claim it carries, its type, panels, the material needed, its status and the caption's takeaway sentence (`figures.md`, "The Figure Plan"). Every main claim has a figure or a table in the main text; every figure carries one claim. Pick the medium by "a figure before a table, a table before prose" (Rules below): a planned table whose conclusion is a shape becomes a figure row.
 2. Choose **Figure 1** by route (`figures.md`, "Choose by route"): `diagnosis`/`contrast-results` for `failure`, `contrast-schematic` for `cost` and `insight`, `showcase` for `capability-gap`/`trend`, `plot` for scaling and re-examination, `concept` for mechanism and theory, `resource` for datasets. In two-column templates it goes on page 1, usually full width.
 3. **Draw now** what the user has stated: schematics of the mechanism (Figure 1 contrast panels, method overview, query or data-flow illustrations) in TikZ with `assets/figures/figures_preamble.tex`; parts whose mechanism is `[TODO]` are drawn dashed. **Leave as placeholders** everything that shows results (renders, qualitative grids, plots, numbers): a blank framed area of the planned size whose caption carries the full plan as `\FigPlan{…}`. Plots the user has data for use `assets/figures/plot_style.py`.
 4. Captions open with the takeaway (`figures.md`, "Captions"); method colours, names and symbols are the same in every figure and match the text.
@@ -204,6 +204,7 @@ Use `references/paper-review.md` for the full checklist and workflow.
 
 ## Rules
 - Keep the main text self-contained (user 2026-11-11): every main-text argument carries at least one or two pieces of its evidence in the main text itself (a main-text figure or table, or its decisive number with the comparison). The appendix only adds to that evidence, and "see Appendix X" alone supports nothing. The rule and how to fix a claim whose evidence sits only in the appendix: `../shared-references/review-float-map.md`.
+- **A figure before a table, a table before prose** (user 2026-11-19, 「能用图表示的就不要用表，能用表表示的就不要用大段的文字」): a conclusion that is a shape (trend, ranking, gap, distribution, breakdown, trade-off) is a figure; exact values across many methods and settings are a table; prose carries the claim, its reason and one or two headline numbers, never a walk through values or parallel items. The test: `../shared-references/manuscript-craft.md` §4.
 - If a claim cannot be supported by results, weaken or remove the claim.
 - Avoid writing style that looks like incremental patching of a naive baseline.
 - Keep terminology stable across the full paper.

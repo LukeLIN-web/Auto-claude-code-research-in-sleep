@@ -278,6 +278,14 @@ mcp__claude-review__review_start:
     and every main-text argument that:
       4. has no supporting evidence in the main text: its evidence sits only in the
          appendix (e.g. the sentence rests on "see Appendix C" alone) or nowhere.
+    and every float or passage in the wrong medium (a figure before a table, a
+    table before prose):
+      5. a table whose conclusion is a shape a figure would show: a trend over an
+         ordered variable, a ranking or gap among a few arms, a distribution, a
+         breakdown into parts, a trade-off between two quantities;
+      6. a prose passage, main text or appendix, that walks through values,
+         settings or parallel items one by one where a table or figure would hold
+         them.
     A flagged float or argument is a Critical Weakness only if it would sink the paper.
 ```
 
@@ -468,6 +476,14 @@ mcp__claude-review__review_start:
     and every main-text argument that:
       4. has no supporting evidence in the main text: its evidence sits only in the
          appendix (e.g. the sentence rests on "see Appendix C" alone) or nowhere.
+    and every float or passage in the wrong medium (a figure before a table, a
+    table before prose):
+      5. a table whose conclusion is a shape a figure would show: a trend over an
+         ordered variable, a ranking or gap among a few arms, a distribution, a
+         breakdown into parts, a trade-off between two quantities;
+      6. a prose passage, main text or appendix, that walks through values,
+         settings or parallel items one by one where a table or figure would hold
+         them.
     A flagged float or argument is a Critical Weakness only if it would sink the paper.
 ```
 

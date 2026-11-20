@@ -487,6 +487,23 @@ left alone it will paraphrase the same term three different ways.
 
 ## 4. Floats: placement and typesetting
 
+- **Choose the medium: a figure before a table, a table before prose** (user
+  ruling 2026-11-19, 「能用图表示的就不要用表，能用表表示的就不要用大段的文字」).
+  The test is the question the reader brings to the evidence:
+  - **Figure** when the conclusion is a shape: a trend over an ordered
+    variable (data size, training steps, budget, horizon), a ranking or gap
+    among a few arms, a distribution, a breakdown into parts, a trade-off
+    between two quantities. A table that carries such a conclusion is redrawn
+    as a figure.
+  - **Table** when the reader looks up exact values across many methods and
+    many settings (the main comparison across benchmarks, a setup or
+    hyper-parameter listing), more marks than a figure can label legibly at
+    print size.
+  - **Prose** only for what neither holds: the claim, its reason, and the one
+    or two headline numbers that send the reader to the float. A paragraph
+    that walks through values, settings or parallel items one by one becomes a
+    table or a figure, and the prose keeps its takeaway sentence.
+  Changing the medium changes no number and no claim.
 - **The main (hero) figure lands on page 2** (user ruling 2026-10-31). A
   `figure*` lands on the next page at the earliest, so its source goes in the
   Introduction text of the page before the one it should land on. Read the page

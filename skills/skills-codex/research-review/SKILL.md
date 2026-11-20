@@ -193,6 +193,14 @@ spawn_agent:
     and every main-text argument that:
       4. has no supporting evidence in the main text: its evidence sits only in the
          appendix (e.g. the sentence rests on "see Appendix C" alone) or nowhere.
+    and every float or passage in the wrong medium (a figure before a table, a
+    table before prose):
+      5. a table whose conclusion is a shape a figure would show: a trend over an
+         ordered variable, a ranking or gap among a few arms, a distribution, a
+         breakdown into parts, a trade-off between two quantities;
+      6. a prose passage, main text or appendix, that walks through values,
+         settings or parallel items one by one where a table or figure would hold
+         them.
     A flagged float or argument is a Critical Weakness only if it would sink the paper.
 ```
 
@@ -270,7 +278,7 @@ Save a trace for every reviewer call following `../shared-references/review-trac
 - In a manuscript, every figure and table must serve an argument (user 2026-11-03,
   「每个图表都应该服务论点」), and every main-text argument carries at least one or
   two pieces of its evidence in the main text, never all of it in the appendix
-  (user 2026-11-11, 「main 正文应该 self contain」): send the FLOAT AND ARGUMENT MAP
+  (user 2026-11-11, 「main 正文应该 self contain」), and evidence takes a figure before a table, a table before prose (user 2026-11-19, `manuscript-craft.md` §4): send the FLOAT AND ARGUMENT MAP
   block in the structure thread's first-round prompt and in every follow-up brief.
   The reviewer builds the map; do not pass on your own map or reading of what a
   float shows or where an argument's evidence sits (reviewer-independence.md).

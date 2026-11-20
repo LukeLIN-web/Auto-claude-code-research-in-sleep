@@ -10,7 +10,11 @@ Two user rulings, the two directions of one map between arguments and evidence:
   itself. The appendix may add evidence (more settings, breakdowns, protocol
   details); it never holds all of it, and "see Appendix C" alone supports nothing.
 
-This file owns both rules, for writing and for review. The writing skill
+A third ruling, 2026-11-19, picks the medium the evidence takes: a figure
+before a table, a table before prose (`manuscript-craft.md` §4 owns it and its
+test). The block below checks it as flags 5 and 6.
+
+This file owns the first two rules, for writing and for review. The writing skill
 (`research-paper-writing`) applies them when it builds a
 paper's claim–evidence map; a page limit never moves an argument's decisive
 evidence to the appendix, so cut elsewhere. A reviewer prompt over a manuscript
@@ -61,6 +65,14 @@ Under "Flagged", list with its anchor every float that:
 and every main-text argument that:
   4. has no supporting evidence in the main text: its evidence sits only in the
      appendix (e.g. the sentence rests on "see Appendix C" alone) or nowhere.
+and every float or passage in the wrong medium (a figure before a table, a
+table before prose):
+  5. a table whose conclusion is a shape a figure would show: a trend over an
+     ordered variable, a ranking or gap among a few arms, a distribution, a
+     breakdown into parts, a trade-off between two quantities;
+  6. a prose passage, main text or appendix, that walks through values,
+     settings or parallel items one by one where a table or figure would hold
+     them.
 A flagged float or argument is a Critical Weakness only if it would sink the paper.
 ```
 
@@ -80,6 +92,11 @@ with no evidence anywhere is narrowed to what the evidence supports or gets an
 experiment. Dropping an argument from the main text, or moving it to the
 appendix together with its evidence, changes what the paper claims: report it to
 the author, who decides.
+
+A float or passage in the wrong medium: redraw the table as a figure that shows
+the shape, or move the paragraph's values into a table or figure and keep its
+takeaway sentence in the prose. Numbers come from the same data files and the
+claim stays the same.
 
 ## Field note
 

@@ -274,7 +274,7 @@ Update project memory/notes with key review conclusions.
 - Be honest about weaknesses — hiding them leads to worse feedback
 - Focus on ACTIONABLE feedback — "what experiment would fix this?"
 - Every weakness must carry an evidence anchor; spot-check anchors before acting, and drop findings whose anchor does not check out
-- In a manuscript, every figure and table must serve an argument (user 2026-11-03), and every main-text argument carries at least one or two pieces of its evidence in the main text, never all of it in the appendix (user 2026-11-11): send the FLOAT AND ARGUMENT MAP block of `shared-references/review-float-map.md` in the structure thread's first-round prompt and every follow-up brief; the reviewer builds the map
+- In a manuscript, every figure and table must serve an argument (user 2026-11-03), and every main-text argument carries at least one or two pieces of its evidence in the main text, never all of it in the appendix (user 2026-11-11), and evidence takes a figure before a table, a table before prose (user 2026-11-19, `manuscript-craft.md` §4): send the FLOAT AND ARGUMENT MAP block of `shared-references/review-float-map.md` in the structure thread's first-round prompt and every follow-up brief; the reviewer builds the map
 - Document the threadId for potential future resumption
 - The review document should be self-contained (readable without the conversation)
 
