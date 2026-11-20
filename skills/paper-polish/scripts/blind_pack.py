@@ -14,7 +14,7 @@ A macro the polish does not map stays in the text as written (\\method); pass --
 SCOPE.TSV is polish_scope.py's output (file, line, ...), with the rows the polish must not touch removed.
 Ids are a letter per file in reading order plus a counter (A1, A2, B1, ...). Readers get contiguous runs of
 sentences of about equal printed length, cut between paragraphs, where the section heading changes when one is near.
-Without --readers, N = ceil(chars / 4000), at most 4: one reader on 3-4 KB of in-scope text took 4-8 minutes,
+Without --readers, N = ceil(chars / 4000), at most 8 (a whole-section scope, SKILL.md § 0): one reader on 3-4 KB of in-scope text took 4-8 minutes,
 on 12-13 KB 17-30 minutes in one long turn, and once ran into the output cap and lost the whole turn.
 """
 import argparse
@@ -108,7 +108,7 @@ def main():
         it["id"] = f"{it['letter']}{counters[it['letter']]}"
 
     total = sum(len(it["text"]) for it in items)
-    n = a.readers or max(1, min(4, math.ceil(total / 4000)))
+    n = a.readers or max(1, min(8, math.ceil(total / 4000)))
     target, groups, size = total / n, [[]], 0
     for i, it in enumerate(items):
         prev = items[i - 1] if i else it
