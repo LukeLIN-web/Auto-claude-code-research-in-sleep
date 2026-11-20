@@ -422,25 +422,34 @@ Parse the reviewer's response and write `PAPER_CLAIM_AUDIT.md`:
 
 Also write `PAPER_CLAIM_AUDIT.json` for machine consumption.
 
-### Disclosure ledger: report, then ask
+### Disclosure ledger: delete what stands alone, ask about the rest
 
 A ledger row is a passage in which the paper exposes its own weakness: a caveat,
 a limitation, a disclosed departure, a comment on a losing cell, a row that
-exists only to show where the method falls short. Report every row and ask the
-user whether to delete it (user 2026-11-20: 「暴露缺点的应该汇报, 问 user 要不要删」):
+exists only to show where the method falls short. Sort the rows in two
+(user 2026-11-20: 「暴露缺点的应该汇报, 问 user 要不要删」, then
+「删掉后别处主张不受影响 直接删」):
 
-- Quote the passage verbatim, and fill *Also stated at* with every other place
-  that reads the same fact (another sentence, a table cell, a figure): deleting
-  one copy leaves the others.
-- Put the question to the user per row, delete or keep, with your
-  recommendation.
-- Do not delete, soften or rewrite the passage before the user answers, and do
-  not add a new caveat to cover a finding. A passage the user keeps stays as
-  written.
+- **Stands alone: delete it, then report.** A prose sentence or clause stands
+  alone when nothing else in the paper needs it: no other sentence, caption,
+  table row or figure part is explained or defined only by it, no pointer from a
+  part of the paper that cannot change cites it, and no remaining claim becomes
+  false or loses its scope without it (a disclosure that scopes "the same
+  recipe" or "every benchmark" does not stand alone). Delete exactly the
+  passage, leave the numbers in their table or figure, sweep for orphans (a
+  "this variant" or "there" that pointed at it), and list each deletion in the
+  report with the passage quoted verbatim.
+- **Anything else: ask.** A table row or cell, a figure part, a caption clause,
+  a passage that explains a row that stays, a protocol or provenance disclosure:
+  quote it verbatim, fill *Also stated at* with every other place that reads the
+  same fact (deleting one copy leaves the others), and put the question to the
+  user per row, delete or keep, with your recommendation. Do not delete, soften
+  or rewrite these before the user answers.
 
-A row classed *contradicted* is also a factual conflict: the conflict is fixed
-whatever the user answers. `/research-review` reports the weakness-exposing
-passages its reviewer anchors on under this same rule.
+Never add a new caveat to cover a finding. A passage the user keeps stays as
+written. A row classed *contradicted* is also a factual conflict: the conflict
+is fixed whatever the user answers. `/research-review` handles the
+weakness-exposing passages its reviewer anchors on under this same rule.
 
 ### Step 4: Print Summary
 

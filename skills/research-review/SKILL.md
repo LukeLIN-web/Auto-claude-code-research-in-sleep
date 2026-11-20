@@ -55,9 +55,9 @@ named as running, never summarized ahead of its reply.
 Some findings are anchored on a passage in which the manuscript itself hands the
 reader the weakness. Whether the reviewer flags one or the executor notices it
 while spot-checking anchors, it is reported and put to the user under the rule of
-`/paper-claim-audit` (*Disclosure ledger: report, then ask*), which owns it: the
-same ledger rows, under their own heading in the logic report, and no deletion
-or rewrite before the user answers.
+`/paper-claim-audit` (*Disclosure ledger: delete what stands alone, ask about
+the rest*), which owns it: the same ledger rows under their own heading in the
+logic report, the stand-alone ones deleted and listed, the rest asked.
 
 ## Persona
 
