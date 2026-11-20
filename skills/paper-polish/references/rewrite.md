@@ -1,4 +1,4 @@
-# Rewrite: active voice, cohesion, clarity
+# Rewrite: active voice, cohesion, clarity, merging
 
 `/paper-polish`'s editor reads this file in step 4, after the term fixes of `/paper-jargon-pass`'s second pass. It is about **rewriting** sentences that stay. **Cutting** is `/paper-prose-tighten`'s job and runs before this skill: never cut here, and never rewrite there (user 2026-11-12: 「改写专门开个 reference/ 里面的 .md 把, 删和改不要放一个」).
 
@@ -57,7 +57,7 @@ command grep -nE '(Moreover|Furthermore|Additionally|In addition),' $FILES
 
 | Problem | Write |
 |---------|-------|
-| Two independent claims in one sentence joined by `and` / `;` | Split: one claim per sentence (`/paper-jargon-pass`'s 一句话塞太多 is the extreme case) |
+| Two independent claims in one sentence joined by `and` / `;` | Split: one claim per sentence (`/paper-jargon-pass`'s 一句话塞太多 is the extreme case). Claims that share a predicate are not independent: they stay in one sentence, and § 4 merges them when they are apart |
 | A long qualifying clause between subject and verb | Move the clause after the verb, or into its own sentence |
 | More than four commas in one sentence, or an aside wedged mid-sentence between commas (`A outperforms B and, when X holds, C.`) | Split into two sentences, or move the aside to the end (`A outperforms B. It also outperforms C when X holds.`). At most four commas per sentence; commas inside `\cite{}`, math and numbers do not count |
 | Nominalizations (`a comparison is made`, `leads to an improvement in`, `the computation of`) | The verb: `we compare`, `improves`, `we compute` |
@@ -77,15 +77,37 @@ command grep -nE '\\((sub)*section|paragraph)\*?\{[^}]*( +[^ }]+){7}' $FILES   #
 
 **Hold the scope.** A split or reorder must not move a qualifier so that it seems to scope a different clause (`on two benchmarks` drifting to the end of a sentence, where it reads as scoping only the last clause).
 
-## 4. Order and limits
+## 4. Merge sentences that share a predicate (合并)
+
+A paragraph grows by one sentence each time a result arrives, a reviewer asks about one cell, or a deleted sentence is put back. Each new sentence repeats the subject and the predicate of its neighbour to add one more case. Splitting (§ 3) never shortens this; merging does. Prefer the merge whenever it fits the limits below (user 2026-11-20「尽量合并话语, 不然话语越来越长」).
+
+| Problem | Write |
+|---------|-------|
+| Consecutive sentences with one predicate over different pairs or conditions (`With and without the cache, accuracy does not differ significantly for A or for B.` / `Neither does that of A without the cache and B without the cache.`) | One sentence, the predicate once: `On Bench-1, the cache makes no significant difference to A or to B, and neither does fine-tuning without it.` |
+| A sentence that restates the previous sentence's subject and setting to add one case (`On Bench-1, our method … .` / `On Bench-1, our method also … .`) | The case joins the first sentence as a second object or a second clause with `it` |
+| A sentence added in a later round (a new result, an answer to a reviewer, a restored sentence) standing after a sentence with the same subject or predicate | It goes into that sentence. A revision adds a clause, not a sentence, whenever an existing sentence can carry it |
+| The setting named again in every sentence (`without the cache` three times in two sentences) | Named once, as the sentence's opening adverbial or its last phrase |
+
+**Pattern:** before keeping two neighbouring sentences, ask what they share. A shared subject becomes one subject with two verbs; a shared predicate becomes one predicate with a list. The same verb against the same baseline over several benchmarks is `/paper-prose-tighten` class 13 and was merged in step 3; this section takes what that class leaves, where the predicate is shared and the compared pairs differ.
+
+**Limits.**
+- Every case of the merged sentences is still stated. Leaving one out (keeping only the pair a reviewer asked about) is a cut, and a claim change: report it, and the user decides.
+- The merged sentence has at most four commas and one layer of qualification (§ 3). When it would not fit, merge two of three, or leave them apart.
+- A word stated once must be true of every case under it: `significantly` moves in front of a list only when each merged comparison had it. Its count then drops; say so in the change list, since the owner's term check flags the drop.
+- Different metrics stay in separate sentences, as in class 13.
+- A qualifier keeps its scope (**Hold the scope**, § 3).
+
+**Lines.** The merged sentence goes on the line of the first sentence. Each other merged line becomes exactly `%CUT`, and the change list names the line that took it in.
+
+## 5. Order and limits
 
 1. Run after the term fixes of the second pass: a sentence is rewritten once, with its terms already settled.
 2. One pass. A second rewrite of rewritten text trades one smooth phrasing for another and drifts terms.
-3. Only rewrite; never cut a sentence here. A sentence that looks empty is reported (cutting was step 3, `/paper-prose-tighten`).
+3. Only rewrite; never cut a sentence here. A sentence that looks empty is reported (cutting was step 3, `/paper-prose-tighten`). A merge under § 4 is not a cut: every case it held is still stated.
 4. No new terms, no new claims, no new hedges or caveats.
-5. Report what was rewritten by section (voice / cohesion / clarity), after the term fixes.
+5. Report what was rewritten by section (voice / cohesion / clarity / merge), after the term fixes.
 
-## 5. Common misjudgments
+## 6. Common misjudgments
 
 | Symptom | Correction |
 |---|---|
@@ -94,3 +116,5 @@ command grep -nE '\\((sub)*section|paragraph)\*?\{[^}]*( +[^ }]+){7}' $FILES   #
 | An unknown-actor passive is forced active ("Annotators rated each video three times" invented from "each video is rated by three annotators") | Passive stays when the actor is unknown or irrelevant; never invent an actor |
 | A synonym is swapped in so the text does not repeat a noun | One noun per thing; repetition is cohesion. Comparison verbs are the exception: `outperforms` may rotate within the list in `manuscript-craft.md` §2, Experiments (`performs better than`, `achieves a higher success rate than`, …), with `significantly` kept on exactly the comparisons that had it |
 | A transition sentence or recap is added for flow | Cohesion comes from order and first words; no new sentences |
+| A long sentence is split and the paragraph gains a sentence each round; or two sentences with one predicate are left apart because each is short | Split only independent claims; merge the ones that share a subject or predicate (§ 4) |
+| A merge quietly drops one of the cases it joined | That is a cut and a claim change; every case stays, or the edit is reported, not made |
