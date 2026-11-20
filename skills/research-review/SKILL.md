@@ -50,6 +50,28 @@ save its trace, write its report, and give the user its findings at once. Do not
 hold one thread's results until the other returns. The thread still running is
 named as running, never summarized ahead of its reply.
 
+## Passages that expose a weakness
+
+Some findings are anchored on a sentence, cell or caption in which the manuscript
+itself hands the reader the weakness: a caveat, a limitation, a disclosed
+departure, a comment on a losing cell, a row that exists only to show where the
+method falls short. Report each one and ask the user whether to delete it
+(user 2026-11-20: 「暴露缺点的应该汇报, 问 user 要不要删」):
+
+- List them in the report under their own heading, apart from the other
+  findings: location, the passage quoted verbatim, the weakness it exposes, and
+  what else in the paper reads the same fact (another sentence, a table cell, a
+  figure), since deleting one copy leaves the others.
+- Put the question to the user per passage: delete, or keep. Give your
+  recommendation with it.
+- Do not delete, soften or rewrite the passage before the user answers, and do
+  not add a new caveat to cover a finding. A passage the user keeps stays as
+  written.
+
+This covers passages the executor notices while spot-checking anchors as well as
+those the reviewer flags. A number or claim that is wrong is not this case: it
+is fixed, and `/paper-claim-audit` owns that check.
+
 ## Persona
 
 Send the persona template **verbatim** from `reviewer-personas.md` (§2 for P1,
@@ -243,6 +265,7 @@ Save the full interaction and conclusions to a review document in the project ro
 - Claims matrix (what claims are allowed under each possible outcome)
 - Prioritized TODO list with estimated compute costs
 - Paper outline if discussed
+- For a manuscript, the passages that expose a weakness, each with the question to the user (see *Passages that expose a weakness*)
 
 For a manuscript that document is the **logic report**, and the structure thread
 gets its own **structure report** beside it, each self-contained and each written
