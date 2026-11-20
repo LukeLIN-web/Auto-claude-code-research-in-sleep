@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
-"""List the scope of a polish: every prose line of the .tex files the main file inputs.
+"""List the scope of a polish: every prose line of the .tex files whose last change is a commit after BASE.
 
-usage: polish_scope.py <clone> [<base-commit>] [--main main.tex] > scope.tsv
+usage: polish_scope.py <clone> <base-commit> [--main main.tex] > scope.tsv
 
-Without BASE (the polish's default, SKILL.md § 0) every prose line is listed. With BASE, only the lines whose last
-change is a commit after it, for a caller that asks for exactly that. A prose line is any non-blank, non-comment line that is not a tabular row or only layout
+BASE is the commit the previous polish finished on (its audit directory names it), or the commit before the
+draft being polished. A prose line is any non-blank, non-comment line that is not a tabular row or only layout
 commands; headings, captions and \\item lines count. Output, one row per line: file, line, commit, author, text,
 with files in the order the main file inputs them. Delete the rows the polish must not touch (the frozen spans:
 the author column helps find a co-author's lines, but an edit made through a shared editor may carry anyone's
@@ -51,10 +51,10 @@ def input_order(clone, main):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("clone", type=Path)
-    ap.add_argument("base", nargs="?")
+    ap.add_argument("base")
     ap.add_argument("--main", default="main.tex")
     a = ap.parse_args()
-    newer = set(git(a.clone, "rev-list", f"{a.base}..HEAD").split()) if a.base else None
+    newer = set(git(a.clone, "rev-list", f"{a.base}..HEAD").split())
     tracked = set(git(a.clone, "ls-files", "*.tex").split())
     for rel in input_order(a.clone, a.main):
         if rel not in tracked or rel == a.main:
@@ -70,7 +70,7 @@ def main():
                 text = row[1:]
                 prose = text.strip() and not text.lstrip().startswith("%") and not TABULAR.search(text) \
                     and not LAYOUT.fullmatch(text)
-                if prose and (newer is None or sha in newer):
+                if sha in newer and prose:
                     print(f"{rel}\t{line_no}\t{sha[:7]}\t{author}\t{text}")
 
 
