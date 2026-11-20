@@ -94,11 +94,34 @@ distributions, cluttered layouts, and multi-arm scenarios", one panel each.
 
 ## Colour
 
-The palette is the project's, and colour preferences are not rulings of this
-skill (user, 2026-09-01, deleting two such "rulings"). Read it where the project
-keeps it (a palette memory, or a role table plus the figure template).
+The palette's values are the project's, and which hue a paper likes is not a
+ruling of this skill (user, 2026-09-01, deleting two such "rulings"). Read it
+where the project keeps it (a palette memory, or a role table plus the figure
+template).
 
-Two things hold whatever the palette: one hue = one meaning (above), and two
+**Categories get hues, never a grey ramp** (user, 2026-11-20, on a stacked bar
+whose four parts were four greys from near-black to near-white: 「不要用这么丑的
+颜色」).
+
+- Series or stacked parts that are different *kinds* of thing each take a
+  distinct hue from the palette's categorical set. A ramp, of greys or of tints
+  of one hue, is for an ordered quantity only (a dose, a round number); on
+  nominal categories it reads as a magnitude that is not there and prints as a
+  dull monochrome block.
+- Grey is for what the figure de-emphasises: a baseline, a remainder (`other`,
+  the part the conclusion is not about), structure. At most one or two greys in
+  a figure, never the whole of it.
+- No near-black fills. Fills are mid-tone, light enough that the label on them
+  is set in the ink colour; a part that needs white text is too dark.
+- A palette with too few categorical hues gets new ones added at its one
+  authority, each checked against the hues that already carry a meaning (`ours`,
+  the structural accent). Falling back to the neutrals because the palette "ran
+  out" is the failure this rule names.
+- Parts that form a group (three sub-cases of one outcome against its
+  alternative) may share a hue family, with the alternative in grey: the group
+  is then the visual unit, which is usually the figure's conclusion.
+
+Two more things hold whatever the palette: one hue = one meaning (above), and two
 series a reader must tell apart inside one panel get a second channel — marker
 or line style — when their colours sit close in lightness. Compute the lightness
 instead of eyeballing it, then settle it with `pdftoppm` at print size:
