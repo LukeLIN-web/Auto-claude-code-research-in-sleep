@@ -1,6 +1,6 @@
 ---
 name: paper-prose-tighten
-description: "Cut filler from paper prose while holding every claim constant — bookkeeping counts, defensive meta-narration, narrated absences / 无中生有, false pivots / 错误的转折, value series / 罗列, cross-section duplication, related-work sprawl, wordy phrases where one word does, process vocabulary (\"preregistered\"), one comparison split across sentences and copies of it that disagree, exception clauses (\"all but X\", \"except X\"), and claims that survive only behind a pile of caveats. Use when user says \"不应该出现 all but / except\", \"例外从句\", \"论文废话太多\", \"caveat 太多\", \"越讲越乱\", \"别解释了\", \"不要罗列数量\", \"清理废话\", \"无中生有\", \"错误的转折\", \"我要删减文字\", \"不该出现这种工程的术语\", \"related work 太长\", \"能用少词就不用多词\", \"重复也太多了\", \"说一次就行\", \"前后对不上\", \"tighten the prose\", \"cut the filler\", \"too wordy\", or before submission when sections read like an audit log."
+description: "Cut filler from paper prose while holding every claim constant — bookkeeping counts, defensive meta-narration, narrated absences / 无中生有, false pivots / 错误的转折, value series / 罗列, cross-section duplication, related-work sprawl, wordy phrases where one word does, process vocabulary (\"preregistered\"), one comparison split across sentences and copies of it that disagree, exception clauses (\"all but X\", \"except X\"), claims that survive only behind a pile of caveats, and anything that supports no claim of the paper. Use when user says \"没有支持任何论点\", \"这句支持什么论点\", \"这个放这里干嘛\", \"不应该出现 all but / except\", \"例外从句\", \"论文废话太多\", \"caveat 太多\", \"越讲越乱\", \"别解释了\", \"不要罗列数量\", \"清理废话\", \"无中生有\", \"错误的转折\", \"我要删减文字\", \"不该出现这种工程的术语\", \"related work 太长\", \"能用少词就不用多词\", \"重复也太多了\", \"说一次就行\", \"前后对不上\", \"tighten the prose\", \"cut the filler\", \"too wordy\", or before submission when sections read like an audit log."
 argument-hint: "[paper-directory-or-section-files]"
 allowed-tools: Bash(*), Read, Write, Edit, Grep, Glob
 ---
@@ -49,11 +49,41 @@ of a disclosure's wording, it is not an edit worth making.
 
 ## The One Test
 
-For every sentence, and for every number inside a sentence:
+For every sentence, every number inside it, and every larger unit (a paragraph,
+a reported experiment, an example, a method detail, a pointer to a float):
 
-> **Does deleting it change what a reviewer would believe or decide?**
+> **Which claim of the paper does it support?**
 
-If no → delete it. Not soften, not shorten. Delete.
+Name the claim. No claim → delete it. Not soften, not shorten, not move to a
+quieter spot in the main text. Delete. (User ruling 2026-11-21:
+「如果一个东西没有支持任何论点, 就应该删了」.)
+
+A unit supports a claim when it does one of four things:
+
+- it **states** the claim;
+- it is **evidence** for it (a result, a comparison, the reason for a gain, a
+  confound ruled out);
+- it **defines** what the claim is about (a term, the setup, a protocol constant
+  a column uses);
+- it **bounds** the claim (a denominator, a scope limit, a result that weighs
+  against it).
+
+Nothing else earns a place. That it is true, that it took effort to obtain,
+that it is interesting, that a reviewer might ask, and that it was already in
+the draft are not claims. The equivalent check from the reader's side: deleting
+it changes nothing a reviewer would believe or decide.
+
+The test applies at every size, and the larger the unit the larger the cut. A
+paragraph reporting an experiment that no claim rests on goes whole, with its
+pointer to the float; the appendix may keep the experiment as a record. The
+float itself is then the authors' call: report it, and do not delete it here
+(hard stops).
+
+Supporting *something* is not enough: the claim must be one the paper makes (in
+the abstract, a contribution, a section's verdict). When a unit would support a
+claim the paper never states, the skill does not add that claim. Either an
+existing sentence already implies it and takes a few words to say so, or the
+unit is listed for the author as "supports no stated claim" and cut.
 
 A number survives when **it is the claim**. A number dies when it is
 **evidence that the author did the bookkeeping**. Nobody audits a paper by
@@ -654,6 +684,10 @@ Deleting text must never upgrade a claim.
   opening `Selecting ... does not require <the component>:` over a row that was
   merely undetected against the full recipe in every column was 「太强了」; it
   became `achieves performance comparable to`.)
+- **Never call a result an orphan because it weighs against a claim.** A result
+  that bounds or contradicts a claim the paper makes bears on that claim and
+  stays; "supports no claim" means it bears on none, in either direction. Cutting
+  the unfavourable half of a comparison under the One Test is cherry-picking.
 - **Never delete a denominator that scopes the claim** (full-denominator rules,
   subset sizes that bound generality).
 - **Never leave a protocol difference stated nowhere** — different stack,
@@ -705,7 +739,7 @@ Rule of thumb: cut what proves *diligence*; keep what bounds *scope*.
 1. **Map every paragraph before reading for style.** Classes 1–6, 8–10, 12 and 14
    are found by grep; class 13 by the per-baseline listing in step 3; classes 7 and 11 and oversized paragraphs are found only here. Emit one row per
    paragraph — file, line span, word count, and **one line saying what it
-   claims**:
+   claims** (add by hand, per row, which claim of the paper that supports):
 
    ```bash
    python3 - <<'PY'
@@ -725,8 +759,10 @@ Rule of thumb: cut what proves *diligence*; keep what bounds *scope*.
    PY
    ```
 
-   Then read the map, not the paper. Two things fall out that no reading pass
+   Then read the map, not the paper. Three things fall out that no reading pass
    gives you:
+   - **A row that supports no claim of the paper** → the One Test at paragraph
+     size. The whole paragraph is a cut candidate, not its sentences one by one.
    - **Two rows whose one-line summaries are the same claim** → class 7. This is
      where the largest single cuts are.
    - **Any row over ~250 words** → it is carrying several findings at once.
@@ -787,7 +823,9 @@ Rule of thumb: cut what proves *diligence*; keep what bounds *scope*.
    done
    ```
 
-4. **Classify, don't rewrite yet.** Tag each hit cut / keep / rewrite. The
+4. **Classify, don't rewrite yet.** Tag each hit cut / keep / rewrite, and beside
+   every keep write the claim it supports; a keep with no claim beside it is a
+   cut. The
    temptation is to rewrite a bloated sentence into a slightly less bloated one;
    most hits should be **whole-clause deletions**. On a paper whose claims are
    already settled, expect most hits to be keeps — in practice ~80% of
@@ -820,7 +858,8 @@ estimate.
 
 ## Reporting
 
-Report as: sections touched, what was cut by class (1–14), and explicitly
+Report as: sections touched, what was cut by class (1–14) or by the One Test
+(units that supported no claim, each with one line on what it was), and explicitly
 **what was kept and why** — the kept-list is the evidence that tightening did
 not become overclaiming. Do not report a "% reduction" as the headline; the
 headline is that the argument reads straight through.
