@@ -26,8 +26,10 @@ flag 6.
 
 A sixth, the same day, 「表/图 里的, 不支持论点的也要删」: the test also holds
 inside a float. A table's row or column, or a figure's panel, group or series,
-that no sentence reads is deleted (`paper-table-craft` and `paper-figure-craft`
-carry it as a ruling). Flag 6 reports these too.
+that no sentence reads does not stay as it is: where its numbers favor the
+method a sentence is added that reads it, otherwise it is deleted
+(`paper-table-craft` and `paper-figure-craft` carry it as a ruling). Flag 6
+reports these too.
 
 This file owns the first two rules, for writing and for review. The writing skill
 (`research-paper-writing`) applies them when it builds a
@@ -128,11 +130,19 @@ flagged passage is the only prose that names a breakdown or a setting (a list
 of perturbation types no table splits by), the report asks the author one
 question: add the breakdown, or delete the passage.
 
-A part of a float that supports no argument (flag 6): delete the row, column,
-panel or series in the float's generator, with its caption legend item and any
-pointer that named it. A cell the prose reads elsewhere keeps its float. The
-same two kinds go to the author instead: a part the author asked for by name,
-and a row or column whose numbers weigh against a claim.
+A part of a float that supports no argument (flag 6), by what its numbers show:
+- they favor the method (ours is higher there, significant or not): keep the
+  part and add the sentence that reads it, next to the sentence that cites the
+  float ("On <benchmark>, it also outperforms <baseline>"), in the strength the
+  test supports. The author's ruling, 2026-11-21: 「没有句子读, 对我们有利的,
+  我们可以加句子」. In a frozen main text the sentence goes in the appendix.
+- they favor neither side (a count, a quantity derived from other rows, a
+  setting nothing compares): delete the row, column, panel or series in the
+  float's generator, with its caption legend item and any pointer that named
+  it.
+- they weigh against a claim, or the author asked for the part by name: report
+  it to the author, who decides.
+A cell the prose reads elsewhere keeps its float.
 
 A float or passage in the wrong medium: redraw the table as a figure that shows
 the shape, or move the paragraph's values into a table or figure and keep its
