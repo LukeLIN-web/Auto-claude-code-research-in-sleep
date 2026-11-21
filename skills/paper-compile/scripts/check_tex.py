@@ -95,8 +95,9 @@ def float_numbers(aux):
     return out
 
 
-def order_hits(root, aux):
-    """Hits where a float's first reference comes before that of a lower-numbered float in its series."""
+def order_hits(root, aux, exempt=()):
+    """Hits where a float's first reference comes before that of a lower-numbered float in its series; a label in
+    `exempt` may be referenced out of order (a float whose number is fixed by where its source must sit)."""
     base, floats, first = os.path.dirname(os.path.abspath(root)), float_numbers(aux), {}
     for path, i, text in walk(root):
         for group in re.findall(REF, text):
@@ -107,6 +108,8 @@ def order_hits(root, aux):
     rank = {label: k for k, label in enumerate(first)}  # reading order of first references; never cited ranks last
     hits, skipped = [], set()
     for label in first:
+        if label in exempt:
+            continue
         kind, series, n, _ = floats[label]
         for other in sorted(floats, key=lambda o: floats[o][2]):
             k, s, m, _ = floats[other]
@@ -122,6 +125,8 @@ def main():
     ap.add_argument("root")
     ap.add_argument("--aux", help="the compile's .aux (default: beside the root file)")
     ap.add_argument("--leak", default=LEAK)
+    ap.add_argument("--out-of-order", action="append", default=[], metavar="LABEL",
+                    help="a float label exempt from the reference-order check (repeatable); the author decides")
     a = ap.parse_args()
     base, hits, n = os.path.dirname(os.path.abspath(a.root)), [], 0
     files = tex_files(a.root)
@@ -139,7 +144,7 @@ def main():
                 hits.append(f"{rel}:{i}: repo-internal path: {line.strip()[:100]}")
     aux = a.aux or os.path.splitext(a.root)[0] + ".aux"
     if os.path.isfile(aux):
-        order, n_floats = order_hits(a.root, aux)
+        order, n_floats = order_hits(a.root, aux, set(a.out_of_order))
         hits += order
     else:
         hits.append(f"no .aux at {aux}: compile first, or pass --aux <outdir>/main.aux")
