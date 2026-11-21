@@ -40,7 +40,7 @@ threadId, rounds and trace, and neither is shown the other's output:
   supported and consistent.
 - **Structure thread** — P4 (`reviewer-personas.md` §8) + FLOAT AND ARGUMENT
   MAP: what each section is for, where content sits, how long each part runs,
-  and whether every float serves an argument.
+  whether every float serves an argument, and which passages support none.
 
 An idea or project context has no sections: it gets the logic thread only.
 
@@ -259,6 +259,7 @@ gets its own **structure report** beside it, each self-contained and each writte
 when its own thread returns (see *Two reports for a manuscript*):
 - the section map and every structure issue whose anchor holds, with its move
 - the float map and argument map, and every float and argument flagged
+- under its own heading, every passage that supports no argument (flag 6): the quote, its location, one line on what it is, and the proposal (delete it, or put it to the user, with the reason)
 - the checker warnings of Step 1 that hold after reading the text they point at, under their own heading, apart from the reviewer's points
 
 Update project memory/notes with key review conclusions.

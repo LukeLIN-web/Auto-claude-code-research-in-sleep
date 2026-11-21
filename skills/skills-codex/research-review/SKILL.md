@@ -200,6 +200,12 @@ spawn_agent:
       5. a prose passage, main text or appendix, that walks through values,
          settings or parallel items one by one where a table or figure would hold
          them.
+    and every passage, main text or appendix, that supports no argument:
+      6. a sentence, a number, a paragraph or a reported experiment that states
+         no argument the paper makes, is not evidence for one, does not define
+         what one is about (a term, the setup, a protocol constant) and does not
+         bound one (a denominator, a scope limit, a result that weighs against
+         it). Quote it, give its location and say in one line what it is.
     An appendix float or section needs no citation from the main text or from
     another appendix section: one cited only where it sits is fine. Do not flag
     it and do not ask for a pointer to it.
@@ -255,6 +261,7 @@ gets its own **structure report** beside it, each self-contained and each writte
 when its own thread returns:
 - the section map and every structure issue whose anchor holds, with its move
 - the float map and argument map, and every float and argument flagged
+- under its own heading, every passage that supports no argument (flag 6): the quote, its location, one line on what it is, and the proposal (delete it, or put it to the user, with the reason)
 - the checker warnings of Step 1 that hold after reading the text they point at, under their own heading, apart from the reviewer's points
 
 Update project memory/notes with key review conclusions.

@@ -18,6 +18,12 @@ A fourth, 2026-11-20: an appendix float or section needs no citation from
 another section. One cited only where it sits is not flagged, and no pointer to
 it is asked for (the block's flag for it was removed).
 
+A fifth, 2026-11-21, 「如果一个东西没有支持任何论点, 就应该删了」: the same test
+at every size below a float. A sentence, a number, a paragraph or a reported
+experiment that supports no argument is deleted (`paper-prose-tighten`, The One
+Test, owns the rule and what counts as supporting). The block reports these as
+flag 6.
+
 This file owns the first two rules, for writing and for review. The writing skill
 (`research-paper-writing`) applies them when it builds a
 paper's claim–evidence map; a page limit never moves an argument's decisive
@@ -76,6 +82,12 @@ table before prose):
   5. a prose passage, main text or appendix, that walks through values,
      settings or parallel items one by one where a table or figure would hold
      them.
+and every passage, main text or appendix, that supports no argument:
+  6. a sentence, a number, a paragraph or a reported experiment that states
+     no argument the paper makes, is not evidence for one, does not define
+     what one is about (a term, the setup, a protocol constant) and does not
+     bound one (a denominator, a scope limit, a result that weighs against
+     it). Quote it, give its location and say in one line what it is.
 An appendix float or section needs no citation from the main text or from
 another appendix section: one cited only where it sits is fine. Do not flag
 it and do not ask for a pointer to it.
@@ -98,6 +110,14 @@ with no evidence anywhere is narrowed to what the evidence supports or gets an
 experiment. Dropping an argument from the main text, or moving it to the
 appendix together with its evidence, changes what the paper claims: report it to
 the author, who decides.
+
+A passage that supports no argument (flag 6): spot-check it against the One
+Test of `paper-prose-tighten`, then delete it. Two kinds are reported to the
+author and not deleted: a passage the author asked for by name, and a result
+that weighs against a claim, which bounds that claim and is no orphan. When the
+flagged passage is the only prose that names a breakdown or a setting (a list
+of perturbation types no table splits by), the report asks the author one
+question: add the breakdown, or delete the passage.
 
 A float or passage in the wrong medium: redraw the table as a figure that shows
 the shape, or move the paragraph's values into a table or figure and keep its
