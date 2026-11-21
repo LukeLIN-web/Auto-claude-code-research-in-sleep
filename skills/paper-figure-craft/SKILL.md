@@ -73,6 +73,40 @@ distributions, cluttered layouts, and multi-arm scenarios", one panel each.
   *mid-episode change*; a background-texture case is *perturbed backgrounds*,
   not *visual perturbations* in general.
 
+## A qualitative example shows a measured mechanism (user, 2026-11-21)
+
+A paired rollout or a single case is drawn to show *how* two systems differ.
+The ruling is in the table below; this is how to build one.
+
+1. **Inventory the mechanisms first.** List every statement of the form *system
+   A does X more often than system B* that the paper's results support, each with
+   its test. Only a tested, detected one gets an example. A reading that came out
+   undetected gets no figure, and is recorded as undetected where the results
+   live so it is not re-read later.
+2. **No reading yet: take it from the recorded runs before drawing.** State the
+   behaviour as a per-episode yes / no on recorded quantities (an object's
+   height, the gripper command), read it over the whole paired set, and test it
+   the way the page's outcome was tested. A definition fixed after looking at
+   the data is labelled post hoc on the result page, with what had been seen.
+3. **One mechanism, one example figure.** The same mechanism measured in two
+   comparisons is one figure, in the comparison whose two runs share a start
+   state, so the reader sees one difference.
+4. **Pick the example by a written rule, and let the generator assert it.** The
+   rule goes in the figure's spec. The generator checks that the example is an
+   instance of the reading: the behaviour is *yes* for one system and *no* for
+   the other in the read's own per-episode records, not only that the outcomes
+   differ.
+5. **Draw the measured quantity as its own channel.** Frames alone show an
+   outcome. Under them goes a trace of the quantity the reading is defined on,
+   one line per system on a shared time axis, with a dot at each frame's time so
+   the two channels are tied together.
+6. **The caption's takeaway is the set-level statement**, in the strength the
+   test supports, followed by *one such state:* and the legend. The numbers go in
+   the prose that cites the figure.
+7. **Before promising the figure, check the frames can be had.** Runs that
+   stored states but no images need a re-render from those states; find out
+   whether the renderer covers that task family before scoping the work.
+
 ## Rulings (do not relitigate; cite the date if asked to reverse)
 
 | Ruling | Date | Note |
@@ -245,7 +279,8 @@ Reach for these in order; the first two fix most complaints.
 0. **Name the sentence each group serves.** A group, panel or series no sentence
    reads is deleted before anything is redesigned (Rulings, 2026-11-21).
 0b. **For a qualitative example, name the measured mechanism it shows.** None
-   measured means no example figure yet (Rulings, 2026-11-21).
+   measured means no example figure yet; how to build one is in **A qualitative
+   example shows a measured mechanism**.
 1. **Count the conclusions.** Two conclusions is two figures, or one figure with
    two rows on a shared axis — not one panel with an annotation layer.
 2. **Count the channels.** One quantity per channel. If a quantity is currently
