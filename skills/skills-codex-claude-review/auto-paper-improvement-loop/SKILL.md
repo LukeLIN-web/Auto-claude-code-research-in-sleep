@@ -285,12 +285,16 @@ mcp__claude-review__review_start:
       5. a prose passage, main text or appendix, that walks through values,
          settings or parallel items one by one where a table or figure would hold
          them.
-    and every passage, main text or appendix, that supports no argument:
-      6. a sentence, a number, a paragraph or a reported experiment that states
-         no argument the paper makes, is not evidence for one, does not define
-         what one is about (a term, the setup, a protocol constant) and does not
-         bound one (a denominator, a scope limit, a result that weighs against
-         it). Quote it, give its location and say in one line what it is.
+    and every passage or part of a float, main text or appendix, that supports
+    no argument:
+      6. a sentence, a number, a paragraph, a reported experiment, or a part of a
+         float (a table's row or column, a figure's panel, group or series) that
+         states no argument the paper makes, is not evidence for one, does not
+         define what one is about (a term, the setup, a protocol constant) and
+         does not bound one (a denominator, a scope limit, a result that weighs
+         against it). A part of a float is evidence only if a sentence, in the
+         prose or in the caption's opening, reads it. Quote it or name it, give
+         its location and say in one line what it is.
     An appendix float or section needs no citation from the main text or from
     another appendix section: one cited only where it sits is fine. Do not flag
     it and do not ask for a pointer to it.
@@ -491,12 +495,16 @@ mcp__claude-review__review_start:
       5. a prose passage, main text or appendix, that walks through values,
          settings or parallel items one by one where a table or figure would hold
          them.
-    and every passage, main text or appendix, that supports no argument:
-      6. a sentence, a number, a paragraph or a reported experiment that states
-         no argument the paper makes, is not evidence for one, does not define
-         what one is about (a term, the setup, a protocol constant) and does not
-         bound one (a denominator, a scope limit, a result that weighs against
-         it). Quote it, give its location and say in one line what it is.
+    and every passage or part of a float, main text or appendix, that supports
+    no argument:
+      6. a sentence, a number, a paragraph, a reported experiment, or a part of a
+         float (a table's row or column, a figure's panel, group or series) that
+         states no argument the paper makes, is not evidence for one, does not
+         define what one is about (a term, the setup, a protocol constant) and
+         does not bound one (a denominator, a scope limit, a result that weighs
+         against it). A part of a float is evidence only if a sentence, in the
+         prose or in the caption's opening, reads it. Quote it or name it, give
+         its location and say in one line what it is.
     An appendix float or section needs no citation from the main text or from
     another appendix section: one cited only where it sits is fine. Do not flag
     it and do not ask for a pointer to it.

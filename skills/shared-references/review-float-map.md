@@ -24,6 +24,11 @@ experiment that supports no argument is deleted (`paper-prose-tighten`, The One
 Test, owns the rule and what counts as supporting). The block reports these as
 flag 6.
 
+A sixth, the same day, 「表/图 里的, 不支持论点的也要删」: the test also holds
+inside a float. A table's row or column, or a figure's panel, group or series,
+that no sentence reads is deleted (`paper-table-craft` and `paper-figure-craft`
+carry it as a ruling). Flag 6 reports these too.
+
 This file owns the first two rules, for writing and for review. The writing skill
 (`research-paper-writing`) applies them when it builds a
 paper's claim–evidence map; a page limit never moves an argument's decisive
@@ -82,12 +87,16 @@ table before prose):
   5. a prose passage, main text or appendix, that walks through values,
      settings or parallel items one by one where a table or figure would hold
      them.
-and every passage, main text or appendix, that supports no argument:
-  6. a sentence, a number, a paragraph or a reported experiment that states
-     no argument the paper makes, is not evidence for one, does not define
-     what one is about (a term, the setup, a protocol constant) and does not
-     bound one (a denominator, a scope limit, a result that weighs against
-     it). Quote it, give its location and say in one line what it is.
+and every passage or part of a float, main text or appendix, that supports
+no argument:
+  6. a sentence, a number, a paragraph, a reported experiment, or a part of a
+     float (a table's row or column, a figure's panel, group or series) that
+     states no argument the paper makes, is not evidence for one, does not
+     define what one is about (a term, the setup, a protocol constant) and
+     does not bound one (a denominator, a scope limit, a result that weighs
+     against it). A part of a float is evidence only if a sentence, in the
+     prose or in the caption's opening, reads it. Quote it or name it, give
+     its location and say in one line what it is.
 An appendix float or section needs no citation from the main text or from
 another appendix section: one cited only where it sits is fine. Do not flag
 it and do not ask for a pointer to it.
@@ -118,6 +127,12 @@ that weighs against a claim, which bounds that claim and is no orphan. When the
 flagged passage is the only prose that names a breakdown or a setting (a list
 of perturbation types no table splits by), the report asks the author one
 question: add the breakdown, or delete the passage.
+
+A part of a float that supports no argument (flag 6): delete the row, column,
+panel or series in the float's generator, with its caption legend item and any
+pointer that named it. A cell the prose reads elsewhere keeps its float. The
+same two kinds go to the author instead: a part the author asked for by name,
+and a row or column whose numbers weigh against a claim.
 
 A float or passage in the wrong medium: redraw the table as a figure that shows
 the shape, or move the paragraph's values into a table or figure and keep its
