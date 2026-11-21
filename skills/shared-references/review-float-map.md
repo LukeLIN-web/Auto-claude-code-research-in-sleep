@@ -12,7 +12,11 @@ Two user rulings, the two directions of one map between arguments and evidence:
 
 A third ruling, 2026-11-19, picks the medium the evidence takes: a figure
 before a table, a table before prose (`manuscript-craft.md` §4 owns it and its
-test). The block below checks it as flags 5 and 6.
+test). The block below checks it as flags 4 and 5.
+
+A fourth, 2026-11-20: an appendix float or section needs no citation from
+another section. One cited only where it sits is not flagged, and no pointer to
+it is asked for (the block's flag for it was removed).
 
 This file owns the first two rules, for writing and for review. The writing skill
 (`research-paper-writing`) applies them when it builds a
@@ -43,7 +47,7 @@ figure and per table, main text and appendix, numbered as the compiled PDF
 prints them:
   <Figure/Table N> — what it shows, with its decisive numbers — the argument it
   serves (quote that sentence and give its location) — the sections that cite
-  it, or "cited only in its own appendix section".
+  it.
 Setup and protocol tables serve reproducibility; say so instead of forcing a
 claim onto them.
 The main text must be self-contained: every argument it makes carries at least
@@ -58,21 +62,23 @@ design choice justified by a result):
   evidence, if any.
 Under "Flagged", list with its anchor every float that:
   1. serves no argument (a result no claim rests on);
-  2. is cited only in its own appendix section;
-  3. does not support the sentence that cites it, e.g. a baseline or an
+  2. does not support the sentence that cites it, e.g. a baseline or an
      undeployed variant holds the decisive cell of the column that sentence
      leans on;
 and every main-text argument that:
-  4. has no supporting evidence in the main text: its evidence sits only in the
+  3. has no supporting evidence in the main text: its evidence sits only in the
      appendix (e.g. the sentence rests on "see Appendix C" alone) or nowhere.
 and every float or passage in the wrong medium (a figure before a table, a
 table before prose):
-  5. a table whose conclusion is a shape a figure would show: a trend over an
+  4. a table whose conclusion is a shape a figure would show: a trend over an
      ordered variable, a ranking or gap among a few arms, a distribution, a
      breakdown into parts, a trade-off between two quantities;
-  6. a prose passage, main text or appendix, that walks through values,
+  5. a prose passage, main text or appendix, that walks through values,
      settings or parallel items one by one where a table or figure would hold
      them.
+An appendix float or section needs no citation from the main text or from
+another appendix section: one cited only where it sits is fine. Do not flag
+it and do not ask for a pointer to it.
 A flagged float or argument is a Critical Weakness only if it would sink the paper.
 ```
 
@@ -100,8 +106,7 @@ claim stays the same.
 
 ## Field note
 
-2026-11-03, the first pass of the float map on a CVPR draft: two appendix tables
-were cited only in their own appendix sections, one of them a negative result no
+2026-11-03, the first pass of the float map on a CVPR draft: an appendix table held a negative result no
 claim rested on; a baseline deployed without the orchestrator held the best cell
 of a table cited for the advantage of keeping the orchestrator; the deployed
 variant was not the best row on the training-distribution columns of its own
