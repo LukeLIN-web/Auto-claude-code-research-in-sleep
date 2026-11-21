@@ -142,7 +142,10 @@ A part of a float that supports no argument (flag 6), by what its numbers show:
   it.
 - they weigh against a claim, or the author asked for the part by name: report
   it to the author, who decides.
-A cell the prose reads elsewhere keeps its float.
+A cell the prose reads elsewhere keeps its float. The cut is always a whole
+row, column, panel or series: while a row and a column both stay, the cell
+where they meet stays printed, read or not (the author, same day: 「如果列/行
+在的话, 不要单独删格子」).
 
 A float or passage in the wrong medium: redraw the table as a figure that shows
 the shape, or move the paragraph's values into a table or figure and keep its
