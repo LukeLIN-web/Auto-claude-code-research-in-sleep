@@ -57,7 +57,9 @@ reader the weakness. Whether the reviewer flags one or the executor notices it
 while spot-checking anchors, it is reported and put to the user under the rule of
 `/paper-claim-audit` (*Disclosure ledger: delete what stands alone, ask about
 the rest*), which owns it: the same ledger rows under their own heading in the
-logic report, the stand-alone ones deleted and listed, the rest asked.
+logic report, the stand-alone ones deleted and listed, the rest asked. A row or
+cell the reviewer picked out of a table where the method is mostly higher is not
+such a passage: the finding is dropped under `reviewer-personas.md` §4, case 4.
 
 ## Persona
 
@@ -284,7 +286,7 @@ Update project memory/notes with key review conclusions.
   paste the same brief there.
 - Be honest about weaknesses — hiding them leads to worse feedback
 - Focus on ACTIONABLE feedback — "what experiment would fix this?"
-- Every weakness must carry an evidence anchor; spot-check anchors before acting, and drop findings whose anchor does not check out
+- Every weakness must carry an evidence anchor; spot-check anchors before acting, and drop findings whose anchor does not check out or that rest on a few low cells picked from rows and tables where the method is mostly higher (`reviewer-personas.md` §4, case 4)
 - In a manuscript, every figure and table must serve an argument (user 2026-11-03), and every main-text argument carries at least one or two pieces of its evidence in the main text, never all of it in the appendix (user 2026-11-11), and evidence takes a figure before a table, a table before prose (user 2026-11-19, `manuscript-craft.md` §4): send the FLOAT AND ARGUMENT MAP block of `shared-references/review-float-map.md` in the structure thread's first-round prompt and every follow-up brief; the reviewer builds the map
 - Document the threadId for potential future resumption
 - The review document should be self-contained (readable without the conversation)

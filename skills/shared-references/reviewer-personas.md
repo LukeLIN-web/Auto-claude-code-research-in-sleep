@@ -116,6 +116,12 @@ of a review at that stage. State which variant is in force in the prompt.
      有效。紧挨着某个性质(如「不需要特权信号」)给出的数字,是不是在这个设定
      下得到的?「全部新数据来自 X」「只有 W 改变」「不需要新示范」这类全称限定,
      对稿件描述的每个阶段(含用教师数据或混入外部数据的阶段)是否都成立?
+   - 整体读数:拿方法更低的格子立论之前,先数它所在的那几行、那张表:方法更高
+     的格子几个、更低的几个,低的显著没有,落在部署的系统上还是没部署的变体上。
+     多数格子方法更高时,一两格略低且不显著的格子、变体在某一项上最低的那格,
+     都不算 Weakness,也不拿来要求收窄主张或补解释。只有成片的反向(同一
+     benchmark 或同一列多数格子更低),或部署的系统在头条主张覆盖的 benchmark
+     上显著更低,才算。引用低格子时,同一句写出同一行、同一张表其余格子的走向。
 3. 证据锚点:每一条 Weakness 必须给出稿件内的位置(section / 图 / 表 / 公式)。
    稿件自己提出了某个主张却没有给出支撑时,原样写下这一句:
    "No direct evidence found in the manuscript."
@@ -145,6 +151,8 @@ Part 2 [Strategic Advice]
 2. 问题是否具体?不要说"实验不够",要说"缺少在 X 数据集上的鲁棒性验证"。
 3. 排序是否先列决定审稿人能否看懂贡献的问题(训练信号是什么、每个提升属于
    哪组对照、不用特权信号的设定实际拿到多少),再列措辞和语法?
+4. 每条拿低格子立论的 Weakness,有没有写出同一行、同一张表其余格子的走向?
+   多数格子方法更高、低的不显著或只在变体上,就删掉这一条。
 
 # Input
 [MANUSCRIPT / PROJECT CONTEXT]
@@ -188,6 +196,12 @@ accept/reject decision.
 5) Maintain anonymity; do not speculate about authors or institutions; keep a
    constructive tone.
 6) Do not cite anything outside the manuscript's own reference list.
+7) Before resting a weakness on cells where the method scores lower, count the
+   rows and tables they sit in: how many cells favor the method, whether the
+   low ones are significant, and whether they belong to the deployed system or
+   to a variant. One or two slightly lower, non-significant cells among mostly
+   higher ones, or a variant's weakest cell, are not a weakness. When you cite
+   a low cell, state in the same sentence how the rest of its row and table go.
 
 [Output Template]
 1) Synopsis of the paper — problem, contributions, main results (<=150 words).
@@ -227,7 +241,7 @@ This is the cheapest defense against a reviewer model inventing plausible
 weaknesses — which is also why neither template carries a minimum bullet count:
 a floor is an instruction to invent.
 
-On receipt, every finding lands in exactly one of three cases:
+On receipt, every finding lands in exactly one of four cases:
 
 1. **Anchored, and the anchor checks out.** A real finding. Fix it.
 2. **Anchored, but the anchor is wrong** — the cited section / table does not
@@ -239,6 +253,19 @@ On receipt, every finding lands in exactly one of three cases:
    basis for this criticism*. Both templates forbid the second use explicitly,
    so the string carries one meaning only. These are real findings, and they
    route to **add evidence**, not to *rewrite prose*.
+4. **Anchored, the numbers are there, but the cells are picked.** A finding
+   that rests on cells where the method scores lower is checked against the
+   whole of the rows and tables it cites, not only the cells it quotes: count
+   the cells that favor the method and those that do not, look up which low
+   ones are significant, and whether they belong to the deployed system or to a
+   variant whose other cells are higher. When most cells favor the method and
+   the low ones are a non-significant dip or a variant's weakest cell, the
+   finding is dropped as in case 2: not reported as a weakness, not put to the
+   author as a question, and the rows it anchors on are not passages that
+   expose a weakness. The report lists it with the dropped findings and the
+   counts that dropped it. The executor makes this count during the spot-check,
+   before reporting; the author is never the one who has to notice the
+   selection (user ruling 2026-11-22).
 
 Anchor spot-checking is the reviewer-side twin of `evidence-precheck.md`:
 mechanical, cheap, and it runs before any rewriting begins.
