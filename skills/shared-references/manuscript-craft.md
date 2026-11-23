@@ -301,6 +301,24 @@ User ruling 2026-11-16, from a review the user forwarded:
   benchmark against several combined, the averaged metric, `slightly`, a
   control's matching condition ("for as many steps as ours"). After the
   rewrite a fresh reader compares old and new claim by claim.
+- **Merge the subjects by question** (user ruling 2026-11-23: 「都应该按问题合并
+  主语」). An ablation paragraph, in the main text or the appendix, that walks
+  the variants one by one ("ours outperforms variant A on X, and variants B
+  and C on Y and Z") is the same test log with the variants as the list. Find
+  the question the variants answer together (does the training data matter,
+  does the label, does the selector), name them once as a group by what they
+  share ("each variant that follows prior work", "both variants collected
+  without the orchestrator"), and give the group one verdict that holds for
+  every member, with one decisive pair of numbers and the table pointer:
+  "ours significantly outperforms each variant that follows prior work on at
+  least one generated benchmark (Table N)". One question, one sentence; a
+  paragraph answers one to three questions. The group sentence is what reads
+  each member's row, so no row is left unread and no per-variant sentence is
+  needed for that. Name a single variant only where it departs from its group
+  or carries the reason. The scope words survive the merge as above ("each on
+  at least one benchmark" is not "on every benchmark"); sentences that read
+  different floats for different questions are separate evidence, not a list,
+  and stay apart.
 - **The reason comes from the paper's own evidence.** A sentence on why a gain
   occurs cites a measurement in the paper (an ablation, a breakdown of failure
   states) or a property the data have by construction. A mechanism a reviewer
