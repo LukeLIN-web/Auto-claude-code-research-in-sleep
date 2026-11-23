@@ -210,6 +210,14 @@ spawn_agent:
          against it). A part of a float is evidence only if a sentence, in the
          prose or in the caption's opening, reads it. Quote it or name it, give
          its location and say in one line what it is.
+    and every reported variant that extends the method and does not improve it:
+      7. a row, a series or a paragraph for a variant that gives the method more
+         of what it already uses (another round, more training steps, more data,
+         a larger model, a longer schedule) whose result is not better than the
+         method's and is not settled either way by the paper's own test. It
+         supports no argument and shows a reader where the method stops
+         improving. Name it, give its location and its numbers against the
+         method's, and say whether any sentence of the main text rests on it.
     An appendix float or section needs no citation from the main text or from
     another appendix section: one cited only where it sits is fine. Do not flag
     it and do not ask for a pointer to it.
@@ -266,6 +274,7 @@ when its own thread returns:
 - the section map and every structure issue whose anchor holds, with its move
 - the float map and argument map, and every float and argument flagged
 - under its own heading, every passage and every part of a float (a row, a column, a panel, a series) that supports no argument (flag 6): the quote or its name, its location, one line on what it is, and the proposal (for a part of a float whose numbers favor the method, the sentence to add; otherwise delete it, or put it to the user, with the reason)
+- under its own heading, every variant that extends the method (another round, more steps, more data) and is neither better nor settled (flag 7): its location, its numbers against the method's, whether a main-text sentence rests on it, and the proposal, which is to hide it (`review-float-map.md`, Acting)
 - the checker warnings of Step 1 that hold after reading the text they point at, under their own heading, apart from the reviewer's points
 
 Update project memory/notes with key review conclusions.

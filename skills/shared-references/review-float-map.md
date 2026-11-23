@@ -31,6 +31,13 @@ method a sentence is added that reads it, otherwise it is deleted
 (`paper-table-craft` and `paper-figure-craft` carry it as a ruling). Flag 6
 reports these too.
 
+A seventh, 2026-11-23, 「更多训练没有变好的, 又没判清楚, 属于是暴露缺点, 应该隐藏」:
+a variant that gives the method more of what it already uses (a second round,
+more steps, more data) and comes out no better, with the comparison unsettled,
+is hidden. It supports no argument, since an unsettled result proves neither
+that one round is enough nor that more would hurt, and it shows a reader where
+the method stops improving. The block reports these as flag 7.
+
 This file owns the first two rules, for writing and for review. The writing skill
 (`research-paper-writing`) applies them when it builds a
 paper's claim–evidence map; a page limit never moves an argument's decisive
@@ -99,6 +106,14 @@ no argument:
      against it). A part of a float is evidence only if a sentence, in the
      prose or in the caption's opening, reads it. Quote it or name it, give
      its location and say in one line what it is.
+and every reported variant that extends the method and does not improve it:
+  7. a row, a series or a paragraph for a variant that gives the method more
+     of what it already uses (another round, more training steps, more data,
+     a larger model, a longer schedule) whose result is not better than the
+     method's and is not settled either way by the paper's own test. It
+     supports no argument and shows a reader where the method stops
+     improving. Name it, give its location and its numbers against the
+     method's, and say whether any sentence of the main text rests on it.
 An appendix float or section needs no citation from the main text or from
 another appendix section: one cited only where it sits is fine. Do not flag
 it and do not ask for a pointer to it.
@@ -146,6 +161,23 @@ A cell the prose reads elsewhere keeps its float. The cut is always a whole
 row, column, panel or series: while a row and a column both stay, the cell
 where they meet stays printed, read or not (the author, same day: 「如果列/行
 在的话, 不要单独删格子」).
+
+A variant that extends the method and does not improve it (flag 7): hide it.
+Take its row or series out in the float's generator, with its caption legend
+item, and take out the paragraph that reads it; keep both for a later version
+behind the generator's switch or as commented source, not deleted. Float numbers
+stay as they are. Before hiding, check three things and report instead of
+hiding when one fails:
+- a main-text sentence rests on the result (a design choice justified by it, a
+  pointer that quotes its number): the sentence and the result go or stay
+  together, and in a frozen main text they stay;
+- the comparison is settled by the paper's test (the variant is significantly
+  better or significantly worse on what it was run for): a settled result is
+  evidence and is handled as any other float part;
+- the author asked for the variant by name.
+Do not add an explanation of why the variant did not improve in its place: a
+cause the paper has not tested opens a second line of attack (the same author,
+same day: 「如果没啥好处宁可不说」).
 
 A float or passage in the wrong medium: redraw the table as a figure that shows
 the shape, or move the paragraph's values into a table or figure and keep its

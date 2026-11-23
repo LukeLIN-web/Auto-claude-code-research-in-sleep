@@ -301,6 +301,7 @@ when its own thread returns (see *Two reports for a manuscript*):
 - the section map and every structure issue whose anchor holds, with its move
 - the float map and argument map, and every float and argument flagged
 - under its own heading, every passage and every part of a float (a row, a column, a panel, a series) that supports no argument (flag 6): the quote or its name, its location, one line on what it is, and the proposal (for a part of a float whose numbers favor the method, the sentence to add; otherwise delete it, or put it to the user, with the reason)
+- under its own heading, every variant that extends the method (another round, more steps, more data) and is neither better nor settled (flag 7): its location, its numbers against the method's, whether a main-text sentence rests on it, and the proposal, which is to hide it (`review-float-map.md`, Acting)
 - the checker warnings of Step 1 that hold after reading the text they point at, under their own heading, apart from the reviewer's points
 
 Update project memory/notes with key review conclusions.

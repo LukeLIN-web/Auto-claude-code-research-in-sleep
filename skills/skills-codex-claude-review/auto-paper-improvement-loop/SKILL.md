@@ -295,6 +295,14 @@ mcp__claude-review__review_start:
          against it). A part of a float is evidence only if a sentence, in the
          prose or in the caption's opening, reads it. Quote it or name it, give
          its location and say in one line what it is.
+    and every reported variant that extends the method and does not improve it:
+      7. a row, a series or a paragraph for a variant that gives the method more
+         of what it already uses (another round, more training steps, more data,
+         a larger model, a longer schedule) whose result is not better than the
+         method's and is not settled either way by the paper's own test. It
+         supports no argument and shows a reader where the method stops
+         improving. Name it, give its location and its numbers against the
+         method's, and say whether any sentence of the main text rests on it.
     An appendix float or section needs no citation from the main text or from
     another appendix section: one cited only where it sits is fine. Do not flag
     it and do not ask for a pointer to it.
@@ -505,6 +513,14 @@ mcp__claude-review__review_start:
          against it). A part of a float is evidence only if a sentence, in the
          prose or in the caption's opening, reads it. Quote it or name it, give
          its location and say in one line what it is.
+    and every reported variant that extends the method and does not improve it:
+      7. a row, a series or a paragraph for a variant that gives the method more
+         of what it already uses (another round, more training steps, more data,
+         a larger model, a longer schedule) whose result is not better than the
+         method's and is not settled either way by the paper's own test. It
+         supports no argument and shows a reader where the method stops
+         improving. Name it, give its location and its numbers against the
+         method's, and say whether any sentence of the main text rests on it.
     An appendix float or section needs no citation from the main text or from
     another appendix section: one cited only where it sits is fine. Do not flag
     it and do not ask for a pointer to it.
