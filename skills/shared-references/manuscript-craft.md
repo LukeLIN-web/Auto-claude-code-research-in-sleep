@@ -314,7 +314,9 @@ User ruling 2026-11-16, from a review the user forwarded:
   least one generated benchmark (Table N)". One question, one sentence; a
   paragraph answers one to three questions. The group sentence is what reads
   each member's row, so no row is left unread and no per-variant sentence is
-  needed for that. Name a single variant only where it departs from its group
+  needed for that. Which member holds in which column is left to the table
+  (user 2026-11-23: 「留给表是合理的」); the sentence keeps only what holds for
+  each ("each on A or in both B columns"). Name a single variant only where it departs from its group
   or carries the reason. The scope words survive the merge as above ("each on
   at least one benchmark" is not "on every benchmark"); sentences that read
   different floats for different questions are separate evidence, not a list,
