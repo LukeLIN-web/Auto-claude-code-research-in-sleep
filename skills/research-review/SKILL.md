@@ -28,6 +28,11 @@ Get a multi-round critical review of research work from the selected external re
   `— persona: P2` for an unscored, six-heading, evidence-anchored review when
   the deliverable is a verifiable fix list rather than a verdict. It sets the
   logic thread; a manuscript's structure thread always runs P4.
+- **REVIEW_INPUT = `source`** — What a manuscript's reviewer may read. `source`
+  (default): the LaTeX source directory and, if one is supplied, the compiled
+  PDF. `pdf`: the compiled PDF and nothing else, as a conference reviewer sees
+  the submission; see *PDF-only mode*. Override with `— input: pdf`; a project's
+  own instructions may fix the mode, and then every call follows it.
 
 ## Two reports for a manuscript
 
@@ -49,6 +54,40 @@ The threads finish at different times. When one returns, spot-check its anchors,
 save its trace, write its report, and give the user its findings at once. Do not
 hold one thread's results until the other returns. The thread still running is
 named as running, never summarized ahead of its reply.
+
+## PDF-only mode
+
+With REVIEW_INPUT = `pdf` the reviewer judges the paper a conference reviewer
+would receive: no source, no comments left in the `.tex`, no result files, no
+project notes. It applies to both threads of a manuscript and to every round.
+
+1. **Review directory.** Compile the manuscript, then put the PDF alone in a
+   new, empty directory outside the project tree. For the structure thread,
+   copy `manuscript-craft.md` into the same directory and give that copy as
+   `[SECTION POLICY]`. Write the brief and the prompt files into it as well.
+   The reviewer's cwd is this directory, read-only.
+2. **Brief.** It names the venue, the PDF, and the submission status (which
+   pages are frozen, if any), and says that the PDF is the whole submission and
+   that nothing outside this directory may be read. It lists no source file,
+   no figure or table directory, and no path into the project.
+3. **Anchors.** The reviewer anchors each finding to a page, a section, a
+   figure or table number as printed, and a quoted sentence; it cannot give a
+   file and line. The executor maps each anchor to the source during the
+   spot-check. The anchor rule and its four cases are unchanged.
+4. **Checkers.** Step 1's mechanical checkers still run on the source; the
+   executor runs them, and their output is never sent to the reviewer.
+5. **Scope check.** When a thread returns, read its trace for any file it
+   opened outside the review directory. A finding that rests on such a file is
+   dropped as an anchor that does not hold (case 2), and the trace's `scope`
+   field and the report record what was read. A read-only sandbox does not
+   confine reads to the cwd, so this check is what enforces the mode.
+6. **Trace and report.** Record `review_input: pdf` in the trace, and state in
+   each report's first paragraph that the reviewer saw only the PDF.
+
+A finding that the PDF cannot settle (for example, whether two tables share a
+set of episodes) arrives as `No direct evidence found in the manuscript.` and is
+handled as case 3: the paper should say it, or the executor confirms from the
+source that it already does and drops the finding.
 
 ## Passages that expose a weakness
 
@@ -129,7 +168,7 @@ Before calling the external reviewer, compile a comprehensive briefing:
 2. Read any memory/notes files for key findings and experiment history
 3. Identify: core claims, methodology, key results, known weaknesses
 4. For a manuscript, give the entry `.tex` file and the directories that hold its
-   figures and tables. Do not write down what each float shows, which argument
+   figures and tables (in *PDF-only mode*, the PDF alone). Do not write down what each float shows, which argument
    it serves, or where each argument's evidence sits: the reviewer builds that
    map itself ([`review-float-map.md`](../shared-references/review-float-map.md)).
 5. For a manuscript, run the mechanical checkers of the `research-paper-writing` skill before the
