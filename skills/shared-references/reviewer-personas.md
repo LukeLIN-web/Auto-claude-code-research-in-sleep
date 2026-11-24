@@ -116,6 +116,12 @@ of a review at that stage. State which variant is in force in the prompt.
      有效。紧挨着某个性质(如「不需要特权信号」)给出的数字,是不是在这个设定
      下得到的?「全部新数据来自 X」「只有 W 改变」「不需要新示范」这类全称限定,
      对稿件描述的每个阶段(含用教师数据或混入外部数据的阶段)是否都成立?
+   - 选择的规则:同一类选择(统计检验、评测协议、每任务局数、时限、训练步数)
+     在各实验、各 benchmark 之间取了不同的值时,稿件有没有写出决定取值的那条
+     规则(如「有配对的用 A,没配对的用 B」)?先自己从稿件核这些取值能不能由
+     数据的结构推出来:推得出而稿件只逐项列出各用了什么,指出该写规则、给出
+     你读出的规则,不要求统一成一个;同一做法在稿件里用了两个名字、读起来像
+     两种做法的,也指出。推不出、同样结构的两处用了不同做法,才算 Weakness。
    - 整体读数:拿方法更低的格子立论之前,先数它所在的那几行、那张表:方法更高
      的格子几个、更低的几个,低的显著没有,落在部署的系统上还是没部署的变体上。
      多数格子方法更高时,一两格略低且不显著的格子、变体在某一项上最低的那格,
@@ -202,6 +208,14 @@ accept/reject decision.
    to a variant. One or two slightly lower, non-significant cells among mostly
    higher ones, or a variant's weakest cell, are not a weakness. When you cite
    a low cell, state in the same sentence how the rest of its row and table go.
+8) Where one kind of choice (statistical test, protocol, episodes per task,
+   time limit, training steps) takes different values across experiments, look
+   for the rule that assigns them (paired data gets test A, unpaired data test
+   B). If the values follow from the structure of the data and the manuscript
+   only lists them item by item, say the rule should be stated and give the
+   rule you read; do not ask for one value everywhere. Also flag one procedure
+   printed under two names. Only two places of the same structure treated
+   differently are a weakness.
 
 [Output Template]
 1) Synopsis of the paper — problem, contributions, main results (<=150 words).
