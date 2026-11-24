@@ -8,8 +8,11 @@ read. Three checks, one owner each:
 
 - Captions (rule in paper-table-craft / paper-figure-craft): no pointer at
   another float or the prose (\ref{}, \S, Appendix, Table~, Figure~, "the
-  text"), and at most 1200 characters. Generated and hand-written captions are
-  checked alike. Commented-out text is ignored.
+  text"), at most 1200 characters, and no number in the bold takeaway (the
+  caption's first \textbf{...}); the digits of a name (Model-2B, a version
+  such as 4.5) and math are not numbers. The legend after it is not checked
+  for numbers. Generated and hand-written captions are checked alike.
+  Commented-out text is ignored.
 - Repo-internal paths: the .tex ships to Overleaf, co-authors and the
   submission source with its comments, so no line of it, comments included, may
   name result pages, run outputs, scripts or machines. --leak replaces the
@@ -69,15 +72,31 @@ def tex_files(root):
     return list(dict.fromkeys(path for path, _, _ in walk(root)))
 
 
+def braced(tex, start):
+    """The text of the group whose opening brace is at tex[start], braces matched."""
+    depth = 0
+    for k in range(start, len(tex)):
+        depth += {"{": 1, "}": -1}.get(tex[k], 0)
+        if depth == 0:
+            return tex[start + 1:k]
+    return tex[start + 1:]
+
+
 def captions(tex):
-    r"""The text inside every \caption{...} / \captionof{...}{...}, braces matched."""
+    r"""The text inside every \caption{...} / \captionof{...}{...}."""
     for m in re.finditer(r"\\caption(?:of\{[a-z]+\})?(?:\[[^]]*\])?\{", tex):
-        depth = 0
-        for k in range(m.end() - 1, len(tex)):
-            depth += {"{": 1, "}": -1}.get(tex[k], 0)
-            if depth == 0:
-                yield tex[m.end():k]
-                break
+        yield braced(tex, m.end() - 1)
+
+
+def takeaway_numbers(cap):
+    r"""The numbers in the caption's bold takeaway: not its math, macros, or names that carry digits."""
+    m = re.search(r"\\textbf\{", cap)
+    if not m:
+        return []
+    t = re.sub(r"\$[^$]*\$|\\[a-zA-Z]+", " ", braced(cap, m.end() - 1))
+    t = re.sub(r"[A-Za-z][\w.]*-[\w.-]*|[A-Za-z]+\d[\w.]*", " ", t)  # Model-2B, GPT-5.5; Model3, cite keys
+    nums = re.findall(r"(?<![\w.])\d+(?:[,.]\d+)*(?:\{,\}\d+)*k?", t)
+    return [n for n in nums if not re.fullmatch(r"\d(?:\.\d+)+", n)]  # a version: Model 4.5, v1.0.1
 
 
 def float_numbers(aux):
@@ -132,6 +151,8 @@ def main():
             for pattern, what in CAPTION_BANNED:
                 if re.search(pattern, cap):
                     hits.append(f"{rel}: caption carries a {what}: {cap[:60]}…")
+            if takeaway_numbers(cap):
+                hits.append(f"{rel}: caption's bold takeaway carries a number {takeaway_numbers(cap)}: {cap[:60]}…")
             if len(cap) > CAPTION_MAX_CHARS:
                 hits.append(f"{rel}: caption is {len(cap)} chars, over {CAPTION_MAX_CHARS}; rewrite it whole")
         for i, line in enumerate(src.splitlines(), 1):

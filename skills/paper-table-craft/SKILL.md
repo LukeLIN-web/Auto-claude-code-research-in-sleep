@@ -1,6 +1,6 @@
 ---
 name: paper-table-craft
-description: "What belongs in a paper table — a cell is a value, never a sentence; a caption opens with the takeaway, then is the table's own legend, never a glossary or a restatement of its rows. Carries the user's table rulings that hold for every paper (no CIs or p-values, no Δ column beside both compared levels, caption above, no n column) and the cut classes for a table that has grown prose. Use when the user says 表太啰嗦, 删减表格, 这个表怎么写, caption 太长, 表里能不能写 CI, 这行要不要留, 加一列, 'trim this table', 'what goes in the caption', or when table cells have turned into sentences. Not for building the table (the project's paper CLAUDE.md)."
+description: "What belongs in a paper table — a cell is a value, never a sentence; a caption opens with the takeaway, then is the table's own legend, never a glossary or a restatement of its rows. Carries the user's table rulings that hold for every paper (no CIs or p-values, no Δ column beside both compared levels, caption above, no n column) and the cut classes for a table that has grown prose. Use when the user says 表太啰嗦, 删减表格, 这个表怎么写, caption 太长, 表里能不能写 CI, 这行要不要留, 加一列, 表不一致, 乱七八糟, 行名不统一, 'trim this table', 'what goes in the caption', 'the rows are inconsistent', when table cells have turned into sentences, and right after a table is made from a paragraph or a row is added or renamed (step 6's sweep). Not for building the table (the project's paper CLAUDE.md)."
 argument-hint: "[table-label-or-file]"
 allowed-tools: Bash(*), Read, Write, Edit, Grep, Glob
 ---
@@ -50,13 +50,15 @@ fact are one row.
 | **A table that prints both compared levels carries no Δ column or Δ row.** Same-row pair (`Baseline | Ours`) or same-block pair (`Native` / `\method`) — the reader subtracts. Keep a difference cell only when the comparator's own level is *not* printed there, or when the cell is an interaction rather than a printed pair. | 2026-08-23 | A bold-if-significant mark riding on the difference cell dies with it. Delete the caption's `$\Delta$ =` sentence and its `bold marks ... excludes zero` sentence too — including the parent float's caption when the table is split into subtables. Working mirrors of the table (`.md` next to the generator) may keep printing Δ. |
 | **No p-values.** Not computed, not reported, not transcribed from an older result page. | 2026-07-30 | Significance reads off the paired interval and nothing else. |
 | **Caption above the tabular** — `\caption`+`\label` before `\begin{tabular}`. | 2026-08-05 | The user issued the opposite instruction once, watched the full sweep land, and withdrew it the same day. If asked again to move captions below, say this first, then act. |
-| **Caption carries no numbers, no pointer at another float.** Banned: `\ref{}`, `\S`, Appendix, `Table~`, `Figure~`, "the text". 1200 chars hard cap. | — | Enforce it, do not remember it: `paper-compile`'s `scripts/check_tex.py` checks generated and hand-written captions alike. |
+| **Caption carries no numbers, no pointer at another float.** Banned: `\ref{}`, `\S`, Appendix, `Table~`, `Figure~`, "the text". 1200 chars hard cap. | — | Enforce it, do not remember it: `paper-compile`'s `scripts/check_tex.py` checks generated and hand-written captions alike for the pointers, the cap and a number in the bold takeaway. A number in a name (`Model-2B`, a version) is not one. The legend after the takeaway is read by eye. Until 2026-11-23 the script checked no numbers, and a step count (`the N,000-step <model>`) passed every build in an appendix takeaway. |
 | **A fired caption gate means rewrite the caption whole.** Never raise the cap, never patch the tail. | — | Captions bloat by accretion; one had reached 2.8 KB before the cap. |
 | **`n` is not a column and not a row.** A group size is bookkeeping, not a value a reader compares down; a table whose rows are subsets prints the accuracies alone. The caption says what the groups *are*; the prose says the shape (`a small group`, `the covered majority`); the counts stay in the working mirror and the result page. A count column under another name (`Events`, a `(1458)` in a header) is still a count column. | 2026-09-09 | User: 不要汇报 n, and the same day for every table: 也一起撤了. The subset exemption is gone — a subset is named by its row label, not counted. |
 | **Every accuracy, recall, coverage and success cell prints at one decimal, in every table.** Rounded half-up from the *exact ratio*, never from a score already stored at two decimals. | 2026-09-09 | Trigger: one column printed `51.7` and `62.28`. Re-rounding a stored score whose hundredths digit is 5 goes wrong (60.25 is 479/795 = 60.252 → 60.3), so the cell is printed from its count and denominator by the project's one rounding helper. Bold / underline tie on the printed one-decimal value. Non-score quantities (a token ratio, seconds) are outside this rule. |
 | **A small table whose columns another table already has is merged into that table**, as rows (in a block of their own when they share a condition), not printed beside it. Its reprinted rows (the base, our method) are dropped, since the host table prints them already; the prose points at the host table. | 2026-11-20 | User, after two appendix tables that reprinted a larger table's rows on its own columns were merged into it: 「记住 并进去是好的」. Under a frozen float numbering, merge only tables whose numbers nothing frozen cites. |
 | **A benchmark's question or episode count is not a column header.** Delete the `(n)` sub-header row under the benchmark columns: the body names each benchmark's denominator once, in Settings, and that is the paper's one printing. Fold a qualifier that changes how the column is *read* (`1--4h`, `10-way`, a subtask or split name) into the title line. | 2026-08-23 | User: 不要写 (1549) (2700) 这些数字, 正文里写一次就够了. This is the prose-facing half of step 6's *no number reported in two tables*. |
 | **A unit goes in the column header, not in the caption or the cells.** `Bench-A (s)`, `Bench-B (s)`, `Memory (GB)`; the cells are bare numbers. When every column shares one unit, each header still carries it. | 2026-11-21 | User: 单位应该尽量写到列上面. Trigger: a timing table whose headers were bare benchmark names and whose only unit was the caption's `Median seconds per call`. The caption keeps what is measured (`median time per call`) and drops the unit word. A column whose rows differ in unit (a limit in seconds on some rows, in control steps on others) keeps the unit in the cell. Percent scores need no `(%)` when the paper's tables print them bare throughout. |
+| **One table, one naming pattern; the rows a sentence compares sit together.** Row labels in a table share one grammar (`<data>, <qualifier>, <qualifier>`, not `X, held-out split` beside `Y on the held-out split`) and name every row on one axis: all by training data, or all by system. The method's row keeps the method's name, and the legend says what it is on the table's axis (`<Method>'s <model>: trained on all of its data`). The rows one sentence compares are adjacent. A condition several rows share opens a block (`\midrule`); it is not a suffix repeated on rows scattered through the table. A system that appears in two tables carries the same label in both, defined once in the generator. Where a frozen table already prints a label, the others follow its pattern. The caption names a row by its printed label, never by a third name (`the N,000-step <model>` for a row printed `…, Nk steps`). | 2026-11-23 | Trigger: an appendix table of training data whose five rows had each been named on the day its experiment landed, copied verbatim from a results table. It had two qualifier grammars, one row named by model among rows named by data, and the two rows of each comparison in different halves of the table. The labels were also defined twice in the generator. User: 「这一坨乱七八糟的为啥都不一致」. |
+| **One quantity, one number format, in every table and in the prose.** A count printed `312k` in one table is not `312,407` in the table beside it or `8,000 steps` in the paragraph that reads it. A column never mixes formats (`20k` beside `31,415`): when one cell needs its digits, decide for the whole column, and keep the exact value in the result page. A `k` cell is a number: it right-aligns like any other. | 2026-11-23 | Same table: its frames and steps printed in full while the table beside it, on the same models, printed `k` (an earlier ruling, 「用 k 来表示, 省略 3 位数后面的」). User, after the table was fixed: 「散文里最好也写 <N>k」, then 「可以, 改」 for every training-step count in the appendix. A generator whose number-or-word test read `312k` as a word had left-aligned a whole table of `k` cells. |
 | **A table's printed type size is measured, never scaled into place.** The floor is the figures' floor, 7.5 pt. | — | `\resizebox{\textwidth}{!}` sets the type size by an accident of the table's own width — one build measured 10.96 pt (magnified past the 9.96 pt body text), 8.90 and 8.41 against 8.97 everywhere else. Fix an overflowing table by the gutter (`\tabcolsep`) or by structure; in a two-column venue, by `table*` before squeezing a wide table into a column. |
 | **One owner per mark.** Bold, underline, the zero convention and any difference cell come from one helper the generators share. | — | Four generators had reimplemented `lo > 0 or hi < 0`, and the zero convention had drifted three ways (`0.00`, `+0.00`, `\pm0.00`) — a reader comparing two tables reads the same mark as two different things. |
 | **An empty result cell prints `--`, and the legend reads `--: not reported`.** Never `not run`, `not evaluated`, or `not run or not reported`. One wording covers both a cell we did not run and a cell a cited paper did not report. | 2026-11-16 | User: 那个"-"别叫 not run，叫 not reported. Fix it in the caption generator and sweep every table that uses `--`. A cell that cannot exist in its row (a time for a system that makes no call) keeps its own legend, `--: not applicable`. |
@@ -69,7 +71,11 @@ fact are one row.
 the prose's own words, no number. A takeaway that carries two conclusions may be
 two bold sentences (user 2026-11-16「能拆成两句粗体」). A takeaway never carries an exception
 (`leads on all but Bench-6`, `except Baseline-C`); `paper-prose-tighten` class 14
-says how to restate it. Then the legend for *this* float: what is
+says how to restate it. Its subject is the method, as in the paper's result
+sentences: `<Method> trains on fewer frames than Baseline-B`,
+not `Baseline-B trains on more frames than <Method>`
+(user 2026-11-23「还是应该用 <method> 作为主语」; the takeaway had been
+rewritten for consistency and still led with the baseline). Then the legend for *this* float: what is
 measured, the symbols, the definition of each column. Nothing that defers to
 prose; a takeaway is not a restatement of rows, but a row-by-row recital is.
 
@@ -159,10 +165,24 @@ When a table has grown prose, these are the shapes, in descending yield.
 
    Read the **second** smallest size, not the smallest: superscript marks
    (`*`, `‡`, `◦`) and subscripts legitimately sit near 6 pt.
-6. **Sweep across tables, not just within one.** One benchmark, one spelling;
-   one convention per mark (bold = decided) in every table that uses it; no
-   number reported in two tables. These are invisible from a single float and
-   are where the real defects were.
+6. **Sweep the table against itself, its siblings and the prose that reads it.**
+   No other pass does this. A prose polish edits the section's `.tex`, and a
+   generated table that the section `\input`s stays outside it, caption and
+   labels included. A float review asks whether each float serves an argument,
+   not whether it agrees with itself. Read the compiled page and check:
+   - within the table: one label pattern on one axis, compared rows adjacent,
+     shared conditions as blocks; the caption names rows as printed and its
+     takeaway's subject is the method;
+   - across tables: one benchmark, one spelling; one label for one system; one
+     convention per mark (bold = decided); one number format per quantity; no
+     number reported in two tables;
+   - against the prose: the sentences that cite the table name its rows and
+     print its quantities the way the table does.
+
+   These are invisible from a single cell and are where the real defects were.
+   Run this sweep whenever a table is made from a paragraph or a results row is
+   added or renamed. Labels coined one experiment at a time drift apart even
+   when each is fine on the day it is coined.
 7. Report what was cut by class and, separately, **what was kept because
    something else cites it**.
 
