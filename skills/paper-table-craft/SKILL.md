@@ -80,6 +80,22 @@ rewritten for consistency and still led with the baseline). Then the legend for 
 measured, the symbols, the definition of each column. Nothing that defers to
 prose; a takeaway is not a restatement of rows, but a row-by-row recital is.
 
+**The takeaway is what only this float shows**, not the summary result another
+float already prints (user 2026-11-23「caption 不就是应该说 提升是分布在多数物体上吗.
+不然都看不懂.」). Before writing it, ask what a reader learns here that the
+summary table cannot tell them, and write that. A float that splits a result
+(per object, per task, per subset, per step) states what the split shows:
+whether the gain is spread across most units or comes from a few, and where it
+reverses. Restating the aggregate (`<Method> significantly outperforms
+Baseline-A on Bench-B`) leaves the reader unable to see why the float exists.
+When the float carries its own test (a test over units, not over episodes),
+the takeaway may add it in the strength it supports (`... on most objects,
+and significantly so compared object by object`). Change the prose sentence
+that cites the float in the same edit, so the caption is never stronger than
+the text. If nothing beyond the aggregate can be named, the float has no
+takeaway of its own, and that goes to the author as a question about whether
+to keep it.
+
 Four ways it stops being that:
 
 - **It restates its own rows.** "Both adapters share the same frozen backbone at
