@@ -25,11 +25,12 @@ Test, owns the rule and what counts as supporting). The block reports these as
 flag 6.
 
 A sixth, the same day, 「表/图 里的, 不支持论点的也要删」: the test also holds
-inside a float. A table's row or column, or a figure's panel, group or series,
-that no sentence reads does not stay as it is: where its numbers favor the
-method a sentence is added that reads it, otherwise it is deleted
-(`paper-table-craft` and `paper-figure-craft` carry it as a ruling). Flag 6
-reports these too.
+inside a table. A table's row or column that no sentence reads does not stay
+as it is: where its numbers favor the method a sentence is added that reads it,
+otherwise it is deleted (`paper-table-craft` carries it as a ruling). Flag 6
+reports these too. A figure's panel, group or series needs no sentence of its
+own (2026-11-24, the author dropped that requirement); the figure as a whole
+still serves an argument.
 
 A seventh, 2026-11-23, 「更多训练没有变好的, 又没判清楚, 属于是暴露缺点, 应该隐藏」:
 a variant that gives the method more of what it already uses (a second round,
@@ -99,11 +100,11 @@ table before prose):
 and every passage or part of a float, main text or appendix, that supports
 no argument:
   6. a sentence, a number, a paragraph, a reported experiment, or a part of a
-     float (a table's row or column, a figure's panel, group or series) that
+     table (a row or a column) that
      states no argument the paper makes, is not evidence for one, does not
      define what one is about (a term, the setup, a protocol constant) and
      does not bound one (a denominator, a scope limit, a result that weighs
-     against it). A part of a float is evidence only if a sentence, in the
+     against it). A row or column is evidence only if a sentence, in the
      prose or in the caption's opening, reads it. Quote it or name it, give
      its location and say in one line what it is.
 and every reported variant that extends the method and does not improve it:
@@ -145,20 +146,20 @@ flagged passage is the only prose that names a breakdown or a setting (a list
 of perturbation types no table splits by), the report asks the author one
 question: add the breakdown, or delete the passage.
 
-A part of a float that supports no argument (flag 6), by what its numbers show:
+A row or column of a table that supports no argument (flag 6), by what its numbers show:
 - they favor the method (ours is higher there, significant or not): keep the
   part and add the sentence that reads it, next to the sentence that cites the
   float ("On <benchmark>, it also outperforms <baseline>"), in the strength the
   test supports. The author's ruling, 2026-11-21: 「没有句子读, 对我们有利的,
   我们可以加句子」. In a frozen main text the sentence goes in the appendix.
 - they favor neither side (a count, a quantity derived from other rows, a
-  setting nothing compares): delete the row, column, panel or series in the
-  float's generator, with its caption legend item and any pointer that named
+  setting nothing compares): delete the row or column in the
+  table's generator, with its caption legend item and any pointer that named
   it.
 - they weigh against a claim, or the author asked for the part by name: report
   it to the author, who decides.
 A cell the prose reads elsewhere keeps its float. The cut is always a whole
-row, column, panel or series: while a row and a column both stay, the cell
+row or column: while a row and a column both stay, the cell
 where they meet stays printed, read or not (the author, same day: 「如果列/行
 在的话, 不要单独删格子」).
 
