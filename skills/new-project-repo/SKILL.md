@@ -96,9 +96,27 @@ Copy the files the rule files name as the way work is done, then adapt:
 Copy the tests of every script you port. They are the proof that the adaptation
 kept the script working.
 
-Do not port machinery that needs infrastructure the new repo lacks (scheduled
-jobs that log in to other machines, bots with their own secrets). List it in the
-report instead.
+Machinery that needs infrastructure the new repo lacks (scheduled jobs on a
+self-hosted runner, a shared memory or rule store) is left out of the first
+pass and listed in the report. When the owner says to port it:
+
+- **Check that it works in the template first.** Read the last runs of each
+  scheduled workflow. Carry a failing job's cause into the report rather than
+  into the new repo (a host that no longer exists in a host list, for example).
+- **Self-hosted runner.** Register a second runner for the new repo on the same
+  machine, with the same labels, in its own directory, reusing the installed
+  runner's binaries and its environment files. Start it detached from the
+  session, then trigger each scheduled workflow once by hand.
+- **Shared stores.** When the template takes files, rule text or memory from a
+  central store, register the new repo there and let the store's tool deliver
+  them; do not hand-copy what the store owns. Before delivering, diff the
+  store against the template: where the template is newer, take its version
+  into the store first, or delivery rolls the new repo back.
+- **Tags shared across repos on one machine.** A marker a scheduled job acts on
+  (a session tagged with an issue number that gets closed with the issue) must
+  carry the repo name once two repos use it on the same hosts.
+- **Empty ledgers.** A job that edits a fixed set of pages needs each page to
+  exist; create them with their header only.
 
 ## Step 5: Seed the content
 
