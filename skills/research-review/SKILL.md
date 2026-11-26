@@ -7,20 +7,19 @@ allowed-tools: Bash(*), Read, Grep, Glob, Write, Edit, mcp__codex__codex, mcp__c
 
 # Research Review via External Reviewer Backend (max reasoning)
 
-> 🔒 **Do not wrap this skill in `/loop`, `/schedule`, or `CronCreate`.** It is
-> verdict-bearing — it produces a cross-model review verdict, multi-round with
-> reviewer thread continuity. An external timer re-fires the verdict on
-> wall-clock time and breaks the reviewer's round-to-round memory: zero new
-> signal, full token cost. Schedule the *external wait that precedes it* (work
-> ready → then review once), not the verdict. See
-> [`shared-references/external-cadence.md`](../shared-references/external-cadence.md).
-
 Get a multi-round critical review of research work from the selected external reviewer backend with maximum reasoning depth.
 
 ## Constants
 
-- REVIEWER_MODEL = `gpt-6-astra` — Default model for the Codex backend, reasoning effort `max` (deep-audit tier). Must be an OpenAI model (e.g., `gpt-6-astra`, `gpt-6.1-sol`). Manual backend uses a model the user chooses — it must be a recognized model from a different family (OpenAI, Anthropic, Google, DeepSeek, Moonshot/Kimi, Qwen).
-- **REVIEWER_BACKEND = `codex`** — Default: Codex MCP (max). Resolve `— reviewer:`, project `.aris/reviewer.json`, then this default using `reviewer_route.py` (`--host claude-code --tier deep`), per [reviewer-backends.md](../shared-references/reviewer-backends.md). Gemini/Antigravity, Grok, and Claude Code use that contract at every call below. Legacy Oracle/manual contracts remain in `reviewer-routing.md`; unavailable selected routes do not silently fall back.
+- REVIEWER_MODEL = `gpt-6-astra`, reasoning effort `max` (deep-audit tier; capability fallback per `reviewer-routing.md`, never below `xhigh`). Must be an OpenAI model (e.g., `gpt-6-astra`, `gpt-6.1-sol`).
+- **REVIEWER_BACKEND = `codex`** — With no `— reviewer:` argument and no project
+  `.aris/reviewer.json` this is the route (`reviewer_route.py --project <root>
+  --host claude-code --tier deep` prints the same), so there is nothing to
+  resolve. A selected Gemini/Antigravity, Grok or Claude Code route takes its
+  first and reply calls, model and effort from
+  [reviewer-backends.md](../shared-references/reviewer-backends.md), manual and
+  Oracle from `reviewer-routing.md`, with the same prompt files and cwd; a
+  selected route that is unavailable does not fall back silently.
 - **REVIEWER_PERSONA = `P1`** — The frame the reviewer is asked to adopt, from
   [`../shared-references/reviewer-personas.md`](../shared-references/reviewer-personas.md).
   `P1` (Gatekeeper: reject-by-default, scored, plus a rewrite strategy) is the
@@ -41,8 +40,8 @@ structure (user 2026-11-16: 「一个看逻辑, 一个看结构」). Start both 
 in parallel, as fresh threads over the same brief and files; each keeps its own
 threadId, rounds and trace, and neither is shown the other's output:
 
-- **Logic thread** — REVIEWER_PERSONA + SCOPE LIMITS: are the claims new,
-  supported and consistent.
+- **Logic thread** — REVIEWER_PERSONA: are the claims new, supported and
+  consistent.
 - **Structure thread** — P4 (`reviewer-personas.md` §8) + FLOAT AND ARGUMENT
   MAP: what each section is for, where content sits, how long each part runs,
   whether every float serves an argument, and which passages support none.
@@ -64,8 +63,8 @@ project notes. It applies to both threads of a manuscript and to every round.
 1. **Review directory.** Compile the manuscript, then put the PDF alone in a
    new, empty directory outside the project tree. For the structure thread,
    copy `manuscript-craft.md` into the same directory and give that copy as
-   `[SECTION POLICY]`. Write the brief and the prompt files into it as well.
-   The reviewer's cwd is this directory, read-only.
+   `[SECTION POLICY]` (`--section-policy`). Write the brief and the prompt
+   files into it as well. The reviewer's cwd is this directory, read-only.
 2. **Brief.** It names the venue, the PDF, and the submission status (which
    pages are frozen, if any), and says that the PDF is the whole submission and
    that nothing outside this directory may be read. It lists no source file,
@@ -102,10 +101,11 @@ such a passage: the finding is dropped under `reviewer-personas.md` §4, case 4.
 
 ## Persona
 
-Send the persona template **verbatim** from `reviewer-personas.md` (§2 for P1,
-§3 for P2), with `[VENUE]` and the manuscript/context fields filled in. Do not
-paraphrase it — the reject-by-default framing and the evidence-anchor clause are
-what make the output actionable rather than flattering.
+The logic thread gets the persona template of `reviewer-personas.md` (§2 for
+P1, §3 for P2) exactly as written, with only its bracketed fields filled:
+`scripts/build_prompts.py` (Step 2) copies it. Never paraphrase or restate it —
+the reject-by-default framing and the evidence-anchor clause are what make the
+output actionable rather than flattering.
 
 The anchor rule (`reviewer-personas.md` §4) applies to every round, including the
 spot-check that drops a finding whose anchor does not hold up. Do not restate it
@@ -114,64 +114,20 @@ here — it has one owner.
 At idea/project stage the artifact is not a manuscript: send P1's
 **proposal-stage variant** (§2), which anchors findings to the supplied context
 files and lifts the ban on citing outside literature, since prior-work coverage
-is what the review is for at that stage.
-
-Follow-up rounds obey `reviewer-personas.md` §5: **no prose rebuttal** — the
-reviewer re-reads the current files and rules SUSTAINED / OVERRULED / PARTIALLY
-SUSTAINED itself.
-
-## Reviewer Calling Convention
-
-When calling the reviewer, branch on REVIEWER_BACKEND:
-
-**If REVIEWER_BACKEND ∈ {antigravity, grok, claude-code}:**
-  Use the selected first/reply protocol in `reviewer-backends.md`, with the
-  same review prompt, explicit cwd containing the primary files, and resolved
-  provider-specific model/effort. Save route, cwd and session id for continuation.
-  A Claude Code bridge may run DeepSeek; derive family from its reported model.
-
-**If REVIEWER_BACKEND = `codex`:**
-  Use `mcp__codex__codex` for new review threads.
-  Use `mcp__codex__codex-reply` for follow-up rounds (reuse threadId).
-
-**If REVIEWER_BACKEND = `manual`:**
-  Use `mcp__manual_review__review` for new review threads with:
-    prompt: [exact same prompt that would go to Codex]
-    config: {"model_reasoning_effort": "xhigh", "executor_model": "<actual executor model>", "require_reviewer_model": true}
-  Save the returned `threadId`.
-  Use `mcp__manual_review__review_reply` for follow-up rounds with:
-    threadId: [saved manual-review threadId]
-    prompt: [follow-up prompt]
-    config: {"model_reasoning_effort": "xhigh", "executor_model": "<actual executor model>", "require_reviewer_model": true}
-
-Content fidelity: the manual reviewer should see the same substantive review
-brief Codex would read. If the manual UI supports file upload / attachment,
-reuse the same brief file; otherwise paste the brief contents inline because
-remote web UIs cannot read your local filesystem paths. Review tracing applies
-equally to both backends.
+is what the review is for at that stage. Name it in the prompt: `--logic-only
+--input "Variant: proposal-stage (reviewer-personas.md §2)"`.
 
 ## Context: $ARGUMENTS
-
-## Prerequisites
-
-- The selected MCP must be available. For the default **Codex MCP Server**:
-  ```bash
-  claude mcp add codex -s user -- python3 "$HOME/aris_repo/mcp-servers/codex-exec/server.py"   # your ARIS clone's path
-  ```
-- This gives Claude Code access to `mcp__codex__codex` and `mcp__codex__codex-reply` tools
 
 ## Workflow
 
 ### Step 1: Gather Research Context
-Before calling the external reviewer, compile a comprehensive briefing:
-1. Read project narrative documents (e.g., STORY.md, README.md, paper drafts)
-2. Read any memory/notes files for key findings and experiment history
-3. Identify: core claims, methodology, key results, known weaknesses
-4. For a manuscript, give the entry `.tex` file and the directories that hold its
+Before calling the reviewer:
+1. For a manuscript, give the entry `.tex` file and the directories that hold its
    figures and tables (in *PDF-only mode*, the PDF alone). Do not write down what each float shows, which argument
    it serves, or where each argument's evidence sits: the reviewer builds that
    map itself ([`review-float-map.md`](../shared-references/review-float-map.md)).
-5. For a manuscript, run the mechanical checkers of the `research-paper-writing` skill before the
+2. For a manuscript, run the mechanical checkers of the `research-paper-writing` skill before the
    reviewer is called, and keep their output:
    ```bash
    W=<skills dir>/research-paper-writing/scripts
@@ -187,125 +143,67 @@ Before calling the external reviewer, compile a comprehensive briefing:
    or caption it points at has been read.
 
 ### Step 2: Initial Review (Round 1)
-Send a detailed prompt with max reasoning, using the selected backend. For
-the `codex` backend, keep the MCP payload short: write the full briefing to
-`RESEARCH_REVIEW_REQUEST.md`, then point Codex at that file.
+Write the brief to `RESEARCH_REVIEW_REQUEST.md` (in *PDF-only mode*, into the
+review directory). It carries what the templates do not: the specific questions
+and the primary artifact / raw-result paths the reviewer should inspect, and for
+an idea or project the context itself. Then build the prompt files:
 
-*For codex backend:*
+```bash
+python3 <this skill's dir>/scripts/build_prompts.py --out <prompt dir> \
+  --brief <absolute path to RESEARCH_REVIEW_REQUEST.md> --venue "<VENUE>" \
+  --input "Manuscript: <absolute path> (<what it is, e.g. the compiled PDF; the whole submission>)"
+# add --persona P2, --section-policy <the copy> (PDF-only mode), --logic-only (an idea or project)
+```
+
+It writes `logic_prompt.txt` (REVIEWER_PERSONA) and `structure_prompt.txt` (P4,
+then the FLOAT AND ARGUMENT MAP block of `review-float-map.md`). Each template is
+copied unchanged from its fence in shared-references with only its bracketed
+fields filled, and the script stops if one is left. Send each file, unedited, as
+its thread's whole prompt, both fresh threads in the same turn:
 
 ```
 mcp__codex__codex:
-  model: gpt-6-astra
+  model: REVIEWER_MODEL
   config: {"model_reasoning_effort": "max"}
+  sandbox: read-only
+  cwd: <review cwd>
   prompt: |
-    Read the review brief at <absolute path to RESEARCH_REVIEW_REQUEST.md>.
-    Executor notes are not evidence beyond the files they cite, so verify the
-    referenced artifacts before judging. Trust nothing the author tells you —
-    verify everything yourself.
-
-    [REVIEWER_PERSONA template, verbatim from shared-references/reviewer-personas.md]
-
-    [SCOPE LIMITS block, verbatim from shared-references/review-scope-limits.md]
+    Your complete prompt is <absolute path to logic_prompt.txt>. Read it and
+    follow it exactly as written.
 ```
 
-For a manuscript, start the structure thread in the same turn, as a second
-fresh call:
-
-```
-mcp__codex__codex:
-  model: gpt-6-astra
-  config: {"model_reasoning_effort": "max"}
-  prompt: |
-    Read the review brief at <absolute path to RESEARCH_REVIEW_REQUEST.md>.
-    Trust nothing the author tells you — verify everything yourself.
-
-    [P4 template, verbatim from shared-references/reviewer-personas.md §8, with
-    [SECTION POLICY] = the absolute path of shared-references/manuscript-craft.md]
-
-    [FLOAT AND ARGUMENT MAP block, verbatim from shared-references/review-float-map.md]
-```
-
-**Codex route.** With no `— reviewer:` argument and no `.aris/reviewer.json` the
-route is the codex default of *Constants*, exactly what `reviewer_route.py
---project <root> --host claude-code --tier deep` prints, so there is nothing to
-resolve. When the `codex` MCP server is not connected in this session, run the
-bridge's own `codex exec` command, and `codex exec resume` for follow-up rounds:
-[`references/codex-exec.md`](references/codex-exec.md).
-
-For Antigravity, Grok, or Claude Code, send the same prompt through its selected
-first-call tool; do not copy Codex's `config` into another tool. Check successful
-completion and actual file coverage before interpreting the response.
-
-The persona template already carries the role, the reject-by-default stance, the
-review dimensions (originality / rigor / claim-evidence consistency), the anchor
-requirement, and the output contract — do not restate the role in your own words.
-The review brief carries the substance: full research context, the specific
-questions, and the primary artifact / raw-result paths the reviewer should
-inspect.
-
-*For manual backend:* use `mcp__manual_review__review` with the same persona
-template and brief contents. If the manual-review UI supports attachments, attach
-`RESEARCH_REVIEW_REQUEST.md`; otherwise paste the brief inline. Save the
-returned `threadId`.
+The structure thread is the same call on `structure_prompt.txt`. When the
+`codex` MCP server is not connected in this session, run the bridge's own
+`codex exec` command with each file on stdin, and `codex exec resume` for
+follow-up rounds: [`references/codex-exec.md`](references/codex-exec.md). Check
+successful completion and actual file coverage before interpreting a response.
 
 ### Step 3: Iterative Dialogue (Rounds 2-N)
-For `codex` backend: use `mcp__codex__codex-reply` with the returned `threadId`.
-For `manual` backend: use `mcp__manual_review__review_reply` with the same `threadId`.
-For Antigravity, Grok, or Claude Code: use the saved route's continuation protocol
-in `reviewer-backends.md`; keep its model/cwd and repeat Claude cwd/tools.
-Use the appropriate tool to continue the conversation; a manuscript's logic and
-structure threads continue separately, each with its own threadId. For Codex follow-up
-rounds, write an updated brief such as `RESEARCH_REVIEW_ROUND_2.md` and send
-only the path:
+A manuscript's logic and structure threads continue separately, each with its
+own threadId. Every round follows `reviewer-personas.md` §5: re-submit the
+current files and have the reviewer re-check each prior criticism against them
+and rule SUSTAINED / OVERRULED / PARTIALLY SUSTAINED. Do not argue the point in
+prose — an account of what you changed, or of why the criticism was wrong, is
+exactly what `shared-references/reviewer-independence.md` forbids passing to a
+reviewer. Write the updated brief, such as `RESEARCH_REVIEW_ROUND_2.md`, rerun
+the script with `--round 2 --brief <its absolute path>` (the structure thread's
+prompt carries the FLOAT AND ARGUMENT MAP block again), and send:
 
 ```text
 mcp__codex__codex-reply:
   threadId: [saved reviewer threadId from Step 2]
-  # replies inherit the thread's model/effort (gpt-6-astra max)
+  # replies inherit the thread's model and effort
   prompt: |
-    Read the updated review brief at <absolute path to
-    RESEARCH_REVIEW_ROUND_2.md>.
-    Focus on unresolved weaknesses and whether the revision actually fixed them.
+    Your complete prompt is <absolute path to logic_prompt_round2.txt>. Read it
+    and follow it exactly as written.
 ```
 
-For manual follow-up rounds, attach that same updated brief if possible;
-otherwise paste it inline.
-
-For each round:
-1. **Re-submit the updated artifact** and ask the reviewer to re-check each
-   prior criticism against the current files and rule SUSTAINED / OVERRULED /
-   PARTIALLY SUSTAINED. Do not argue the point in prose — an account of what you
-   changed, or of why the criticism was wrong, is exactly what
-   `shared-references/reviewer-independence.md` forbids passing to a reviewer.
-2. **Ask targeted follow-ups** on the most actionable points
-3. **Request specific deliverables**: experiment designs, paper outlines, claims matrices
-
-Key follow-up patterns:
-- "If we reframe X as Y, does that change your assessment?"
-- "What's the minimum experiment to satisfy concern Z?"
-- "Please design the minimal additional experiment package (highest acceptance lift per GPU week)"
-- "Please write a mock NeurIPS/ICML review with scores"
-- "Give me a results-to-claims matrix for possible experimental outcomes"
-
-### Step 4: Convergence
-Stop iterating when:
-- Both sides agree on the core claims and their evidence requirements
-- A concrete experiment plan is established
-- The narrative structure is settled
-
-### Step 5: Document Everything
-Save the full interaction and conclusions to a review document in the project root:
-- Round-by-round summary of criticisms and responses
-- Final consensus on claims, narrative, and experiments
-- Claims matrix (what claims are allowed under each possible outcome)
-- Prioritized TODO list with estimated compute costs
-- Paper outline if discussed
-
-For a manuscript the list above is replaced by two reports, a **logic report**
-and a **structure report**, each self-contained and each written when its own
-thread returns (see *Two reports for a manuscript*). Both go in one directory per
-reviewed draft, beside the raw files: the brief, the prompt files, each thread's
-raw reply and the checker output. Each report opens with one paragraph: thread
+### Step 4: Document Everything
+Write a **logic report** and, for a manuscript, a **structure report**, each
+self-contained and each written when its own thread returns (see *Two reports
+for a manuscript*). Both go in one directory per reviewed draft, beside the raw
+files: the brief, the prompt files, each thread's raw reply and the checker
+output. Each report opens with one paragraph: thread
 id, reviewer model and effort as run, how it was called (MCP tool or `codex
 exec`), what the reviewer was given, and the score and verdict. Then, each under
 its own heading, the logic report has:
@@ -317,7 +215,7 @@ its own heading, the logic report has:
 and the structure report has:
 - the section map and every structure issue whose anchor holds, with its move
 - the float map and argument map, and every float and argument flagged
-- under its own heading, every passage and every part of a float (a row, a column, a panel, a series) that supports no argument (flag 6): the quote or its name, its location, one line on what it is, and the proposal (for a part of a float whose numbers favor the method, the sentence to add; otherwise delete it, or put it to the user, with the reason)
+- under its own heading, every passage and every row or column of a table that supports no argument (flag 6): the quote or its name, its location, one line on what it is, and the proposal (for a row or column whose numbers favor the method, the sentence to add; otherwise delete it, or put it to the user, with the reason)
 - under its own heading, every variant that extends the method (another round, more steps, more data) and is neither better nor settled (flag 7): its location, its numbers against the method's, whether a main-text sentence rests on it, and the proposal, which is to hide it (`review-float-map.md`, Acting)
 - the checker warnings of Step 1 that hold after reading the text they point at, under their own heading, apart from the reviewer's points
 
@@ -327,56 +225,19 @@ with its reason, and, when an earlier draft was reviewed, what changed against
 that report. The user's rulings on a report are appended to it under their own
 heading with the date; a follow-up round is appended to the same report.
 
-Update project memory/notes with key review conclusions.
-
-> **Composed mode** — if invoked with `— composed: <canonical-report-path>` (an
-> orchestrator like `/idea-discovery` passes this), do **not** write a standalone review
-> `.md` in the project root. The raw conversation is already persisted to `.aris/traces/…`
-> (see *Review Tracing* below — that audit copy is kept in every mode); fold the review
-> *conclusions* (consensus, claims matrix, prioritized TODOs, and a manuscript's
-> structure issues under their own heading) into the orchestrator's
-> canonical report and cite the trace path there. **Default (no `— composed:` directive):
-> behave exactly as above — write the standalone review document.** Never infer composed
-> mode from a report file merely existing. Full rules:
-> [`shared-references/output-composition.md`](../shared-references/output-composition.md).
+With `— composed: <canonical-report-path>` (`/idea-discovery` passes it), fold
+the conclusions into that report and cite the trace path instead of writing a
+report of your own; without the directive, never infer composed mode
+([`output-composition.md`](../shared-references/output-composition.md)).
 
 ## Key Rules
 
-- For the default Codex route, pin `model: gpt-6-astra` + `config: {"model_reasoning_effort": "max"}` (deep-audit tier; capability fallback per `reviewer-routing.md`, never below `xhigh`). Other selected routes use their resolved model/effort.
-- For `manual`, use the identity-bearing config above. Tool fields belong to their own provider contracts; do not copy a payload between bridges.
-- Put comprehensive context in the review brief. Codex can read local files
-  when you pass an absolute path; manual reviewers usually cannot, so attach or
-  paste the same brief there.
 - Be honest about weaknesses — hiding them leads to worse feedback
 - Focus on ACTIONABLE feedback — "what experiment would fix this?"
-- Every weakness must carry an evidence anchor; spot-check anchors before acting, and drop findings whose anchor does not check out or that rest on a few low cells picked from rows and tables where the method is mostly higher (`reviewer-personas.md` §4, case 4)
-- In a manuscript, every figure and table must serve an argument (user 2026-11-03), and every main-text argument carries at least one or two pieces of its evidence in the main text, never all of it in the appendix (user 2026-11-11), and evidence takes a figure before a table, a table before prose (user 2026-11-19, `manuscript-craft.md` §4): send the FLOAT AND ARGUMENT MAP block of `shared-references/review-float-map.md` in the structure thread's first-round prompt and every follow-up brief; the reviewer builds the map
+- A manuscript's structure thread carries the FLOAT AND ARGUMENT MAP block in every round, and the reviewer builds the map; the rulings behind it (user 2026-11-03, 2026-11-11, 2026-11-19) are owned by [`review-float-map.md`](../shared-references/review-float-map.md)
 - Document the threadId for potential future resumption
 - The review document should be self-contained (readable without the conversation)
-
-## Prompt Templates
-
-### For initial review:
-Use the REVIEWER_PERSONA template verbatim (`../shared-references/reviewer-personas.md` §2 for P1, §3 for P2), then append the project context. The follow-up templates below are additive — they run inside the same thread after the persona review lands.
-
-### For experiment design:
-"Please design the minimal additional experiment package that gives the highest acceptance lift per GPU week. Our compute: [describe]. Be very specific about configurations."
-
-### For paper structure:
-"Please turn this into a concrete paper outline with section-by-section claims and figure plan."
-
-### For claims matrix:
-"Please give me a results-to-claims matrix: what claim is allowed under each possible outcome of experiments X and Y?"
-
-### For mock review:
-"Please write a mock NeurIPS review with: Summary, Strengths, Weaknesses, Questions for Authors, Score, Confidence, and What Would Move Toward Accept."
 
 ## Review Tracing
 
 After each reviewer call, save the trace following `shared-references/review-tracing.md` (Policy C — forensic; never silently skip). Record the selected route/session/cwd, requested and reported models, actual effort, raw response, completion and scope, verdict, independence and acceptance per `reviewer-backends.md`. Use `save_trace.sh` (resolved per the chain in `shared-references/integration-contract.md` §2) or write files directly to `.aris/traces/<skill>/<date>_run<NN>/`. Respect the `--- trace:` parameter (default: `full`).
-  A verdict-bearing manual response MUST begin with
-  `Reviewer-Model: <exact-model-id>` — pass the model THIS session is actually
-  running as in `executor_model`. Missing, unknown, or same-family identity
-  cannot acquit; emit `REVIEW_UNAVAILABLE` rather than guessing. If the executor
-  model cannot be named, manual review's cross-family claim is unprovable — say
-  so in the report instead of asserting it.

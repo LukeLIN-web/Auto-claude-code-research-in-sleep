@@ -103,8 +103,8 @@ has to say"). Ask once which mode, unless `— mode:` was given:
   cross-family second read: `— reviewer: codex` (`mcp__codex__codex`, model
   `gpt-6-astra`, `model_reasoning_effort: max`; capability fallback per
   [`reviewer-routing.md`](../shared-references/reviewer-routing.md), never
-  below `xhigh`) or `— reviewer: manual` (as in `/research-review`'s *Reviewer
-  Calling Convention*). Either one sends the manuscript to a third party —
+  below `xhigh`) or `— reviewer: manual` (`reviewer-routing.md`, *Optional:
+  Manual Review*). Either one sends the manuscript to a third party —
   Step 0 must allow it.
 - **REVIEWER_PERSONA = `P3`** — Referee, from
   [`reviewer-personas.md`](../shared-references/reviewer-personas.md) §7. Sent

@@ -18,11 +18,12 @@ def test_mainline_large_payload_skills_prefer_path_only_codex_prompts() -> None:
             "Read the idea-generation bundle at <absolute path",
             "idea-stage/codex_triage_bundle.md",
         ],
+        # its prompt files come from scripts/build_prompts.py, which
+        # tests/test_research_review_build_prompts.py checks for the path-only head
         "research-review": [
             "RESEARCH_REVIEW_REQUEST.md",
-            "Read the review brief at <absolute path",
             "RESEARCH_REVIEW_ROUND_2.md",
-            "Read the updated review brief at <absolute path",
+            "scripts/build_prompts.py",
         ],
         "research-refine": [
             "refine-logs/codex_round_1_review_bundle.md",

@@ -15,7 +15,7 @@ Get a multi-round critical review of research work from an external LLM with max
 
 ## Constants
 
-- REVIEWER_MODEL = `gpt-6-astra` — Model used via a secondary Codex agent, reasoning effort `max` (deep-audit tier). Must be an OpenAI model (e.g., `gpt-6-astra`, `gpt-6.1-sol`)
+- REVIEWER_MODEL = `gpt-6-astra` — Model used via a secondary Codex agent, reasoning effort `max` (deep-audit tier; capability fallback per `reviewer-routing.md`, never below `xhigh`). Must be an OpenAI model (e.g., `gpt-6-astra`, `gpt-6.1-sol`)
 - **REVIEWER_BACKEND = `codex`** — Default: a fresh Codex reviewer at the deep-audit tier (`max`). Resolve `— reviewer:`, project `.aris/reviewer.json`, then this default using `reviewer_route.py` (`--host codex --tier deep`), per [reviewer-backends.md](../shared-references/reviewer-backends.md). Gemini/Antigravity, Grok, and Claude Code use that contract at every call below; legacy `oracle-pro` rules remain in `reviewer-routing.md`.
 
 ## Context: $ARGUMENTS
@@ -28,15 +28,12 @@ Get a multi-round critical review of research work from an external LLM with max
 ## Workflow
 
 ### Step 1: Gather Research Context
-Before calling the external reviewer, compile a comprehensive briefing:
-1. Read project narrative documents (e.g., STORY.md, README.md, paper drafts)
-2. Read any memory/notes files for key findings and experiment history
-3. Identify: core claims, methodology, key results, known weaknesses
-4. For a manuscript, give the entry `.tex` file and the directories that hold its
+Before calling the reviewer:
+1. For a manuscript, give the entry `.tex` file and the directories that hold its
    figures and tables. Do not write down what each float shows, which argument
    it serves, or where each argument's evidence sits: the reviewer builds that
    map itself (FLOAT AND ARGUMENT MAP block, Step 2).
-5. For a manuscript, run the mechanical checkers of the `research-paper-writing` skill before the
+2. For a manuscript, run the mechanical checkers of the `research-paper-writing` skill before the
    reviewer is called, and keep their output:
    ```bash
    W=<skills dir>/research-paper-writing/scripts
@@ -57,7 +54,7 @@ the review workspace. The native Codex example uses max reasoning:
 
 ```
 spawn_agent:
-  model: gpt-6-astra
+  model: REVIEWER_MODEL
   reasoning_effort: max
   message: |
     [Original research question, author claims, specific questions, and primary
@@ -71,31 +68,6 @@ spawn_agent:
     3. Narrative weaknesses
     4. Whether the contribution is sufficient for a top venue
 
-    === SCOPE LIMITS (these bound what you PROPOSE, never what you look for) ===
-    Report anything that is actually wrong here — including a rare-looking case, if
-    this repo actually produces it. Then keep the fix in scope:
-    1. This is a RESEARCH-WORKFLOW tool, not a security paper. Verification is
-       welcome; over-defense is not. Assume a cooperating operator on their own
-       machine — a malicious local user is NOT in the threat model.
-    2. Do NOT propose SHA / hash / content-fingerprint / digest-binding schemes.
-       Reporting a real defect in hashing code that already exists is fine.
-    3. NO speculative machinery: do not add feature flags, migration frameworks,
-       compat layers, wrappers, pins, or similar mechanisms unless evidence shows
-       a current repo defect they fix or an explicit existing invariant they must
-       preserve. "Load-bearing", "compatibility", and "not scaffolding" are labels,
-       not evidence. Point to the failing path/artifact or invariant, and check the
-       proposal's factual premises, such as whether a named package version exists.
-    4. NO corner-case obsession: exotic encodings, symlink races, RTL text and
-       millisecond races are out of scope unless you can show the case arises here.
-    5. Where a rubric or checklist is genuinely needed, do not over-mechanize
-       judgement. A clear sentence a human reads beats a scored table nobody
-       maintains.
-    Exception: code that runs remote commands, starts a network service, or installs
-    an MCP server runs on the user's machine with their credentials — trust-boundary
-    findings there are in scope and the default is strict.
-    The same holds for whatever produces a reported number (scoring code, judge,
-    test data): the agent being scored can edit or read it.
-    Say plainly when something is correct. Do not manufacture findings.
     Be brutally honest. If, after genuinely trying to break it, the work
     holds up and is ready, say so clearly.
 ```
@@ -116,7 +88,7 @@ its reply.
 
 ```
 spawn_agent:
-  model: gpt-6-astra
+  model: REVIEWER_MODEL
   reasoning_effort: max
   message: |
     [Primary manuscript paths: entry .tex file, figure and table directories.]
@@ -205,11 +177,11 @@ spawn_agent:
     and every passage or part of a float, main text or appendix, that supports
     no argument:
       6. a sentence, a number, a paragraph, a reported experiment, or a part of a
-         float (a table's row or column, a figure's panel, group or series) that
+         table (a row or a column) that
          states no argument the paper makes, is not evidence for one, does not
          define what one is about (a term, the setup, a protocol constant) and
          does not bound one (a denominator, a scope limit, a result that weighs
-         against it). A part of a float is evidence only if a sentence, in the
+         against it). A row or column is evidence only if a sentence, in the
          prose or in the caption's opening, reads it. Quote it or name it, give
          its location and say in one line what it is.
     and every reported variant that extends the method and does not improve it:
@@ -244,39 +216,20 @@ send_input:
     Focus on unresolved weaknesses and whether the revision actually fixed them.
 ```
 
-For each round:
-1. **Respond** to criticisms with evidence/counterarguments
-2. **Ask targeted follow-ups** on the most actionable points
-3. **Request specific deliverables**: experiment designs, paper outlines, claims matrices
+Each round asks the reviewer to re-check each prior criticism against the
+revised files and rule SUSTAINED / OVERRULED / PARTIALLY SUSTAINED. Do not argue
+the point in prose: an account of what you changed, or of why the criticism was
+wrong, is what `../shared-references/reviewer-independence.md` forbids passing to
+a reviewer.
 
-Key follow-up patterns:
-- "If we reframe X as Y, does that change your assessment?"
-- "What's the minimum experiment to satisfy concern Z?"
-- "Please design the minimal additional experiment package (highest acceptance lift per GPU week)"
-- "Please write a mock NeurIPS/ICML review with scores"
-- "Give me a results-to-claims matrix for possible experimental outcomes"
-
-### Step 4: Convergence
-Stop iterating when:
-- Both sides agree on the core claims and their evidence requirements
-- A concrete experiment plan is established
-- The narrative structure is settled
-
-### Step 5: Document Everything
-Save the full interaction and conclusions to a review document in the project root:
-- Round-by-round summary of criticisms and responses
-- Final consensus on claims, narrative, and experiments
-- Claims matrix (what claims are allowed under each possible outcome)
-- Prioritized TODO list with estimated compute costs
-- Paper outline if discussed
-
-For a manuscript the list above is replaced by two reports, a **logic report**
-and a **structure report**, each self-contained and each written when its own
-thread returns. Both go in one directory per reviewed draft, beside the raw
-files: the brief, the prompt files, each thread's raw reply and the checker
-output. Each report opens with one paragraph: reviewer session id, model and
-effort as run, what the reviewer was given, and the score and verdict. Then,
-each under its own heading, the logic report has:
+### Step 4: Document Everything
+Write a **logic report** and, for a manuscript, a **structure report**, each
+self-contained and each written when its own thread returns. Both go in one
+directory per reviewed draft, beside the raw files: the brief, the prompt files,
+each thread's raw reply and the checker output. Each report opens with one
+paragraph: reviewer session id, model and effort as run, what the reviewer was
+given, and the score and verdict. Then, each under its own heading, the logic
+report has:
 - what the reviewer credits
 - the major issues and, apart from them, the other suggestions: each with its anchor, whether the anchor holds, and what to do
 - the findings an experiment can address: the experiment and the claim or table cell it would settle; say so when there are none
@@ -284,7 +237,7 @@ each under its own heading, the logic report has:
 and the structure report has:
 - the section map and every structure issue whose anchor holds, with its move
 - the float map and argument map, and every float and argument flagged
-- under its own heading, every passage and every part of a float (a row, a column, a panel, a series) that supports no argument (flag 6): the quote or its name, its location, one line on what it is, and the proposal (for a part of a float whose numbers favor the method, the sentence to add; otherwise delete it, or put it to the user, with the reason)
+- under its own heading, every passage and every row or column of a table that supports no argument (flag 6): the quote or its name, its location, one line on what it is, and the proposal (for a row or column whose numbers favor the method, the sentence to add; otherwise delete it, or put it to the user, with the reason)
 - under its own heading, every variant that extends the method (another round, more steps, more data) and is neither better nor settled (flag 7): its location, its numbers against the method's, whether a main-text sentence rests on it, and the proposal, which is to hide it (`review-float-map.md`, Acting)
 - the checker warnings of Step 1 that hold after reading the text they point at, under their own heading, apart from the reviewer's points
 
@@ -294,22 +247,18 @@ draft was reviewed, what changed against that report. The user's rulings on a
 report are appended to it under their own heading with the date; a follow-up
 round is appended to the same report.
 
-Update project memory/notes with key review conclusions.
+With `— composed: <canonical-report-path>` (`/idea-discovery` passes it), fold
+the conclusions into that report and cite the trace path instead of writing a
+report of your own; without the directive, never infer composed mode, and
+`— standalone` always wins
+([`output-composition.md`](../shared-references/output-composition.md)).
 
-If `— composed: <canonical-report-path>` is explicitly present, fold consensus,
-claims matrix, TODOs, and trace links into that report instead of writing a
-standalone review document. Without the directive, write the standalone review
-as documented; never infer composed mode from an existing file. `— standalone`
-always wins. See
-[`output-composition.md`](../shared-references/output-composition.md).
-
-### Step 6: Review Tracing
+### Step 5: Review Tracing
 
 Save a trace for every reviewer call following `../shared-references/review-tracing.md`. Record the resolved route, session id/cwd, requested and actual reported model/effort, prompt, raw response, decisions, and action items. Check successful completion and required file coverage before assigning a verdict. Record model-family independence and acceptance using `reviewer-backends.md`; agreement alone does not establish cross-family acceptance.
 
 ## Key Rules
 
-- For the default Codex route, use `model: gpt-6-astra` + `reasoning_effort: max` (deep-audit tier; capability fallback per `reviewer-routing.md`, never below `xhigh`). Other selected routes use their resolved model/effort.
 - Provide comprehensive context and primary files in Round 1; require artifact-grounded verification. An unreadable file is missing evidence.
 - Be honest about weaknesses — hiding them leads to worse feedback
 - Focus on ACTIONABLE feedback — "what experiment would fix this?"
@@ -322,20 +271,3 @@ Save a trace for every reviewer call following `../shared-references/review-trac
   The reviewer builds the map; do not pass on your own map or reading of what a
   float shows or where an argument's evidence sits (reviewer-independence.md).
 - The review document should be self-contained (readable without the conversation)
-
-## Prompt Templates
-
-### For initial review:
-"I'm going to present a complete ML research project for your critical review. Please act as a senior ML reviewer (NeurIPS/ICML level)..."
-
-### For experiment design:
-"Please design the minimal additional experiment package that gives the highest acceptance lift per GPU week. Our compute: [describe]. Be very specific about configurations."
-
-### For paper structure:
-"Please turn this into a concrete paper outline with section-by-section claims and figure plan."
-
-### For claims matrix:
-"Please give me a results-to-claims matrix: what claim is allowed under each possible outcome of experiments X and Y?"
-
-### For mock review:
-"Please write a mock NeurIPS review with: Summary, Strengths, Weaknesses, Questions for Authors, Score, Confidence, and What Would Move Toward Accept."

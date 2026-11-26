@@ -3,9 +3,9 @@
 For a session whose `codex` MCP server is not connected: registering the bridge
 mid-session does not connect it before the session reconnects. Run the command
 the bridge itself builds (`mcp-servers/codex-exec/server.py`, `build_argv`).
-`<REVIEWER_MODEL>` and `<effort>` are the pair in the skill's *Constants*
-(capability fallback per `reviewer-routing.md`). Each thread's whole prompt goes
-on stdin, so it has no length limit and needs no quoting.
+`<REVIEWER_MODEL>` and `<effort>` are the pair in the skill's *Constants*. Each
+thread's prompt file from `scripts/build_prompts.py` goes on stdin whole, so it
+has no length limit and needs no quoting.
 
 ## Round 1
 
