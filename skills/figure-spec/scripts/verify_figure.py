@@ -382,8 +382,8 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--print-width-pt", type=float)
     parser.add_argument("--min-pt", type=float, default=8.0,
                         help="hard floor for printed glyph size (default 8.0; "
-                             "figure-craft.md's full rule is >= body text — "
-                             "raise to your venue's body size to enforce it)")
+                             "the craft floor in figure-craft.md's scale rule "
+                             "is 7.5)")
     args = parser.parse_args(argv)
 
     bp, bp_errors = load_blueprint(args.blueprint)

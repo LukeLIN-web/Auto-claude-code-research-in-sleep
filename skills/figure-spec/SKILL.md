@@ -258,8 +258,8 @@ deterministic diff, and enforces `figure-craft.md`'s scale rule mechanically:
   text accounted for (invented text = fail), no forbidden token.
 - **Print-size gate** — using the blueprint's `print_width_mm` (override with
   `--print-width-mm/-in/-pt`), every glyph must print at ≥ `--min-pt`
-  (default 8.0 — a hard floor below typical caption size; the full craft rule
-  is ≥ body text, so pass `--min-pt 9` or `10` to enforce it for your venue).
+  (default 8.0; pass `--min-pt 7.5` for the craft floor in `figure-craft.md`'s
+  scale rule).
 
 Fix the **source** (spec JSON or SVG), never bypass the verifier. Re-run until
 `VERDICT: PASS`. Then convert for LaTeX:

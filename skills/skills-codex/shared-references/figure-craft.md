@@ -6,6 +6,8 @@ actually set** so a plot survives being shrunk into a two-column PDF and printed
 Source: practitioner notes in
 [LukeLIN-web/blogs — How-to-write-paper](https://github.com/LukeLIN-web/blogs/blob/master/How-to-write-paper.md),
 distilled into rules. Where it conflicts with a venue's own guide, the venue wins.
+Where it overlaps skill `paper-figure-craft`, which carries the user's figure
+rulings, that skill owns the rule and this file points at it.
 
 ## When to Read
 
@@ -36,28 +38,22 @@ print, and a figure is shrunk again when it lands in a column.
 | Property | Default | Rule |
 |---|---|---|
 | Line width | `lines.linewidth = 2.0` | thin lines look cheap and vanish in print |
-| Base font | ≥ body text size **after scaling** | see the scale rule below |
-| Tick labels | explicit `fontsize`, never default | `plt.xticks(..., fontsize=20)` on a 5-inch canvas |
+| Font size | every printed glyph in 7.5–11 pt | see the scale rule below |
+| Tick labels | from the style module's type ladder, never matplotlib's default and never a literal `fontsize=` | see the scale rule below |
 | Marker size | large enough to read at 45 % scale | |
 | Grid | off unless it carries information | |
 | Title inside figure | **never** | the title lives in `\caption{}` |
 | Output | vector PDF | never ship raster into LaTeX |
 
-**The scale rule.** Figure font size must be judged *on the printed page*, not
-in the plotting window. If a figure is saved 5 in wide and included at
-`0.48\textwidth` (≈ 3.3 in), everything shrinks by ~0.66 — so a 10 pt label
-prints at ~6.6 pt and is unreadable. Either:
-
-- set source fonts to `body_size / scale_factor` (e.g. 15–20 pt source for a
-  10 pt body at 0.66 scale), or
-- save the figure at the exact final width and use body-size fonts directly.
-
-Checkable statement of the same rule: **the rendered glyph height in the
-compiled PDF must be at least the body-text glyph height.** Zooming should not
-be required to read an axis.
+**The scale rule.** Figure font size is judged *on the printed page*, not in
+the plotting window: `\includegraphics` scales the type along with the drawing.
+Skill `paper-figure-craft` owns the rule (its rulings table: the WYSIWYG width
+law and the printed-size range) and the measurement (§ Measuring the printed
+size).
 For `figure-spec` SVG figures this check is mechanical: `verify_figure.py`'s
 print-size gate computes every glyph's printed size from the SVG viewBox and
-the declared include width, and fails the figure below the floor.
+the declared include width, and fails the figure below `--min-pt` (pass 7.5
+for this floor).
 
 Corollary: fewer words. Big fonts and long labels do not coexist — cut label
 text until it fits at the enlarged size.
@@ -170,11 +166,11 @@ Compare against a figure from a paper you admire in the same subarea.
 
 ## 8. Checklist
 
-- [ ] Every glyph in the compiled PDF is ≥ body-text size (no zooming needed).
+- [ ] Every printed glyph passes the scale rule (no zooming needed).
 - [ ] Line widths ≥ 2.0; markers readable at final scale.
 - [ ] No red-green pairing; readable in grayscale; non-color channel present.
 - [ ] Bars pale-filled, values printed on top, labels capitalized.
-- [ ] No title inside the figure; caption self-contained in LaTeX.
+- [ ] No title inside the figure; the caption follows `paper-figure-craft` § What a caption is.
 - [ ] Vector PDF, cropped — no white margin, no embedded raster text.
 - [ ] Figure font family matches the paper body font.
 - [ ] Multipliers rendered as `$\times$`.
