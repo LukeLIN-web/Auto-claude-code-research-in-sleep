@@ -1,7 +1,7 @@
 # Figure Craft: Practitioner Rules for Camera-Ready Plots
 
 `writing-principles.md` says *why* Figure 1 matters. This file says **what to
-actually set** so a plot survives being shrunk into a two-column PDF and printed.
+actually set** so a plot survives being placed in a two-column PDF and printed.
 
 Source: practitioner notes in
 [LukeLIN-web/blogs — How-to-write-paper](https://github.com/LukeLIN-web/blogs/blob/master/How-to-write-paper.md),
@@ -33,14 +33,14 @@ prose under a results table. Consequences that drive the whole workflow:
 ## 1. Hard defaults
 
 These are not stylistic preferences — defaults ship too thin and too small for
-print, and a figure is shrunk again when it lands in a column.
+print.
 
 | Property | Default | Rule |
 |---|---|---|
 | Line width | `lines.linewidth = 2.0` | thin lines look cheap and vanish in print |
 | Font size | every printed glyph in 7.5–11 pt | see the scale rule below |
 | Tick labels | from the style module's type ladder, never matplotlib's default and never a literal `fontsize=` | see the scale rule below |
-| Marker size | large enough to read at 45 % scale | |
+| Marker size | readable at print size | |
 | Grid | off unless it carries information | |
 | Title inside figure | **never** | the title lives in `\caption{}` |
 | Output | vector PDF | never ship raster into LaTeX |
