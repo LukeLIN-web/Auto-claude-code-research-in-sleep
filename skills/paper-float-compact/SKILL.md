@@ -145,9 +145,9 @@ pdfinfo figures/<f>.pdf | grep "Page size"   # natural size in pt
 - Two floats share one float page only if sum + `\floatsep` ≤ `\textheight`.
 - Top-float stacking is capped by `\topfraction` x `\textheight`, which is
   *stricter* than a float page.
-- Print-size floor: shrinking a figure below its natural (matplotlib) size
-  shrinks fonts below design size — measure legibility by rendering the final
-  page at 100 dpi and reading the smallest labels (target ≥ 7.5pt printed).
+- Print-size floor: shrinking a figure below the width it was drawn at shrinks
+  its type with it; every printed glyph stays in 7.5–11 pt, measured as
+  `paper-figure-craft` § Measuring the printed size does.
 
 If images alone exceed the budget, the merge is infeasible unless captions are
 cut (Step 4) or the figure is redesigned — say so instead of forcing it.
@@ -156,12 +156,7 @@ cut (Step 4) or the figure is redesigned — say so instead of forcing it.
 float heights (image × scale + caption lines × ~11.5pt) and its text, divide
 by `\textheight`, and take the ceiling. If that equals the pages the section
 occupies now, specifiers cannot help — the pieces simply do not tile — and
-only a caption diet or a figure resize moves it. Worked case: a 5-page
-appendix section with six floats (≈1876pt) and ≈1.3 pages of text; every
-specifier combination on its six floats plus `\floatpagefraction` 0.8 gave
-the identical page map. The caption diet on offer there was ≈10 lines
-(≈125pt) against the ≈220pt a page needs, so it was reported as rejected
-with those numbers rather than attempted.
+only a caption diet or a figure resize moves it.
 
 ## Step 3: Merge toolbox (cheapest ref-churn first)
 
@@ -269,8 +264,8 @@ merges you rejected with the pt arithmetic that rules them out. Leave pushing
   defaults; check the style file — some (TMLR: 0.95) are generous.
 - Two ~330pt floats fit a float page together but NOT as two top floats
   (`\topfraction` < 1 and both must clear it jointly).
-- Auto-generated tables: edit generators, rerun, and confirm any
-  "ensure_input"-style idempotent section injection still finds its anchor.
+- After a generator edit, confirm any "ensure_input"-style idempotent section
+  injection still finds its anchor.
 - Floats never cross a `\FloatBarrier`/section boundary — merges must stay
   within one section, and cross-section pairings hurt findability anyway.
 - Two deferred floats that together just clear `\floatpagefraction` form a
