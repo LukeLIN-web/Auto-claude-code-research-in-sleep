@@ -34,6 +34,8 @@ this repo actually produces it. Then keep the fix in scope:
 Exception: code that runs remote commands, starts a network service, or installs
 an MCP server runs on the user's machine with their credentials — trust-boundary
 findings there are in scope and the default is strict.
+The same holds for whatever produces a reported number (scoring code, judge,
+test data): the agent being scored can edit or read it.
 Say plainly when something is correct. Do not manufacture findings.
 ```
 
@@ -51,13 +53,20 @@ report:
 Worded the wrong way, "no corner cases" would suppress real findings. The test is
 not *how rare does this sound*, it is **does this happen here**.
 
-## The one exception
+## The two exceptions
 
 Code that **executes remote commands, starts a network service, or installs an
 MCP server** is different. Trust-boundary findings there are in scope and the
 default is strict — that code runs on a user's GPU box with their credentials.
 `/experiment-queue`, `/run-experiment`, `/vast-gpu`, `/serverless-modal`,
 `mcp-servers/*` and the installers are the surfaces this covers.
+
+**Whatever produces a reported number** — scoring code, a judge prompt, test
+data — is the second. Here the party to guard against is not a malicious user
+but the agent being scored: models editing tests or scoring code, or reading the
+answers, to raise their score is a reported behavior (METR, *Recent Frontier
+Models Are Reward Hacking*, 2025-06-05). A finding that the executor can edit or
+read these, and a fix that takes them out of its reach, are in scope.
 
 ## Why this exists
 

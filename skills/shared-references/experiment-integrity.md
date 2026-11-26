@@ -32,6 +32,14 @@
 - ✅ Honestly label scope: "pilot (N=2)", "preliminary", "limited evaluation"
 - ✅ State exact scope: N scenes, N seeds, N configurations
 
+### 5. Moved Evaluation Boundary
+- ❌ Editing the scoring code, judge prompt or test data after results exist
+- ❌ Switching benchmark, split or metric mid-project without saying so
+- ❌ Subsampling, filtering or partly self-making the test data without saying so
+- ❌ Reporting only the best of several seeds or configurations
+- ✅ The benchmark's official scoring code, unmodified, on the split fixed in the plan
+- ✅ Every switch, subsample and selection stated where the number is reported
+
 ## Evaluation Types (must be declared)
 
 | Type | Label | What it means | Claim ceiling |

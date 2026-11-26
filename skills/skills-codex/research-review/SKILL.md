@@ -93,6 +93,8 @@ spawn_agent:
     Exception: code that runs remote commands, starts a network service, or installs
     an MCP server runs on the user's machine with their credentials — trust-boundary
     findings there are in scope and the default is strict.
+    The same holds for whatever produces a reported number (scoring code, judge,
+    test data): the agent being scored can edit or read it.
     Say plainly when something is correct. Do not manufacture findings.
     Be brutally honest. If, after genuinely trying to break it, the work
     holds up and is ready, say so clearly.

@@ -102,7 +102,8 @@ For each milestone (in order), write the experiment scripts:
 
 2. **Implement missing pieces:**
    - Training scripts with proper argparse (all hyperparameters configurable)
-   - Evaluation scripts computing the specified metrics
+   - Evaluation: call the benchmark's official evaluation code, unmodified; write an
+     evaluation script only when none exists, and say so in the tracker
    - Data loading / preprocessing if needed
    - Baseline implementations if not already present
    - Fixed random seeds for reproducibility
@@ -176,6 +177,8 @@ spawn_agent:
     Exception: code that runs remote commands, starts a network service, or installs
     an MCP server runs on the user's machine with their credentials — trust-boundary
     findings there are in scope and the default is strict.
+    The same holds for whatever produces a reported number (scoring code, judge,
+    test data): the agent being scored can edit or read it.
     Say plainly when something is correct. Do not manufacture findings.
 ```
 

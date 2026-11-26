@@ -269,8 +269,16 @@ Save a Review Tracing record for this `spawn_agent` call following `../shared-re
    "a reviewer wouldn't care" call — that is exactly what the Phase-4
    fresh reviewer is for.
 
-Every feasible, non-duplicate idea — with its `prior_work` and `so_what`
-annotations — proceeds to Phase 4, where the fresh reviewer does the
+4. **Verifier — ANNOTATE, do not eliminate**: attach a `verifier` note saying
+   what checks the idea's main claim: (a) an existing public benchmark scored by
+   gold answers, a program or a simulator; (b) an existing benchmark scored by a
+   model judge; or (c) a benchmark, dataset or metric this project builds. A
+   claim under (c) is not verified by the numbers its own benchmark produces:
+   the items, gold answers and scorer need human sign-off before its results
+   count.
+
+Every feasible, non-duplicate idea — with its `prior_work`, `so_what` and
+`verifier` annotations — proceeds to Phase 4, where the fresh reviewer does the
 quality/novelty narrowing.
 
 ### Phase 4: Deep Validation (for top ideas)
@@ -291,6 +299,7 @@ For each surviving idea, run a deeper evaluation:
        - What is the best case FOR it — what would make this the paper people cite?
        - What's the strongest objection a reviewer would raise?
        - What's the most likely failure mode?
+       - Does the verifier note hold: can the main claim be checked by something the agent running the experiments cannot edit?
        - Rank by expected information and upside within the pilot budget — which results would matter most, whichever way they come out?
        - Which 2-3 would you actually work on?
 
@@ -360,6 +369,7 @@ Write a structured report to `idea-stage/IDEA_REPORT.md`:
 - **Feasibility**: [compute, data, implementation estimates]
 - **Risk**: LOW/MEDIUM/HIGH
 - **Contribution type**: empirical / method / theory / diagnostic
+- **Verifier**: existing benchmark, hard-scored / existing benchmark, model-judged / built by us (items, answers and scorer need human sign-off)
 - **Pilot result**: [POSITIVE: metric +X% / NEGATIVE: no signal / SKIPPED: needs GPU]
 - **Reviewer's likely objection**: [strongest counterargument]
 - **Why we should do this**: [1-2 sentences]

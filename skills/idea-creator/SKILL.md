@@ -380,8 +380,16 @@ Bundle contents:
    *precisely* the question the Phase-4 cross-model devil's-advocate asks.
    Forward the note; let the jury rule.
 
-Every feasible, non-duplicate idea — carrying its `prior_work`, `so_what`, and
-`effort_note` annotations — proceeds to Phase 4. Typically only the
+4. **Verifier — ANNOTATE, do not eliminate**: attach a `verifier` note saying
+   what checks the idea's main claim: (a) an existing public benchmark scored by
+   gold answers, a program or a simulator; (b) an existing benchmark scored by a
+   model judge; or (c) a benchmark, dataset or metric this project builds. A
+   claim under (c) is not verified by the numbers its own benchmark produces:
+   the items, gold answers and scorer need human sign-off before its results
+   count.
+
+Every feasible, non-duplicate idea — carrying its `prior_work`, `so_what`,
+`effort_note` and `verifier` annotations — proceeds to Phase 4. Typically only the
 budget-infeasible are dropped; the cross-model jury, not the executor, does
 the quality narrowing.
 
@@ -409,13 +417,14 @@ per-idea novelty search:
    paste its contents inline. Bundle contents:
    ```
    Here is the full annotated candidate set (deduped, budget-feasible):
-   [write all candidates with their prior_work / so_what / effort_note notes]
+   [write all candidates with their prior_work / so_what / effort_note / verifier notes]
 
    For each, make the strongest case both ways:
    - What is the best case FOR it — what would make this the paper people cite?
    - What's the strongest objection a reviewer would raise?
    - What's the most likely failure mode?
    - Is the prior_work note a real novelty problem, or differentiable?
+   - Does the verifier note hold: can the main claim be checked by something the agent running the experiments cannot edit?
    - Rank by expected information and upside within the pilot budget — which results would matter most, whichever way they come out?
    - Which 2-3 would you actually work on, and why?
 
@@ -494,6 +503,7 @@ Write a structured report to `idea-stage/IDEA_REPORT.md`:
 - **Feasibility**: [compute, data, implementation estimates]
 - **Risk**: LOW/MEDIUM/HIGH
 - **Contribution type**: empirical / method / theory / diagnostic
+- **Verifier**: existing benchmark, hard-scored / existing benchmark, model-judged / built by us (items, answers and scorer need human sign-off)
 - **Pilot result**: [POSITIVE: metric +X% / NEGATIVE: no signal / SKIPPED: needs GPU]
 - **Reviewer's likely objection**: [strongest counterargument]
 - **Why we should do this**: [1-2 sentences]

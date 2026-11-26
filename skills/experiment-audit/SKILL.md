@@ -1,6 +1,6 @@
 ---
 name: experiment-audit
-description: "Audit experiment integrity before claiming results. Uses cross-model review (external reviewer backend) to check for fake ground truth, score normalization fraud, phantom results, and insufficient scope. Use when user says \"审计实验\", \"check experiment integrity\", \"audit results\", \"实验诚实度\", or after experiments complete before writing claims."
+description: "Audit experiment integrity before claiming results. Uses cross-model review (external reviewer backend) to check for fake ground truth, score normalization fraud, phantom results, insufficient scope, and a moved evaluation boundary. Use when user says \"审计实验\", \"check experiment integrity\", \"audit results\", \"实验诚实度\", or after experiments complete before writing claims."
 argument-hint: "[experiment-dir-or-results-path]"
 allowed-tools: Bash(*), Read, Write, Edit, Grep, Glob, mcp__codex__codex, mcp__codex__codex-reply, mcp__manual_review__review, mcp__manual_review__review_reply, mcp__antigravity__antigravity, mcp__antigravity__antigravity-reply, mcp__grok__grok, mcp__grok__grok-reply, mcp__claude-review__review, mcp__claude-review__review_reply, mcp__claude-review__review_start, mcp__claude-review__review_reply_start, mcp__claude-review__review_status
 ---
@@ -34,6 +34,7 @@ LLM agents can produce fraudulent experimental results through:
 2. **Score normalization** — dividing metrics by the model's own max to get 0.99+
 3. **Phantom results** — claiming numbers from files that don't exist or functions never called
 4. **Insufficient scope** — reporting 2-scene pilots as "comprehensive evaluation"
+5. **Moved evaluation boundary** — editing the scoring code or test data after results exist, switching benchmark or split mid-project, subsampling without saying so, or reporting only the best of several runs
 
 These are NOT intentional deception — they are failure modes of optimizing agents that lack integrity constraints. This skill adds that constraint.
 
@@ -82,6 +83,7 @@ Scan project directory for:
 4. Experiment tracker:    EXPERIMENT_TRACKER.md, EXPERIMENT_LOG.md
 5. Paper claims:          NARRATIVE_REPORT.md, paper/sections/*.tex, PAPER_PLAN.md
 6. Config files:          *.yaml, *.toml, *.json configs with metric definitions
+7. Plan:                  EXPERIMENT_PLAN.md (benchmark, split and metric fixed before the runs)
 ```
   A verdict-bearing manual response MUST begin with
   `Reviewer-Model: <exact-model-id>` — pass the model THIS session is actually
@@ -125,6 +127,9 @@ You are an experiment integrity auditor. Start from the assumption that the
     - Experiment tracker: [list paths]
     - Paper claims: [list paths]
     - Config files: [list paths]
+    - Plan: [path]
+    The project's git history is readable: use git log -p on the evaluation
+    and data paths.
 
     ## Audit Checklist
 
@@ -172,9 +177,26 @@ You are an experiment integrity auditor. Start from the assumption that the
     - simulation_only: simulated environment
     - human_eval: human judges
 
+    ### G. Evaluation Boundary
+    For each reported number:
+    1. Is the scoring code the benchmark's official code, unmodified? Did the
+       executor change scoring code, judge prompt or test data after results
+       existed?
+    2. Same benchmark, split and metric as the plan? Was any switched or dropped
+       without the paper saying so?
+    3. Was the test data subsampled, filtered or partly made by the executor
+       without the paper saying so?
+    4. Do the tracker and logs show more seeds or configurations than are
+       reported, with only the best kept?
+    5. Can training or model-selection code read the test answers?
+    FAIL if: scoring code or test data changed after results existed, or test
+    answers are readable by training or selection code, and the paper does not
+    say so.
+    WARN if: an undisclosed switch, subsample or selection (items 2-4).
+
     ## Output Format
 
-    For each check (A-F), report:
+    For each check (A-G), report:
     - Status: PASS | WARN | FAIL
     - Evidence: exact file:line references
     - Details: what specifically was found
@@ -219,6 +241,9 @@ Parse the reviewer's response and write `EXPERIMENT_AUDIT.md`:
 ### F. Evaluation Type: [real_gt | synthetic_proxy | ...]
 [classification + evidence]
 
+### G. Evaluation Boundary: [PASS|WARN|FAIL]
+[details + file:line or commit evidence]
+
 ## Action Items
 - [specific fixes if WARN or FAIL]
 
@@ -241,6 +266,7 @@ Also write `EXPERIMENT_AUDIT.json` for machine consumption:
     "result_existence": {"status": "pass", "details": "..."},
     "dead_code": {"status": "pass", "details": "..."},
     "scope": {"status": "warn", "details": "..."},
+    "eval_boundary": {"status": "pass", "details": "..."},
     "eval_type": "real_gt"
   },
   "claims": [
@@ -260,6 +286,7 @@ Also write `EXPERIMENT_AUDIT.json` for machine consumption:
   Result Existence:    ✅ PASS — all files exist, numbers match
   Dead Code:           ✅ PASS — all metric functions called
   Scope:               ⚠️ WARN — 2 scenes, paper says "comprehensive"
+  Eval Boundary:       ✅ PASS — official scorer, unchanged since the first result
 
   Overall: ⚠️ WARN
   
@@ -278,37 +305,21 @@ When integrated into the pipeline, this skill runs automatically after `/experim
 /experiment-audit (automatic, advisory)
     ├── PASS  → continue normally
     ├── WARN  → print ⚠️ warning, continue, tag claims as [INTEGRITY: WARN]
-    └── FAIL  → print 🔴 alert, continue, tag claims as [INTEGRITY CONCERN]
+    └── FAIL  → print 🔴 alert, continue; claims resting on the failed check are unsupported
     ↓
 /auto-review-loop → proceeds with integrity tags visible to reviewer
 ```
 
-**Never blocks the pipeline.** Even on FAIL, the pipeline continues — but claims carry visible integrity tags.
+**Never halts the pipeline.** On FAIL the pipeline continues, but the claims resting on the failed check are unsupported until fixed and re-audited.
 
 ### Read by /result-to-claim (if exists)
 
-```
-if EXPERIMENT_AUDIT.json exists:
-    read integrity_status
-    attach to verdict: {claim_supported: "yes", integrity_status: "warn"}
-    if integrity_status == "fail":
-        downgrade verdict display: "yes [INTEGRITY CONCERN]"
-else:
-    verdict as normal, integrity_status = "unavailable"
-    mark as "provisional — no integrity audit"
-```
-
-### Read by /paper-write (if exists)
-
-```
-if EXPERIMENT_AUDIT.json exists AND integrity_status == "fail":
-    add footnote to affected claims: "Note: integrity audit flagged concerns with this evaluation"
-```
+`/result-to-claim` Step 3.5 reads `EXPERIMENT_AUDIT.json`; how a FAIL changes the verdict is defined there.
 
 ## Key Rules
 
 - **Reviewer independence**: executor collects paths, reviewer judges. Period.
-- **Never block**: warn loudly, never halt the pipeline.
+- **Never halt the pipeline**: a FAIL makes the claims resting on it unsupported; it does not stop the other work.
 - **File-as-switch**: no EXPERIMENT_AUDIT.md = skill was never run = zero impact on existing behavior.
 - **Cross-model**: the reviewer MUST be a different model family from the executor.
 - **Honest about limits**: the audit catches common patterns, not all possible fraud. It is a safety net, not a guarantee.

@@ -48,11 +48,12 @@ Gather experiment data from whatever sources are available in the project:
 4. **Log files**: `ssh server "tail -100 /path/to/training.log"` if no other source
 5. **`idea-stage/docs/research_contract.md`** (legacy fallback: `docs/research_contract.md`): intended claims and experiment design
 
-Assemble the key information:
-- What experiments were run (method, dataset, config)
-- Main metrics and baseline comparisons (deltas)
-- The intended claim these experiments were designed to test
-- Any known confounds or caveats
+List paths, without summarizing what is in them (`shared-references/reviewer-independence.md`):
+- The result files and logs these experiments wrote; save W&B history verbatim to a file under `.aris/` first
+- EXPERIMENT_PLAN.md and EXPERIMENT_TRACKER.md
+- EXPERIMENT_AUDIT.md, if it exists
+
+and state the intended claim these experiments were designed to test.
 
 ### Step 1.5: Deterministic evidence pre-check (before spending a Codex call)
 
@@ -138,11 +139,10 @@ mcp__codex__codex:
 
     Intended claim: [the claim these experiments test]
 
-    Experiments run:
-    [list experiments with method, dataset, metrics]
-
-    Results:
-    [paste key numbers, comparison deltas, significance]
+    Files to read (read them yourself; I give no summary):
+    - Plan and tracker: [paths to EXPERIMENT_PLAN.md, EXPERIMENT_TRACKER.md]
+    - Result files and logs: [paths]
+    - Experiment audit: [path to EXPERIMENT_AUDIT.md, or "none"]
 
     Evidence pre-check (deterministic, from Step 1.5):
     [per-claim: <id> → verified | value_not_found | path_missing.
@@ -152,10 +152,7 @@ mcp__codex__codex:
      the claim.]
 
     Baselines:
-    [baseline numbers and sources — reproduced or from paper]
-
-    Known caveats:
-    [any confounding factors, limited datasets, missing comparisons]
+    [result-file paths for reproduced baselines; paper and table for numbers taken from a paper]
 
     Please evaluate:
     1. claim_supported: yes | partial | no
@@ -195,8 +192,8 @@ if EXPERIMENT_AUDIT.json exists:
         integrity_status: pass | warn | fail
 
     if integrity_status == "fail":
-        append to verdict: "[INTEGRITY CONCERN] — audit found issues, see EXPERIMENT_AUDIT.md"
-        downgrade confidence to "low" regardless of Codex judgment
+        claims the audit marks `unsupported`: claim_supported = no, whatever the jury said
+        other claims: append "[INTEGRITY CONCERN] — see EXPERIMENT_AUDIT.md", confidence = low
 
     if integrity_status == "warn":
         append to verdict: "[INTEGRITY: WARN] — audit flagged potential issues"
