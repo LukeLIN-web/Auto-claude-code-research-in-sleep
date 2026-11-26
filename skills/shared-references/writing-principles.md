@@ -460,7 +460,7 @@ Do:
 
 ### Caption Rules
 
-Skill `paper-figure-craft` § What a caption is (tables: `paper-table-craft`).
+Skill `paper-table-craft` § What a caption is, for every float (what a figure adds: `paper-figure-craft`).
 
 ## Common Mistakes
 
