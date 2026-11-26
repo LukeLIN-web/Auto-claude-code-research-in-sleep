@@ -340,9 +340,8 @@ User ruling 2026-11-16, from a review the user forwarded:
   answer for the whole family of variants ("every other augmentation
   scheme falls below ours, each significantly in at least one setting"), keeps
   the one comparison the answer turns on, gives the reason, and points to the
-  table for the rest. A paragraph carries at most four number pairs
-  (`a% against b%`): the per-sentence limit alone lets through a paragraph of
-  seven sentences with one pair each. When every appendix experiment needs a
+  table for the rest. How many numbers a sentence and a paragraph may carry:
+  `../paper-table-craft/SKILL.md`, *Result numbers in the prose*. When every appendix experiment needs a
   main-text mention, the mentions join the answer to the question they belong
   to, one pointer sentence per question, not one sentence per variant.
 - **A measurement that explains a gain is that gain's reason, written as
