@@ -17,7 +17,7 @@ import matplotlib.pyplot as plt
 STYLE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "bestpaper.mplstyle")
 OURS = "#0072B2"                     # same blue as bpOurs in figures_preamble.tex
 BASELINES = ["#D55E00", "#009E73", "#E69F00", "#CC79A7", "#56B4E9", "#7F7F7F", "#000000"]
-WIDTH = {"column": 3.25, "full": 6.875}   # inches, CVPR/ICCV; NeurIPS text width is 5.5
+WIDTH = {"column": 3.28, "full": 6.875}   # inches, CVPR/ICCV (paper-float-compact § Two-column venues); NeurIPS text width is 5.5
 
 
 def use():

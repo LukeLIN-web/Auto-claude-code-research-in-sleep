@@ -158,7 +158,7 @@ The caption does not point to other sections or floats and does not explain why 
 ## Layout and Typography
 | Item | Rule |
 |---|---|
-| Widths | `\linewidth` inside `figure` (one column, 3.25 in in CVPR) or inside `figure*`/`strip` (6.875 in). Never absolute widths wider than the column. |
+| Widths | `\linewidth` inside `figure` (one column) or inside `figure*`/`strip` (full width); the venue's widths are in skill `paper-float-compact` § Two-column venues. Never absolute widths wider than the column. |
 | Placement | `[t]`, after or on the page of the first reference; teaser via `strip` (CVPR kit) |
 | Text in figures | sans-serif, every glyph 7.5–11 pt at the width the figure is actually included at (how to measure: skill `paper-figure-craft`); one font family for all figures |
 | Maths in figures | the same symbols as the paper, set in LaTeX (TikZ) or with matplotlib mathtext |

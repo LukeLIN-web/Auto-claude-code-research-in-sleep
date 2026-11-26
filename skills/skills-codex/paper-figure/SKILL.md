@@ -262,8 +262,9 @@ a clean result, but a deliberate, stated alternative may override them.
 - [ ] **Comparable conditions only** — arms measured under different N / budget
       / protocol are not drawn as visual peers; separate them or mark the
       difference in the caption
-- [ ] **State n and what was held fixed** — every panel with a summary mark
-      says n and the unit of replication (panel or caption)
+- [ ] **State what was held fixed** — every panel with a summary mark
+      says the unit of replication (caption); `n` is never printed
+      (`paper-figure-craft`)
 - [ ] **Render-then-verify** — the Step-5 self-check on the RENDERED PDF/PNG
       (not the script) actually happened: no clipped labels, no legend covering
       data, every number/label readable at final print size
