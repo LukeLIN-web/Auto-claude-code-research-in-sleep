@@ -123,7 +123,7 @@ A rejected edit is dropped, not repaired: keep the earlier sentence. Do not hand
 
 ## 6. No acceptance read
 
-The polish ends after step 5b with the report. It sends no acceptance blind read after the edits, in any round (user 2026-11-16「polish 去掉 acceptance blind read , 一次都不做.」): step 1 is the only blind read, and the § 5 checks gate every edit.
+The polish ends after step 5b with the report. It sends no acceptance blind read after the edits, in any round (user 2026-11-16「polish 去掉 acceptance blind read , 一次都不做.」): step 1 is the only blind read, and the § 5 checks gate every edit. The rebuttal wording pass, which calls the polish, adds none either (user 2026-11-26「rebuttal 也去掉」).
 
 ## Report
 

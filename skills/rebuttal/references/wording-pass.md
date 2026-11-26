@@ -10,9 +10,10 @@ Run at Phase 6.5, after the stress-test fixes and before Finalize (user 2026-11-
 | 4. Reword, then rewrite | For each term the reader stalled on: delete, replace, or define? Then: do the surviving sentences say "we did", in order, clearly? | the same editor, overlay § 4 | `paper-polish` → `paper-jargon-pass`, then `paper-polish/references/rewrite.md` |
 | 5. Check the editor's edits | Did any edit move a frozen span, a number, or the claim? | the drafter | `paper-polish` § 5, plus § 5 here |
 | 6. One owner per number | Is this number written once, and identical everywhere it is repeated? | the drafter | `docs-ssot-tighten` |
-| 7. Acceptance | Does a second fresh reader still stall? | a second fresh subagent | `docs-jargon-pass` |
 
-**Why this order.** The blind read comes first because it is the only step that cannot be repeated by someone who has seen the evidence. Deleting comes before rewording: a term in a sentence that is about to go needs no definition, and a deletion can remove the sentence a definition was just moved into; for the same reason the voice and cohesion rewrite comes last, inside step 4, and cutting and rewriting live in different skills (user 2026-11-12: 「删和改不要放一个」). The editor is not the drafter: after days with the evidence the drafter no longer hears a stiff sentence, a passive that hides who acted, or a missing link between paragraphs. The drafter checks the editor's edits (step 5), and the number check runs after that so it sees the final text. Tightening runs once over a given text (a second run starts eating scope qualifiers); the acceptance read is not a second tightening — it only looks for stalls.
+No acceptance read follows step 6, as in [`/paper-polish` § 6](../../paper-polish/SKILL.md) (user 2026-11-26「rebuttal 也去掉」): step 1 is the only blind read, and step 5 gates every edit.
+
+**Why this order.** The blind read comes first because it is the only step that cannot be repeated by someone who has seen the evidence. Deleting comes before rewording: a term in a sentence that is about to go needs no definition, and a deletion can remove the sentence a definition was just moved into; for the same reason the voice and cohesion rewrite comes last, inside step 4, and cutting and rewriting live in different skills (user 2026-11-12: 「删和改不要放一个」). The editor is not the drafter: after days with the evidence the drafter no longer hears a stiff sentence, a passive that hides who acted, or a missing link between paragraphs. The drafter checks the editor's edits (step 5), and the number check runs after that so it sees the final text. Tightening runs once over a given text (a second run starts eating scope qualifiers).
 
 The pass changes wording only. It does not decide claims: which numbers go in, what is conceded, what is compared are settled by Phases 3–6 and the user's rulings. Everything it finds that is not wording (two numbers that disagree, an answer that contradicts another thread, a claim the evidence does not carry) is **reported, never smoothed over**.
 
@@ -155,10 +156,9 @@ command grep -niE 'preregister|pre-register|frozen before|sanity check|pilot|abl
 # passive voice and connective chains (step 4.1): the greps in paper-polish references/rewrite.md § 1–2
 ```
 
-## 8. Acceptance
+## 8. Done when
 
 - Every load-bearing and local ledger entry has a disposition: word deleted / replaced / sentence deleted / defined / reported / no change (with the reason). Expect about half the entries to end as "no change".
-- **A second fresh subagent rereads the final text** with the same isolation as step 1 (again only [blind-read.md](blind-read.md), the review and the new text). The pass is done when it produces no new load-bearing entry.
 - For each paragraph that changed, one line: what it claimed before, what it claims now. Any difference is a bug.
 - Voice check: grep the § 7 passive pattern; every remaining passive with the authors as the hidden actor is either in a frozen span or turned active.
 - Re-run the Phase 5 lints the pass can break: 6 (limit — recount), 9 (cross-thread duplication), 10 (weakness and concession), 13 and 14 (comparison, words agree with numbers), 19, 20, 21 (number density) and 23 (voice).
@@ -173,13 +173,12 @@ command grep -niE 'preregister|pre-register|frozen before|sanity check|pilot|abl
 | The drafter does the blind read | It is void; a fresh subagent with only the review and the reply |
 | The blind reader is handed this file, the board or the evidence | It gets blind-read.md, the review and the reply — nothing else |
 | A term gets a definition, then its sentence is deleted as filler | Tighten (step 3) before rewording (step 4) |
-| The acceptance read is used to cut more sentences | It only looks for stalls; tightening ran once |
 | A term is defined two paragraphs later, so it passes | Late definition is recorded; move the definition to first use |
 | Every unknown noun is recorded | The threshold is "had to reread", not "unfamiliar" |
 | A standard term is rewritten into plain words | Field terms and the reviewer's own terms stay |
 | A field term is cleared, so the number it carries stays | Clearing covers the word; the number still takes the delete test (§ 3 class 11) |
 | A ratio or speedup is kept without its comparator ("1.6× faster", "4.7× fewer tokens") | Name the comparator in the same clause ("than without the cache", "than the media channel") |
-| Only the English is blind-read; the team-language translation is synced string by string | The translation leaks on its own: the lab's shorthand for a benchmark or for "our codebase", and coined renderings of field terms. Give the acceptance reader the translation too and ask it to flag where the two languages say different things |
+| Only the English is blind-read; the team-language translation is synced string by string | The translation leaks on its own: the lab's shorthand for a benchmark or for "our codebase", and coined renderings of field terms. Give the step-1 blind reader the translation too and ask it to flag where the two languages say different things |
 | An unclear word gets a definition by default | Order is delete word → replace → delete sentence → define |
 | A clearer new word is invented | Only the reviewer's, the paper's or the field's word |
 | An experiment ID or checkpoint name gets a gloss | Internal names are deleted; write what the thing is |
