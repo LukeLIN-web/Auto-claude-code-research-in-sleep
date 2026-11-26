@@ -108,8 +108,7 @@ The ruling is in the table below; this is how to build one.
 | Ruling | Date | Note |
 |---|---|---|
 | **Caption below the graphic** — `\caption` after `\includegraphics`. (Tables and algorithms take it on top.) | 2026-08-05 | — |
-| **Caption carries no numbers and no pointer at another float.** Banned: `\ref{}`, `\S`, Appendix, `Table~`, `Figure~`, "the text". 1200 chars. | — | Figure captions are usually hand-written in `sections/`, so nothing sees them until compile: `paper-compile`'s `scripts/check_tex.py` checks every `\caption{}` the paper inputs. |
-| **A fired caption gate means rewrite the caption whole.** | — | Never raise the cap, never patch the tail. |
+| **Caption content and its gate are `paper-table-craft`'s Rulings rows** *Caption carries no numbers, no pointer at another float* and *A fired caption gate means rewrite the caption whole*; they hold for every figure caption. | — | — |
 | **No Δ where the figure already draws both compared levels.** A bar-top `Δ +3.1`, or a `net +142` that subtracts two labelled bars, is the table's banned Δ column in figure clothing — delete it, the reader subtracts. Δ stays only when it is a *plotted* quantity with its own axis and error bars: there it is the figure's one significance channel, a case tables cannot have because tables may not print intervals at all. | 2026-08-23 | Bold-if-significant rides on the Δ label, so it dies with it; how the prose then words significance is memory `paper-prose-rules` §1. Keep the Δ computation and its SSOT assertions in the generator: what is deleted is the presentation, not the evidence. Check the paper does not already use Δ for something else. |
 | **An error bar is a quantity; nothing is drawn over it.** A value label that lands on a whisker — above all one wearing a white `bbox` to punch through it — deletes the figure's second quantity. The label clears the *whisker cap*, not the bar top, and needs no white box once it does. Raising the whisker's z-order is **not** the fix: it only redraws the line through the digits. | 2026-09-21 | Holds for any interval mark: CI cap, percentile whisker, band edge. |
 | **`n` is never printed on a figure, subset or not.** A subset is named in words (`large-molecule bucket only`, in the caption or a label), never sized. | 2026-09-09 | User: 图的规则不允许标子集. |
@@ -211,25 +210,15 @@ Five things this catches that nothing else does:
 
 ## What a caption is
 
-**The first sentence is the takeaway** (user, 2026-11-01): the bold opening
-states the one conclusion the figure carries, in the prose's own words and
-strength (`significant`, a direction), never stronger than the text that cites
-the figure and never a number. A schematic's takeaway is what the method
-changes. The takeaway is what only this figure shows, not the summary result a
-table already prints: a breakdown figure (per object, per task, per subset)
-states what the split shows (`paper-table-craft`, "The takeaway is what only
-this float shows"). Then the legend for *this* graphic: what is measured, the
-symbols, the axes, what a panel is. The reservations on that reading are prose
-of the section the figure sits in.
+The caption rule for every float, figures included, is `paper-table-craft`
+§ What a caption is: **First sentence: the takeaway**, **The takeaway is what
+only this float shows**, the legend for *this* float, and the bullets **It
+becomes a glossary** (**A caption is not required to be self-contained**) and
+**It explains how to read the conclusion**. What a graphic adds:
 
-*This* graphic is the whole scope. A symbol drawn on a panel is the figure's own
-and gets defined here even when the prose defines it later; a term that only ever
-lives in prose — `baseline`, `pp`, a paired interval — does not, however useful a
-definition would be to a reader holding the figure alone. **A caption is not
-required to be self-contained.** That requirement is the only door a glossary
-comes through, and what it buys is one word with N authorities, sitting in the
-least-scanned strings in the paper. (User ruling, 2026-08-26: "the body explains
-it, so do not define it in the caption.")
+- A schematic's takeaway is what the method changes.
+- A symbol drawn on a panel is the figure's own and is defined in the caption
+  even when the prose defines it later.
 
 Length: the target and the 1200-char backstop are `paper-table-craft`'s (§ What
 a caption is) and hold for a figure too. One caption ending in a reading
