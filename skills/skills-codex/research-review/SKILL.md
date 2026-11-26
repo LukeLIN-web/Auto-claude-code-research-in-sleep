@@ -270,14 +270,29 @@ Save the full interaction and conclusions to a review document in the project ro
 - Prioritized TODO list with estimated compute costs
 - Paper outline if discussed
 
-For a manuscript that document is the **logic report**, and the structure thread
-gets its own **structure report** beside it, each self-contained and each written
-when its own thread returns:
+For a manuscript the list above is replaced by two reports, a **logic report**
+and a **structure report**, each self-contained and each written when its own
+thread returns. Both go in one directory per reviewed draft, beside the raw
+files: the brief, the prompt files, each thread's raw reply and the checker
+output. Each report opens with one paragraph: reviewer session id, model and
+effort as run, what the reviewer was given, and the score and verdict. Then,
+each under its own heading, the logic report has:
+- what the reviewer credits
+- the major issues and, apart from them, the other suggestions: each with its anchor, whether the anchor holds, and what to do
+- the findings an experiment can address: the experiment and the claim or table cell it would settle; say so when there are none
+
+and the structure report has:
 - the section map and every structure issue whose anchor holds, with its move
 - the float map and argument map, and every float and argument flagged
 - under its own heading, every passage and every part of a float (a row, a column, a panel, a series) that supports no argument (flag 6): the quote or its name, its location, one line on what it is, and the proposal (for a part of a float whose numbers favor the method, the sentence to add; otherwise delete it, or put it to the user, with the reason)
 - under its own heading, every variant that extends the method (another round, more steps, more data) and is neither better nor settled (flag 7): its location, its numbers against the method's, whether a main-text sentence rests on it, and the proposal, which is to hide it (`review-float-map.md`, Acting)
 - the checker warnings of Step 1 that hold after reading the text they point at, under their own heading, apart from the reviewer's points
+
+Both reports also list the findings dropped (an anchor that does not hold, or a
+point the user has already ruled on), each with its reason, and, when an earlier
+draft was reviewed, what changed against that report. The user's rulings on a
+report are appended to it under their own heading with the date; a follow-up
+round is appended to the same report.
 
 Update project memory/notes with key review conclusions.
 
