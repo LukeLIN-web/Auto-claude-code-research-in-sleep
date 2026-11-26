@@ -35,10 +35,12 @@
 ### 5. Moved Evaluation Boundary
 - ❌ Editing the scoring code, judge prompt or test data after results exist
 - ❌ Switching benchmark, split or metric mid-project without saying so
+- ❌ Adding, switching or dropping a benchmark after seeing the method's numbers on it
 - ❌ Subsampling, filtering or partly self-making the test data without saying so
 - ❌ Reporting only the best of several seeds or configurations
 - ✅ The benchmark's official scoring code, unmodified, on the split fixed in the plan
 - ✅ Every switch, subsample and selection stated where the number is reported
+- ✅ The benchmark set may grow or change as understanding of the benchmarks improves; each addition or switch is decided before the method's numbers on it are seen, logged with date and reason, and every benchmark that was run is reported (baseline numbers may be looked at first)
 
 ## Evaluation Types (must be declared)
 
