@@ -26,9 +26,9 @@ allowed-tools: Bash(*), Read, Write, Edit, Grep, Glob
 caption 和表注是**独立阅读单元**——审稿人翻表格的次数远多于逐行读正文。用了正文才定义的词,算未定义,不算"前文有"。
 
 **图的画布也是阅读单元,而且是最早被撞见的那个**:审稿人先翻图再读正文。方法图/架构图上的符号徽章、边标、轴名
-与 caption 同待遇——`g_m`、`r_{m,k}`、`φloc`、`ω`、`K` 画在 §1 的 Fig 1 上而 §3 才定义,就是未定义记号
+与 caption 同待遇——`g_m`、`r_{m,k}`、`φ_bc`、`ω`、`K` 画在 §1 的 Fig 1 上而 §3 才定义,就是未定义记号
 (user 裁定 2026-09-21,「gm, rm,k 啥意思」)。修法在图不在文:换成 caption 或前文已经在用的词
-(`block ranking`、`candidate windows`、`localization LoRA`),**不是**在画布上补 gloss,也不是在 caption 里补定义
+(`member ranking`、`candidate members`、`bias-correction head`),**不是**在画布上补 gloss,也不是在 caption 里补定义
 (`paper-figure-craft` 同日裁定)。图落在哪一节,画布上就只能用到那一节为止的词。
 
 ## 第 0 趟:装配检查(先跑,零阅读)
@@ -75,8 +75,8 @@ for f in figures/*.pdf; do echo "== $f"; pdftotext "$f" -; done   # 每张图画
 - **卡住**(A/B 组)——必须停下重读,或必须往回/往后翻页才能继续。能带着一个临时含义按正常速度读下去、且后文没有推翻它的,不记。
 - **空转**(C 组·废话)——读得毫不费力,但读完说不出这句在这干什么:它不定义、不主张、不配置。判据是**删句测试**:把这句删掉重读前后段,若没有任何主张、定义或配置常数失去支撑,记。
 - **血统**(A 组·产物血统词)——**上面两个信号都抓不到它**:它读得顺(不卡),所在的句子又承重(删句测试过不了)。
-  它藏在一个修饰语里:`drawn from a re-scored copy of the deployed selection`、`on an earlier candidate-window enumeration`、
-  `the 30 s-window scan`、`under that same earlier prompt`、`a third scan`。盲读时对每个 *re-* / *earlier* / *stored* /
+  它藏在一个修饰语里:`drawn from a re-calibrated copy of the deployed ensemble`、`on an earlier station-grid interpolation`、
+  `the 6 h-step hindcast`、`under that same earlier normalization`、`a third hindcast`。盲读时对每个 *re-* / *earlier* / *stored* /
   *copy* / *third* 修饰语多问一句:「它告诉我送进前向的输入有什么不同?」答不出就记,置信度写 `no idea`——
   这一组不靠读感,第二趟还要按信号词 grep 补扫(见 A 组条目)。
 
@@ -86,39 +86,39 @@ for f in figures/*.pdf; do echo "== $f"; pdftotext "$f" -; done   # 每张图画
 
 **A 组 · 换词/补定义能修的**
 
-- **名字晚于数字**——`600-second blocks` / `eight candidate windows` / `the top $B{=}3$ blocks` / `keep-cap 12` / `max-pos 36{,}864`:配置常数照写没问题(数字是允许的),但**它配置的那个东西必须已经被命名过**。"block""window""readout budget"没定义之前,`B{=}3` 只是一个不知道在数什么的数。修法是在名词首次出现处给一句话定义,不是把数字删掉。
-- **内部工作语 / 翻译残留**——组里中文黑话被直译进英文,读起来像正经术语,作者永远看不见:`考场→court`、`口径→caliber`、`臂→arm`、`剂量→dose`、`打底→ground`。检验法只有一条:**这个词在本领域公开文献里,是这个意思吗?** 不是就换。`court` 没有 ⇒ 换。本仓库另有 user 裁定:`臂→arm` 也整稿禁用,按语境换 variant / configuration / condition / setting / 对照自己的名字,不一键替换(2026-09-22)。
-- **一词多义 / 含义漂移**——同一个词在三处指三样东西(`caliber` 一会儿指窗口枚举、一会儿指权重配置、一会儿指 prompt 版本)。同一个词第三次出现时你又得重猜 = 记。
-- **同物异名**——`regime` 与 `régime`、`region` 与 `window`、`benchmark` 与 `court`、`localization-training system` 与 `retrieval-trained system` 与 `localization-only row` 指同一条臂。读者会以为是三个东西。**为避免重复而换的同义词也算**:`the held-out judge` 下一句成了 `this model`、再下一句成了 `the new evaluator`——英文写作课教的「换词避免重复」在论文里是错的,同一个东西全稿只用一个名词(user 2026-11-12「加强下表达和衔接」;衔接的其余部分见 [`/paper-polish` 的 references/rewrite.md](../paper-polish/references/rewrite.md) § 2)。
-- **画布上的记号早于定义**——方法图/架构图上的 `g_m`、`r_{m,k}`、`φloc`、`ω`、`1…K`,图落在 p.2 而定义在 p.4。
-  修法只有一个:换成 caption 或图之前的正文已经在用的词(`block ranking`、`candidate windows`、`retained blocks`、
-  `localization LoRA`);画布上补 gloss 与 caption 里补定义都不算修(user 裁定 2026-09-21)。
-- **宏与上标无图例**——`\newcommand` 定义的东西对读者不存在:`\method`、`$\Tans$`、`\starred`、`\textsuperscript{\ddag}`、`$\circ$`。查的是每个宏**排版后首次出现**的位置,以及图例是否在那之前。
-- **悬空指代**——"the anchor""that régime""both enumerations""the deep benchmark":哪个?哪两个?什么叫 deep?**代词同理**:句首 `This` / `It` / `They` 前面有两个可能的先行词,读者要回头猜 = 记;修法是补上名词(`This shows` → `This gap shows`),名词取稿子已有的那个。
-- **名不副实**——`coverage` 在三处分别是"证据命中率""音频保留比例""块覆盖",名字一样含义不同。
-- **产物血统词**——`a re-scored copy of the deployed selection`、`an earlier candidate-window enumeration`、
-  `the 30 s-window scan`、`under that same earlier prompt`、`a third scan`、`the stored localization passes`。
+- **名字晚于数字**——`6-hour lead steps` / `eight candidate members` / `the top $K{=}3$ members` / `spread-cap 12` / `max-lead 168`:配置常数照写没问题(数字是允许的),但**它配置的那个东西必须已经被命名过**。"lead step""member""spread cap"没定义之前,`K{=}3` 只是一个不知道在数什么的数。修法是在名词首次出现处给一句话定义,不是把数字删掉。
+- **内部工作语 / 翻译残留**——组里中文黑话被直译进英文,读起来像正经术语,作者永远看不见:`擂台→ring`、`口径→caliber`、`臂→arm`、`剂量→dose`、`打底→ground`。检验法只有一条:**这个词在本领域公开文献里,是这个意思吗?** 不是就换。`ring` 没有 ⇒ 换。本仓库另有 user 裁定:`臂→arm` 也整稿禁用,按语境换 variant / configuration / condition / setting / 对照自己的名字,不一键替换(2026-09-22)。
+- **一词多义 / 含义漂移**——同一个词在三处指三样东西(`caliber` 一会儿指站点网格、一会儿指权重配置、一会儿指归一化版本)。同一个词第三次出现时你又得重猜 = 记。
+- **同物异名**——`regime` 与 `régime`、`tile` 与 `patch`、`benchmark` 与 `ring`、`bias-correction system` 与 `post-processed system` 与 `correction-only row` 指同一条臂。读者会以为是三个东西。**为避免重复而换的同义词也算**:`the held-out judge` 下一句成了 `this model`、再下一句成了 `the new evaluator`——英文写作课教的「换词避免重复」在论文里是错的,同一个东西全稿只用一个名词(user 2026-11-12「加强下表达和衔接」;衔接的其余部分见 [`/paper-polish` 的 references/rewrite.md](../paper-polish/references/rewrite.md) § 2)。
+- **画布上的记号早于定义**——方法图/架构图上的 `g_m`、`r_{m,k}`、`φ_bc`、`ω`、`1…K`,图落在 p.2 而定义在 p.4。
+  修法只有一个:换成 caption 或图之前的正文已经在用的词(`member ranking`、`candidate members`、`retained members`、
+  `bias-correction head`);画布上补 gloss 与 caption 里补定义都不算修(user 裁定 2026-09-21)。
+- **宏与上标无图例**——`\newcommand` 定义的东西对读者不存在:`\method`、`$\Tlead$`、`\starred`、`\textsuperscript{\ddag}`、`$\circ$`。查的是每个宏**排版后首次出现**的位置,以及图例是否在那之前。
+- **悬空指代**——"the anchor""that régime""both grids""the deep benchmark":哪个?哪两个?什么叫 deep?**代词同理**:句首 `This` / `It` / `They` 前面有两个可能的先行词,读者要回头猜 = 记;修法是补上名词(`This shows` → `This gap shows`),名词取稿子已有的那个。
+- **名不副实**——`coverage` 在三处分别是"区间命中率""站点保留比例""网格覆盖",名字一样含义不同。
+- **产物血统词**——`a re-calibrated copy of the deployed ensemble`、`an earlier station-grid interpolation`、
+  `the 6 h-step hindcast`、`under that same earlier normalization`、`a third hindcast`、`the stored bias-correction passes`。
   每个词都是普通英文,读者带着临时含义就能按正常速度读过去,所以**「卡住」门槛永远抓不到它**——
-  2026-09-25 `re-scored copy` 出现在附录正文和一张生成表的 caption 里,活过了两轮盲读,正因为它不卡。
-  它是 `outputs/` 目录树的血统(哪一代扫描、哪次重打、哪个枚举)漏进散文:只有手里有产物树的人知道
-  *re-scored* 指的是对保留块重打的定位 pass。判法不是「卡不卡」,是**换一个问题**:
+  2026-09-25 `re-calibrated copy` 出现在附录正文和一张生成表的 caption 里,活过了两轮盲读,正因为它不卡。
+  它是 `outputs/` 目录树的血统(哪一代回算、哪次重校、哪个网格)漏进散文:只有手里有产物树的人知道
+  *re-calibrated* 指的是对保留成员重跑的偏差校正 pass。判法不是「卡不卡」,是**换一个问题**:
   「这个修饰语告诉读者送进前向的输入有什么不同?」稿子里没写出那个不同,就是血统词。
   处置两选一,**按序试**:①删掉修饰语,主句保留(`drawn as in Appendix X` 已经把随机控制说完了);
-  ②它指的输入差别确实改变读数(换了窗枚举 / 换了提示 / 换了 adapter),就把**那个差别**写出来,
-  一个从句,用稿子已有的词(`on a candidate-window grid that predates the deployed one`)。
-  **绝不补定义**——给 `re-scored copy` 下定义等于把产物目录名搬进论文。
+  ②它指的输入差别确实改变读数(换了站点网格 / 换了归一化 / 换了校正头),就把**那个差别**写出来,
+  一个从句,用稿子已有的词(`on a station grid that predates the deployed one`)。
+  **绝不补定义**——给 `re-calibrated copy` 下定义等于把产物目录名搬进论文。
   另外每条都要**同时报 user**:血统词常常是嫁接件的自白(一条臂混两代产物,根 CLAUDE.md §5),
-  「重打到部署扫描上」还是「删这条消融」是 user 的裁定,改词只是遮住它。
+  「重跑到部署网格上」还是「删这条消融」是 user 的裁定,改词只是遮住它。
 
 **B 组 · 换词修不了的**(盲读者最容易发现,因为你没有先验去替它圆场)
 
 - **隐含前提**——句子通顺,但要先知道某个没写出来的设定才成立。
-- **数值互斥**——同一篇里 `65{,}536-token position limit` 与 `max-pos 36{,}864` 并存:可能是两个不同的量(模型位置上限 vs 读出截断),也可能是错。**盲读者分不出来,正是问题所在**——记下来,第二趟对账。
+- **数值互斥**——同一篇里 `240-hour forecast horizon` 与 `max-lead 168` 并存:可能是两个不同的量(模型最长预报时效 vs 评测截断),也可能是错。**盲读者分不出来,正是问题所在**——记下来,第二趟对账。
 - **自相矛盾**——摘要断言 A,正文撤回 A;两表同一格给不同数。**这是 bug,单独报,不许靠改措辞抹平。**
 - **数目不自洽**——号称"五个 benchmark"实际列了四个加一个附录的;"all eight"与表里行数对不上。
-- **一句话塞太多**——单个术语都没问题,但一句里堆了十几个专名(用户举的那句就是:分块 + 定位 pass + 候选窗 + top-B + 读出预算 + 答题前向,全在一个分号句里)。处置是**拆句**,不是换词。
+- **一句话塞太多**——单个术语都没问题,但一句里堆了十几个专名(用户举的那句就是:切网格 + 校正 pass + 候选成员 + top-K + 离散度上限 + 集成前向,全在一个分号句里)。处置是**拆句**,不是换词。
 
-**C 组 · 废话**(不是看不懂,是没内容;处置只有删或降级,没有"改写"选项。判死生需要全稿语境——套件枚举了哪些考场、别的表有哪些行——所以 C 组**不吃盲读隔离**:盲读只标记空转句,判定放第二趟,也可以在第二趟直接用 grep 候选清单补扫)
+**C 组 · 废话**(不是看不懂,是没内容;处置只有删或降级,没有"改写"选项。判死生需要全稿语境——套件枚举了哪些 benchmark、别的表有哪些行——所以 C 组**不吃盲读隔离**:盲读只标记空转句,判定放第二趟,也可以在第二趟直接用 grep 候选清单补扫)
 
 - **无中生有**——句子的主语是一个不存在的东西:`Benchmark X publishes no row for this backbone and has no column for it`、`X does not report Y for this setting`、`no official number exists for…`。为一个空格子、一个别人没做的实验、一条没有的基线写整句正文。它最隐蔽,因为读起来像尽职的披露——这正是它能活过历版草稿的原因。判死生只看一条:**读者在这个图表里看得见这个空缺吗?** 看得见(某格是 `—`、某行比套件枚举少一行、n 比全量小)→ 缺席承重,落法是图例里的一短句(`a dash = none published` 就是范本),不是叙事句;看不见(那个实体从头就不在这张表里)→ 删。同一句法两种命运:`Benchmark X has no baseline arm.`(解释表里可见的空格)留;`Benchmark X publishes no row for this backbone and has no column.`(表里根本没有这一列,而真正被省掉的候选它反而只字未提)删。
 - 其余子类照 `/paper-prose-tighten` 的切除分类认:记账计数、自辩元叙述、否弃方案的游记、复述与叠 hedge。盲读时不用背分类,过删句测试就记;完整判据与保留红线(显著性限定词、划范围的分母、协议差异不许删)以那份技能为准。
@@ -128,7 +128,7 @@ for f in figures/*.pdf; do echo "== $f"; pdftotext "$f" -; done   # 每张图画
 ```
 ### N. <一句话标题>
 - 首次出现:PDF p3 / sections/04_results.tex:60      ← 两个都要:页序定"晚于使用",行号定"改哪里"
-- 其它出现::64 :127 / tables/08_minicpm_avoc.tex:9  ← 只列让理解更糟的那几处
+- 其它出现::64 :127 / tables/08_ablation.tex:9  ← 只列让理解更糟的那几处
 - 原句:<逐字抄,别转述>
 - 类型:内部工作语
 - 卡点:<为什么读不下去,一句话>
@@ -151,7 +151,7 @@ C 组条目字段更少(没有"我猜是"——废话不需要猜,只需要删�
 
 ledger 末尾另开两节:
 
-- **文档级判定**——不锚在任何行号上的整篇问题。论文里最常见的三条:①**缺记号约定**(应该在 §3.1 开头用一段把 block / window / readout budget / $B$ / $M$ 一次性定义,而不是散在六处);②**这一节是对另一节的 diff**(症状:一半悬空指代都"翻到 §3 十秒就能答"——如果 §3 存在的话);③**术语在正文与 caption 之间不同步**。这类问题的正解是加一段/改结构,不是逐词改写。
+- **文档级判定**——不锚在任何行号上的整篇问题。论文里最常见的三条:①**缺记号约定**(应该在 §3.1 开头用一段把 lead step / member / spread cap / $K$ / $M$ 一次性定义,而不是散在六处);②**这一节是对另一节的 diff**(症状:一半悬空指代都"翻到 §3 十秒就能答"——如果 §3 存在的话);③**术语在正文与 caption 之间不同步**。这类问题的正解是加一段/改结构,不是逐词改写。
 - **良品名单**——你专门判定过"这是真术语,别动"的词:`LoRA`、`prefill`、`greedy decoding`、`bootstrap`、`oracle`、`intention-to-treat`、`pp`。不写下来,第二趟会重新纠结,甚至把它们改成大白话。
 
 ## 第二趟:查证 + 改写
@@ -160,7 +160,7 @@ ledger 末尾另开两节:
 
 **先找承重条目之间的共同根因。** 它们往往有一半出自同一个病(最常见:整篇缺一段记号约定)。一段小节能一次干掉六条,逐条处置是最浪费的做法。
 
-**改之前先对账。** `grep` 原词的命中率比想象中低:论文里的词在代码里往往叫别的名字(`window` = `region`、`readout` = `answer_forward`)。有效顺序是**先把数字对一遍**:B 组记下的"数值互斥"条目,拿 `paper/data/*.json`、`outputs/eval/` 逐题产物、`scripts/fig_*.py` 逐个核。数字错只能这样找出来,读措辞永远发现不了。
+**改之前先对账。** `grep` 原词的命中率比想象中低:论文里的词在代码里往往叫别的名字(`member` = `ens_slot`、`lead step` = `t_out`)。有效顺序是**先把数字对一遍**:B 组记下的"数值互斥"条目,拿 `paper/data/*.json`、`outputs/eval/` 逐题产物、`scripts/fig_*.py` 逐个核。数字错只能这样找出来,读措辞永远发现不了。
 
 **B 组不进改写流程**:自相矛盾、数目不自洽、数值互斥 → 直接列给用户(信哪个由用户定);断句歧义、一句话塞太多 → 改结构(拆句/拆列表),不换词;隐含前提 → 补一句口径**并同时报**(作者脑子里有一套没写下来的约定,补完得让他确认补对了)。
 
@@ -180,23 +180,23 @@ A 组逐条处置。**四个动作是有序的,不是并列的**——从上往�
 > 升级成"读者必须记住的负担",名词表越长,稿子越难读。
 
 1. **删掉这个词**(不是删整句)——句子改用已有的词把同一件事说出来。
-   **范例(即本条由来)**:`the gate` 全稿出现 29 次,指的是"按 $g_m$ 排序、留 top-$B$"。
+   **范例(即本条由来)**:`the gate` 全稿出现 29 次,指的是"按 $g_m$ 给集成成员排序、留 top-$K$"。
    §3.2 本来就把 $g_m$ 叫作 *a ranking score*,于是全稿 `gate` → `ranking`,一个新名词不留。
    当时的错误做法是在 Fig 1 caption 里补一句 "that gate being the ranking step that…"——
    **那是给一个不该存在的名词发身份证。**
 2. **换成稿子里已经在用的词 / 领域通行叫法**——先翻自己的稿子有没有同义词,再翻文献。
-   `court` → `benchmark`、`tier` → `channel`(稿子本来就有 channel)、`level`(打平义)→ `tie`。
+   `ring` → `benchmark`、`tier` → `channel`(稿子本来就有 channel)、`level`(打平义)→ `tie`。
 3. **删掉整句**——这个术语全篇只用一次、删了不损失任何主张。**这一条比想象中常用**。
 4. **首次出现处补一句定义**(≤1 个从句)——**只有前三条都不成立时才用**:
    概念真实存在、稿子里没有同义词、领域也确实没有现成词,且它承重到不能删。
-   `window (a short span; eight of them tile each block)`。
+   `member (one perturbed run; eight of them form each ensemble)`。
 
 **只出现一次的词一律先假定要删。** 一个名词全稿只用一次,几乎不可能是承重概念——
 它是作者写那一句时顺手造的。删它,用已有的词重写那半句。
-`the live target` / `amortization floor` / `recency slot` / `letter budget` / `the churn` /
-`Room to retrieve` 都是这么删掉的,每一条的替换都来自稿子已有的词(`the answering stage` /
-`cannot be reused` / `reserved for the most recent window` / `the eight lettered candidates` /
-`the change` / `More than one block`)。
+`the live target` / `amortization floor` / `recency slot` / `seed budget` / `the churn` /
+`Room to spread` 都是这么删掉的,每一条的替换都来自稿子已有的词(`the verifying analysis` /
+`cannot be reused` / `reserved for the most recent analysis cycle` / `the eight perturbed members` /
+`the change` / `More than one member`)。
 
 **自查(第二趟收尾跑一次)**:把候选词按全稿出现次数排序。`n == 1` 的逐个问"删得掉吗";
 `n` 很大但读者仍看不懂的,问"稿子里有没有同义词"——`gate` 就是后者,**频次不是保留理由**。
@@ -207,7 +207,7 @@ for w in "the gate" "the ladder" "the map" "regime"; do
   printf '%3d  %s\n' "$(grep -roiF "$w" $c/sections/*.tex | wc -l)" "$w"
 done | sort -n
 # 血统词候选(读感抓不到,只能 grep):每条命中问「它说的输入差别写出来了吗」;表 caption 改生成器
-grep -rnoiE '\b(re-?scored|re-?struck|re-?run|rerun|re-?answered|earlier|a third|stored|booked|copy of the)\b[^.]{0,70}' \
+grep -rnoiE '\b(re-?calibrated|re-?scaled|re-?struck|re-?run|rerun|re-?fit|earlier|a third|stored|cached|booked|copy of the)\b[^.]{0,70}' \
   $c/sections/*.tex $c/tables/*.tex
 ```
 
@@ -220,9 +220,9 @@ grep -rnoiE '\b(re-?scored|re-?struck|re-?run|rerun|re-?answered|earlier|a third
 - **只动措辞,不动事实、不动数字、不动结论。** 界线:从方法节/代码/产物**搬运**一条已存在的事实过来当定义 = 允许;**推断、补全缺失项、扩大结论范围** = 动事实,禁止。表里少两行 → 只报不补。
 - **删词不许顺手升级主张**:原文只指了表就别改写成"最强/领先"。
 - **补定义不许变成补 caveat**。这份稿子的规矩是 caveat 越少越好(`paper/CLAUDE.md`);"X 只在 Y 条件下成立"这种句子不是定义,是 caveat,该进 todo 不进正文。定义是**说 X 是什么**,一句话,陈述句。
-- **正文不写结果数字**:如果某条的修法是"把数值搬进正文解释",停——数字的家是表和图,正文只说方向和判没判住。配置常数(块长、$B$、窗宽、token 上限、帧预算)不算结果数字,照写。
+- **正文不写结果数字**:如果某条的修法是"把数值搬进正文解释",停——数字的家是表和图,正文只说方向和判没判住。配置常数(时间步长、$K$、网格分辨率、时效上限、成员数)不算结果数字,照写。
 - **换词是全仓操作,且必须扫到图**:`.tex` 正文 + table caption + 表头 + `paper/scripts/fig_*.py` 里的硬编码字符串 + 手工 PNG。只改 `.tex` 的结果是旧词留在 arch 图里,审稿人一眼抓到。改完跑 `cd paper/scripts && ./build_figs.sh` 重出图。
-- **两个 clone 都要改**(TMLR / ICLR 各一份 `sections/`),别只改当前打开的那个。
+- **两个 clone 都要改**(同一篇投两个 venue 时各一份 `sections/`),别只改当前打开的那个。
 - 每处改动可回溯到 ledger 的某一条;ledger 上没有的地方不顺手改。
 - `sure` + `表面` 的可以只记不改。**预期 50%+ 条目最终判为无需改,这是正常的**,不是第一趟记多了。
 
@@ -248,13 +248,13 @@ grep -rnoiE '\b(re-?scored|re-?struck|re-?run|rerun|re-?answered|earlier|a third
 | 每个没见过的名词都记 → 上百条 | 门槛是"必须重读或翻页",不是"不眼熟" |
 | 承重 20+ 还在逐词记 | 那是结构问题,转去写文档级判定(缺记号约定小节) |
 | 把 `LoRA`/`bootstrap`/`prefill` 改成大白话 | 领域读者认得的原样留,进良品名单 |
-| 中文黑话直译当术语放过(`court`/`caliber`) | 最隐蔽的一类:它读起来像术语。按"领域文献里是这个意思吗"判 |
+| 中文黑话直译当术语放过(`ring`/`caliber`) | 最隐蔽的一类:它读起来像术语。按"领域文献里是这个意思吗"判 |
 | 发明一个"更清楚"的新词 | 只能用领域已有的词,否则是新黑话 |
 | 为了读着不重复给同一个东西换同义词 | 同物异名;全稿一个名词,重复是衔接不是毛病 |
 | 看不懂的词一律补定义 | 顺序反了:先试删、再试换成稿子已有的词,补定义是第四选择 |
 | 高频词"改起来太多处"就留着补个定义 | 频次不是保留理由(`gate` 29 次照删);判据是"稿子里有没有同义词" |
 | 只出现一次的自造词被放过 | 默认删。全稿只用一次的名词几乎不可能承重 |
-| 修饰语读得顺就放过(`re-scored copy`、`earlier enumeration`、`a third scan`) | 卡住门槛抓不到血统词;第二趟按信号词 grep,逐条问「它说的输入差别写出来了吗」,答不出就删修饰语或写出差别,并报 user 判重打还是删 |
+| 修饰语读得顺就放过(`re-calibrated copy`、`earlier interpolation`、`a third hindcast`) | 卡住门槛抓不到血统词;第二趟按信号词 grep,逐条问「它说的输入差别写出来了吗」,答不出就删修饰语或写出差别,并报 user 判重打还是删 |
 | 补定义时顺手补一句"但这只在…成立" | 那是 caveat,不是定义;caveat 进 todo 不进正文 |
 | 两处数字打架,顺手改一处对齐 | 这是 bug,先报;信哪个由用户定 |
 | 只改了 `.tex`,图里旧词还在 | 换词要扫 `scripts/fig_*.py` 并重出图 |

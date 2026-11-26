@@ -26,16 +26,16 @@ Do not itemize negations. "It does not do A, keep B, or test on C" is a checklis
 
 | Stiff | Natural |
 |---|---|
-| "A fine-tunes the policy on its own successes; it does not keep the planner, train on the planner's subgoals, or test on new tasks." | "A fine-tunes the policy on its own successes. The planner serves only to collect data: the policy is deployed without it and evaluated where it collected, which leaves open whether such training helps a system that keeps its planner or transfers to new tasks." |
-| "B, whose recipe we follow, distills a large model into a small agent; it has no learned policy and trains no executor." | "B distills a large model into a small agent. Its agent acts through hand-written tools, leaving the pairing of a distilled agent with a learned policy unexplored." |
+| "A trains the forecaster on reanalysis only; it does not use station data, correct for local bias, or test beyond ten days." | "A trains the forecaster on reanalysis alone. Its targets are therefore gridded fields, which leaves open whether such a model can be corrected toward point observations or stays skilful beyond ten days." |
+| "B, whose recipe we follow, distills a global model into a regional one; it has no learned bias correction and trains no corrector." | "B distills a global model into a regional one. Its regional model is corrected by a fixed lookup table, leaving the pairing of a distilled model with a learned correction unexplored." |
 
 Three things the left column gets wrong, each a separate rule:
 
 - **No debt statements in the positioning sentence.** "Whose recipe we follow", "on which we build" belong in
   Method, where the recipe is used and cited. In Related Work they make the sentence about you before the
   reader knows the other paper.
-- **No shorthand the reader has to decode.** "Trains no executor" is a label from the authors' own notes. Say
-  what the system physically does instead ("acts through hand-written tools").
+- **No shorthand the reader has to decode.** "Trains no corrector" is a label from the authors' own notes. Say
+  what the system physically does instead ("is corrected by a fixed lookup table").
 - **Generalize.** One sentence about what the design implies beats three clauses about what is absent.
 
 ## Finding the differences: look past the mechanism
@@ -53,14 +53,14 @@ verifiable distinction than the mechanism.
 | Simulation only, or also a real robot or real data? | experiments |
 | Does it compare against the simplest strong baseline under the same protocol, and does it beat it? | the main table; whether the baseline numbers are run or quoted |
 | What does one run cost in time, calls and money, and is it reported? | experiments, appendix |
-| Does it test the configuration your paper cares about at all? (e.g. it trains a component and never evaluates it back inside the full system) | the experiment list; note the experiment that is missing |
+| Does it test the configuration your paper cares about at all? (e.g. it reports skill on gridded fields and never at the station locations your paper targets) | the experiment list; note the experiment that is missing |
 
 Rules for using what you find:
 
 - **Verify before writing, and record the date and the arXiv version.** "No code released" is false the day a
   repository appears; check the repository itself, not your memory of the paper. If the paper has several
   versions, the answer can differ by version.
-- **Prefer facts the paper itself states.** "Uses a proprietary planner and a proprietary policy" can be read
+- **Prefer facts the paper itself states.** "Uses a proprietary reanalysis product and a paid observation feed" can be read
   off the setup section and will not change. "Has not released code" is true only as of a date; write it only
   if it matters to your claim, and keep the check in your notes.
 - **Write a limitation only if your paper addresses it and shows it.** A weakness you do not fix is a jab, and

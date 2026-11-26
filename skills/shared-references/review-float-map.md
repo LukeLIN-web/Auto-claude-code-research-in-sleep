@@ -187,9 +187,9 @@ claim stays the same.
 
 ## Field note
 
-2026-11-03, the first pass of the float map on a CVPR draft: an appendix table held a negative result no
-claim rested on; a baseline deployed without the orchestrator held the best cell
-of a table cited for the advantage of keeping the orchestrator; the deployed
+2026-11-03, the first pass of the float map on a conference draft: an appendix table held a negative result no
+claim rested on; a baseline trained without the auxiliary loss held the best cell
+of a table cited for the advantage of adding that loss; the deployed
 variant was not the best row on the training-distribution columns of its own
 ablation, so the case for deploying it rested on the other columns alone; and
 the introduction's motivation rested only on an appendix figure.

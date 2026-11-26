@@ -128,19 +128,19 @@ the work was done.
 
 | Cut | Why |
 |-----|-----|
-| `abstained blocks $569 \to 551$, so muting perturbs the gate without collapsing it` | the reader needs "the gate does not collapse", not the two integers |
-| `an exact $82{:}82$ split of the discordant pairs` | the delta already said "tie" |
-| `same-question discordant pairs $166{:}103$` | redundant with the reported delta and its interval |
-| `A is mostly partial ($41$ of $70$), C complete ($180$ of $200$)` | three parenthetical fractions to support one qualitative sentence |
-| `the within-block miss contributes 32 of the 39` | a count of a count |
-| `gold slot balance $1135/1134/1135$`, `$851$ each over A/B/C/D` | already in the config table; prose repeats it |
+| `active channels $612 \to 597$, so blurring perturbs the mask without collapsing it` | the reader needs "the mask does not collapse", not the two integers |
+| `an exact $64{:}64$ split of the discordant pairs` | the delta already said "tie" |
+| `same-image discordant pairs $151{:}97$` | redundant with the reported delta and its interval |
+| `A is mostly partial ($37$ of $60$), C complete ($170$ of $190$)` | three parenthetical fractions to support one qualitative sentence |
+| `the small-object miss contributes 27 of the 33` | a count of a count |
+| `label balance $1204/1203/1204$`, `$903$ each over the four classes` | already in the config table; prose repeats it |
 
 **Rewrite pattern:** keep the *qualitative* fact, drop the arithmetic that
-demonstrates it. "muting perturbs the gate without collapsing it" is the whole
+demonstrates it. "blurring perturbs the mask without collapsing it" is the whole
 content of the first row.
 
 **Keep** a count when it *is* the finding: a denominator that scopes the claim
-(`412 of 500 questions exceed the context limit`), a headline delta, an
+(`318 of 450 images exceed the native resolution`), a headline delta, an
 interval, a rate the argument turns on.
 
 ### 2. Defensive meta-narration
@@ -148,7 +148,7 @@ interval, a rate the argument turns on.
 Sentences *about* the paper's own reporting discipline rather than about the
 system.
 
-- "We report this rather than claim frame-invariance."
+- "We report this rather than claim rotation-invariance."
 - "We make none." / "and we claim none."
 - "…which is precisely the overstatement this paragraph is guarding against."
 - "We report it because a reader is entitled to know that…"
@@ -166,8 +166,8 @@ adjective at all (see the hard stop below).
 
 Narrating the road not taken. "We initially assumed X… Re-running it disproves
 that on two counts." "We logged them as reasons rather than running a separate
-arm for each." "The saving was quantified on an earlier three-stage variant…
-so that ≈58% is not a property of any number reported here."
+arm for each." "The saving was quantified on an earlier two-pass variant…
+so that ≈41% is not a property of any number reported here."
 
 Keep the conclusion; delete the journey. If the rejected alternative is itself a
 contribution (a falsified construction, a negative control that fired), it earns
@@ -211,7 +211,7 @@ What a caption is *for* is not this skill's call: `paper-table-craft` and
 **Keep** an absence statement also when the absence *is* the claim ("no prior
 benchmark evaluates X and Y jointly" as a motivation sentence)
 or when it states a protocol fact a reviewer would otherwise assume the other
-way ("no test-set videos appear in training").
+way ("no test-set molecules appear in training").
 
 ### 6. False pivots (错误的转折)
 
@@ -220,15 +220,15 @@ sentence erects a reading, negates it, and only then states the claim. The
 negated half is the author debating themselves; the positive half is the whole
 content.
 
-- "The advantage is also not reducible to the material the compressor had to
-  drop: sorting the same questions by the share of the clip's audio the
-  baseline kept, \method leads inside every level of that coverage." →
-  "\method leads at every level of the baseline's audio coverage." The
+- "The advantage is also not reducible to the filters the pruner had to
+  drop: sorting the same images by the share of the dense model's filters the
+  baseline kept, \method leads inside every level of that sparsity." →
+  "\method leads at every level of the baseline's sparsity." The
   reviewer had not yet formed the reading being rebutted.
 - "X rather than Y" where Y is the author's own invention: delete "rather
-  than Y", keep X. "the map is ordered by two properties of the questions
-  rather than by the benchmark" → "the map is ordered by two properties of
-  the questions."
+  than Y", keep X. "the grid is ordered by two properties of the molecules
+  rather than by the dataset" → "the grid is ordered by two properties of
+  the molecules."
 - "not A but B" → "B".
 
 **Rewrite pattern:** delete everything from the pivot word on ("rather than
@@ -240,11 +240,11 @@ default reading is, so a pivot never earns its place by "correcting" one.
 **Field notes (first full pass, 2026-08-05, ~90 cuts).**
 (a) The worst pivots are invisible to a "rather than" grep: sentence-lead
 negations ("The obvious reading of that pair … is the one the data rejects",
-"Nor is the gain fully accounted for by…", "That the shortlist moves is not
-by itself evidence…", "Neither length is a swept hyperparameter"), negative
+"Nor is the gain fully accounted for by…", "That the threshold moves is not
+by itself evidence…", "Neither width is a swept hyperparameter"), negative
 `\paragraph` headers ("…is not doing hidden accuracy work"), caption bold
-titles ("The regime, not the benchmark, sets…"), and question-form section
-titles ("Is the Lead Bought by What the Montage Discarded?"). Sweep headers,
+titles ("The resolution, not the dataset, sets…"), and question-form section
+titles ("Is the Lead Bought by What the Pruner Discarded?"). Sweep headers,
 titles, and captions by eye, not only by grep.
 (b) Deleting the "rather than Y" tail is usually scope-safe because the
 surviving X carries the scope itself ("a same-stack anchor", "third-party
@@ -262,12 +262,12 @@ rendered `.tex` to confirm the cut landed.
 scope, and it is the highest-yield sub-shape left after the obvious pivots
 are gone. Two examples from one paper: a headline followed by "although
 those numbers come from different serving stacks and are not causal method
-comparisons", and an $\mathcal{O}(1)$ claim guarded by "although total scan
-computation grows linearly with $M$". Both looked like hard stops. Neither
+comparisons", and an $\mathcal{O}(1)$-memory claim guarded by "although total
+compute grows linearly with the number of tiles". Both looked like hard stops. Neither
 was: the passage already carried the same scope **positively** — "the
 informative comparisons are the same-stack anchors" and "that gap is stack
-difference" two sentences on; "the whole pipeline costs $M+1$ forwards per
-question" one subsection back. So the hedge was pure class-4 restatement
+difference" two sentences on; "the pipeline costs one encoder forward per
+tile" one subsection back. So the hedge was pure class-4 restatement
 wearing a scope costume.
 
 **The procedure, in order:** grep the scope's own noun (`stack`, `forwards`,
@@ -293,11 +293,11 @@ The recurring shapes, in descending yield:
 
 | Shape | Fix |
 |-------|-----|
-| An intro **contribution bullet that pre-plays a whole results subsection** — the same regime map, the same axes, the same per-benchmark ordering | The bullet keeps the *claim* and the two axis names; every reading of the table moves to the subsection. Point at the table, not at the finding. |
+| An intro **contribution bullet that pre-plays a whole results subsection** — the same sensitivity grid, the same axes, the same per-benchmark ordering | The bullet keeps the *claim* and the two axis names; every reading of the table moves to the subsection. Point at the table, not at the finding. |
 | A finding stated in a results **subsection** and again as a **conclusion/analysis bullet** | Keep the results copy; delete the bullet — unless the bullet carries something the subsection does not (see the hard stop below). |
 | The method's governing **principle** stated informally in the intro and formally in the method | Intro keeps the hazard in one sentence and cites `\S`; the formal statement, the decomposition, and the concrete quotas live once, in the method. |
 | A **scaling / cost / budget** argument in the intro and again in a "Bounded X" method subsection | Same rule: the intro asserts the property, the method derives it. |
-| The **motivation** ("clips are too long to fit") in the intro and again in Settings | Settings keeps only what scopes the *experiment* (which benchmarks are over the wall). |
+| The **motivation** ("full-resolution images are too large to fit") in the intro and again in Settings | Settings keeps only what scopes the *experiment* (which benchmarks exceed the memory limit). |
 
 **Rewrite pattern:** decide which section is the fact's semantic owner —
 normally the one that *derives* rather than *asserts* it — and reduce every
@@ -318,13 +318,13 @@ every pass — but reproduction reads the config table, not the prose.
 
 | Cut | Why |
 |-----|-----|
-| `the deployed checkpoint is the run's endpoint, fixed without reference to any evaluation signal, so neither adapter's checkpoint is chosen by benchmark performance` | asserts the absence of cherry-picking; a config table naming the endpoint already carries it |
-| `held-out accuracy is flat from step $300$ through $900$`, in a config-table cell | a second curve nobody plots, on a set nobody else in the paper names |
-| `step $2000$, selected by a pre-specified stopping rule inside epoch 1` | the *rule* may be a reproduction fact; `pre-specified` is the assurance — drop that word, keep the rule |
+| `the released checkpoint is the run's endpoint, fixed without reference to any evaluation signal, so neither pruning level's checkpoint is chosen by benchmark performance` | asserts the absence of cherry-picking; a config table naming the endpoint already carries it |
+| `held-out accuracy is flat from step $400$ through $1200$`, in a config-table cell | a second curve nobody plots, on a set nobody else in the paper names |
+| `step $1500$, selected by a pre-specified stopping rule inside epoch 2` | the *rule* may be a reproduction fact; `pre-specified` is the assurance — drop that word, keep the rule |
 | `on a frozen evaluation subset, accuracy rises across every checkpoint measured` | the subset's identity is bookkeeping; `accuracy rises across the measured checkpoints` is the claim |
 
 **Rewrite pattern:** a checkpoint's *identity* is configuration and belongs in
-the config table as a bare value (`step 900, the run's endpoint`). Everything
+the config table as a bare value (`step 1200, the run's endpoint`). Everything
 about how it was chosen, what it was not chosen by, and what else was flat
 where — delete.
 
@@ -346,7 +346,7 @@ disagree" and both are class 8, subtract.**
 
 The words we use to *run* experiments, leaking into the words the paper is
 *written* in: `preregistered`, `pre-specified`, `criteria frozen before any
-readout`, `frozen before any test number was read`, `the frozen margin`, `a
+results were read`, `frozen before any test number was read`, `the frozen margin`, `a
 frozen evaluation set`, `stopping rule`, `early-kill gate`, `acceptance gate`.
 
 Classes 2 and 8 walk straight past these, because a class-9 hit is an
@@ -354,14 +354,14 @@ Classes 2 and 8 walk straight past these, because a class-9 hit is an
 is load-bearing, the sentence survives the paragraph map intact, and nothing
 looks deletable. It is also the one class that says nothing to the reader it
 means to reassure — a reviewer cannot check that a margin was fixed before the
-readout, so the word is an assertion about our internal timeline, and asserting
+results were read, so the word is an assertion about our internal timeline, and asserting
 it invites the suspicion it was meant to settle.
 
 | Cut | Keep |
 |-----|------|
 | `a preregistered two-benchmark ablation` | `a two-benchmark ablation` |
-| `With criteria frozen before any new readout, we re-measured …` | `We re-measured …` |
-| `non-inferior at a margin frozen before any readout` | `non-inferior` — the margin's value lives in the appendix |
+| `With criteria frozen before any new results were read, we re-measured …` | `We re-measured …` |
+| `non-inferior at a margin frozen before any results were read` | `non-inferior` — the margin's value lives in the appendix |
 | `passes the preregistered non-degradation gate` | `does not degrade` |
 | `selected on a dev split before any test number` | `selected on a dev split` |
 | `well under the $0.40$ early-kill gate` | `well under $0.40$` |
@@ -372,7 +372,7 @@ sentence almost never dies — an ablation that was preregistered is still an
 ablation, and the result it reports is untouched.
 
 **Keep** `frozen` in its *technical* sense, which shares the word and nothing
-else: `frozen backbone`, `frozen scans`, `frozen window enumeration`, `frozen
+else: `frozen backbone`, `frozen pruning mask`, `frozen BatchNorm statistics`, `frozen
 tokenizer`, `frozen protocol` describe weights and configuration that do not
 move. `frozen before …` describes when *we* looked. Only the second is a hit.
 
@@ -387,7 +387,7 @@ instances of the word and eleven of its relatives left one paper in a single
 sweep, and no claim moved.
 
 The same ruling retired an entire *apparatus* of this kind — a training pool's
-structural probe, its permutation null, its role-injection negative control and
+structural probe, its permutation null, its label-shuffle negative control and
 its acceptance gate — carried redundantly in three places (a config-table row, a
 method sentence, an appendix paragraph of numbers), i.e. class 7 stacked on
 class 8 stacked on class 9. Deleting all three was safe because **no reported
@@ -408,18 +408,18 @@ figure/table generator strings in `paper/scripts/*.py` and `label` fields in
 
 ### 10. Value series across conditions (罗列)
 
-One quantity's readings at three or more conditions — distance layers,
+One quantity's readings at three or more conditions — severity levels,
 benchmarks, checkpoints, compression rates — strung through a sentence with
 slashes or commas. It is a table row read out loud.
 
 | Cut | Why |
 |-----|-----|
-| `the block hit rate is $96.7$ / $90.0$ / $91.3$ / $80.8\%$ across the four distance layers` | the same sentence already says it: *falls with distance* |
-| `window choice inside a retained block does not, at $83.0$ / $83.3$ / $85.0$ / $84.4\%$` | "does not" **is** the reading; the four numbers only prove we looked |
-| `$+0.8$pp on A, $+0.7$ on B, $-1.6$ on C and $+0.3$ on D --- bounded by $1.6$pp` | the bound is the claim; the four values are its raw material |
-| `median $5$ / $5$ / $2$ / $2$ on A / B / C / D` | one adjective — "single-digit" — carries all four |
-| `$45.7\%$ at base, then $48.5$ / $50.3$ / $50.4\%$ at steps $100$ / $300$ / $600$` | "rises monotonically, flattening after step 300" is the whole content |
-| `$81.3\%$ in a single window, $97.8\%$ within three, none more than eight` | keep the bound the readout budget is compared against, drop the ladder under it |
+| `top-1 accuracy is $94.2$ / $89.5$ / $90.1$ / $78.6\%$ across the four corruption levels` | the same sentence already says it: *falls with severity* |
+| `pruning order within a layer does not matter, at $71.2$ / $71.6$ / $72.9$ / $72.3\%$` | "does not matter" **is** the reading; the four numbers only prove we looked |
+| `$+0.6$pp on A, $+0.9$ on B, $-1.4$ on C and $+0.2$ on D --- bounded by $1.4$pp` | the bound is the claim; the four values are its raw material |
+| `median $4$ / $6$ / $3$ / $3$ on A / B / C / D` | one adjective — "single-digit" — carries all four |
+| `$52.1\%$ at base, then $55.0$ / $56.8$ / $56.9\%$ at steps $200$ / $500$ / $1000$` | "rises monotonically, flattening after step 500" is the whole content |
+| `$76.4\%$ of the decisive atoms within one bond, $95.1\%$ within three, none more than six` | keep the bound the message-passing depth is compared against, drop the ladder under it |
 
 A series always exists to show a **shape** — monotone fall, flat, one condition
 out of line. A reader cannot hold four numbers and does not try: they take the
@@ -427,16 +427,16 @@ shape word and skip the digits. So write the shape and delete the digits. **A
 series is never load-bearing as a series**; if its shape is not worth one word,
 the sentence was not worth keeping either.
 
-**Rewrite pattern:** keep the shape word (`falls with distance`, `does not`,
+**Rewrite pattern:** keep the shape word (`falls with severity`, `does not matter`,
 `holds level`, `single-digit`, `rises monotonically`), point at the table or
 figure if one carries the values, and keep at most the **one** number the
 argument turns on — a bound, or a ceiling the series is measured against.
 
-**Not this class** — two values in contrast (`$37.18\%$ when a retained window
-covers the evidence and $14.29\%$ when none does`), a range or IQR (`conversion
-rates span $0.18$ to $0.40$`), and a pair whose *near-equality* is the claim
-(`retains a median $30.4\%$ of the deployed windows' seconds against a deployed
-coverage of $29.6\%$`). Those are comparisons, not enumerations.
+**Not this class** — two values in contrast (`$41.06\%$ when a kept channel
+fires on the object and $12.73\%$ when none does`), a range or IQR (`conversion
+rates span $0.21$ to $0.47$`), and a pair whose *near-equality* is the claim
+(`keeps a median $27.3\%$ of the dense model's FLOPs against a target budget
+of $26.9\%$`). Those are comparisons, not enumerations.
 
 **The appendix is not exempt.** The house rule that lets an appendix keep
 numbers (`paper/CLAUDE.md`) exempts *isolated* numbers that no figure carries —
@@ -459,8 +459,8 @@ closes on how we differ.
 
 | Cut | Why |
 |-----|-----|
-| a paragraph for a family the method answers the same way as another (executors that take a target position, split off from orchestrated systems) | one line of work; its works join the paragraph whose gap they share |
-| `X does A. Y does B. Z does C.`, one sentence per work | one clause per work inside a cluster: `train the executor on other executors' data~\cite{x,y,z}` |
+| a paragraph for a family the method answers the same way as another (pruners that score weights by magnitude, split off from pruners that score them by gradient) | one line of work; its works join the paragraph whose gap they share |
+| `X does A. Y does B. Z does C.`, one sentence per work | one clause per work inside a cluster: `prune by second-order saliency~\cite{x,y,z}` |
 | a closing sentence on how our method differs | belongs in the method's Advantages paragraph |
 
 **Rewrite pattern:** name the lines of work the method answers (usually two: the
@@ -492,20 +492,20 @@ cut saves a word or two, so the class is many small edits, not one big one.
 
 | Cut | Write |
 |-----|-------|
-| `can carry out long-horizon and loosely worded instructions` | `can follow long-horizon and vague instructions` |
-| `We refer to the orchestrator together with the VLA and the tools it calls as the agent` | `We call the orchestrator, VLA and tools the agent` |
-| `It meets the orchestrator's subgoals ... for the first time at deployment` | `It first meets the orchestrator's subgoals ... at deployment` |
-| `trains on its positive episodes together with those collected on ...` | `trains on its positive episodes and those collected on ...` |
+| `can carry out cross-file and loosely worded completion requests` | `can follow cross-file and vague completion requests` |
+| `We refer to the drafter together with the verifier and the test runner it calls as the system` | `We call the drafter, verifier and test runner the system` |
+| `It meets the repository's private APIs ... for the first time at deployment` | `It first meets the repository's private APIs ... at deployment` |
+| `trains on the public split together with the files collected on ...` | `trains on the public split and the files collected on ...` |
 | `none of them in Bench-7's evaluation set` | `none in Bench-7's evaluation set` |
-| `calls grasping or placing tools` | `calls grasp or place tools` (the method section's name for them) |
-| `with the VLA fine-tuned on X, the system succeeds significantly less often than with the frozen VLA` | `fine-tuning on X performs significantly worse than the frozen VLA baseline` |
+| `calls linting or formatting tools` | `calls lint or format tools` (the method section's name for them) |
+| `with the drafter fine-tuned on X, the system succeeds significantly less often than with the frozen drafter` | `fine-tuning on X performs significantly worse than the frozen drafter baseline` |
 | `succeeds significantly more often than with it fine-tuned on Y` | `achieves significantly higher success rates than fine-tuning on Y` |
-| `The VLA's own successful episodes are what make fine-tuning help` | `The VLA's own successful episodes are the primary driver` |
-| `fine-tuned, half and half with DROID, on the episodes it completed` | `fine-tuned on its completed episodes mixed 1:1 with DROID` |
-| `fine-tuning it has been reported to lower the success of the whole system` | `naively fine-tuning it often degrades overall system success` |
+| `The type annotations are what make fine-tuning help` | `The type annotations are the primary driver` |
+| `fine-tuned, half and half with The Stack, on the in-house repositories` | `fine-tuned on the in-house repositories mixed 1:1 with The Stack` |
+| `fine-tuning the drafter has been reported to lower the success of the whole pipeline` | `naively fine-tuning the drafter often degrades overall pipeline success` |
 
 **Rewrite pattern:** first look for a word the paper already uses (`vague` is
-already in one benchmark's name; `grasp and place tools` is the method
+already the paper's word for underspecified requests; `lint and format tools` is the method
 section's term), then for the field's usual word or phrase. Swap only when the
 short form means the same thing.
 
@@ -513,9 +513,9 @@ short form means the same thing.
 worse than Y`, `X achieves (significantly) higher success rates than Y`, `X
 (significantly) outperforms Y`, never `the system succeeds (significantly)
 less / more often with X than with Y`. The thing compared becomes the subject
-(`fine-tuning on DROID alone performs worse than ...`), and the comparator is
+(`fine-tuning on The Stack alone performs worse than ...`), and the comparator is
 named as a baseline, not as a second `with` clause. `more often` stays only for
-how often a behavior happens (`lifts the named object first more often`), not
+how often a behavior happens (`imports the named module first more often`), not
 for success.
 
 **Not this class** (all from the same draft, all kept):
@@ -523,11 +523,11 @@ for success.
 | Kept | Why |
 |------|-----|
 | `is not significantly different from` | the project's allowed wording for a null that matters |
-| `leaves the orchestrator in place` | `unchanged` says something else |
+| `leaves the verifier in place` | `unchanged` says something else |
 
 Also kept: a qualifier that is the claim or bounds it (`significantly`,
-`new tasks from the same generator`), a term the paper defines
-(`executor self-bootstrapping`), and official benchmark and model names.
+`new repositories from the same crawl`), a term the paper defines
+(`lint-guided decoding`), and official benchmark and model names.
 
 **Read every sentence; grep only helps with recall.** A stock list (`in order
 to`, `is able to`, `a number of`, `due to the fact`) found nothing in a
@@ -535,18 +535,18 @@ to`, `is able to`, `a number of`, `due to the fact`) found nothing in a
 phrases that did turn up, for the next draft.
 
 **Captions too.** One hit was in the Figure 1 caption (`fine-tuned on them
-together with DROID`). If captions are generated, change the source in the build
+together with The Stack`). If captions are generated, change the source in the build
 script and rebuild; an edit to the generated `.tex` is overwritten.
 
 **Re-run the short-last-line gate after the pass.** Cutting words reflows the
 paragraph, and two of the six edits left a last line under half the column. The
-fix is more cuts from this class in the same paragraph (`the VLA and the tools`
-→ `VLA and tools`, `20,000 training steps` → `20,000 steps` where the sentence
+fix is more cuts from this class in the same paragraph (`the drafter and the verifier`
+→ `drafter and verifier`, `50,000 training steps` → `50,000 steps` where the sentence
 already says training). Recompile until `paper-compile`'s `check_runts.py`
 reads 0.
 
 **Field note (2026-11-03, the ruling that created this class).** On one
-abstract's `loosely worded instructions`, the author wrote
+abstract's `loosely worded requests`, the author wrote
 「论文应该能用少词的就不要用多个词, 比如 loose worded 就应该写成 vague」. They also
 made that edit themselves on Overleaf. After reading every sentence of the
 draft, the agent changed six more phrases, and four more to fix short last lines.
@@ -554,10 +554,10 @@ The other multi-word phrases carried a claim or had no one-word equivalent.
 
 **Field note (2026-11-11, the kept list was wrong).** The 11-03 pass had kept
 `succeeds significantly less often` (`fails` is a different claim),
-`are what make fine-tuning help` (the cleft) and `half and half with DROID` (no
+`are what make fine-tuning help` (the cleft) and `half and half with The Stack` (no
 single word). The author then rewrote the abstract on Overleaf to
 `performs significantly worse than`, `achieves significantly higher success
-rates than`, `the primary driver` and `mixed 1:1 with DROID`, and ruled
+rates than`, `the primary driver` and `mixed 1:1 with The Stack`, and ruled
 「performs worse 是对的, succeeds less often 是不好的写法」. The pass had only
 tried one-word swaps; each phrase had a standard phrase in the field that says
 the same claim. Before keeping a phrase because no single word replaces it,
@@ -573,20 +573,20 @@ it because each sentence is short.
 
 | Cut | Write |
 |-----|-------|
-| `Our method significantly outperforms $\pi_{0.5}$ alone on Bench-1 and on Bench-2, …` / `On Bench-3 our method also significantly outperforms $\pi_{0.5}$ alone.` / `Our method also significantly outperforms $\pi_{0.5}$ alone on Bench-4, and lies clearly above it on Bench-6.` | `Our method significantly outperforms $\pi_{0.5}$ alone on Bench-1, Bench-2, Bench-3 and Bench-4, and lies clearly above it on Bench-6 (Table~\ref{tab:main}).` |
+| `Our method significantly outperforms the drafter alone on Bench-1 and on Bench-2, …` / `On Bench-3 our method also significantly outperforms the drafter alone.` / `Our method also significantly outperforms the drafter alone on Bench-4, and lies clearly above it on Bench-6.` | `Our method significantly outperforms the drafter alone on Bench-1, Bench-2, Bench-3 and Bench-4, and lies clearly above it on Bench-6 (Table~\ref{tab:main}).` |
 | `on Bench-1, on Bench-2, on Bench-4 and on Bench-5` | `on Bench-1, Bench-2, Bench-4 and Bench-5` (the same repetition at word scale) |
 
 **Rewrite pattern:** write one sentence per baseline. The significant conditions
 go in one list. Point-estimate leads (`lies above`) follow as a second clause
 with `it`, so the baseline is named once. A scope that holds for only some
-conditions (the held-out 87 tasks on two of the benchmarks) becomes its own
+conditions (the held-out 40 repositories on two of the benchmarks) becomes its own
 short sentence after the list; do not nest it inside the list. A different table
 is no reason to keep a separate sentence: cite both tables. After merging,
 re-read every later `both benchmarks`, `either`, `there` in the paragraph,
 because the merge changes what they refer to.
 
 **Keep separate:** a different baseline, or a different metric (success rate
-against successes with every action from the VLA). A different metric is a
+against successes with every line from the drafter). A different metric is a
 different claim, even when the verb is the same.
 
 **The inventory doubles as the copy check.** A comparison stated in Results
@@ -594,7 +594,7 @@ usually has copies in the intro, the method's advantages, the conclusion and the
 abstract. A result added later tends to reach one copy and miss the others. For
 each baseline, list every sentence in the paper that compares against it (step 3
 command): section, verb (`significantly outperforms` / `lies above` /
-`completes significantly more tasks with every action its own`), metric, and
+`completes significantly more tasks with every line its own`), metric, and
 conditions. The Results sentence owns the claim. Every copy is a derived form
 (SSOT), so a copy that disagrees with Results is a bug in the copy. Fixing it
 does not change what the paper claims.
@@ -602,7 +602,7 @@ does not change what the paper claims.
 | Mismatch | Fix |
 |----------|-----|
 | A copy lists fewer conditions than Results (the conclusion omits Bench-3) | Add the missing ones to the copy. A copy that enumerates must enumerate all of them, or use a summary word that is true for all |
-| A copy's verb or metric is stronger than the one in Results (`significantly outperforms` where Results has significance only on every-action-own completions) | Weaken the copy to the Results wording |
+| A copy's verb or metric is stronger than the one in Results (`significantly outperforms` where Results has significance only on every-line-own completions) | Weaken the copy to the Results wording |
 | A copy states a condition Results never states (`lies above it on Bench-7` in the intro and conclusion only) | If the table shows it at the copy's strength (a point-estimate `lies above` only needs the table), add it to Results. A significance claim with no Results owner goes to `/paper-claim-audit`, not into Results |
 | The mismatch is in the abstract or contribution list | Do not edit: the authors write those. Report it |
 
@@ -612,18 +612,18 @@ Main Results section, the author wrote 「这重复也太多了 … 明明可以
 lacked Bench-3. Bench-3 had become significant on 11-01, and that edit
 reached the intro and Results but not the conclusion. The author's reply was
 「补进结论, 这只是个例子, paper prose tighten 能发现这种错误吗?」. The copy check then found two
-more: the intro and method claimed a significant success gain over frame-level
-RECAP-style conditioning, while Results (on the 30 s-capped table) is
-significant only on every-action-own completions; and the intro and conclusion
-said our method lies above $\pi_{0.5}$ alone on Bench-7, which no Results
+more: the intro and method claimed a significant success gain over token-level
+kNN-style smoothing, while Results (on the 2k-token-capped table) is
+significant only on every-line-own completions; and the intro and conclusion
+said our method lies above the drafter alone on Bench-7, which no Results
 sentence said.
 
 ### 14. Exception clauses (例外从句: `all but X`, `except X`)
 
 A claim about every member of a set, followed by the members it does not hold
 for: `leads every open-source row on all but Bench-6`, `outperforms every
-baseline except Baseline-C`, `Every row but A and B runs Policy P`, `the test
-runs over tasks, except on Bench-9`, `under every orchestrator but Model-M`,
+baseline except Baseline-C`, `Every row but A and B runs Linter L`, `the test
+runs over tasks, except on Bench-9`, `under every teacher but Model-M`,
 `every linear layer except the output head`. Whoever writes one has checked the
 table and seen the cell where the claim fails, so it reads as accurate. But the
 exception is the name the reader remembers. In a caption's bold title the
@@ -639,8 +639,8 @@ the exception is:
 |---|---|
 | a result cell where a baseline is slightly higher and the test does not resolve it | Drop `every` and the exception together, and state the claim in a form that holds without a hole. The bold and underline marks give the per-column ranking. `significantly outperforms Baseline-A on every benchmark and leads every open-source row on all but Bench-6` → `significantly outperforms Baseline-A on every benchmark and leads the open-source rows`. The first half has no exception and keeps its `every`. |
 | a cell where a baseline is significantly higher | The `every` claim is false. Delete that claim (Escalation), or restate it over a group the paper already defines (`on the in-domain benchmarks`) when that group is exactly where it holds. Never invent a group to step around the cell. |
-| the complement is a group the paper already names | Name the group. `under every orchestrator but Model-M` → `under each of the three open models`, when the paper introduced the four as Model-M and three open models. |
-| a protocol or configuration fact that differs for a few rows, benchmarks or layers | Give each group its own plain statement. If a table column already gives the value per item, partition by that value (`over paired episodes …; over tasks …`) and point at the table. If the rows the rule skips simply lack the thing the rule is about, scope the rule to the rows that have it (`Every row but A and B runs Policy P` → `Every row with a VLA runs Policy P`, when A and B run none). If a positive list already follows, delete the exception (`every linear layer except the output head: the attention and MLP projections …` → `the attention and MLP projections …`, when the next sentence freezes every other weight). |
+| the complement is a group the paper already names | Name the group. `under every teacher but Model-M` → `under each of the three open models`, when the paper introduced the four as Model-M and three open models. |
+| a protocol or configuration fact that differs for a few rows, benchmarks or layers | Give each group its own plain statement. If a table column already gives the value per item, partition by that value (`over paired samples …; over tasks …`) and point at the table. If the rows the rule skips simply lack the thing the rule is about, scope the rule to the rows that have it (`Every row but A and B runs Linter L` → `Every row with a verifier runs Linter L`, when A and B run none). If a positive list already follows, delete the exception (`every linear layer except the output head: the attention and MLP projections …` → `the attention and MLP projections …`, when the next sentence freezes every other weight). |
 
 After the rewrite, check two things. Whatever replaces the `every` must be true of
 every member it now covers: the group, the scope or the partition. And the fact
@@ -648,7 +648,7 @@ the exception carried must still be stated somewhere. A protocol difference
 stated nowhere is a hard stop (below). A result cell the table shows needs no
 prose.
 
-**Not this class:** `other than` meaning `different from` (`holds an object
+**Not this class:** `other than` meaning `different from` (`predicts a class
 other than the target`), and a set defined by what it leaves out when that
 definition is the column's (`Unseen leaves those tasks out`). Neither says
 something about every member and then takes members back.
@@ -661,7 +661,7 @@ but not significantly. An earlier ruling had already said such cells do not
 narrow a claim, so the title lost the `every` and the exception. Two protocol
 exceptions became a partition by the protocol table's own column and a rule scoped
 to the rows it covers. The configuration exception was deleted because the list
-after it was already complete. The orchestrator exception became the group name
+after it was already complete. The teacher exception became the group name
 the introduction already used. No claim got stronger.
 
 ## Hard stops
@@ -719,11 +719,11 @@ Deleting text must never upgrade a claim.
 - **Never delete a duplicate before checking it is one.** Two class-7 traps,
   both hit on the first real pass:
   - *The "duplicate" carries a result that exists nowhere else.* A conclusion
-    bullet reading "both training stages port to a second backbone" looked like
+    bullet reading "both compression stages port to a second backbone" looked like
     a restatement of a whole results subsection — but the subsection covered
-    only the *answer* stage, and the bullet's localization-stage result appeared
+    only the *quantization* stage, and the bullet's pruning-stage result appeared
     in no section and no appendix. **Grep the distinguishing noun** (here the
-    evidence-hit metric) across `sections/` before deleting; if it is unique,
+    sparsity metric) across `sections/` before deleting; if it is unique,
     the fix is to move the sentence into the owning section, not to delete it.
   - *The appendix cites the body for what you are moving to the appendix.*
     Before "this belongs in the appendix", grep the appendix for a back-pointer
@@ -795,7 +795,7 @@ Rule of thumb: cut what proves *diligence*; keep what bounds *scope*.
    command grep -niE '\bexcept\b|\ball but\b|\b(every|all|each|any)\b[^.]{0,60}\bbut\b|\bbut (on |for )?[A-Z$\\]|save for|apart from|aside from|with the exception|\bexcluding\b|\bbarring\b' sections/*.tex tables/*.tex
    # class 13: every sentence that compares against one baseline, across all sections
    # (run once per baseline noun; read the list for split sentences and for copies that disagree)
-   for b in 'alone' 'frozen' 'EXIMO-style' 'zero-shot' 'RECAP'; do
+   for b in 'alone' 'frozen' 'kNN-style' 'zero-shot' 'greedy'; do
      echo "== $b"; python3 - "$b" <<'PY'
    import glob, re, sys
    for f in sorted(glob.glob('sections/*.tex')):
@@ -813,7 +813,7 @@ Rule of thumb: cut what proves *diligence*; keep what bounds *scope*.
    # headers, caption titles, and section titles need an eye pass on top)
    command grep -niE 'rather than|instead of|not reducible|, not |; it is|\bnor is|not by itself|not only|is not|are not' sections/*.tex tables/*.tex
    # artifact provenance / hygiene assurance (sweep tables/ too: it hides in config cells)
-   command grep -niE 'without reference to|pre-?specified|pre-?registered stopping|deployed checkpoint|the run.s endpoint|held-out (accuracy|acc) is flat|chosen by (benchmark|evaluation)|frozen (evaluation |)subset|seed' sections/*.tex tables/*.tex
+   command grep -niE 'without reference to|pre-?specified|pre-?registered stopping|(deployed|released) checkpoint|the run.s endpoint|held-out (accuracy|acc) is flat|chosen by (benchmark|evaluation)|frozen (evaluation |)subset|seed' sections/*.tex tables/*.tex
    # process vocabulary (class 9) -- count each term separately (class 9's sweep note)
    for t in preregistered pre-registered pre-specified prespecified \
             "criteria frozen" "frozen before" "frozen margin" \

@@ -53,7 +53,7 @@ def paragraphs(lines):
 
 
 def tokens(text):
-    # A subscript or superscript is part of a name (\pi_{0.5}), not a number the text states; the terms file counts names.
+    # A subscript or superscript is part of a name (\ell_{2}), not a number the text states; the terms file counts names.
     bare = re.sub(r"\\(?:ref|eqref|[cC]ref|autoref|cite[tp]?\*?|label)\{[^}]*\}|[_^](?:\{[^{}]*\}|\w)", "", text)
     nums = Counter(re.findall(r"(?<![A-Za-z_\-])\d+(?:[.,]\d+)*", bare))
     cites = Counter(k.strip() for g in re.findall(r"\\cite[tp]?\*?(?:\[[^\]]*\])?\{([^}]*)\}", text) for k in g.split(","))

@@ -61,7 +61,7 @@ WARN_PHRASES = {
     r"\b(?:dominates|beats?|excels?)\b": "comparison verb that overclaims, is colloquial or does not compare; use outperforms / performs better than / achieves a higher <metric> than (manuscript-craft.md §2)",
 }
 DETAIL = r"\b\d+ (layers?|heads?|views?|steps?|epochs?|tokens? per)\b|\d+\s*[×x]\s*\d+\s*[×x]\s*\d+|\bbatch size\b|\blearning rate of\b|\bhidden (size|dimension)\b"
-# evaluation protocol ("with ten episodes per task"): the Setup carries it (manuscript-craft.md §2, Introduction)
+# evaluation protocol ("with five seeds per task"): the Setup carries it (manuscript-craft.md §2, Introduction)
 PROTOCOL = r"\b(?:\d+|one|two|three|four|five|six|seven|eight|nine|ten|twenty|fifty|a hundred)\s+(?:episodes?|trials?|rollouts?|runs?|seeds?)\s+(?:per|for each|on each|of each)\b"
 NUMBER = r"(?<![A-Za-z\d.])\d+(?:[.,]\d+)*(?![A-Za-z\d])"
 PARAS = ROOT / "references/exemplars/paragraphs.jsonl"
@@ -219,11 +219,11 @@ def line_kinds(path, n_lines):
 FRAME = (r"\boutperform|\bsurpass|\bbeats?\b|\bimprove[sd]? (?:up)?on\b|\bimprove[sd]? over\b|\bexceed"
          r"|\b(?:performs?|performed|yields?|yielded) (?:\w+ )?better\b|\bachieve[sd]? (?:an? )?(?:\w+ )?higher\b")
 LIST_ITEM_SEP = re.compile(r",\s+(?:and\s+)?|\s+and\s+")
-# "65.0\% against 51.9\%", "a median 6.08\,s against 7.25\,s", "927 against 909", "from 51.9\% to 65.0\%"
+# "71.4\% against 58.2\%", "a median 4.17\,s against 5.03\,s", "612 against 598", "from 58.2\% to 71.4\%"
 UNIT = r"(?:\\?%|\\,s\b|s\b|×)?"
 AGAINST = rf"\d[\d.,]*\s*{UNIT}\s*\)?\s+(?:against|versus|vs\.?)\s+(?:an?\s+)?(?:median\s+)?\d"
 PAIR = re.compile(rf"{AGAINST}|\bfrom\s+(?:an?\s+)?(?:median\s+)?\d[\d.,]*\s*{UNIT}\s+to\s+\d", re.I)
-# "..., it lifts the agent, 32.9\% against 26.3\%." (manuscript-craft.md §2, Introduction)
+# "..., it lifts the classifier, 44.6\% against 39.8\%." (manuscript-craft.md §2, Introduction)
 PAIR_TAIL = re.compile(rf"[,:]\s*(?:in\s+)?{AGAINST}", re.I)
 
 
@@ -294,7 +294,7 @@ def check(path, bank, max_words):
         if not body and re.search(PROTOCOL, s, flags=re.I):
             issues.append(("WARN", n, "evaluation protocol (episodes per task, seeds) in abstract/introduction; the Setup carries it", s))
         if PAIR_TAIL.search(s):
-            issues.append(("WARN", n, "number pair trailing after a comma ('..., a% against b%') reads like a sports score; put it in the predicate ('raises success from b% to a%') or in parentheses after the comparison", s))
+            issues.append(("WARN", n, "number pair trailing after a comma ('..., a% against b%') reads like a sports score; put it in the predicate ('raises accuracy from b% to a%') or in parentheses after the comparison", s))
         if not body and re.search(r"\bslightly\b", low):
             issues.append(("WARN", n, "'slightly' hedges a result in abstract/introduction; state the result plainly or leave it to the tables", s))
         if body and len(sm.number_tokens(s)) > 2:

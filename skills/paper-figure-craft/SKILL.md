@@ -39,7 +39,7 @@ they are independent — a figure can pass one and fail the other:
 > or thickness. Never an annotation.**
 
 The ruling that set this (user, 2026-08-01) was made on an alluvial figure:
-ribbon thickness carries the *flow* (share of questions that moved), a paired
+ribbon thickness carries the *flow* (share of samples that moved), a paired
 Δ-accuracy bar row on a shared ± axis carries the *effect*. Two quantities, two
 channels. Every alternative compared for it — side-by-side bars, Δ printed onto
 the ribbons, a 2×2 transition matrix, a 2×2 heatmap — either merged the two
@@ -55,10 +55,10 @@ it "can handle long-horizon contact manipulation, challenging reset
 distributions, cluttered layouts, and multi-arm scenarios", one panel each.
 
 - **Each panel's headline names its challenge** in the field's own vocabulary:
-  a short noun phrase such as *long-horizon sequencing*, *contact-rich
-  manipulation*, *cluttered layouts*, *challenging reset distributions*,
-  *multi-arm coordination*, *distribution shift*, *mid-episode scene change*,
-  *vague / world-knowledge / common-sense instructions*. The dataset name drops
+  a short noun phrase such as *fine-grained categories*, *heavy
+  occlusion*, *cluttered layouts*, *low-light capture*,
+  *multi-object scenes*, *distribution shift*, *mid-sequence domain change*,
+  *rare / long-tail / out-of-vocabulary classes*. The dataset name drops
   to a small chip on the image.
 - **The caption's first sentence lists the challenges as one span** ("Our
   evaluation spans A, B, C and D"), then says what a panel is.
@@ -68,10 +68,10 @@ distributions, cluttered layouts, and multi-arm scenarios", one panel each.
   stress the claim (gulucaptain/Best-Paper-Writing-Skill `references/figures.md`,
   showcase type).
 - **Packaging never outruns the evidence.** Each headline must be true of the
-  instance drawn: check its suite, perturbation type or track in the benchmark's
-  own definition and in the episode's metadata. A control episode cannot carry
-  *mid-episode change*; a background-texture case is *perturbed backgrounds*,
-  not *visual perturbations* in general.
+  instance drawn: check its split, corruption type or track in the benchmark's
+  own definition and in the sample's metadata. A clean control sample cannot carry
+  *mid-sequence domain change*; a fog case is *weather corruption*,
+  not *visual corruption* in general.
 
 ## A qualitative example shows a measured mechanism (user, 2026-11-21)
 
@@ -84,8 +84,8 @@ The ruling is in the table below; this is how to build one.
    undetected gets no figure, and is recorded as undetected where the results
    live so it is not re-read later.
 2. **No reading yet: take it from the recorded runs before drawing.** State the
-   behaviour as a per-episode yes / no on recorded quantities (an object's
-   height, the gripper command), read it over the whole paired set, and test it
+   behaviour as a per-episode yes / no on recorded quantities (a logged
+   scalar, a discrete decision the system made), read it over the whole paired set, and test it
    the way the page's outcome was tested. A definition fixed after looking at
    the data is labelled post hoc on the result page, with what had been seen.
 3. **One mechanism, one example figure.** The same mechanism measured in two
@@ -114,16 +114,16 @@ The ruling is in the table below; this is how to build one.
 | **Caption below the graphic** — `\caption` after `\includegraphics`. (Tables and algorithms take it on top.) | 2026-08-05 | The user issued the opposite instruction once, watched the sweep land, and withdrew it the same day. Say this before acting on a repeat. |
 | **Caption carries no numbers and no pointer at another float.** Banned: `\ref{}`, `\S`, Appendix, `Table~`, `Figure~`, "the text". 1200 chars. | — | Figure captions are usually hand-written in `sections/`, so nothing sees them until compile: `paper-compile`'s `scripts/check_tex.py` checks every `\caption{}` the paper inputs. |
 | **A fired caption gate means rewrite the caption whole.** | — | Never raise the cap, never patch the tail. |
-| **No Δ where the figure already draws both compared levels.** A bar-top `Δ +4.2`, or a `net +190` that subtracts two labelled bars, is the table's banned Δ column in figure clothing — delete it, the reader subtracts. Δ stays only when it is a *plotted* quantity with its own axis and error bars: there it is the figure's one significance channel, a case tables cannot have because tables may not print intervals at all. | 2026-08-23 | Bold-if-significant rides on the Δ label, so it dies with it; how the prose then words significance is memory `paper-prose-rules` §1. Keep the Δ computation and its SSOT assertions in the generator: what is deleted is the presentation, not the evidence. Check the paper does not already use Δ for something else. |
+| **No Δ where the figure already draws both compared levels.** A bar-top `Δ +3.1`, or a `net +142` that subtracts two labelled bars, is the table's banned Δ column in figure clothing — delete it, the reader subtracts. Δ stays only when it is a *plotted* quantity with its own axis and error bars: there it is the figure's one significance channel, a case tables cannot have because tables may not print intervals at all. | 2026-08-23 | Bold-if-significant rides on the Δ label, so it dies with it; how the prose then words significance is memory `paper-prose-rules` §1. Keep the Δ computation and its SSOT assertions in the generator: what is deleted is the presentation, not the evidence. Check the paper does not already use Δ for something else. |
 | **An error bar is a quantity; nothing is drawn over it.** A value label that lands on a whisker — above all one wearing a white `bbox` to punch through it — deletes the figure's second quantity. The label clears the *whisker cap*, not the bar top, and needs no white box once it does. Raising the whisker's z-order is **not** the fix: it only redraws the line through the digits. | 2026-09-21 | Found on a latency figure whose stage medians sat at `median + 0.35` behind a white box, cutting a gap in every median→p95 stem. The user read it as the bars covering the whiskers; the label was the occluder. Holds for any interval mark: CI cap, percentile whisker, band edge. |
-| **`n` is never printed on a figure, subset or not.** A subset is named in words (`long-clip bucket only`, in the caption or a label), never sized. | 2026-09-09 | User: 图的规则不允许标子集. Same day as the table ruling. |
-| **A qualitative example shows a mechanism that has been measured, or it is not drawn.** A paired rollout, a before / after strip or a single case exists to show *how* two systems differ. Before drawing one, name the measured reading, taken over the whole set and tested, that says what the difference is (one system closes the gripper, re-plans, looks at the right region more often). The example is then picked, and its frames or traces chosen, to show that quantity happening. A strip whose only message is *ours succeeds, theirs does not* repeats the outcome table with one sample and leaves the reader asking why, with nothing in the paper to answer. No measured mechanism: measure it first from the recorded runs, or leave the figure out. | 2026-11-21 | User: 「应该放确定机制的, 展示机制的图, 而不是展示一个不清楚的机制」, on a paired-rollout strip whose two rows differed only in the last frame's outcome; asked why ours was better, the paper had no measured answer. The caption's takeaway is then the mechanism, in the strength the measurement supports, not the single outcome. |
+| **`n` is never printed on a figure, subset or not.** A subset is named in words (`large-molecule bucket only`, in the caption or a label), never sized. | 2026-09-09 | User: 图的规则不允许标子集. Same day as the table ruling. |
+| **A qualitative example shows a mechanism that has been measured, or it is not drawn.** A paired rollout, a before / after strip or a single case exists to show *how* two systems differ. Before drawing one, name the measured reading, taken over the whole set and tested, that says what the difference is (one system abstains, backs off, attends to the right object more often). The example is then picked, and its frames or traces chosen, to show that quantity happening. A strip whose only message is *ours succeeds, theirs does not* repeats the outcome table with one sample and leaves the reader asking why, with nothing in the paper to answer. No measured mechanism: measure it first from the recorded runs, or leave the figure out. | 2026-11-21 | User: 「应该放确定机制的, 展示机制的图, 而不是展示一个不清楚的机制」, on a paired example strip whose two rows differed only in the final outcome; asked why ours was better, the paper had no measured answer. The caption's takeaway is then the mechanism, in the strength the measurement supports, not the single outcome. |
 | **Numbers come from an SSOT** — the paper's data files or per-item result artifacts — and a figure is never hand-edited to change a number. | — | Edit the source, rerun the build. |
 | **WYSIWYG width law**: `figsize` width **is** the printed width — the include fraction × the width the float occupies: `\columnwidth` for a column float in a two-column venue, `\textwidth` for `figure*` or in a one-column venue. | — | Otherwise `\includegraphics` scales the type along with the drawing. Take both widths from the compiled document (recipe below), never from memory of another venue. |
 | **Every printed glyph in 7.5–11 pt** (body text is 10). Do not shrink type to fit; change the layout. | — | Declared ≠ printed, and the ratio cannot be computed from `figsize` when `savefig.bbox="tight"` crops the canvas. |
 | **A schematic's labels are structure and symbols only** — config constants and explanations live in the prose, never printed on the drawing, and never relocated into the caption. Scopes the 2026-08-03 rule to data plots. | 2026-09-21 | See **What a caption is**. |
-| **A symbol may be drawn on a figure only if the reader has met its definition by the page the figure lands on.** Reading order is the compiled PDF's, not the `.tex` order. A figure that prints in §1 carries none of §3's notation: the label is the word the caption or the preceding prose already uses (`block ranking`, `candidate windows`, `localization LoRA`). Neither a gloss on the canvas nor a definition in the caption repairs an early symbol; only the word does. | 2026-09-21 | User: 「gm, rm,k 啥意思,你这就不符合 paper-jargon-pass」. The test is `paper-jargon-pass`'s figure reader, who holds this figure, its caption and the pages before it, nothing after. A figure in an appendix may use what the body defined. |
-| **A figure defines its own symbols where they appear; the caption is not the symbol table.** Each symbol is glossed at the mark that draws it (an edge labelled `M blocks × T s` defines $M$; a badge `LoRA φloc` says what φ is). Caption = bold title + one clause per panel side, ~300 chars. | 2026-08-30 | "Self-representative" was the user's word. A symbol left undefined in the figure is fixed *in the figure* — widen the badge, extend the label — never by growing the caption back. For a symbol whose definition comes *after* the figure's page there is no gloss to widen: it is replaced by the word (row above). |
+| **A symbol may be drawn on a figure only if the reader has met its definition by the page the figure lands on.** Reading order is the compiled PDF's, not the `.tex` order. A figure that prints in §1 carries none of §3's notation: the label is the word the caption or the preceding prose already uses (`member ranking`, `candidate members`, `bias-correction head`). Neither a gloss on the canvas nor a definition in the caption repairs an early symbol; only the word does. | 2026-09-21 | User: 「gm, rm,k 啥意思,你这就不符合 paper-jargon-pass」. The test is `paper-jargon-pass`'s figure reader, who holds this figure, its caption and the pages before it, nothing after. A figure in an appendix may use what the body defined. |
+| **A figure defines its own symbols where they appear; the caption is not the symbol table.** Each symbol is glossed at the mark that draws it (an edge labelled `M members × T h` defines $M$; a badge `head φ_bc` says what φ is). Caption = bold title + one clause per panel side, ~300 chars. | 2026-08-30 | "Self-representative" was the user's word. A symbol left undefined in the figure is fixed *in the figure* — widen the badge, extend the label — never by growing the caption back. For a symbol whose definition comes *after* the figure's page there is no gloss to widen: it is replaced by the word (row above). |
 | **One hue = one meaning within a figure, across panels too.** A data colour may not share hue with the structural accent. A legend chip must be drawn exactly like some mark in the figure; magnification marks (zoom outline + cone) are grey dashed so a solid accent outline reads as selection only. | 2026-08-30 | A panel that draws one series in the hue that means *our method* in the next panel reads as our method. Recolour it in its own role's hue and direct-label it at the curve end. |
 | **No em dashes in figure labels** — the user reads them as AI-generated. Use `·`, a comma, or a colon; sweep the SVG and its blueprint together. | 2026-08-30 | Prose has its own dash rule (two pairs = split); this one is absolute for label text. |
 
@@ -256,12 +256,12 @@ routinely mixes drawn numbers with numbers that have no other home.
 
 **On a schematic the arrow points the other way** (user, 2026-09-21). A method,
 protocol or architecture figure draws no measurement, so a constant printed on
-it — `T s blocks, fixed by the clock`, `K = 8 candidates`, `keep top
-B = 3`, `n frames per window`, `one worker` —
+it — `T h lead steps, fixed by the clock`, `M = 8 members`, `keep top
+K = 3`, `n fields per step`, `one worker` —
 is prose copied onto the canvas, and a second authority for a value that will
 change. **Strip it; the prose is its home**, and config constants are already
 allowed there. What stays is structure and symbols: group names, row names,
-stage names, axis tick names, a symbol badge (`LoRA φloc`), a one-word gloss on a
+stage names, axis tick names, a symbol badge (`head φ_bc`), a one-word gloss on a
 mark that has no other name (`reserved`). A symbol, though, only where the reader
 has already met it (rulings table).
 
@@ -270,8 +270,8 @@ has already met it (rulings table).
 - **Check the prose has a landing spot before deleting.** If it does not, write
   the prose first. Do **not** move it into the caption: the caption is the
   graphic's legend, not a second body text.
-- **Worked case** (2026-09-21): a streaming-pipeline schematic went from 39 text
-  runs to 24 — block numbers, row names, stage names, the badge and `reserved`
+- **Worked case** (2026-09-21): an ensemble-pipeline schematic went from 39 text
+  runs to 24 — member numbers, row names, stage names, the badge and `reserved`
   stayed; everything cut was already in its appendix section, line for line.
 
 ## Redesign checklist

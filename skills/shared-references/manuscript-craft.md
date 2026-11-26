@@ -42,12 +42,12 @@ User ruling 2026-11-16.
   2026-11-16, from a co-author note: "only introduce the high-level design and
   objective of each module"). The training signal and labels, the teacher a
   model is distilled from, selection rules, data mixtures and which weights
-  change belong to the Method: "supervised with the planner's subgoal rather
-  than the task instruction" and "trained on a proprietary planner's calls"
+  change belong to the Method: "supervised with the teacher's soft labels rather
+  than the ground-truth class" and "trained on a proprietary teacher's outputs"
   interrupt the abstract.
 - **Each headline comparison is summarized, not listed per benchmark.**
   "Across several benchmarks, the method improves the backbone by a–b pp over
-  the same-stack official recipe, and transfers to a second backbone,
+  its official fine-tuning recipe, and transfers to a second backbone,
   surpassing its published results by c–d pp", never "from x% to y% on A and
   from u% to v% on B" (user ruling 2026-11-16, 「分数你应该概括一下」). One
   range over every benchmark the sentence counts is the preferred form, not a
@@ -79,10 +79,10 @@ From a second review the user forwarded, 2026-11-16 (「更新 paper review skil
   reaches and the best one, each with its setting; the two settings of one
   comparison count as one comparison under the headline-number cap.
 - **Background in at most two sentences, naming the specific difficulty.**
-  "Instructions that must be interpreted" is true of every instruction; write
-  the kind the method targets ("vague or knowledge-intensive instructions").
-  Verbs say what the method does to its object: distillation trains a local
-  model on a teacher's outputs; it does not "move" the teacher. When the
+  "Molecules whose properties must be predicted" is true of every molecule;
+  write the kind the method targets ("large or conformationally flexible
+  molecules"). Verbs say what the method does to its object: distillation
+  trains a student on a teacher's outputs; it does not "move" the teacher. When the
   abstract spills past the page it starts on, cut background and repeated
   conclusions first, the results last.
 
@@ -91,9 +91,9 @@ From a second review the user forwarded, 2026-11-16 (「更新 paper review skil
 User ruling 2026-11-16, from a review the user forwarded.
 
 - **Nothing before it is introduced.** No component of the method ("our
-  distilled planner") appears before the paragraph that presents the method:
+  pruned encoder") appears before the paragraph that presents the method:
   state the motivating evidence without it, or move that evidence later. A set
-  is named where it is counted: "four planners" says which four, or what they
+  is named where it is counted: "four teachers" says which four, or what they
   are ("one proprietary and three open models").
 - **A reason joins the gap to the method.** Between the paragraph where the
   obvious fix fails and the one that presents the method, one sentence says why
@@ -119,36 +119,36 @@ From a second review the user forwarded, 2026-11-16:
 
 - **One spine.** The Introduction runs one chain: the problem, why the obvious
   fix fails, why the method's ingredient may work, the method, how it is
-  validated. A second motivation (cost, privacy, running locally) enters as
-  what a component makes possible (large-scale collection, local deployment),
+  validated. A second motivation (cost, privacy, on-device use) enters as
+  what a component makes possible (large-scale labeling, on-device deployment),
   beside that component; a paragraph of its own between the failed fix and
   the method breaks the chain.
-- **A failure breakdown is a phenomenon, not an attribution.** "No tool ran in
-  most failed episodes" or "the most common failure releases the object off
-  its target" says what failures look like, not which component caused them:
-  a wrong subgoal, a wrong completion judgment or a missed tool call from the
-  planner ends the same way. State it as the motivation for studying the
+- **A failure breakdown is a phenomenon, not an attribution.** "No station report
+  was assimilated in most failed forecasts" or "the most common failure places
+  the storm track too far east" says what failures look like, not which component
+  caused them: a wrong initial state, a wrong bias correction or a dropped
+  observation from the assimilation step ends the same way. State it as the motivation for studying the
   component the method changes; a sentence that blames that component needs an
   intervention that changes only it.
 - **Universal qualifiers hold for every stage**, here, in the Abstract and in
   the contribution list. "All new training data come from X", "only W
-  changes" and "without new demonstrations" are checked against each stage
+  changes" and "without new labels" are checked against each stage
   the paper describes, including stages trained on a teacher's outputs or
   mixed with external data. One that holds for a single stage names that stage
-  ("the executor stage collects no expert demonstrations"), and "only W
-  changes" names its reference point ("relative to the agent before
+  ("the student stage uses no human labels"), and "only W
+  changes" names its reference point ("relative to the model before
   fine-tuning").
 - **Contribution items are independent, and an empirical item claims only what
   its controls isolate.** Proposing a method and showing that it works are one
   item. Beating alternative recipes shows that the recipe is better, not that
-  one of its factors ("the model's own data") is "the primary driver"; that
+  one of its factors ("the augmented data") is "the primary driver"; that
   needs a variant changing only that factor. Otherwise state the item as a
   controlled comparison and name the factors it controlled.
 
 From a third review the user forwarded, 2026-11-16 (「更新 skill」):
 
 - **The method item names the whole method and carries what the prose sells.**
-  Its title says what the method is as a whole ("A fully local, <property>
+  Its title says what the method is as a whole ("A training-free, <property>
   <kind of system>"), never one of its stages, with the other stage left as a
   clause in the body. The body states the stages in order as one pipeline,
   each with its role. A property the Introduction's prose argues for a
@@ -158,9 +158,9 @@ From a third review the user forwarded, 2026-11-16 (「更新 skill」):
 - **An item's title is a short noun phrase naming what the item contributes**:
   the method, the subject of a finding ("Empirical insights into adapting
   <component> within <system>"), the improvement ("Significant improvements on
-  six benchmarks"). A sentence that states a finding ("Keeping only X
+  four benchmarks"). A sentence that states a finding ("Keeping only X
   outperforms Y and Z") is the body's first sentence, not the title. The body
-  names each compared alternative by what it is ("scripted demonstrations",
+  names each compared alternative by what it is ("rule-based labels",
   not a table row's label) and the property the finding is about.
 - **The list introduces no name.** Every benchmark, split, coined term and
   variant name in an item appears in the Introduction's prose before the list.
@@ -172,15 +172,15 @@ From a fourth review the user forwarded, 2026-11-16 (「更新 skill」):
 
 - **No evaluation protocol in the Introduction.** Episodes or trials per
   task, seeds, step or time caps and the statistical test belong to the Setup
-  and the protocol table. A result sentence opened by one ("With ten episodes
+  and the protocol table. A result sentence opened by one ("With five seeds
   per task on B, ours lifts ...") spends the Introduction on a detail and reads
   as trivia; it becomes "On B, ours lifts ...". The Experiments keep the
   protocol where the comparison needs it.
 - **A result sentence carries its numbers in the predicate.** "Raises
-  overall success from b% to a%" when ours is the compared system plus the
+  overall accuracy from b% to a%" when ours is the compared system plus the
   method's change; between two separate systems, the pair in parentheses after
   the comparison. A pair trailing the sentence after a comma ("..., ours
-  significantly lifts the agent, a% against b%.") reads like a sports score.
+  significantly lifts the classifier, a% against b%.") reads like a sports score.
   This holds in every section; the rewrite pattern is `paper-polish`'s
   `references/rewrite.md` §3, and `check_draft.py` flags the trailing form.
 
@@ -225,7 +225,7 @@ User ruling 2026-11-16, from a review the user forwarded:
 
 - **The Method describes the configuration the main rows run.** When a
   component can take its input from two sources (a ground-truth signal or a
-  learned judge, a privileged input or a deployable one), say which one the
+  model's prediction, a privileged input or a deployable one), say which one the
   method's reported rows use, and introduce the other as a variant under the
   name its table row carries, with a pointer to the experiment. A capability
   the Abstract or Introduction claims ("needs no X") reads in the Method as
@@ -265,16 +265,16 @@ User ruling 2026-11-16, on the section's shape:
   significance definition is the last sentence of the protocol paragraph, not
   a paragraph of its own. The results follow in this order:
   1. *End-to-end performance and generalization*: the full method against the
-     simplest strong baseline and the published alternatives, what the
-     component kept at deployment adds, and transfer to other simulators,
+     simplest strong baseline and the published alternatives, what each
+     deployed component adds, and transfer to other simulators,
      robots or models.
   2. *Dissecting the method's pipeline*: the ablations in pipeline order
      (against the unmodified model, where the training data come from and how
      they are labeled, how they are selected, the training recipe, the data
      scale).
   3. *Behavior and cost*: the change in behavior behind the gains (failure and
-     recovery breakdowns, which object the policy acts on), then what the gains
-     cost (time per episode, latency).
+     recovery breakdowns, which inputs the model gets wrong), then what the gains
+     cost (time per sample, latency).
   Subsections follow these questions, not the contribution list: a
   contribution whose evidence is one paragraph is that paragraph, found by its
   topic sentence, not a subsection of its own. "Main Results" plus one
@@ -290,7 +290,7 @@ User ruling 2026-11-16, from a review the user forwarded:
 
 - **A results paragraph states a finding; it does not narrate the tests.** The
   first sentence gives the finding for a kind of setting ("the gain holds on
-  every long-horizon benchmark"), then one or two representative numbers, then
+  every out-of-distribution benchmark"), then one or two representative numbers, then
   the reason. Group the benchmarks by what they test and give each group one
   verdict, the one that holds for every member; name a single benchmark only
   where it departs from its group or carries the reason. The values stay in the
@@ -299,7 +299,7 @@ User ruling 2026-11-16, from a review the user forwarded:
   sentence naming four or more benchmarks, is a test log pasted into prose.
   Merging the list into a verdict keeps every scope word it carried: each
   benchmark against several combined, the averaged metric, `slightly`, a
-  control's matching condition ("for as many steps as ours"). After the
+  control's matching condition ("at the same parameter count as ours"). After the
   rewrite a fresh reader compares old and new claim by claim.
 - **Merge the subjects by question** (user ruling 2026-11-23: 「都应该按问题合并
   主语」). An ablation paragraph, in the main text or the appendix, that walks
@@ -307,11 +307,11 @@ User ruling 2026-11-16, from a review the user forwarded:
   and C on Y and Z") is the same test log with the variants as the list. Find
   the question the variants answer together (does the training data matter,
   does the label, does the selector), name them once as a group by what they
-  share ("each variant that follows prior work", "both variants collected
-  without the orchestrator"), and give the group one verdict that holds for
+  share ("each variant that follows prior work", "both variants trained
+  without augmentation"), and give the group one verdict that holds for
   every member, with one decisive pair of numbers and the table pointer:
   "ours significantly outperforms each variant that follows prior work on at
-  least one generated benchmark (Table N)". One question, one sentence; a
+  least one held-out benchmark (Table N)". One question, one sentence; a
   paragraph answers one to three questions. The group sentence is what reads
   each member's row, so no row is left unread and no per-variant sentence is
   needed for that. Which member holds in which column is left to the table
@@ -337,8 +337,8 @@ User ruling 2026-11-16, from a review the user forwarded:
   a% against b%. It also outperforms B, c% against d%."), is the ablation
   table in prose even when each sentence names one benchmark, and a topic
   sentence in front of the walk does not change that. The paragraph gives the
-  answer for the whole family of variants ("every other source of training
-  data falls below ours, each significantly in at least one setting"), keeps
+  answer for the whole family of variants ("every other augmentation
+  scheme falls below ours, each significantly in at least one setting"), keeps
   the one comparison the answer turns on, gives the reason, and points to the
   table for the rest. A paragraph carries at most four number pairs
   (`a% against b%`): the per-sentence limit alone lets through a paragraph of
@@ -346,25 +346,25 @@ User ruling 2026-11-16, from a review the user forwarded:
   main-text mention, the mentions join the answer to the question they belong
   to, one pointer sentence per question, not one sentence per variant.
 - **A measurement that explains a gain is that gain's reason, written as
-  one.** A breakdown of failure kinds, which object the policy acts on first,
+  one.** A breakdown of failure kinds, which error the model makes first,
   or which kind of task gains most is the paper's insight. Written as one more
-  comparison with no gain named ("Ours stalls in significantly fewer
-  episodes"), it reads as more log, and the gain it explains stays
+  comparison with no gain named ("Ours times out in significantly fewer
+  tasks"), it reads as more log, and the gain it explains stays
   unexplained. It goes into the behavior-and-cost subsection, in a paragraph
   that opens with the gain it explains and gives the measurement as its
-  reason ("the fine-tuned policy's gain comes from fewer stalled episodes and
-  fewer wrong-object grasps"). That sentence holds only when the two systems
+  reason ("the fine-tuned model's gain comes from fewer timeouts and
+  fewer calls to undefined functions"). That sentence holds only when the two systems
   differ only in the component the measurement concerns, the breakdown's
   difference is significant, and the breakdown accounts for the gain: its
-  classes split the failed episodes one class each, so their differences add
+  classes split the failed runs one class each, so their differences add
   up to the success difference. States that overlap one another or also occur
-  in successful episodes (stalled at some point, released the object once)
+  in successful runs (timed out on some test, called an undefined function once)
   cannot add up to a gain; nor can exclusive classes whose differences are
   not significant. Then the paragraph opens on the breakdown's own finding
-  against the same comparison ("with the fine-tuned policy, the agent stalls in
-  significantly fewer episodes"), with no "comes from". When no
-  measurement in the paper explains a main gain, a breakdown of the episodes
-  already run (by failure kind, by task kind) can supply one; until then the
+  against the same comparison ("with the fine-tuned model, the system times out in
+  significantly fewer tasks"), with no "comes from". When no
+  measurement in the paper explains a main gain, a breakdown of the runs
+  already made (by failure kind, by task kind) can supply one; until then the
   paragraph gives its verdict with no reason, never a mechanism the data do not
   show.
 - **A section of one repeated frame reads as generated.** When most sentences
@@ -407,7 +407,7 @@ User ruling 2026-11-16, from a review the user forwarded:
   not in the main Setup, unless a main-text float reports it; every term a
   main-text sentence or float uses is defined in the main text at first use. A
   main-text pointer to such an ablation names the variant by what it changes
-  ("pre-selecting objects by success rate"), not by a name defined only in the
+  ("pre-filtering training files by test coverage"), not by a name defined only in the
   appendix, and a difference that was not significant is not written as "brings
   no gain".
 - **Every number argues for a claim; a number that argues for nothing is not
@@ -416,8 +416,8 @@ User ruling 2026-11-16, from a review the user forwarded:
   paragraph's verdict, the reason for a gain, a confound it rules out, or a
   claim the Introduction or a contribution bullet makes. An implied claim is
   stated in a few words in the number's sentence ("Less data also works: on a
-  quarter of the collection, ..."; "it wins while training on fewer episodes
-  than the demonstrations"; "it is faster because its replies are shorter").
+  quarter of the corpus, ..."; "it wins while training on fewer examples
+  than the baseline"; "it is faster because it prunes more channels").
   With no claim the number leaves the main text; the appendix may keep it as
   a record. The usual orphans: a cost or wall-clock line with no comparison
   and no claim about cost; two near-equal counts printed beside a comparison
@@ -433,8 +433,8 @@ User ruling 2026-11-16, from a review the user forwarded:
   context, such as reported rows of other systems, are their decision, not
   this rule's.
 - **Each instance a claim names is an argument of its own.** "With two models"
-  or "on three simulators" needs main-text evidence for each model or
-  simulator, under the self-contained rule of `review-float-map.md` (a float
+  or "on three datasets" needs main-text evidence for each model or
+  dataset, under the self-contained rule of `review-float-map.md` (a float
   cell, or the decisive number with its comparison in the prose). Before
   flagging one, read which instance the claim means: the second model of a
   claim may be one a main-text table already carries, not the one an appendix
@@ -539,8 +539,8 @@ left alone it will paraphrase the same term three different ways.
   paper's main selling point may be cited early too.
 - In the Method, cite an architecture, training-pipeline or algorithm figure
   where the step it shows is first explained. The main results and ablation
-  tables wait for the Experiments: "we mix the two sources 1:1" describes the
-  method and needs no table pointer; "1:1 beats other ratios" is an
+  tables wait for the Experiments: "we weight the two losses equally" describes the
+  method and needs no table pointer; "equal weighting beats other ratios" is an
   experimental conclusion and moves, with its citation, to the Experiments.
 - Place each figure/table on the page where it is **first discussed**, or the
   following page. Never group floats at the end.

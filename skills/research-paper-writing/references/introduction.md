@@ -548,7 +548,7 @@ The authors write the list. Use these rules to check it, or when an author asks 
 2. Benchmark names and numbers go in the results item, the last one. A comparison that carries a number is
    stated there once: `... on <Benchmark> (<ours>\% against <baseline>\%)`.
 3. The results item is titled with the improvement, not `Experimental results`:
-   `Significant improvements on six benchmarks`, where the count matches the benchmarks the item lists.
+   `Significant improvements on four benchmarks`, where the count matches the benchmarks the item lists.
 4. A result appears in one item only, and not also in the Introduction's prose. Before adding it to one item, check the others and the prose for the same comparison.
 
 Check: `grep -n '\\item' <intro file>` and read each item but the last for benchmark names.

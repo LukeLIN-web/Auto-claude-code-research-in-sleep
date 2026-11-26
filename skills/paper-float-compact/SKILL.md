@@ -185,7 +185,7 @@ with those numbers rather than attempted.
    parent caption now carries (e.g. the benchmark name).
    **Panels, not one tabular, whenever the rows are not on one protocol.** An
    identical column header is not enough: if the nominally same arm reads
-   differently in the two tables (different answer weights, window cap,
+   differently in the two tables (different head weights, crop cap,
    denominator marker), one tabular invites the cross-row comparison and
    then needs a group label plus a footnote to disown it. Two panels under a
    parent caption share the header definitions and keep the comparisons

@@ -200,7 +200,7 @@ Local cite:
 
 Three things the Method must say before the reader meets the results tables.
 
-**1. Which configuration the main rows run.** List every component that has more than one possible source (a ground-truth label or a learned judge, a privileged input or a deployable one). For each, find the source the method's reported rows use in the results table, and write that one into the pipeline. The other source is a variant, named as its table row is named, with a pointer:
+**1. Which configuration the main rows run.** List every component that has more than one possible source (a ground-truth label or a model's prediction, a privileged input or a deployable one). For each, find the source the method's reported rows use in the results table, and write that one into the pipeline. The other source is a variant, named as its table row is named, with a pointer:
 - `<Method> takes <signal> from <source A>; <source B> can supply it instead, as in the variant <row name> (Sec. <k>).`
 
 Check the Abstract and Introduction: a capability claimed there ("needs no X") must match a variant here, not the default. Do not move the variant's result into the Method (Rule 8); the pointer is enough.
@@ -213,7 +213,7 @@ Check the Abstract and Introduction: a capability claimed there ("needs no X") m
 A mechanism that sounds right but nothing tested is `[TODO]` (Rule 9). An ablation cell that did not reach significance is not a reason; leave it in its table.
 - `We drop every <sample> in which <event>: <component> causes <event> only when <condition>, so such a <sample> contains <what the filter removes>.`
 
-**3. One model or one per domain.** When the results tables span domains (simulators, embodiments, datasets), say in the subsection that defines training whether one set of weights serves all of them or each domain gets its own run, and for a per-domain run, from which starting weights, on which data and with which data replacing the default replay. Write only what holds for every domain; per-domain specifics and counts go to the appendix with a pointer. This sentence does not belong in an Advantages paragraph or first in the experiments' Setup.
+**3. One model or one per domain.** When the results tables span domains (simulators, embodiments, datasets), say in the subsection that defines training whether one set of weights serves all of them or each domain gets its own run, and for a per-domain run, from which starting weights, on which data and with which data replacing the default ones. Write only what holds for every domain; per-domain specifics and counts go to the appendix with a pointer. This sentence does not belong in an Advantages paragraph or first in the experiments' Setup.
 - `We run the same <loop> once in each of <domains>, starting from the weights we evaluate there, and in each <Method> runs the weights trained there.`
 
 ## Implementation Details
