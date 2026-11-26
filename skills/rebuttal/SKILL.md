@@ -37,53 +37,23 @@ This skill does **not**:
 
 If the user already has new results, derivations, or approved commitments, the skill can incorporate them as **user-confirmed evidence**.
 
-## Lifecycle Position
-
-```text
-Workflow 1:   idea-discovery
-Workflow 1.5: experiment-bridge
-Workflow 2:   auto-review-loop (pre-submission)
-Workflow 3:   paper-writing
-Workflow 4:   rebuttal (post-submission external reviews)
-```
-
 ## Constants
 
 - **VENUE = `ICML`** — Default venue. Override if needed.
 - **RESPONSE_MODE = `TEXT_ONLY`** — v1 default.
-- **REVIEWER_MODEL = `gpt-6-astra`** — Default model for the Codex backend. Used for internal stress-testing. Manual backend uses a model the user chooses — it must be a recognized model from a different family (OpenAI, Anthropic, Google, DeepSeek, Moonshot/Kimi, Qwen).
-- **REVIEWER_BACKEND = `codex`** — Default: Codex MCP (xhigh). Override with `— reviewer: oracle-pro` for Oracle MCP, or `— reviewer: manual` for Manual Review MCP. If manual-review MCP is unavailable, stop and print the install command; do not fall back to Codex. See `shared-references/reviewer-routing.md`.
+- **REVIEWER_MODEL = `gpt-6-astra`** — Default model for the Codex backend. Used for internal stress-testing.
+- **REVIEWER_BACKEND = `codex`** — Default: Codex MCP (xhigh). Override with `— reviewer: oracle-pro` for Oracle MCP; other backends, including manual review, per `shared-references/reviewer-routing.md`.
 - **MAX_INTERNAL_DRAFT_ROUNDS = 2** — draft → lint → revise.
 - **VENUE_MODE = `single_document`** — `single_document` for one shared author response, or `per_reviewer_thread` when each reviewer thread renders independently. Confirm the venue/interface before drafting if unclear. Affects Phase 4/7 output shape.
 - **STRESS_TEST_ROUNDS_BASE = 1** — One external reviewer critique round on the full response set. Add one focused round for `reviewer_priority: pivotal` responses. Hard cap at 2 (Phase 6 "Iterations").
 - **MAX_FOLLOWUP_ROUNDS = 3** — per reviewer thread.
-- **AUTO_EXPERIMENT = false** — When `true`, automatically invoke `/experiment-bridge` to run supplementary experiments when the strategy plan identifies reviewer concerns that require new empirical evidence. When `false` (default), pause and present the evidence gap to the user for manual handling.
-- **QUICK_MODE = false** — When `true`, only run Phase 0-3 (parse reviews, atomize concerns, build strategy). Outputs `ISSUE_BOARD.md` + `STRATEGY_PLAN.md` and stops — no drafting, no stress test. Useful for quickly understanding what reviewers want before deciding how to respond.
 - **REBUTTAL_DIR = `rebuttal/`**
-- **RENDER_HTML = true** — When `true` (default), Phase 9 renders each canonical response file to HTML. Set `false`, or pass `— render html: false`, to skip.
 
 > Override: `/rebuttal "paper/" — venue: NeurIPS, character limit: 5000`
 
 ## Reviewer Calling Convention
 
-When calling the reviewer for stress-testing, branch on REVIEWER_BACKEND:
-
-**If REVIEWER_BACKEND = `codex`:**
-  Use `mcp__codex__codex` for new review threads.
-  Use `mcp__codex__codex-reply` for follow-up rounds (reuse threadId).
-
-**If REVIEWER_BACKEND = `manual`:**
-  Use `mcp__manual_review__review` for new review threads with:
-    prompt: [exact same prompt that would go to Codex]
-    config: {"model_reasoning_effort": "xhigh", "executor_model": "<actual executor model>", "require_reviewer_model": true}
-  Save the returned `threadId`.
-  Use `mcp__manual_review__review_reply` for follow-up rounds with:
-    threadId: [saved manual-review threadId]
-    prompt: [follow-up prompt]
-    config: {"model_reasoning_effort": "xhigh", "executor_model": "<actual executor model>", "require_reviewer_model": true}
-
-Prompt fidelity: the manual prompt must be exactly the same text that Codex would receive.
-Review tracing applies equally to both backends.
+For `codex`, use `mcp__codex__codex` for new review threads and `mcp__codex__codex-reply` for follow-up rounds (reuse threadId). Other backends: the note at the top of this file.
 
 ## Required Inputs
 
@@ -110,9 +80,9 @@ Detailed rules live next to this file. Each phase below names the file it requir
 |---|---|---|
 | [references/rhetoric.md](references/rhetoric.md) | Phase 4, Phase 8 | 话术: answer shape, thanks opener, persuading moves (P1–P4), refuting moves (R1–R10), anti-patterns, phrase bank, co-author and user-edit lessons (C1–C27), user rulings on cost and run wording (C28–C29), drafting moves from co-author text (C30–C33), secondary evidence only when asked (C34), active voice with "we" (C35), inherited dataset errors attributed to their source (C36), "unstable measurement" turned into the contribution with a human / prior SOTA / ours table (C37) |
 | [references/comparison-rules.md](references/comparison-rules.md) | Phase 4, Phase 5 lint 13 | minimum evidence, one metric per reply, one measurement setup for every arm, intervals, ties, weak number vs best of the rest, words agree with numbers |
-| [references/wording-pass.md](references/wording-pass.md) | Phase 6.5, Phase 8 | wording pass on the finished draft, for the drafter: order of the steps, reconcile, tighten filler, reword (delete → replace → define) and rewrite for voice and cohesion — the overlay passed to `/paper-polish`, whose editor subagent runs `/paper-prose-tighten` (cut) then `/paper-jargon-pass` (reword, rewrite) — the drafter's checks on its edits, one owner per number; what is never touched; acceptance; lessons L1–L11 from the first run |
+| [references/wording-pass.md](references/wording-pass.md) | Phase 6.5 | wording pass on the finished draft, for the drafter: order of the steps, reconcile, tighten filler, reword (delete → replace → define) and rewrite for voice and cohesion — the overlay passed to `/paper-polish`, whose editor subagent runs `/paper-prose-tighten` (cut) then `/paper-jargon-pass` (reword, rewrite) — the drafter's checks on its edits, one owner per number; what is never touched; acceptance; user rulings L1–L11 on reported findings |
 | [references/lints.md](references/lints.md) | Phase 5, and wherever a later step names a lint by number | lints 8–26: design choices, cross-thread duplication, weakness and concession, thanks opener, Limitations promises, comparison, self-contradiction, foreign content, unverified causes, measurements, outlier framing, new-result framing, readability, number density, secondary evidence, voice, deference lines, Conventions line, AC-note rating tags |
-| [references/blind-read.md](references/blind-read.md) | Phase 6.5 blind read and acceptance read — handed to the blind-read subagent, which gets no other method file | who the reader is, the three signals to record, ledger format |
+| [references/blind-read.md](references/blind-read.md) | Phase 6.5 blind read and acceptance read, Phase 8 blind read before posting — handed to the blind-read subagent, which gets no other method file | who the reader is, the three signals to record, ledger format |
 | [references/posting-and-endgame.md](references/posting-and-endgame.md) | Phase 7, before the closing note | posting order, the closing note before the discussion closes (public thank-you to the AC and reviewers with a summary of the discussion, § 2a; a separate thank-you in the thread of each positive-score or score-raising reviewer, § 2c; confidential closing message to the AC whenever some reviewer has not confirmed a positive rating: thanks, the concerns in bold with what we did, where the rebuttal stands, who supports us, each remaining reviewer as no reply / open concern / factual error, why we disagree with an opposing view, thanks again, § 2b), after every round |
 | [references/round2-replies.md](references/round2-replies.md) | Phase 8 (every reviewer comment after round 1 is posted) | what is frozen once round 1 is posted, delta replies, shape of a round-2 reply (title, bold thanks, agree, answer, rating request + invitation to ask more, thanks), replies to a reviewer who confirms acceptance (incl. the two-sentence closing reply once a rating request did not move the score, and the thanks-only reply that thanks the original review's strengths in one sentence when reservations remain and nothing can answer them), a new analysis in a round-2 reply (definitions, denominators, adjustment, CI format, headings, no caveats, promises), nudges (all-reviewer first, then one reviewer per post, one each; silent positive left alone, silent negative → AC, and in the last days another nudge after 24 h plus, for the last silent negative one, a short AC note at the same time), score requests (one per reviewer), the all-reviewer thank-you posted 24 h after round 1 (§ 8) |
 | [references/collaboration.md](references/collaboration.md) | Phase 4 collaborator doc, whenever a co-author has touched the shared draft | the collaborator doc: layout, derived drafts, one link, HackMD sync (§ 9); who owns which text, co-author version vs ours (wording → theirs, substance → note), check against the source not our board, marking, sync direction, comments and suggestions, safe doc edits |
@@ -139,7 +109,7 @@ The rule covers **measurements** of the response, not only its text. Character c
 | `MCP_STRESS_TEST_round<N>.md` | both | canonical — verbatim stress-test transcripts (Phase 6) |
 | `wording/<UTC timestamp>/ledger-<ID>.md` | both | canonical — blind-read ledgers of the wording pass (Phase 6.5); findings and dispositions only, no response text |
 | `SUPPLEMENTARY_FIG_PDF/` | per_reviewer_thread, optional | derived — venue-compliant figure PDF (Phase 7); no response text |
-| `*.html` (+ `.review.json` sidecar) | both, if `RENDER_HTML` | derived — Phase 9 render of each canonical response file |
+| `*.html` | both, optional | derived — an HTML view of a canonical response file; regenerate it whenever that file changes |
 | `COLLAB_DOC.md` (+ `collab_doc.json`) | both | the collaborator doc (Phase 4 "Collaborator doc"): its board prose is canonical here; every draft and translation section between `<!-- DRAFT:<file> -->` markers is derived, rewritten by `scripts/collab_doc_sync.py`, which also pushes the doc to its HackMD note(s). `collab_doc.json` holds the note ids and the last-pushed hashes, never a token |
 
 ## Workflow
@@ -187,47 +157,10 @@ Create `rebuttal/STRATEGY_PLAN.md`.
 6. **Check instance-level complaints by hand** (「单个样本之类的需要手动check下具体咋回事」). When a concern cites a specific sample, example, input or table cell, open that exact instance and see what actually happened before choosing a response mode; do not answer it from aggregate statistics or from the reviewer's description. Record the finding in the issue card. The same holds for implementation questions ("which parameters are trained", "how is X computed", "what does the checkpoint contain"): answer from the training script, the framework source for any flag whose meaning matters, and the released artifact — never from the paper's own wording, which is what the reviewer is questioning ([references/rhetoric.md](references/rhetoric.md) C14).
 7. **Pick the lever per reviewer** (「他给1分不太对，但是不是扳不回来 2分哥，看起来是只要补实验就可以 1分哥，主要是要和他掰扯到毛病挑不出来」). A low score is not final. For each negative-score reviewer, write in `STRATEGY_PLAN.md` which lever moves them:
    - `experiments` — the concerns are missing evidence (e.g. a typical 2): run what they asked for; the reply mostly reports it.
-   - `argument` — the concerns attack soundness or claims (e.g. a typical 1): go through every objection and close it — refuted with evidence already in the paper or the sprint, or closed with an approved fix — until nothing is left to fault. No point goes unanswered.
+   - `argument` — the concerns attack soundness or claims (e.g. a typical 1): go through every objection and close it — refuted with evidence already in the paper or in user-confirmed new results, or closed with an approved fix — until nothing is left to fault. No point goes unanswered.
 8. **Posting order** (「先一个一个回复，看正分审稿人愿不愿意confirm，他们一般confirm之后就不动了. 然后麻烦的负分先留到最后」). Post replies one reviewer at a time, positive-score reviewers first: once they confirm their score they rarely move again. The difficult negative-score reviewers go last. Record the order in `STRATEGY_PLAN.md`; drafting may run in parallel, posting follows the order (Phase 7). **Every board, doc and HTML view lists the reviewers in this same order from its first version: highest score first, lowest last** (user 2026-11-12「下次应该把高分的放前面, 你先让正分confirm」). Do not lead with the lowest-scoring or most confident reviewer.
 9. Identify **blocked claims** (ungrounded or unapproved)
-10. If unresolved blockers → pause and present to user
-  A verdict-bearing manual response MUST begin with
-  `Reviewer-Model: <exact-model-id>` — pass the model THIS session is actually
-  running as in `executor_model`. Missing, unknown, or same-family identity
-  cannot acquit; emit `REVIEW_UNAVAILABLE` rather than guessing. If the executor
-  model cannot be named, manual review's cross-family claim is unprovable — say
-  so in the report instead of asserting it.
-
-
-**QUICK_MODE exit**: If `QUICK_MODE = true`, stop here. Present `ISSUE_BOARD.md` + `STRATEGY_PLAN.md` to the user and summarize: how many issues per reviewer, shared vs unique concerns, recommended priorities, and evidence gaps. The user can then decide to continue with full rebuttal (`/rebuttal — quick mode: false`) or write manually.
-
-### Phase 3.5: Evidence Sprint (when AUTO_EXPERIMENT = true)
-
-**Skip entirely if `AUTO_EXPERIMENT` is `false` — instead, pause and present the evidence gaps to the user.**
-
-If the strategy plan identifies issues that require new empirical evidence (tagged `response_mode: grounded_evidence` with `evidence_source: needs_experiment`):
-
-1. Generate a mini experiment plan from the reviewer concerns:
-   - What to run (ablation, baseline comparison, scale-up, condition check)
-   - Success criterion (what result would satisfy the reviewer)
-   - Estimated GPU-hours
-
-2. Invoke `/experiment-bridge` with the mini plan:
-   ```
-   /experiment-bridge "rebuttal/REBUTTAL_EXPERIMENT_PLAN.md"
-   ```
-
-3. Wait for results, then update `ISSUE_BOARD.md`:
-   - Tag completed experiments as `user_confirmed_result`
-   - Update evidence source for relevant issue cards
-
-4. If experiments fail or are inconclusive:
-   - Do NOT fabricate positive results
-   - What a response may say about the result: Phase 4 "Never expose a weakness" and [references/comparison-rules.md](references/comparison-rules.md)
-
-5. Save experiment results to `rebuttal/REBUTTAL_EXPERIMENTS.md` for provenance tracking.
-
-**Time guard**: If estimated GPU-hours exceed rebuttal deadline, skip and flag for manual handling.
+10. If unresolved blockers or evidence gaps (a concern that needs a new experiment) → pause and present them to the user
 
 ### Phase 4: Draft Initial Rebuttal
 
@@ -259,11 +192,11 @@ When one result or analysis answers concerns from multiple reviewers, it appears
 Self-contained means the reviewer can follow the response without opening another thread — not that every thread repeats the full result. Reviewers and the AC read all threads; near-verbatim repetition reads as boilerplate and burns each thread's character budget. The only sanctioned verbatim duplication across reviewer files is the `SETUP_METRICS_BLOCK.md` inclusion.
 
 **Reviewer-defensive moves:**
-- **Significance is defined once, in a Conventions line** (user 2026-11-13「开头定义一下 convention … 不要在正文中说不然很奇怪」; model: the Conventions line of an earlier per-thread rebuttal). When a reply reports three or more significance statements or intervals, or a reply already defines one, its opening carries `**Conventions.** *Significant* means that the 95% bootstrap interval of a difference, resampled over <unit>, excludes zero.` (state the true resampling unit; add the draw count or a correction such as Holm only if the reply relies on it). The body then says "significant(ly)" and never repeats "the 95% … interval excludes zero"; bracketed intervals in tables may stay. If the opener is a co-author's text, the Conventions line is its own paragraph after it, in our colour.
+- **Significance is defined once, in a Conventions line** (user 2026-11-13「开头定义一下 convention … 不要在正文中说不然很奇怪」). When a reply reports three or more significance statements or intervals, or a reply already defines one, its opening carries `**Conventions.** *Significant* means that the 95% bootstrap interval of a difference, resampled over <unit>, excludes zero.` (state the true resampling unit; add the draw count or a correction such as Holm only if the reply relies on it). The body then says "significant(ly)" and never repeats "the 95% … interval excludes zero"; bracketed intervals in tables may stay. If the opener is a co-author's text, the Conventions line is its own paragraph after it, in our colour.
 - **Never expose a weakness** (user 2026-11-07: 「所有暴露缺点的都不提. 如果 reviewer 明确要了, 那给 user 定」). Nothing in a response file reveals a weakness of our work unless the reviewer explicitly asked for that exact thing. Weaknesses include: a metric or comparison a baseline (or a trivial reference such as a constant predictor) wins; a failed, inconclusive or negative rebuttal experiment; an error we found in our own paper, data or prompts; a caveat or limitation the reviewer did not raise; a model or variant we tried and dropped. Leave it out entirely — no figures AND no qualitative acknowledgment (no "trails", "lower than", "not as strong as", "however", "one limitation is" phrasing): report our own number, anchor comparisons on the metrics we win, and state the claim in positive scope terms ("the model's validated strength is X"), which requires no reference to the opponent. If the reviewer explicitly asked for it (the unfavorable number itself, the experiment that came out negative, the flaw they named), do not decide alone: mark the issue `needs_user_input`, put the options in `ISSUE_BOARD.md`, and write it only the way the user rules. Conceding is never an option ("Never concede").
 - **Never concede** (user 2026-11-07: 「不能有任何让步」). No sentence in a response file, and no edit in a revised PDF, agrees that a criticism of our work is right, retracts or narrows one of our claims, adopts the reviewer's deflating term for it, credits our design to prior work, or admits a limitation, an error or an unfinished part. This holds even when the reviewer is right on a local point, and for the words alone ("we agree", "we accept", "correct", "the reviewer is right", "we concede"), including apologies ("sorry for the misunderstanding", "we apologize", "we regret the confusion"), which concede and also tell the AC the reviewer misread. Answer with what holds: the evidence we win on, stated in positive scope terms. A missing citation is answered with "we will cite X" and nothing more (「漏引的就说会引用就好了」): no admission that it was missing, no credit of our design to it. **Exception — a change the reviewer explicitly requested, answered in the reviewer's own word** (user 2026-11-09: 算「审稿人明确要求的修改，用他的原词回应」). When the review asks for a presentation change in so many words ("Please reconcile these descriptions", "clarify", "make consistent", "add"), the reply may report that change using the reviewer's verb: "Per your comment, we have reconciled the two descriptions … so the two places use the same wording." This answers the request; it is not a concession. It still never says the earlier text was wrong, an error, a mistake, incorrect or inconsistent, and never "we agree"; it quotes the revised text instead (rhetoric C16). Revision promises that add material (a table, a citation, a new result) stay; a promise that retracts or qualifies a claim is a concession and is not made. When the reviewer explicitly asked for a result that goes against us, the user still decides whether it is reported ("Never expose a weakness"), and the reply never frames it as a concession.
 - **What "explicitly asked" covers** (user 2026-11-07). Read it off the issue card's `asked_for`, which comes from the raw text, never from a paraphrase. "Compare with X" makes the comparison with X mandatory, but leaves the metric to us. A metric we lose on is "asked for" only when the reviewer named that metric or granularity ("report rank correlation", "does it order the models correctly"). Before telling the user "the reviewer asked for Y", quote the sentence that asks for Y. If no sentence does, the losing number is an ordinary weakness: leave it out without escalating.
-- **Choosing what to compare on** — once a comparison is mandatory, follow [references/comparison-rules.md](references/comparison-rules.md): one metric for every baseline in a reply, every win written (interval printed only when it excludes 0), no ties stated, no number that shows the flagship losing, words agree with numbers, and a weak number of ours is placed next to the best other methods reach on the same quantity ("Weak number → the best of the rest is weaker still", user 2026-11-09, on a W2 reply: 「如果说不好, 就写 别人的最好的也不如我们好」).
+- **Choosing what to compare on** — once a comparison is mandatory, follow [references/comparison-rules.md](references/comparison-rules.md): one metric for every baseline in a reply, every win written (interval printed only when it excludes 0), no ties stated, no number that shows the flagship losing, words agree with numbers, and a weak number of ours is placed next to the best other methods reach on the same quantity ("Weak number → the best of the rest is weaker still", user 2026-11-09: 「如果说不好, 就写 别人的最好的也不如我们好」).
 - **Rulings reach every draft.** When the user rules on an open question, record the ruling in `ISSUE_BOARD.md` (with the draft wording) and `REBUTTAL_STATE.md` right away. Then check every response file already written against it, including files another session drafted, and update them.
 - **Limitations items are weaknesses.** When a reviewer lists Limitations (or asks that something "be stated explicitly"), answer each item on the merits exactly like a W#: 1-2 sentences of positive argument per item, grounded in numbers already in the response (framing like "Our position on each:"). Never reply with promise-to-revise phrasing ("will be written into the Limitations section", "becomes an explicit statement in the revised Limitations", "we will state in Limitations") — a promise-to-revise reads as conceding the point instead of defending it. The corresponding paper edit, if the author approves one, is tracked in `REVISION_PLAN.md` only and marked `unpromised`. Revision promises attached to W#/Q# answers ("We will add CIs to the per-region tables") remain allowed and stay future tense.
 
@@ -344,8 +277,6 @@ mcp__codex__codex:
     Verdict: safe to submit / needs revision
 ```
 
-*For manual:* use `mcp__manual_review__review` with the same prompt and the identity-bearing config from the Reviewer Calling Convention above (`executor_model` + `require_reviewer_model: true`).
-
 *For the Codex CLI:* one background session per reviewer file, so `per_reviewer_thread` files are tested in parallel. Each session is a one-shot review: its request carries the scope and, in round 2, the round-1 fixes.
 
 ```
@@ -359,16 +290,7 @@ The prompt goes on stdin (`-`): with the prompt as an argument and stdin left op
 
 ### Phase 6.5: Wording Pass
 
-Once the draft is complete and the stress-test fixes are in, go over its wording (user 2026-11-09: 「rebuttal 生成完了, 用这些方法过一遍措辞」). Follow [references/wording-pass.md](references/wording-pass.md); read it now, not from memory. It runs the jargon, prose-tightening and single-source passes as separate steps in a fixed order, with separate readers; steps 3–5 are [`/paper-polish`](../paper-polish/SKILL.md), the same polish a paper gets, called with wording-pass § 3–5 as the rebuttal overlay (user 2026-11-12: 「让另一个 AI 润色 … 先 paper prose tighten, 再 paper jargon pass」「这一套应该封装为一个单独的 skill」):
-
-1. **Blind read** — one fresh subagent per paste target, given only [references/blind-read.md](references/blind-read.md), that reviewer's raw review and the stripped reply text, reads as that reviewer and writes a ledger to `rebuttal/wording/<UTC timestamp>/`. The drafter never does this read, and the subagent never gets `wording-pass.md`, the issue board or the evidence.
-2. **Reconcile** — check the numbers and terms the ledger touched against their sources; mismatches go to the user.
-3. **Tighten, once (cut only)** — `/paper-polish`'s editor subagent (one per paste target, never the drafter) runs `/paper-prose-tighten` with wording-pass § 3 as the rebuttal overlay. It deletes sentences whose removal does not change the reviewer's judgment (bookkeeping counts, defensive meta-narration, journey, restatement, narrated absences, false pivots, value series). The thanks opener, goal and setup sentences, number addresses and conclusion sentences are house style and stay.
-4. **Reword, then rewrite** — the same editor runs `/paper-jargon-pass`, second pass only, on the ledger's term entries; it fixes each remaining entry by the first move that works: delete the word, replace it with the reviewer's / the paper's / the field's word, delete the sentence, define at first use. Internal names (experiment IDs, checkpoints, board shorthand) and lineage words ("the re-calibrated copy") are removed, never defined. Deleting comes before rewording so no definition is written for a sentence that is about to go. Then it reads `/paper-polish`'s `references/rewrite.md` and rewrites the surviving sentences, without cutting any (user 2026-11-12: 「我们尽量用 We 这样子的主动语态」「删和改不要放一个」): active voice with "we" as the actor, known-before-new order, paragraphs linked to the question or the paragraph before, one claim per sentence; the verdict after the thanks stays bare (C35).
-5. **Check the editor's edits** (`/paper-polish` § 5 plus wording-pass § 5) — the drafter takes an edit only after diffing the frozen spans (reviewer quote, quoted paper text, co-author sentences, ruled wording), comparing the numbers and addresses, and writing the before/after claim line; a failing edit is dropped, not repaired.
-6. **One owner per number** — grep each reply's headline numbers across all response files and derived views; every repeat is identical in value, unit, rounding and name, and each thread states a result once.
-
-The pass edits wording in the canonical response text only. It never changes a number, a reviewer quote or a wording the user ruled on; a co-author's text is never reworded or deleted, only marked (highlight plus a note, or a comment), and it never decides a claim: mismatched numbers, contradictions, unanswered sub-questions and lineage words are reported to the user. Finish with a second fresh blind read, then re-run lints 6, 9, 10, 13, 14, 19, 20, 21 and 23.
+Once the draft is complete and the stress-test fixes are in, run the wording pass of [references/wording-pass.md](references/wording-pass.md) (user 2026-11-09: 「rebuttal 生成完了, 用这些方法过一遍措辞」); read it now, not from memory. It changes wording only: everything else it finds goes to the user.
 
 ### Phase 7: Finalize
 
@@ -394,30 +316,13 @@ When new reviewer comments arrive, follow [references/round2-replies.md](referen
 2. Link to existing issues or create new ones
 3. Draft **delta reply only** (not full rewrite)
 4. Update `rebuttal/REVISION_PLAN.md` in place — add any new checklist items introduced by the follow-up, tick off items the author has already completed, and keep existing items' status current
-5. Re-run safety lints, then the wording pass (Phase 6.5) on the delta reply
+5. Re-run safety lints, then one fresh blind read of the delta reply before posting ([references/round2-replies.md](references/round2-replies.md) § 2 item 7); no full wording pass
 6. Use the appropriate reply tool for continuity if useful (per Reviewer Calling Convention)
 7. Before writing each reply, reread [references/round2-replies.md](references/round2-replies.md) § 3–§ 8; never write it from memory
 8. Rules: escalate technically not rhetorically; never concede (Phase 4 "Never concede"); for a reviewer whose lever is `argument` (Phase 3 step 7), keep closing each new objection until none is left, but never repeat an argument that already failed — bring new evidence or a new angle, or stop
 
-### Phase 9: Render HTML view (auto, when `RENDER_HTML = true`, default)
-
-After Phase 7 (initial rebuttal) or Phase 8 (follow-up rounds) finalizes the canonical response file(s), invoke `/render-html` on each one — `REBUTTAL_DRAFT.md`, or every `Reviewer_<ID>_response.md`:
-
-```
-/render-html "rebuttal/Reviewer_<ID>_response.md"
-```
-
-Uses **full Codex review gate** (reviewer-facing pre-submission deliverable — render fidelity matters). Output: sibling `.html` with embedded source SHA256 and `.review.json` sidecar — a derived view, never edited directly.
-
-Do NOT render `rebuttal/PASTE_READY.txt` — it's exact-character-count plain text by design, not a structural artifact.
-
-**Non-blocking**: if `/render-html` fails (helper missing, Codex MCP unavailable, file write error), log the failure and treat the rebuttal phase as complete — the canonical `.md` files are the deliverable.
-
-Skip if `RENDER_HTML = false`.
-
 ## Key Rules
 
-- **Large file handling**: If Write fails, retry with Bash heredoc silently.
 - **Never fabricate.** No invented evidence, numbers, derivations, citations, or links.
 - **Never overpromise.** Only promise what user explicitly approved.
 - **Full coverage.** Every reviewer concern tracked and accounted for.
@@ -434,4 +339,4 @@ Skip if `RENDER_HTML = false`.
 
 ## Review Tracing
 
-After each reviewer call (`mcp__codex__codex`, `mcp__codex__codex-reply`, `mcp__manual_review__review`, or `mcp__manual_review__review_reply`), save the trace following `shared-references/review-tracing.md` (Policy C — forensic; never silently skip). Use `save_trace.sh` (resolved per the chain in `shared-references/integration-contract.md` §2) or write files directly to `.aris/traces/<skill>/<date>_run<NN>/`. Respect the `--- trace:` parameter (default: `full`).
+After each reviewer call, save the trace following `shared-references/review-tracing.md` (Policy C — forensic; never silently skip). Use `save_trace.sh` (resolved per the chain in `shared-references/integration-contract.md` §2) or write files directly to `.aris/traces/<skill>/<date>_run<NN>/`. Respect the `--- trace:` parameter (default: `full`).

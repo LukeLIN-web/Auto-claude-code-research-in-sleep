@@ -37,16 +37,6 @@ This skill does **not**:
 
 If the user already has new results, derivations, or approved commitments, the skill can incorporate them as **user-confirmed evidence**.
 
-## Lifecycle Position
-
-```text
-Workflow 1:   idea-discovery
-Workflow 1.5: experiment-bridge
-Workflow 2:   auto-review-loop (pre-submission)
-Workflow 3:   paper-writing
-Workflow 4:   rebuttal (post-submission external reviews)
-```
-
 ## Constants
 
 - **VENUE = `ICML`** — Default venue. Override if needed.
@@ -56,10 +46,7 @@ Workflow 4:   rebuttal (post-submission external reviews)
 - **MAX_INTERNAL_DRAFT_ROUNDS = 2** — draft → lint → revise.
 - **MAX_STRESS_TEST_ROUNDS = 1** — One Codex MCP critique round.
 - **MAX_FOLLOWUP_ROUNDS = 3** — per reviewer thread.
-- **AUTO_EXPERIMENT = false** — When `true`, automatically invoke `/experiment-bridge` to run supplementary experiments when the strategy plan identifies reviewer concerns that require new empirical evidence. When `false` (default), pause and present the evidence gap to the user for manual handling.
-- **QUICK_MODE = false** — When `true`, only run Phase 0-3 (parse reviews, atomize concerns, build strategy). Outputs `ISSUE_BOARD.md` + `STRATEGY_PLAN.md` and stops — no drafting, no stress test. Useful for quickly understanding what reviewers want before deciding how to respond.
 - **REBUTTAL_DIR = `rebuttal/`**
-- **RENDER_HTML = true** — When `true` (default), Phase 9 renders the canonical `REBUTTAL_DRAFT.md` to HTML. Set `false`, or pass `— render html: false`, to skip.
 
 > Override: `/rebuttal "paper/" — venue: NeurIPS, character limit: 5000`
 
@@ -94,7 +81,7 @@ The response text is **authored in exactly one file**: `REBUTTAL_DRAFT.md`. Ever
 | `REBUTTAL_DRAFT.md` | **canonical response text** — the only authored copy; over-limit material inline, marked `[OPTIONAL — cut if over limit]` |
 | `PASTE_READY.txt` | derived — `REBUTTAL_DRAFT.md` minus `[OPTIONAL]` blocks, markdown stripped, exact character count |
 | `MCP_STRESS_TEST.md` | canonical — verbatim stress-test transcript (Phase 6) |
-| `REBUTTAL_DRAFT.html` (+ `.review.json` sidecar) | derived — Phase 9 render, if `RENDER_HTML` |
+| `REBUTTAL_DRAFT.html` | derived, optional — an HTML view of `REBUTTAL_DRAFT.md`; regenerate it whenever the draft changes |
 
 ## Workflow
 
@@ -136,37 +123,7 @@ Create `rebuttal/STRATEGY_PLAN.md`.
 6. **Pick the lever per reviewer** (「他给1分不太对，但是不是扳不回来 2分哥，看起来是只要补实验就可以 1分哥，主要是要和他掰扯到毛病挑不出来」). A low score is not final. Per negative-score reviewer, record in `STRATEGY_PLAN.md`: `experiments` (concerns are missing evidence, e.g. a typical 2: run what they asked for) or `argument` (concerns attack soundness or claims, e.g. a typical 1: close every objection with evidence or an approved fix until nothing is left to fault).
 7. **Posting order** (「先一个一个回复，看正分审稿人愿不愿意confirm，他们一般confirm之后就不动了. 然后麻烦的负分先留到最后」). Post replies one reviewer at a time, positive-score reviewers first (once they confirm their score they rarely move again); the difficult negative-score reviewers go last. Record the order in `STRATEGY_PLAN.md`.
 8. Identify **blocked claims** (ungrounded or unapproved)
-9. If unresolved blockers → pause and present to user
-
-**QUICK_MODE exit**: If `QUICK_MODE = true`, stop here. Present `ISSUE_BOARD.md` + `STRATEGY_PLAN.md` to the user and summarize: how many issues per reviewer, shared vs unique concerns, recommended priorities, and evidence gaps. The user can then decide to continue with full rebuttal (`/rebuttal — quick mode: false`) or write manually.
-
-### Phase 3.5: Evidence Sprint (when AUTO_EXPERIMENT = true)
-
-**Skip entirely if `AUTO_EXPERIMENT` is `false` — instead, pause and present the evidence gaps to the user.**
-
-If the strategy plan identifies issues that require new empirical evidence (tagged `response_mode: grounded_evidence` with `evidence_source: needs_experiment`):
-
-1. Generate a mini experiment plan from the reviewer concerns:
-   - What to run (ablation, baseline comparison, scale-up, condition check)
-   - Success criterion (what result would satisfy the reviewer)
-   - Estimated GPU-hours
-
-2. Invoke `/experiment-bridge` with the mini plan:
-   ```
-   /experiment-bridge "rebuttal/REBUTTAL_EXPERIMENT_PLAN.md"
-   ```
-
-3. Wait for results, then update `ISSUE_BOARD.md`:
-   - Tag completed experiments as `user_confirmed_result`
-   - Update evidence source for relevant issue cards
-
-4. If experiments fail or are inconclusive:
-   - Do NOT fabricate positive results
-   - What the response may say about the result: "Never expose a weakness" below
-
-5. Save experiment results to `rebuttal/REBUTTAL_EXPERIMENTS.md` for provenance tracking.
-
-**Time guard**: If estimated GPU-hours exceed rebuttal deadline, skip and flag for manual handling.
+9. If unresolved blockers or evidence gaps (a concern that needs a new experiment) → pause and present them to the user
 
 ### Phase 4: Draft Initial Rebuttal
 
@@ -293,23 +250,8 @@ When new reviewer comments arrive:
 6. Use Codex MCP reply for continuity if useful
 7. Rules: escalate technically not rhetorically; never concede ("Never concede"); for a reviewer whose lever is `argument` (Phase 3 step 6), keep closing each new objection until none is left, but never repeat an argument that already failed — bring new evidence or a new angle, or stop
 
-### Phase 9: Render HTML view (auto, when `RENDER_HTML = true`, default)
-
-After Phase 7 (initial rebuttal) or Phase 8 (follow-up rounds) finalizes the canonical draft, invoke:
-
-```
-/render-html "rebuttal/REBUTTAL_DRAFT.md"
-```
-
-Full review gate (reviewer-facing pre-submission deliverable). Output: `REBUTTAL_DRAFT.html` — a derived view, never edited directly. Do NOT render `rebuttal/PASTE_READY.txt` (it's exact-character-count plain text by design).
-
-**Non-blocking**: if `/render-html` fails, log the failure and treat the rebuttal phase as complete — the canonical `REBUTTAL_DRAFT.md` is the deliverable.
-
-Skip if `RENDER_HTML = false`.
-
 ## Key Rules
 
-- **Large file handling**: If Write fails, retry with Bash heredoc silently.
 - **Never fabricate.** No invented evidence, numbers, derivations, citations, or links.
 - **Never overpromise.** Only promise what user explicitly approved.
 - **Full coverage.** Every reviewer concern tracked and accounted for.

@@ -1,6 +1,6 @@
 # Wording pass: blind read, cut, reword and rewrite, check, one owner per number
 
-Run at Phase 6.5, after the stress-test fixes and before Finalize, and again on every delta reply in Phase 8 (user 2026-11-09: 「rebuttal 生成完了, 用这些方法过一遍措辞」). Steps 3–5 are [`/paper-polish`](../../paper-polish/SKILL.md), the same polish a paper gets: a second AI (the editor) calls `/paper-prose-tighten` (cut), then `/paper-jargon-pass` (reword, then rewrite), and the drafter checks its edits; this file's § 3–5 are the rebuttal overlay passed to it (user 2026-11-12: 「让另一个 AI 润色 … 先 paper prose tighten, 再 paper jargon pass」「这一套应该封装为一个单独的 skill, 这样 paper 也能用」). The steps ask different questions, need different readers, and are **never run as one mixed read**:
+Run at Phase 6.5, after the stress-test fixes and before Finalize (user 2026-11-09: 「rebuttal 生成完了, 用这些方法过一遍措辞」); a delta reply in Phase 8 gets only the blind read before posting ([round2-replies.md](round2-replies.md) § 2 item 7). Steps 3–5 are [`/paper-polish`](../../paper-polish/SKILL.md), the same polish a paper gets: a second AI (the editor) calls `/paper-prose-tighten` (cut), then `/paper-jargon-pass` (reword, then rewrite), and the drafter checks its edits; this file's § 3–5 are the rebuttal overlay passed to it (user 2026-11-12: 「让另一个 AI 润色 … 先 paper prose tighten, 再 paper jargon pass」「这一套应该封装为一个单独的 skill, 这样 paper 也能用」). The steps ask different questions, need different readers, and are **never run as one mixed read**:
 
 | Step | Question | Done by | Origin |
 |---|---|---|---|
@@ -28,7 +28,7 @@ The pass changes wording only. It does not decide claims: which numbers go in, w
 
 ## 1. Step 1 — blind read
 
-**Before the read: one version per answer** (user 2026-11-10: 「保留最新的」). In a shared draft, **our own** superseded versions of an answer are deleted first and only the latest is kept. A co-author's older version or fragment is never deleted, even when it is clearly superseded (user 2026-11-10: 「合作者的永远不删」); the blind reader is simply not given it. A reader given three coexisting versions of A1 spends most of its ledger on their disagreements (first run: 27 entries for one reply, about 8 once the old versions were gone). The older text stays recoverable in the doc history.
+**Before the read: one version per answer** (user 2026-11-10: 「保留最新的」). In a shared draft, **our own** superseded versions of an answer are deleted first and only the latest is kept. A co-author's older version or fragment is never deleted, even when it is clearly superseded (user 2026-11-10: 「合作者的永远不删」); the blind reader is simply not given it. A reader given three coexisting versions of A1 spends most of its ledger on their disagreements. The older text stays recoverable in the doc history.
 
 One fresh subagent per paste target. Give it exactly: [blind-read.md](blind-read.md), that reviewer's raw review, and the stripped reply text with paragraph ids. Do not give it this file, the issue board, the evidence, or another reviewer's thread. It writes `rebuttal/wording/<UTC timestamp>/ledger-<ReviewerID>.md`.
 
@@ -66,7 +66,7 @@ For each sentence and each number in it: **delete it, and does the reviewer's ju
 | 10 | Value series (罗列) | one quantity at three or more conditions strung into a sentence | write the shape (monotone, flat, one outlier) plus at most one number; the series lives in a table — unless the reviewer asked for exactly these values |
 | 11 | Instrument readings | a number that restates a fact already given in the reader's unit (a real-time factor beside "minutes per recording hour"), or that says how a measurement was run rather than what it found: worker or process counts, parallelism degree, the cache hit rate behind a reported speedup, exact token or position counts where a ratio says the same | the comparison's fairness rests on it — then state it in words ("decoded the same way for every method", "on four GPUs"), not as the number |
 
-Step 3 tests **every number inside a kept sentence**, not only whole sentences. A field term that the blind reader cleared (real-time factor, hit rate, tensor-parallel) is cleared as a word; the number it carries still takes the delete test.
+Step 3 tests **every number inside a kept sentence**, not only whole sentences (user 2026-11-11: 「这种感觉看不懂啊 没用的信息」). A field term that the blind reader cleared (real-time factor, hit rate, tensor-parallel) is cleared as a word; the number it carries still takes the delete test.
 
 **Upgrade rule.** A secondary claim that needs two or three caveats to be true is deleted together with its caveats (「越解释越乱」「别解释了」). Headline answers to a W/Q are never deleted this way; if a headline needs a pile of caveats, that is a strategy problem for the user.
 
@@ -161,7 +161,8 @@ command grep -niE 'preregister|pre-register|frozen before|sanity check|pilot|abl
 - **A second fresh subagent rereads the final text** with the same isolation as step 1 (again only [blind-read.md](blind-read.md), the review and the new text). The pass is done when it produces no new load-bearing entry.
 - For each paragraph that changed, one line: what it claimed before, what it claims now. Any difference is a bug.
 - Voice check: grep the § 7 passive pattern; every remaining passive with the authors as the hidden actor is either in a frozen span or turned active.
-- Re-run the Phase 5 lints the pass can break: 6 (limit — recount), 9 (cross-thread duplication), 10 (weakness and concession), 13 and 14 (comparison, words agree with numbers), 19, 20 and 23 (voice).
+- Re-run the Phase 5 lints the pass can break: 6 (limit — recount), 9 (cross-thread duplication), 10 (weakness and concession), 13 and 14 (comparison, words agree with numbers), 19, 20, 21 (number density) and 23 (voice).
+- The board's status column is re-checked against the state file in every wording pass.
 - Derived views regenerated; the replaced terms have no leftovers in any thread, table head or view.
 - Report to the user in this order: (1) structural findings; (2) bugs and decisions — mismatched numbers, contradictions, unanswered sub-questions, lineage words, findings in co-author text that was not touched; (3) what was deleted, each with its delete test, and what was reworded. Say what was kept and why: the kept list is the evidence that nothing was over-cut.
 
@@ -195,11 +196,11 @@ command grep -niE 'preregister|pre-register|frozen before|sanity check|pilot|abl
 | "We" is pushed into the verdict sentence ("We find that all four contrasts are significant") | The answer after the thanks stays the bare verdict; "we" goes where the authors acted |
 | A co-author's passive sentence is turned active | Frozen; report it as a note if at all |
 
-## 10. Lessons from the first run (2026-11-10)
+## 10. User rulings on reported findings (2026-11-10)
 
-Five replies were blind-read; the user ruled on each reported item in one line. Each ruling below is the general rule it stands for.
+Each ruling below is the general rule it stands for.
 
-**How to report.** List the report-type findings per reviewer as short numbered items, in posting order, each stating the two things that clash and nothing else. The user then rules in a word per item (「删」「说清楚」「改正确」「你改」). A finding that needs a paragraph to state is not yet understood well enough to report.
+**How to report.** List the report-type findings per reviewer as short numbered items, in posting order, each stating the two things that clash and nothing else. The user then rules in a word per item (「删」「说清楚」「改正确」「你改」). A finding that needs a paragraph to state is not yet understood well enough to report. Wording fixes are applied and listed last; anything that changes a denominator, adds a result or touches a quoted paper sentence is a question for the user, asked in this short-item form.
 
 | # | Finding in the reply | Ruling | Rule |
 |---|---|---|---|
@@ -213,11 +214,4 @@ Five replies were blind-read; the user ruled on each reported item in one line. 
 | L8 | "We ran both released checkpoints", then numbers for only one | 「能给吗? 好吗?」 | A baseline that was run but gets no number: give a number only if one exists on the reply's metric and is favorable. Otherwise say in one clause why the comparison is with the other baseline (its output has no counterpart on our scale). The gap is visible to the reviewer, so this narrated absence stays. |
 | L9 | A new backbone improves less than its siblings | 「也没事? 比 base 低就行?」 | A variant that beats its own untuned base answers "does the supervision transfer"; it need not beat the other variants. No change, and no added comparison to the siblings. |
 | L10 | Two numbers in different answers looked like one quantity (0.77 and 0.89 for "unseen regions") | 「说清楚」 | Give each its table and its unit in the same sentence ("of the same table, also per station-day sample"). |
-| L11 | A count in an abandoned fragment disagreed with the latest version (seven vs eight) | 「改正确」, 「保留最新的」, then 「合作者的永远不删」 | In our own superseded text the wrong number goes with the fragment. In a co-author's fragment nothing is removed or corrected: highlight the number and add a note. The first run deleted two co-author fragments under "keep the latest" and had to restore them. |
-
-**Second run (2026-11-11).** After two blind reads and one tighten pass, the collaborator doc still carried a throughput figure next to the per-sample latency it implies, a cache hit rate and parallelism degree behind a speedup, worker counts and exact buffer sizes (user: 「这种感觉看不懂啊 没用的信息」). Both blind reads had listed these terms as cleared, and the tighten pass had tested sentences, not the numbers inside kept sentences. Fix: § 3 class 11 and the number-level delete test above. The acceptance read of this run also found a board status that the result files had overtaken (an experiment still marked queued whose result a reply already reported): the board's status column is re-checked against the state file in every wording pass.
-
-**What the pass got wrong, and the fix now in this file.**
-- The blind-read rules and the verification rules were first written in one file, and the blind reader was told to read "sections 1 and 2 only". Isolation that depends on the reader not scrolling is not isolation: the blind reader's instructions are a separate file.
-- Rewording was first placed before tightening. Deleting comes first.
-- The first report mixed wording fixes with strategy questions. Wording fixes are applied and listed last; anything that changes a denominator, adds a result or touches a quoted paper sentence is a question for the user, asked in the short-item form above.
+| L11 | A count in an abandoned fragment disagreed with the latest version (seven vs eight) | 「改正确」, 「保留最新的」, then 「合作者的永远不删」 | In our own superseded text the wrong number goes with the fragment. In a co-author's fragment nothing is removed or corrected: highlight the number and add a note. |
