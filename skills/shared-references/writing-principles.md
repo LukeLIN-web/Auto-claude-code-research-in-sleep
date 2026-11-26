@@ -444,9 +444,8 @@ It should usually do at least one of the following:
 ### Design Principles
 
 1. **Figure 1 is crucial**
-2. **captions should be self-contained**
-3. **do not place a decorative title inside the figure**
-4. **plots should use vector graphics whenever possible**
+2. **do not place a decorative title inside the figure**
+3. **plots should use vector graphics whenever possible**
 
 ### Accessibility
 
@@ -461,10 +460,7 @@ Do:
 
 ### Caption Rules
 
-- A reader should understand the point of the figure from the caption alone.
-- State what is being compared.
-- State what the reader should notice.
-- Do not make the caption depend on the surrounding paragraph for essential meaning.
+Skill `paper-figure-craft` § What a caption is (tables: `paper-table-craft`).
 
 ## Common Mistakes
 
@@ -493,7 +489,6 @@ Do:
 | Raster plots | Use PDF / EPS or other vector output |
 | Red-green color schemes | Switch to colorblind-safe palettes |
 | Titles inside figures | Move the title into the caption |
-| Captions that require the main text | Rewrite them to be self-contained |
 
 ### Citation Mistakes
 
@@ -525,7 +520,6 @@ Do:
 - [ ] Terminology is consistent.
 - [ ] There are no generic field-background openings.
 - [ ] Unnecessary hedging has been removed.
-- [ ] All key figures have self-contained captions.
 
 ### Technical
 
