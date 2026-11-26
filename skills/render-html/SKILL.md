@@ -280,7 +280,7 @@ Verdict rules:
 
 **Phase 1 (originally shipped):** Opt-in only. Users explicitly called `/render-html <artifact.md>` after a workflow completes.
 
-**Phase 2 (activated 2026-05):** Eight key skills now auto-emit HTML at workflow termination, each guarded by a `RENDER_HTML = true` constant that the user can flip off per skill (or pass `— render html: false` at invocation).
+**Phase 2 (activated 2026-05):** Seven key skills now auto-emit HTML at workflow termination, each guarded by a `RENDER_HTML = true` constant that the user can flip off per skill (or pass `— render html: false` at invocation).
 
 **Cost-tiered review gate** (per artifact type):
 
@@ -293,7 +293,6 @@ Verdict rules:
 | `/paper-claim-audit` | `paper/PAPER_CLAIM_AUDIT.md` | full gate | Audit-class artifact |
 | `/citation-audit` | `paper/CITATION_AUDIT.md` | full gate | Audit-class artifact |
 | `/proof-checker` | `PROOF_AUDIT.md` | full gate | Audit-class artifact |
-| `/rebuttal` | `REBUTTAL_DRAFT.md` or each `Reviewer_<ID>_response.md` | full gate | Pre-submission deliverable |
 | `/paper-writing` | (no auto-HTML) | n/a | The final reader artifact is PDF |
 | `/research-wiki` | `research-wiki/index.html` dashboard | future | Phase 2.1 — dashboard template work, not in this round |
 
