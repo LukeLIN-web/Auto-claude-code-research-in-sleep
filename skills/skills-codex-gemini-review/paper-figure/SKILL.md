@@ -209,7 +209,7 @@ mcp__gemini-review__review_start:
     Review these figure/table plans for a [VENUE] submission.
 
     For each figure:
-    1. Is the caption informative and self-contained?
+    1. Is the caption informative?
     2. Does the figure type match the data being shown?
     3. Is the comparison fair and clear?
     4. Any missing baselines or ablations?
