@@ -178,7 +178,7 @@ Read the two widths off the compiled document once per venue:
 \typeout{COLW=\the\columnwidth\space TEXTW=\the\textwidth}
 ```
 
-(CVPR's author kit measured 6.875 in / 3.28 in on 2026-10-15; ICLR's `\textwidth`
+(CVPR's widths: `paper-float-compact` § Two-column venues; ICLR's `\textwidth`
 is 5.5 in.) Then the WYSIWYG law is checked with one number:
 `scale = frac × W / pdf_width_in`, where `W` is the width the float occupies and
 `frac` the fraction it is included at.
