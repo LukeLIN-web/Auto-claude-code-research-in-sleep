@@ -162,7 +162,7 @@ If the strategy plan identifies issues that require new empirical evidence (tagg
 
 4. If experiments fail or are inconclusive:
    - Do NOT fabricate positive results
-   - The result exposes a weakness, so it stays out of the response ("Never expose a weakness" below); answer the concern on the evidence we have. If the reviewer explicitly asked for this experiment, mark the issue `needs_user_input` and let the user decide whether and how to report it (answered without any concession, "Never concede")
+   - What the response may say about the result: "Never expose a weakness" below
 
 5. Save experiment results to `rebuttal/REBUTTAL_EXPERIMENTS.md` for provenance tracking.
 
@@ -242,7 +242,7 @@ Run all lints:
 4. **Tone** — flag aggressive/submissive/evasive phrases
 5. **Consistency** — no contradictions across reviewer replies
 6. **Limit** — exact character count on the freshly derived `PASTE_READY.txt`. Compress if over (redundancy → friendly → opener → wording, never drop critical answers)
-7. **Weakness scan** — flag every sentence or table that exposes a weakness (a baseline or trivial reference beating ours, a negative or inconclusive experiment, a self-found error, an unrequested caveat or limitation, a dropped variant), in numbers OR in words. Fix: delete it and restate the claim on what we win (Phase 4 "Never expose a weakness"); if the reviewer explicitly asked for that exact thing and the user has not ruled on it, escalate to the user. Concession phrasing fails the same way ("we agree", "we accept", "correct:", "the reviewer is right", "we concede", "we will qualify / replace"); fix per "Never concede".
+7. **Weakness and concession scan** — flag every sentence or table, in numbers or in words, that breaks Phase 4 "Never expose a weakness" or "Never concede". Fix per those rules.
 
 ### Phase 6: Codex Reviewer Stress Test
 
@@ -314,17 +314,14 @@ Skip if `RENDER_HTML = false`.
 - **Never overpromise.** Only promise what user explicitly approved.
 - **Full coverage.** Every reviewer concern tracked and accounted for.
 - **Preserve raw records.** Reviews and MCP outputs stored verbatim.
-- **One authored copy.** Response text is authored only in `REBUTTAL_DRAFT.md`; every other representation is regenerated mechanically from it, never hand-edited.
 - **Global + per-reviewer structure.** Shared concerns in opener.
 - **Answer friendly reviewers too.** Reinforce supportive framing.
 - **Meta-reviewer closing.** Summarize resolved/remaining/why accept.
 - **Evidence > rhetoric.** Derivations and numbers over prose.
-- **Never concede.** No agreement, retraction, deflating term, credit to prior work or admitted limitation; a missing citation gets "we will cite X" only.
-- **Never expose a weakness.** Losing comparisons, negative results, self-found errors, unrequested caveats and dropped variants never appear in the response. If the reviewer explicitly asked for one, the user decides how (or whether) it is reported.
-- **Revised PDF = reviewer-raised edits only.** Errors no reviewer raised are logged in `REVISION_PLAN.md` § Unraised errors and left in the paper for the user's camera-ready call.
 - **Don't waste space on unwinnable arguments.** Answer once, move on.
 - **Respect the limit.** Character budget is a hard constraint.
 - **Resume cleanly.** Continue from REBUTTAL_STATE.md on rerun.
+- **Every other drafting rule is stated once, where it applies**: Phase 4 (never concede, never expose a weakness), the Artifacts table, the Phase 5 lints.
 - **Anti-hallucination citations.** Any reference added must go through DBLP → CrossRef → [VERIFY].
 
 ## Review Tracing
