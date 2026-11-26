@@ -4,11 +4,10 @@ Read before drafting any response file (Phase 4) and before every follow-up repl
 Everything here operates inside the hard rules of `SKILL.md` — **Never concede**, **Never expose a weakness**, provenance and commitment gates. A move below that would break one of them is not available, however well it worked elsewhere.
 
 User request this file answers (2026-11-09): 「主要是学习各种话术. 怎么说服, 反驳」.
-Worked example used throughout: [case-vqtoken-neurips2025.md](case-vqtoken-neurips2025.md) (quotes marked *VQToken*).
 
 ## 0. The reader is the AC
 
-In the VQToken thread the final ratings were 2 / 4 / 5 / 4: BtRV wrote "I will keep my score at Borderline Accept", RRqQ stayed at 4 after being asked to raise it, and the negative reviewer ended at 2. The paper was accepted on the AC's reading. The meta-review repeated the authors' own framing: *"One reviewer rejected the paper citing weak baselines and unclear motivation, while others found the approach promising and novel in practice."* It also listed exactly the points the replies had left soft: *"The rebuttal improved clarity but left baseline and overhead issues unresolved."*
+In one thread, two positive reviewers kept borderline ratings after the replies, one of them after being asked to raise it, and the negative reviewer never moved. The paper was accepted on the AC's reading. The meta-review repeated the authors' own framing of the split between the negative reviewer and the others. It also listed, as unresolved, exactly the points the replies had answered with a promise rather than a number.
 
 Consequences for every reply:
 - Write so that an AC who skims can see, per point, that the concern was met with evidence. The reviewer may never move; the AC still records what was answered.
@@ -30,7 +29,7 @@ Consequences for every reply:
 - Vary the wording across answers within a file and across reviewer files. The same thanks sentence repeated at every `A#` reads as a template; keep the warmth, change the words.
 - Thank for the observation, not for the verdict. Thanking a reviewer for a concern the answer then refutes ("Thank you for catching this error" when no error exists) concedes a point the evidence does not.
 - The file-level acknowledgment at the top of the response covers that reviewer's main thrust; the per-answer openers must not restate it in the same words.
-- No flattery paragraphs. Two warm sentences are the ceiling; *VQToken* opened two replies with a whole paragraph ("deeply grateful … exceptionally thorough and professional review … invaluable … instrumental") and neither reviewer moved.
+- No flattery paragraphs. Two warm sentences are the ceiling; one thread opened two replies with a whole paragraph of praise for the review, and neither reviewer moved.
 
 **Paragraph length (readability).** No paragraph over 4-5 sentences in the reviewer-facing text. When a response to one W/Q runs longer, insert blank lines at argument boundaries — typical seams: concession/claim | mechanism or evidence | concrete example | scope statement or revision promise. Split with line breaks only; never reword while splitting. Long walls of text read as evasive and reviewers skim past the numbers buried mid-paragraph.
 
@@ -47,59 +46,59 @@ Consequences for every reply:
 ## 2. Persuading (positive and swing reviewers)
 
 **P1 — Hand over the exact object at the granularity they named, on the first try.**
-*VQToken*: RRqQ asked for "specific numerical scores for its various subsets" of LongVideoBench. The first reply gave max-frames buckets (16/32/64); RRqQ had to clarify they meant the official S2E/S2O/S2A/O2E/O2I subsets. The second reply gave those, and RRqQ wrote "this fully addresses all my questions." Read `asked_for` from the raw text; when a benchmark has an official breakdown, the reviewer means that one.
+In one thread, a reviewer asked for scores on a benchmark's subsets. The first reply gave a breakdown the authors chose (by input length); the reviewer had to clarify that they meant the benchmark's official subsets. The second reply gave those, and the reviewer wrote that this addressed all their questions. Read `asked_for` from the raw text; when a benchmark has an official breakdown, the reviewer means that one.
 
 **P2 — Justify a design choice with reasons a reviewer cannot argue with.**
-*VQToken* defended an 8-frame setting with three reasons: the efficiency regime the paper targets, "the standard configuration provided by LongVideoBench and VLMEvalKit", and "rapid iteration during rebuttal". The first two carry the answer. The third exposes that the experiment was rushed — drop reasons of that kind ("Never expose a weakness").
+One reply defended a reduced-input setting with three reasons: the efficiency regime the paper targets, the benchmark's standard configuration, and the need to iterate quickly during the rebuttal. The first two carry the answer. The third exposes that the experiment was rushed — drop reasons of that kind ("Never expose a weakness").
 
 **P3 — Turn their praise into the paper's thesis.** When a positive reviewer names a strength, the reply restates it as the paper's contribution with one number behind it, so the AC sees the strength confirmed rather than merely thanked.
 
 **P4 — Close the loop, then stop.** Once a reviewer writes that the concerns are resolved, reply with one short thanks naming what changed. Do not keep feeding them new material.
-On asking for a higher score, see [round2-replies.md](round2-replies.md) § 7 Score requests — in VQToken it moved nothing.
+On asking for a higher score, see [round2-replies.md](round2-replies.md) § 7 Score requests — in one thread it moved nothing.
 
 ## 3. Refuting (negative reviewers)
 
 **R1 — Define the regime, then shift the burden.** When the attack is "this has been done" or "compare to stronger baselines", state the regime that makes the work new and invite the reviewer to name a counterexample:
-> "To our knowledge, no prior work has formally defined extreme token reduction … Most existing methods cap out at 30 %–80 % reduction … We welcome references to any methods exceeding 99 % reduction and will include direct comparisons in our revision." (*VQToken*)
+> "To our knowledge, no prior work has formally defined <the regime> … Most existing methods stop at <a weaker operating point> … We welcome references to any method that operates in <the regime> and will include direct comparisons in our revision."
 
-The AC's meta-review accepted the framing ("Using discrete VQ codebooks for token reduction in video LLMs is novel"). Requires that the claim survives `/novelty-check`; if a counterexample exists, this move hands the reviewer a win.
+In one thread the AC's meta-review accepted this framing and called the approach novel. Requires that the claim survives `/novelty-check`; if a counterexample exists, this move hands the reviewer a win.
 
 **R2 — Quote their own words back, once.** A reviewer who listed a strength and later attacks the same thing can be shown their sentence:
-> "Your Strengths section states: 'Experiments and ablation are relatively extensive.'"
+> "Your Strengths section states: '<their verbatim words>'."
 
-Plain text, once, in a late round, as a pointer for the AC. *VQToken* wrapped it in four 🟥 markers (posted hours before the deadline; no reply). Loud formatting reads as anger and costs more than it gains.
+Plain text, once, in a late round, as a pointer for the AC. One thread wrapped it in coloured warning markers, posted hours before the deadline, and got no reply. Loud formatting reads as anger and costs more than it gains.
 
-**R3 — Answer the criterion, not the volume.** When the reviewer has a specific criterion, meet that criterion. *VQToken* answered "comparisons are insufficient" by counting ("7 experiments … 11 more … totaling 18"). The reviewer replied: *"Counting how many tables include multiple benchmarks OR multiple baselines, or how many other experiments were done, does not demonstrate …"* and spelled out the real criterion (compression baselines × benchmarks in one table: "1x2=2 numbers … Compare this to Dycoke's Table 1 … 2x5=10"). The right reply was that matrix, or — if it cannot be produced — R1. Never count experiments, tables or pages as an argument.
+**R3 — Answer the criterion, not the volume.** When the reviewer has a specific criterion, meet that criterion. In one thread the authors answered "comparisons are insufficient" by counting the experiments in the paper and the rebuttal. The reviewer replied that counting tables or experiments shows nothing about whether the comparisons suffice, and spelled out the real criterion as a number: baselines × benchmarks in one table, against the larger matrix of a paper the reviewer cited. The right reply was that matrix, or — if it cannot be produced — R1. Never count experiments, tables or pages as an argument.
 
-**R4 — Meet a cited standard; do not litigate it.** When the reviewer says "to the standard of paper X", checking X is useful background. Arguing that X is itself weak ("They compare multiple benchmarks in only 2 of their 6 tables") invites the reviewer to state the standard more sharply, which is what happened. Produce what X's table has, on our winning metric, or use R1.
+**R4 — Meet a cited standard; do not litigate it.** When the reviewer says "to the standard of paper X", checking X is useful background. Arguing that X is itself weak (counting how few of X's own tables meet the standard) invites the reviewer to state the standard more sharply, which is what happened. Produce what X's table has, on our winning metric, or use R1.
 
 **R5 — State the drop as what we keep, on our metric.** Lead with retention and the efficiency metric the paper defines:
-> "VQToken retains 99.5 % of NextQA's accuracy, 98.1 % of ActivityNet-QA's … under a 99.86 % reduction in token count … a > 300× increase in TokDense." (*VQToken*)
+> "<Method> retains <x> % of <benchmark A>'s accuracy and <y> % of <benchmark B>'s … under a <z> % reduction in <cost> … a > <k>× gain in <the paper's efficiency metric>."
 
 Only after the reviewer explicitly named the drop (otherwise the losing benchmark stays out). Even then the user rules on whether the weakest number is printed (`needs_user_input`).
 
-**R6 — Ask for the specific item, then deliver it.** "If there is a specific benchmark or metric you would like to see, please name it and we will add it" puts the next step on the reviewer and shows the AC good faith. It works only if the named item then appears in the next reply; *VQToken* asked, got a precise answer (DyCoke Table 1 standard), and did not produce it.
+**R6 — Ask for the specific item, then deliver it.** "If there is a specific benchmark or metric you would like to see, please name it and we will add it" puts the next step on the reviewer and shows the AC good faith. It works only if the named item then appears in the next reply; in one thread the authors asked, got a precise answer (another paper's table as the standard), and did not produce it.
 
-**R7 — A scope argument must match what the paper itself evaluates.** *VQToken* argued long-video understanding is "another important, yet completely different, task". The reviewer replied that "2 of 5 benchmarks they conduct the experiments on the paper are long videos". If the paper's own benchmark list contradicts the scope line, the reviewer turns the paper against the reply. Check the paper's tables before drawing a scope line.
+**R7 — A scope argument must match what the paper itself evaluates.** In one thread the authors argued that the setting a reviewer raised was a completely different task. The reviewer replied that two of the paper's own benchmarks were in that setting. If the paper's own benchmark list contradicts the scope line, the reviewer turns the paper against the reply. Check the paper's tables before drawing a scope line.
 
-**R8 — Isolating the outlier goes to the AC, not to the outlier.** In the closing note to the AC, *VQToken* wrote that the remaining concerns "were raised only by Gyx4 among the four reviewers", that "no methodological flaws were identified", and that they "are presentation-oriented". The AC's meta-review repeated that shape. In the reviewer's own thread, the same move ("Unlike the other three reviewers, Reviewer Gyx4's comments center on paper organization, writing style …") did not move the reviewer, whose follow-ups only got sharper. Use it only in the AC-facing note ([posting-and-endgame.md](posting-and-endgame.md) § 2 AC closing note), and only with the counts true.
+**R8 — Isolating the outlier goes to the AC, not to the outlier.** In one thread's closing note to the AC, the authors wrote that the remaining concerns came from one reviewer of the four, that no methodological flaw had been identified, and that the concerns were about presentation. The AC's meta-review repeated that shape. In the reviewer's own thread, the same move (contrasting that reviewer's comments with the other three reviewers') did not move the reviewer, whose follow-ups only got sharper. Use it only in the AC-facing note ([posting-and-endgame.md](posting-and-endgame.md) § 2 AC closing note), and only with the counts true.
 
 **R10 — A weak number goes next to the best the others reach.** When the reviewer quotes a number of ours that is not high in absolute terms, do not argue that it is high; show that the strongest existing method reaches less on the same quantity, measured with the same protocol (「如果说不好, 就写 别人的最好的也不如我们好」). Conditions: [comparison-rules.md](comparison-rules.md) § Weak number.
 
 **R9 — Structural distinction over denial.** When a reviewer claims the work reduces to / is subsumed by a generic framework, do not deny the reduction. Identify the structural feature our parameterization preserves that the generic framework does not, backed by a concrete mechanism (theorem dependency, derivation step, or empirical consequence) — see `response_mode: structural_distinction` in `SKILL.md`. Never rhetorical without the mechanism.
 
-## 4. Anti-patterns (each one happened in VQToken)
+## 4. Anti-patterns (each one happened in one real thread)
 
 | What was written | What followed | Rule |
 |---|---|---|
-| A flagged number (39.3 vs 38.2) explained as "subtle hardware-driven variations between GPU architectures" | Reviewer: "Why did only the metrics of this benchmark fluctuate …?" Authors retracted: a value "copied from a different experiment"; the correct number was the one in the table | Open the logs before answering (Phase 3 step 6). Answer with the verified value and where it comes from. Never offer a guessed cause |
-| Missing citation defended with "many prior video‐LLM works compare models trained under different … data regimes" | Reviewer: "this cannot be the reason to 'hide' LLaVA-Video without any citing" | "We will cite X." Nothing else (「漏引的就说会引用就好了」) |
+| A number the reviewer flagged (the text and the table disagreed) explained as a hardware difference between GPU types | The reviewer asked why only that benchmark fluctuated; the authors retracted: the value had been copied from another experiment, and the table was right | Open the logs before answering (Phase 3 step 6). Answer with the verified value and where it comes from. Never offer a guessed cause |
+| A missing citation defended by saying prior works also compare models trained on different data | The reviewer answered that this was no reason to leave out a work whose data the paper uses | "We will cite X." Nothing else (「漏引的就说会引用就好了」) |
 | "Sorry for the misunderstanding", "We apologize for the omission", "We regret the confusion", "We wholeheartedly agree", "You are correct that …" | Each one concedes; "sorry for the misunderstanding" also tells the AC the reviewer misread | Banned (Never concede). Open with the thanks clause and the verdict |
-| "7 B VQToken 78.59 vs 7 B LLaVA-OV 81.40 … These results confirm that VQToken not only maintains but improves performance" | The table next to the sentence contradicts it | Every evaluative word must agree with the numbers beside it (lint: self-contradiction scan) |
-| "§ 3.3 'Material Physics MoE'" in a video-token paper | Text from another project leaked into the reply | Lint: foreign-content scan |
-| Reviewer asked for k-means latency/FLOPs; reply gave a complexity derivation plus "we will include actual latency measurements … in the camera-ready" | Meta-review: "left … overhead issues unresolved" | A measurable ask gets the measurement in the reply |
-| "requested during the final two days", "the limited rebuttal period prevents us", "rapid iteration during rebuttal" | Advertises that the work is incomplete | Never expose a weakness. State what is there |
-| Three nudge posts aimed at one reviewer plus two to all reviewers, Aug 2–8, most carrying no new content | Reviewer kept 2 | [round2-replies.md](round2-replies.md) § 6 Nudges |
+| A sentence saying the method maintains and even improves performance, next to a table where it scores below the baseline | The table next to the sentence contradicts it | Every evaluative word must agree with the numbers beside it (lint: self-contradiction scan) |
+| A reply naming a section and a module that exist only in another project's paper | Text from another project leaked into the reply | Lint: foreign-content scan |
+| Reviewer asked for the latency and FLOPs of one component; the reply gave a complexity derivation plus a promise to measure it for the camera-ready | The meta-review listed overhead as unresolved | A measurable ask gets the measurement in the reply |
+| Timing excuses: the request came late, the rebuttal period is too short, the run was rushed | Advertises that the work is incomplete | Never expose a weakness. State what is there |
+| Several nudge posts to one reviewer within one week, plus posts to all reviewers, most carrying no new content | The reviewer kept the score | [round2-replies.md](round2-replies.md) § 6 Nudges |
 
 ## 5. Phrase bank
 

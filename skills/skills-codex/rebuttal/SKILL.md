@@ -132,7 +132,7 @@ Create `rebuttal/STRATEGY_PLAN.md`.
 2. Choose **response mode** per issue
 3. Build **character budget** (10-15% opener, 75-80% per-reviewer, 5-10% closing)
 4. **Story: argue what we can win** (user 2026-11-07: 「都是故事上 强调novelty，强调和过去工作的提升，可以吵赢的」). Every reply's narrative leans on the paper's novelty and its improvement over prior work; pair with "Never expose a weakness" (Phase 4).
-5. **Check instance-level complaints by hand** (「单个样本之类的需要手动check下具体咋回事」). When a concern cites a specific sample, example, prompt, video or table cell, open that exact instance and see what actually happened before choosing a response mode; record the finding in the issue card.
+5. **Check instance-level complaints by hand** (「单个样本之类的需要手动check下具体咋回事」). When a concern cites a specific sample, example, input or table cell, open that exact instance and see what actually happened before choosing a response mode; record the finding in the issue card.
 6. **Pick the lever per reviewer** (「他给1分不太对，但是不是扳不回来 2分哥，看起来是只要补实验就可以 1分哥，主要是要和他掰扯到毛病挑不出来」). A low score is not final. Per negative-score reviewer, record in `STRATEGY_PLAN.md`: `experiments` (concerns are missing evidence, e.g. a typical 2: run what they asked for) or `argument` (concerns attack soundness or claims, e.g. a typical 1: close every objection with evidence or an approved fix until nothing is left to fault).
 7. **Posting order** (「先一个一个回复，看正分审稿人愿不愿意confirm，他们一般confirm之后就不动了. 然后麻烦的负分先留到最后」). Post replies one reviewer at a time, positive-score reviewers first (once they confirm their score they rarely move again); the difficult negative-score reviewers go last. Record the order in `STRATEGY_PLAN.md`.
 8. Identify **blocked claims** (ungrounded or unapproved)
