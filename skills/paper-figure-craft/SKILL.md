@@ -11,8 +11,8 @@ Working on: **$ARGUMENTS**
 
 ## Why this exists
 
-The prose carries no results numbers (memory `paper-prose-rules` §1), so a
-figure is a number-of-record and has to stand alone. Two failures follow, and
+The prose carries few results numbers (how many: skill `paper-table-craft`), so
+a figure is a number-of-record and has to stand alone. Two failures follow, and
 they are independent — a figure can pass one and fail the other:
 
 - **A figure asked to say two things** demotes one of them. The second quantity
@@ -37,12 +37,9 @@ they are independent — a figure can pass one and fail the other:
 > the reader is asked to compare gets its own visual channel — position, length,
 > or thickness. Never an annotation.**
 
-The ruling that set this (user, 2026-08-01) was made on an alluvial figure:
-ribbon thickness carries the *flow* (share of samples that moved), a paired
-Δ-accuracy bar row on a shared ± axis carries the *effect*. Two quantities, two
-channels. Every alternative compared for it — side-by-side bars, Δ printed onto
-the ribbons, a 2×2 transition matrix, a 2×2 heatmap — either merged the two
-quantities into one channel or turned the effect into an annotation.
+(user, 2026-08-01) On an alluvial figure, ribbon thickness carries the *flow*
+(share of samples that moved) and a paired Δ row on a shared ± axis carries the
+*effect*, never Δ printed onto the ribbons.
 
 ## A showcase figure is packaging (user, 2026-11-01)
 
@@ -110,31 +107,30 @@ The ruling is in the table below; this is how to build one.
 
 | Ruling | Date | Note |
 |---|---|---|
-| **Caption below the graphic** — `\caption` after `\includegraphics`. (Tables and algorithms take it on top.) | 2026-08-05 | The user issued the opposite instruction once, watched the sweep land, and withdrew it the same day. Say this before acting on a repeat. |
+| **Caption below the graphic** — `\caption` after `\includegraphics`. (Tables and algorithms take it on top.) | 2026-08-05 | — |
 | **Caption carries no numbers and no pointer at another float.** Banned: `\ref{}`, `\S`, Appendix, `Table~`, `Figure~`, "the text". 1200 chars. | — | Figure captions are usually hand-written in `sections/`, so nothing sees them until compile: `paper-compile`'s `scripts/check_tex.py` checks every `\caption{}` the paper inputs. |
 | **A fired caption gate means rewrite the caption whole.** | — | Never raise the cap, never patch the tail. |
 | **No Δ where the figure already draws both compared levels.** A bar-top `Δ +3.1`, or a `net +142` that subtracts two labelled bars, is the table's banned Δ column in figure clothing — delete it, the reader subtracts. Δ stays only when it is a *plotted* quantity with its own axis and error bars: there it is the figure's one significance channel, a case tables cannot have because tables may not print intervals at all. | 2026-08-23 | Bold-if-significant rides on the Δ label, so it dies with it; how the prose then words significance is memory `paper-prose-rules` §1. Keep the Δ computation and its SSOT assertions in the generator: what is deleted is the presentation, not the evidence. Check the paper does not already use Δ for something else. |
-| **An error bar is a quantity; nothing is drawn over it.** A value label that lands on a whisker — above all one wearing a white `bbox` to punch through it — deletes the figure's second quantity. The label clears the *whisker cap*, not the bar top, and needs no white box once it does. Raising the whisker's z-order is **not** the fix: it only redraws the line through the digits. | 2026-09-21 | Found on a latency figure whose stage medians sat at `median + 0.35` behind a white box, cutting a gap in every median→p95 stem. The user read it as the bars covering the whiskers; the label was the occluder. Holds for any interval mark: CI cap, percentile whisker, band edge. |
-| **`n` is never printed on a figure, subset or not.** A subset is named in words (`large-molecule bucket only`, in the caption or a label), never sized. | 2026-09-09 | User: 图的规则不允许标子集. Same day as the table ruling. |
-| **A qualitative example shows a mechanism that has been measured, or it is not drawn.** A strip whose only message is *ours succeeds, theirs does not* repeats the outcome table with one sample and leaves the reader asking why, with nothing in the paper to answer. How to build one: **A qualitative example shows a measured mechanism** above. | 2026-11-21 | User: 「应该放确定机制的, 展示机制的图, 而不是展示一个不清楚的机制」, on a paired example strip whose two rows differed only in the final outcome; asked why ours was better, the paper had no measured answer. |
-| **Numbers come from an SSOT** — the paper's data files or per-item result artifacts — and a figure is never hand-edited to change a number. | — | Edit the source, rerun the build. |
+| **An error bar is a quantity; nothing is drawn over it.** A value label that lands on a whisker — above all one wearing a white `bbox` to punch through it — deletes the figure's second quantity. The label clears the *whisker cap*, not the bar top, and needs no white box once it does. Raising the whisker's z-order is **not** the fix: it only redraws the line through the digits. | 2026-09-21 | Holds for any interval mark: CI cap, percentile whisker, band edge. |
+| **`n` is never printed on a figure, subset or not.** A subset is named in words (`large-molecule bucket only`, in the caption or a label), never sized. | 2026-09-09 | User: 图的规则不允许标子集. |
+| **A qualitative example shows a mechanism that has been measured, or it is not drawn.** A strip whose only message is *ours succeeds, theirs does not* repeats the outcome table with one sample and leaves the reader asking why, with nothing in the paper to answer. How to build one: **A qualitative example shows a measured mechanism** above. | 2026-11-21 | User: 「应该放确定机制的, 展示机制的图, 而不是展示一个不清楚的机制」. |
+| **Numbers come from an SSOT** — the paper's data files or per-item result artifacts — and a figure is never hand-edited to change a number. | — | Edit the source or the generator, rerun the build; a hand edit to a compiled figure PDF is overwritten. |
 | **WYSIWYG width law**: `figsize` width **is** the printed width — the include fraction × the width the float occupies: `\columnwidth` for a column float in a two-column venue, `\textwidth` for `figure*` or in a one-column venue. | — | Otherwise `\includegraphics` scales the type along with the drawing. Take both widths from the compiled document (recipe below), never from memory of another venue. |
 | **Every printed glyph in 7.5–11 pt** (body text is 10). Do not shrink type to fit; change the layout. | — | Declared ≠ printed: measure it (**Measuring the printed size**). |
 | **A schematic's labels are structure and symbols only.** | 2026-09-21 | **What a caption is**, *On a schematic*. |
 | **A symbol may be drawn on a figure only if the reader has met its definition by the page the figure lands on.** Reading order is the compiled PDF's, not the `.tex` order. A figure that prints in §1 carries none of §3's notation: the label is the word the caption or the preceding prose already uses (`member ranking`, `candidate members`, `bias-correction head`). Neither a gloss on the canvas nor a definition in the caption repairs an early symbol; only the word does. | 2026-09-21 | User: 「⟨symbol⟩, ⟨symbol⟩ 啥意思,你这就不符合 paper-jargon-pass」. The test is `paper-jargon-pass`'s figure reader, who holds this figure, its caption and the pages before it, nothing after. A figure in an appendix may use what the body defined. |
-| **A figure defines its own symbols where they appear; the caption is not the symbol table.** Each symbol is glossed at the mark that draws it (an edge labelled `M members × T h` defines $M$; a badge `head φ_bc` says what φ is). Caption = bold title + one clause per panel side, ~300 chars. | 2026-08-30 | "Self-representative" was the user's word. A symbol left undefined in the figure is fixed *in the figure* — widen the badge, extend the label — never by growing the caption back. For a symbol whose definition comes *after* the figure's page there is no gloss to widen: it is replaced by the word (row above). |
+| **A figure defines its own symbols where they appear; the caption is not the symbol table.** Each symbol is glossed at the mark that draws it (an edge labelled `M members × T h` defines $M$; a badge `head φ_bc` says what φ is). Caption = bold title + one clause per panel side. | 2026-08-30 | "Self-representative" was the user's word. A symbol left undefined in the figure is fixed *in the figure* — widen the badge, extend the label — never by growing the caption back. For a symbol whose definition comes *after* the figure's page there is no gloss to widen: it is replaced by the word (row above). |
 | **One hue = one meaning within a figure, across panels too.** A data colour may not share hue with the structural accent. A legend chip must be drawn exactly like some mark in the figure; magnification marks (zoom outline + cone) are grey dashed so a solid accent outline reads as selection only. | 2026-08-30 | A panel that draws one series in the hue that means *our method* in the next panel reads as our method. Recolour it in its own role's hue and direct-label it at the curve end. |
 | **No em dashes in figure labels** — the user reads them as AI-generated. Use `·`, a comma, or a colon; sweep the SVG and its blueprint together. | 2026-08-30 | Prose has its own dash rule (two pairs = split); this one is absolute for label text. |
 
 ## Colour
 
 The palette's values are the project's, and which hue a paper likes is not a
-ruling of this skill (user, 2026-09-01, deleting two such "rulings"). Read it
+ruling of this skill (user, 2026-09-01). Read it
 where the project keeps it (a palette memory, or a role table plus the figure
 template).
 
-**Categories get hues, never a grey ramp** (user, 2026-11-20, on a stacked bar
-whose four parts were four greys from near-black to near-white: 「不要用这么丑的
+**Categories get hues, never a grey ramp** (user, 2026-11-20: 「不要用这么丑的
 颜色」).
 
 - Series or stacked parts that are different *kinds* of thing each take a
@@ -151,9 +147,9 @@ whose four parts were four greys from near-black to near-white: 「不要用这�
   authority, each checked against the hues that already carry a meaning (`ours`,
   the structural accent). Falling back to the neutrals because the palette "ran
   out" is the failure this rule names.
-- Tints of one hue with a grey remainder do not meet this rule: the user saw
-  exactly that as the first fix and rejected it the same day (「还是太灰了」).
-  Sub-cases of one outcome still get a hue each, and so does the remainder.
+- Tints of one hue with a grey remainder do not meet this rule (user,
+  2026-11-20: 「还是太灰了」). Sub-cases of one outcome still get a hue each,
+  and so does the remainder.
 - A second panel on the same rows is coloured too, in the hue of the part whose
   meaning it shares, not left in neutral grey.
 
@@ -207,26 +203,24 @@ Five things this catches that nothing else does:
   at that width.
 - **`savefig.bbox="tight"` crops the canvas**, so the PDF is narrower than
   `figsize` and the scale must come from the *PDF*, never from `figsize`.
-- **The failure signature is `pdf_width_in ≠ frac × W`.** Both live cases found
-  on one sweep (0.91× and 0.914×, tick labels and in-bar numbers near 7 pt) had
-  hardcoded `fontsize=6.0` / `6.5` / `8` instead of using the project's style
-  module's type ladder. `grep -n 'fontsize=[0-9]' fig_*.py` is the whole audit.
+- **The failure signature is `pdf_width_in ≠ frac × W`**, usually with a
+  hardcoded `fontsize=` that bypasses the style module's type ladder;
+  `grep -n 'fontsize=[0-9]' fig_*.py` is the whole audit.
 - **Read the second-smallest size, not the smallest.** Superscript markers and
-  subscripts (`*`, `‡`, `A$_1$`) legitimately sit near 6 pt and produced three
-  false alarms out of five on the first sweep.
+  subscripts (`*`, `‡`, `A$_1$`) legitimately sit near 6 pt.
 
 ## What a caption is
 
-**The first sentence is the takeaway** (user, 2026-11-01, replacing the earlier
-"no conclusion in the caption"): the bold opening states the one conclusion the
-figure carries, in the prose's own words and strength (`significant`, a
-direction), never stronger than the text that cites the figure and never a
-number. A schematic's takeaway is what the method changes. The takeaway is what
-only this figure shows, not the summary result a table already prints: a
-breakdown figure (per object, per task, per subset) states what the split shows
-(`paper-table-craft`, "The takeaway is what only this float shows"). Then the legend for
-*this* graphic: what is measured, the symbols, the axes, what a panel is. The
-reservations on that reading are prose of the section the figure sits in.
+**The first sentence is the takeaway** (user, 2026-11-01): the bold opening
+states the one conclusion the figure carries, in the prose's own words and
+strength (`significant`, a direction), never stronger than the text that cites
+the figure and never a number. A schematic's takeaway is what the method
+changes. The takeaway is what only this figure shows, not the summary result a
+table already prints: a breakdown figure (per object, per task, per subset)
+states what the split shows (`paper-table-craft`, "The takeaway is what only
+this float shows"). Then the legend for *this* graphic: what is measured, the
+symbols, the axes, what a panel is. The reservations on that reading are prose
+of the section the figure sits in.
 
 *This* graphic is the whole scope. A symbol drawn on a panel is the figure's own
 and gets defined here even when the prose defines it later; a term that only ever
@@ -237,12 +231,11 @@ comes through, and what it buys is one word with N authorities, sitting in the
 least-scanned strings in the paper. (User ruling, 2026-08-26: "the body explains
 it, so do not define it in the caption.")
 
-The 1200-char gate is a backstop, not a target. **Aim at ~600.** What overflows
-is reliably the protocol paragraph, and it belongs in the section the figure sits
-in. One caption ending in a reading instruction — *"each panel's y-axis is
-windowed to its own range: read curves within a panel"* — is not an incomplete
-caption but a figure whose panels cannot be compared; fix the axes, not the
-sentence.
+Length: the target and the 1200-char backstop are `paper-table-craft`'s (§ What
+a caption is) and hold for a figure too. One caption ending in a reading
+instruction — *"each panel's y-axis is windowed to its own range: read curves
+within a panel"* — is not an incomplete caption but a figure whose panels cannot
+be compared; fix the axes, not the sentence.
 
 And the reciprocal rule, which is where the duplication actually shows up
 (user ruling, 2026-08-03): **on a data plot, appendix prose does not repeat a
@@ -272,24 +265,21 @@ has already met it (rulings table).
 
 ## Redesign checklist
 
-Reach for these in order; the first two fix most complaints.
+Reach for these in order; the first fixes most complaints.
 
-1. **Count the conclusions.** Two conclusions is two figures, or one figure with
-   two rows on a shared axis — not one panel with an annotation layer.
-2. **Count the channels.** One quantity per channel. If a quantity is currently
-   text on top of another quantity's mark, that is the bug.
-3. **Then fix legibility**, in this order: increase the panel (in a two-column
+1. **Apply the one test.** Two conclusions is two figures, or one figure with
+   two rows on a shared axis; a quantity drawn as text on another quantity's
+   mark is the bug.
+2. **Then fix legibility**, in this order: increase the panel (in a two-column
    venue, consider `figure*`), shorten the labels, rotate or stagger ticks, drop
    a redundant series — **not** reduce the font size.
-4. **Render at print size and look**: `pdftoppm -scale-to-x $(printed_inches ×
+3. **Render at print size and look**: `pdftoppm -scale-to-x $(printed_inches ×
    200)`. The three failures that survive every other check are colliding x-tick
    labels, a long annotation overflowing its panel, and an auto tick locator
    dropping a level and printing decimals.
 
 ## Hard stops
 
-- **Never edit a compiled figure PDF** (a clone's `figures/`, a preview).
-  Edit the generator, rerun the build; the compiled copy is overwritten.
 - **Never hardcode a clone's directory** in a script — discover it, as the
   project's path helper does.
 - **An asset nothing references is a live defect** — it is rebuilt and pushed on
@@ -304,7 +294,7 @@ Reach for these in order; the first two fix most complaints.
 |---|---|
 | build commands, which python, output paths, the style module (`TEXT_W`, type ladder) | the project's paper CLAUDE.md |
 | caption rules as an executable predicate | the project's caption checker, if it has one |
-| caption position, `.bib`, co-author macros | memory `paper-layout-and-citation-rules` |
+| `.bib`, co-author macros | memory `paper-layout-and-citation-rules` |
 | what the prose may say about a figure | skill `paper-prose-tighten`, memory `paper-prose-rules` |
 | tables | skill `paper-table-craft` |
 | where a float lands, two-column placement | skill `paper-float-compact` |
