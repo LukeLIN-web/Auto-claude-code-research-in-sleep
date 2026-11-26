@@ -265,7 +265,6 @@ merges you rejected with the pt arithmetic that rules them out. Leave pushing
 
 ## Footguns learned the hard way
 
-- `\resizebox{\textwidth}{!}` on a narrow table magnifies it (fonts blow up).
 - A 460pt float + long captions cannot top-place at `\topfraction 0.7`-ish
   defaults; check the style file — some (TMLR: 0.95) are generous.
 - Two ~330pt floats fit a float page together but NOT as two top floats
@@ -274,10 +273,6 @@ merges you rejected with the pt arithmetic that rules them out. Leave pushing
   "ensure_input"-style idempotent section injection still finds its anchor.
 - Floats never cross a `\FloatBarrier`/section boundary — merges must stay
   within one section, and cross-section pairings hurt findability anyway.
-- `\FloatBarrier` is itself a page-waster in two ways (Step 1b): a deferred
-  float at the barrier forces a mostly-blank page, and the barrier's
-  `\suppressfloats[t]` cascades a section's `[t]` floats to the next page.
-  `[verbose]` placeins names the barrier; `[above]` + one `[htbp]` fixed both.
 - Two deferred floats that together just clear `\floatpagefraction` form a
   float page and all text moves off it; raising the fraction only helps if
   their sum is actually below the new threshold — measure the two heights
