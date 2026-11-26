@@ -38,15 +38,6 @@ claim verb**; reach for a new sentence only when no existing sentence can carry
 the correction. If the only thing a proposed edit would change is the precision
 of a disclosure's wording, it is not an edit worth making.
 
-## How This Differs From Other Skills
-
-| Skill | Question it answers |
-|-------|-------------------|
-| `/paper-claim-audit` | Do the numbers in the text match the raw files? |
-| `/result-to-claim` | Does the data support this claim at all? |
-| `/auto-paper-improvement-loop` | What would an external reviewer complain about? |
-| **`/paper-prose-tighten`** | **Which sentences carry no claim and can be deleted outright?** |
-
 ## The One Test
 
 For every sentence, every number inside it, and every larger unit (a paragraph,
@@ -113,9 +104,6 @@ load-bearing claim keeps its caveats because both are load-bearing; a
 nice-to-have leaves with its caveats attached, and the section reads straight
 through for the first time.
 
-The failure it replaces: each review round adds one clarifying clause, every
-clause is individually correct and individually cheap, and three rounds later
-the paragraph is unreadable in defence of a claim that never earned a paragraph.
 When an author says the explanation itself is the problem, they are exercising
 this rule — do not answer it with a better-worded explanation.
 
@@ -180,9 +168,6 @@ The same fact in the topic sentence, in the middle, and in the closing
 ("consistent with", "we read as", "in the sense that", "not in the sense that").
 Keep one instance, at the position where the reader needs it.
 
-This class is **within-paragraph**. Its section-scale twin is class 7, which no
-amount of reading one paragraph at a time will surface.
-
 ### 5. Narrated absences (无中生有)
 
 Prose whose grammatical subject is something that does not exist:
@@ -201,12 +186,9 @@ never as a narrative sentence. An entity that was never in the table at all —
 invisible, delete. The same surface shape gets both verdicts: the two examples
 above differ only in whether the table shows the hole being explained.
 
-Two field notes. This class concentrates **in captions** — that is where
-authors explain table gaps — so sweep captions for class 5 even though the rest
-of this skill edits prose; and a generated caption (an `AUTO-GENERATED` header)
-must be cut in the generator script, or the next build resurrects the sentence.
-What a caption is *for* is not this skill's call: `paper-table-craft` and
-`paper-figure-craft` own that.
+This class concentrates **in captions**, where authors explain table gaps:
+sweep captions for it too, and cut a generated caption (an `AUTO-GENERATED`
+header) in its generator script, or the next build resurrects the sentence.
 
 **Keep** an absence statement also when the absence *is* the claim ("no prior
 benchmark evaluates X and Y jointly" as a motivation sentence)
@@ -239,27 +221,17 @@ scope fact is stated (`a held-out annotator, not the benchmark script, scores
 each answer`), the fact stays: restate it positively (`scores each answer in
 place of the benchmark script`), per (b) below and the protocol hard stop.
 
-**Field notes (first full pass, 2026-08-05, ~90 cuts).**
-(a) The worst pivots are invisible to a "rather than" grep: sentence-lead
-negations ("The obvious reading of that pair … is the one the data rejects",
-"Nor is the gain fully accounted for by…", "That the threshold moves is not
-by itself evidence…", "Neither width is a swept hyperparameter"), negative
-`\paragraph` headers ("…is not doing hidden accuracy work"), caption bold
-titles ("The resolution, not the dataset, sets…"), and question-form section
-titles ("Is the Lead Bought by What the Pruner Discarded?"). Sweep headers,
-titles, and captions by eye, not only by grep.
+**Field notes.**
+(a) Sweep headers, titles and captions by eye: sentence-lead negations ("Nor
+is the gain fully accounted for by…"), negative `\paragraph` headers, caption
+bold titles ("The resolution, not the dataset, sets…") and question-form
+section titles do not match a "rather than" grep.
 (b) Deleting the "rather than Y" tail is usually scope-safe because the
 surviving X carries the scope itself ("a same-hardware anchor", "third-party
 reads", "systems as published"). When the negated half is the *only* scope
 carrier, restate it positively ("same-weights, cross-protocol comparison")
 — the hard stops below still forbid dropping the scope.
-(c) A negation-first setup often binds a later pronoun ("that explanation",
-"It does not") — deleting only the clause dangles the reference. Rewrite the
-passage as one positive sentence.
-(d) A generator can carry the same pivot in two strings (the LaTeX caption
-and a preview/notes block). After editing it, rebuild and re-grep the
-rendered `.tex` to confirm the cut landed.
-(e) **The concessive scope hedge** — `X, although Y`, `X, each a Y`,
+(c) **The concessive scope hedge** — `X, although Y`, `X, each a Y`,
 `although X grows, Y is bounded` — is a class-6 shape even when Y is real
 scope, and it is the highest-yield sub-shape left after the obvious pivots
 are gone. It looks like a hard stop, but the passage usually states the same
@@ -329,14 +301,9 @@ where — delete.
 separation, a denominator rule, a protocol the comparison depends on. Those are
 hard stops below, not class-8 hits.
 
-**Field note (2026-08-20).** This class manufactures apparent contradictions.
-Two hygiene sentences written weeks apart — a config-table cell reporting a flat
-held-out curve over one range, a results sentence reporting a rising curve over
-another — described two different sets, and an external reviewer read them as
-the paper contradicting itself. Naming the two sets is the wrong repair: it
-spends three sentences to defend a supporting claim. Deleting both dissolves the
-contradiction and costs nothing. **When a reviewer flags "these two statements
-disagree" and both are class 8, subtract.**
+**When a reviewer flags two class-8 sentences as disagreeing, delete both.**
+Naming the two sets they describe spends sentences defending a supporting
+claim.
 
 ### 9. Process vocabulary (流程/工程术语)
 
@@ -373,14 +340,10 @@ tokenizer`, `frozen protocol` describe weights and configuration that do not
 move. `frozen before …` describes when *we* looked. Only the second is a hit.
 
 **Keep** the object a process word modifies when that object scopes the claim: a
-non-inferiority **margin** bounds what "non-inferior" means and stays (value in
-the appendix, per the no-numbers-in-body rule); only the story of when it was
-fixed goes.
+non-inferiority **margin** bounds what "non-inferior" means and stays (its
+value in the appendix); only the story of when it was fixed goes.
 
-**Field note (2026-08-20 — the ruling that created this class).** The author's
-words: 「preregistered 都删了, 论文里就不该出现这种工程的术语. 记住」. Eight
-instances of the word and eleven of its relatives left one paper in a single
-sweep, and no claim moved.
+**Ruling (user 2026-08-20).** 「preregistered 都删了, 论文里就不该出现这种工程的术语. 记住」.
 
 Before retiring a whole verification apparatus (a probe, its null, a negative
 control) under this class, run the file-drawer hard stop's test below.
@@ -424,16 +387,14 @@ rates span $0.21$ to $0.47$`), and a pair whose *near-equality* is the claim
 (`keeps a median $27.3\%$ of the dense model's FLOPs against a target budget
 of $26.9\%$`). Those are comparisons, not enumerations.
 
-**The appendix is not exempt.** The house rule that lets an appendix keep
-numbers (`paper/CLAUDE.md`) exempts *isolated* numbers that no figure carries —
+**The appendix is not exempt.** The rule that lets an appendix keep
+numbers (`paper-table-craft`, *Result numbers in the prose*) exempts *isolated* numbers that no figure carries —
 never a series. Appendices are where this class survives a body-only sweep:
 every hit of the ruling that created the class was in one.
 
-**Field note (2026-08-24 — the ruling that created this class).** The author
-pasted back three consecutive appendix sentences carrying twelve numbers in four
-series and wrote 「严格禁止」. Class 1 walks past these: they are not counts,
-denominators or pair splits but *results*, each individually a number the paper
-is entitled to report. The defect is the enumeration, not the digit.
+**Ruling (user 2026-08-24).** 「严格禁止」. Class 1 walks past these: they are
+not counts, denominators or pair splits but *results*, each a number the paper
+may report. The defect is the enumeration, not the digit.
 
 ### 11. Related-work sprawl (相关工作写太多)
 
@@ -463,12 +424,7 @@ diff <(git show HEAD:sec/2_related.tex | keys) <(keys < sec/2_related.tex)
 Every key stays (Hard stops). A work that shrinks to one key in a cluster is
 still cited, and concurrent work is still cited and discussed.
 
-**Field note (2026-11-01, the ruling that created this class).** After a
-motivation pass added a paragraph for each newly found family, one
-draft's related work reached six paragraphs, about 1,800 words and 51 cite keys.
-The author wrote 「一般 related work 两段就行了, 你写的也太多了」. The source was
-`paper-write`'s "minimum one full page, 3–4 paragraphs", replaced the same day.
-The rewrite came to two paragraphs of about 430 words with all 51 keys kept.
+**Ruling (user 2026-11-01).** 「一般 related work 两段就行了, 你写的也太多了」.
 
 ### 12. Wordy phrases (能用少词就不用多词)
 
@@ -517,30 +473,15 @@ Also kept: a qualifier that is the claim or bounds it (`significantly`,
 
 **Read every sentence; grep only helps with recall.**
 
-**Re-run the short-last-line gate after the pass.** Cutting words reflows the
-paragraph, and two of the six edits left a last line under half the column. The
-fix is more cuts from this class in the same paragraph (`the drafter and the verifier`
-→ `drafter and verifier`, `50,000 training steps` → `50,000 steps` where the sentence
-already says training). Recompile until `paper-compile`'s `check_runts.py`
-reads 0.
+Before keeping a phrase because no single word replaces it, try the field's
+standard phrasing.
 
-**Field note (2026-11-03, the ruling that created this class).** On one
-abstract's `loosely worded requests`, the author wrote
-「论文应该能用少词的就不要用多个词, 比如 loose worded 就应该写成 vague」. They also
-made that edit themselves on Overleaf. After reading every sentence of the
-draft, the agent changed six more phrases, and four more to fix short last lines.
-The other multi-word phrases carried a claim or had no one-word equivalent.
+Cutting words reflows paragraphs; the short last lines a pass leaves are
+cleared with cuts from this class in `paper-polish` step 5b.
 
-**Field note (2026-11-11, the kept list was wrong).** The 11-03 pass had kept
-`succeeds significantly less often` (`fails` is a different claim),
-`are what make fine-tuning help` (the cleft) and `half and half with The Stack` (no
-single word). The author then rewrote the abstract on Overleaf to
-`performs significantly worse than`, `achieves significantly higher success
-rates than`, `the primary driver` and `mixed 1:1 with The Stack`, and ruled
-「performs worse 是对的, succeeds less often 是不好的写法」. The pass had only
-tried one-word swaps; each phrase had a standard phrase in the field that says
-the same claim. Before keeping a phrase because no single word replaces it,
-try the field's standard phrasing.
+**Rulings.** User 2026-11-03: 「论文应该能用少词的就不要用多个词, 比如 loose worded
+就应该写成 vague」. User 2026-11-11: 「performs worse 是对的, succeeds less often
+是不好的写法」.
 
 ### 13. One comparison split across sentences, and copies that disagree (同一个比较说好几遍、各处副本对不上)
 
@@ -585,17 +526,9 @@ does not change what the paper claims.
 | A copy states a condition Results never states (`lies above it on Bench-7` in the intro and conclusion only) | If the table shows it at the copy's strength (a point-estimate `lies above` only needs the table), add it to Results. A significance claim with no Results owner goes to `/paper-claim-audit`, not into Results |
 | The mismatch is in the abstract or contribution list | Do not edit: the authors write those. Report it |
 
-**Field note (2026-11-03, the ruling that created this class).** On one
-Main Results section, the author wrote 「这重复也太多了 … 明明可以就说一次
-<base policy> 单跑」. Merging three sentences into one showed that the conclusion's list
-lacked Bench-3. Bench-3 had become significant on 11-01, and that edit
-reached the intro and Results but not the conclusion. The author's reply was
-「补进结论, 这只是个例子, paper prose tighten 能发现这种错误吗?」. The copy check then found two
-more: the intro and method claimed a significant success gain over token-level
-kNN-style smoothing, while Results (on the 2k-token-capped table) is
-significant only on every-line-own completions; and the intro and conclusion
-said our method lies above the drafter alone on Bench-7, which no Results
-sentence said.
+**Ruling (user 2026-11-03).** 「这重复也太多了 … 明明可以就说一次 <base policy>
+单跑」; the copy check answers 「补进结论, 这只是个例子, paper prose tighten
+能发现这种错误吗?」.
 
 ### 14. Exception clauses (例外从句: `all but X`, `except X`)
 
@@ -632,16 +565,8 @@ other than the target`), and a set defined by what it leaves out when that
 definition is the column's (`Unseen leaves those tasks out`). Neither says
 something about every member and then takes members back.
 
-**Field note (2026-11-16, the ruling that created this class).** The author
-quoted a table caption's bold title and a protocol paragraph and wrote
-「论文中不应该出现这些 but <Bench>. except xxx, 应该想想怎么删除这些」. One
-draft had five. The table-title exception was a cell where a baseline was higher
-but not significantly. An earlier ruling had already said such cells do not
-narrow a claim, so the title lost the `every` and the exception. Two protocol
-exceptions became a partition by the protocol table's own column and a rule scoped
-to the rows it covers. The configuration exception was deleted because the list
-after it was already complete. The teacher exception became the group name
-the introduction already used. No claim got stronger.
+**Ruling (user 2026-11-16).** 「论文中不应该出现这些 but <Bench>. except xxx,
+应该想想怎么删除这些」.
 
 ## Hard stops
 
@@ -659,10 +584,7 @@ Deleting text must never upgrade a claim.
   supports `achieves comparable performance`, nothing more. `does not require X`,
   `X is unnecessary` and `works without X` are capability claims the comparison
   did not test: write the comparison and let the reader draw it. This applies when
-  writing the sentence too, not only when cutting. (Ruling 2026-11-19: a sentence
-  opening `Selecting ... does not require <the component>:` over a row that was
-  merely undetected against the full recipe in every column was 「太强了」; it
-  became `achieves performance comparable to`.)
+  writing the sentence too, not only when cutting (user 2026-11-19「太强了」).
 - **Never call a result an orphan because it weighs against a claim.** A result
   that bounds or contradicts a claim the paper makes bears on that claim and
   stays; "supports no claim" means it bears on none, in either direction. Cutting
@@ -692,21 +614,11 @@ Deleting text must never upgrade a claim.
   (say, the artifact is training data and every result is benchmark accuracy),
   the deletion retires a discarded *build*. If one is, it is scope, not process,
   and it stays.
-- **Never delete a duplicate before checking it is one.** Two class-7 traps,
-  both hit on the first real pass:
-  - *The "duplicate" carries a result that exists nowhere else.* A conclusion
-    bullet reading "both compression stages port to a second backbone" looked like
-    a restatement of a whole results subsection — but the subsection covered
-    only the *quantization* stage, and the bullet's pruning-stage result appeared
-    in no section and no appendix. **Grep the distinguishing noun** (here the
-    sparsity metric) across `sections/` before deleting; if it is unique,
-    the fix is to move the sentence into the owning section, not to delete it.
-  - *The appendix cites the body for what you are moving to the appendix.*
-    Before "this belongs in the appendix", grep the appendix for a back-pointer
-    (`\S\ref{sec:...}`, "the rule of §4", "the ruling of §5"). An appendix that
-    reads "each panel's comparator follows the fair-baseline ruling of §5"
-    requires §5 to still state that ruling. Keep a one-sentence version in the
-    body and cut only the self-justification around it.
+- **Never delete a duplicate before checking it is one.** Grep the copy's
+  distinguishing noun across the sections first: a result it alone carries
+  moves into the owning section instead. Before moving text to the appendix,
+  grep the appendix for a pointer back to it (`\S\ref{sec:...}`, "the rule of
+  §4"); if one exists, keep a one-sentence version in the body.
 
 Rule of thumb: cut what proves *diligence*; keep what bounds *scope*.
 

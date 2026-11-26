@@ -113,10 +113,3 @@ classes and the hard stops it refers to are in `SKILL.md`.
 7. **Compile** and report the size change (words or lines per section), plus a
    list of anything you deliberately left because cutting it would have
    loosened a claim.
-
-**Calibrate the estimate.** A per-item cut target set from the map will
-overshoot by roughly 2×: load-bearing paragraphs *compress*, they do not delete,
-and every "delete this section" item tends to turn into "move one sentence and
-delete the rest". A 1,600-word plan landing at ~700 is the normal outcome, not a
-failure to execute — say so plainly instead of padding the cut to hit the
-estimate.
