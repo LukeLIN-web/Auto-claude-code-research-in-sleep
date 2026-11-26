@@ -91,9 +91,8 @@ import matplotlib
 
 # Draw at the printed size: a canvas is as wide as the \linewidth of the float
 # it goes into and is included with width=\linewidth, so every size below
-# (type, lines, markers) is the size on the page. Read both widths off the
-# compiled paper once per venue (paper-figure-craft § Measuring the printed
-# size); these are the CVPR author kit's.
+# (type, lines, markers) is the size on the page. The widths are the venue's;
+# values in paper-float-compact § Two-column venues (CVPR's are the defaults).
 COLUMN_W = 3.28    # in: \columnwidth, a `figure` in a two-column venue
 TEXT_W = 6.875     # in: \textwidth, a `figure*` or any figure in a one-column venue
 

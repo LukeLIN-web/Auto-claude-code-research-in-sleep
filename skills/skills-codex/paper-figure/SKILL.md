@@ -37,7 +37,7 @@ Generate all figures and tables for a paper based on: **$ARGUMENTS**
 - **DPI = 300** — Output resolution
 - **FORMAT = `pdf`** — Output format. Options: `pdf` (vector, best for LaTeX), `png` (raster fallback)
 - **COLOR_PALETTE = `tab10`** — Default matplotlib color cycle. Options: `tab10`, `Set2`, `colorblind` (deuteranopia-safe)
-- **FONT_SIZE = 10** — Base font size (matches typical conference body text)
+- **FONT_SIZE = 10** — Base font size **in printed points**. The canvas is drawn at the width it prints at (`COLUMN_W` / `TEXT_W` in the style module) and included at `width=\linewidth`, so nothing rescales the type. Every printed glyph lands in 7.5–11 pt.
 - **FIG_DIR = `figures/`** — Output directory for generated figures
 - **REVIEWER_MODEL = `gpt-6-astra`** — Model used via a secondary Codex agent for figure quality review.
 
@@ -75,6 +75,14 @@ Create a shared style configuration script:
 # paper_plot_style.py — shared across all figure scripts
 import matplotlib.pyplot as plt
 import matplotlib
+
+# Draw at the printed size: a canvas is as wide as the \linewidth of the float
+# it goes into and is included with width=\linewidth, so every size below
+# (type, lines, markers) is the size on the page. The widths are the venue's;
+# values in paper-float-compact § Two-column venues (CVPR's are the defaults).
+COLUMN_W = 3.28    # in: \columnwidth, a `figure` in a two-column venue
+TEXT_W = 6.875     # in: \textwidth, a `figure*` or any figure in a one-column venue
+
 matplotlib.rcParams.update({
     'font.size': FONT_SIZE,
     'font.family': 'serif',
@@ -86,8 +94,8 @@ matplotlib.rcParams.update({
     'legend.fontsize': FONT_SIZE - 1,
     'figure.dpi': DPI,
     'savefig.dpi': DPI,
-    'savefig.bbox': 'tight',
-    'savefig.pad_inches': 0.05,
+    'figure.constrained_layout.use': True,  # fit the labels inside the canvas
+    'savefig.bbox': 'standard',             # and never crop it: PDF width = figsize width
     'axes.grid': False,
     'axes.spines.top': False,
     'axes.spines.right': False,
@@ -110,13 +118,13 @@ Use this decision tree for data-driven figures (inspired by Imbad0202/academic-r
 
 | Data Pattern | Recommended Type | Size |
 |-------------|-----------------|------|
-| X=time/steps, Y=metric | Line plot | 0.48\textwidth |
-| Methods × 1 metric | Bar chart | 0.48\textwidth |
-| Methods × multiple metrics | Grouped bar / radar | 0.95\textwidth |
-| Two continuous variables | Scatter plot | 0.48\textwidth |
-| Matrix / grid values | Heatmap | 0.48\textwidth |
-| Distribution comparison | Box/violin plot | 0.48\textwidth |
-| Multi-dataset results | Multi-panel (subfigure) | 0.95\textwidth |
+| X=time/steps, Y=metric | Line plot | `COLUMN_W` |
+| Methods × 1 metric | Bar chart | `COLUMN_W` |
+| Methods × multiple metrics | Grouped bar / radar | `TEXT_W` (`figure*`) |
+| Two continuous variables | Scatter plot | `COLUMN_W` |
+| Matrix / grid values | Heatmap | `COLUMN_W` |
+| Distribution comparison | Box/violin plot | `COLUMN_W` |
+| Multi-dataset results | Multi-panel (subfigure) | `TEXT_W` (`figure*`) |
 | Prior work comparison | LaTeX table | — |
 
 ### Step 4: Generate Each Figure
@@ -132,7 +140,7 @@ import json
 with open('figures/exp_results.json') as f:
     data = json.load(f)
 
-fig, ax = plt.subplots(1, 1, figsize=(5, 3.5))
+fig, ax = plt.subplots(1, 1, figsize=(COLUMN_W, 2.3))
 ax.plot(data['steps'], data['fac_loss'], label='Factorized', color=COLORS[0])
 ax.plot(data['steps'], data['crf_loss'], label='CRF-LR', color=COLORS[1])
 ax.set_xlabel('Training Steps')
@@ -143,8 +151,8 @@ save_fig(fig, 'fig2_training_curves')
 
 **Bar charts** (comparison, ablation):
 ```python
-fig, ax = plt.subplots(1, 1, figsize=(5, 3))
-methods = ['Baseline', 'Method A', 'Method B', 'Ours']
+fig, ax = plt.subplots(1, 1, figsize=(COLUMN_W, 2.0))
+methods = ['Baseline', 'Prior A', 'Prior B', 'Ours']
 values = [82.3, 85.1, 86.7, 89.2]
 bars = ax.bar(methods, values, color=[COLORS[i] for i in range(len(methods))])
 ax.set_ylabel('Accuracy (%)')
@@ -202,7 +210,7 @@ For each figure, output the LaTeX code to include it:
 % === Fig 2: Training Curves ===
 \begin{figure}[t]
     \centering
-    \includegraphics[width=0.48\textwidth]{figures/fig2_training_curves.pdf}
+    \includegraphics[width=\linewidth]{figures/fig2_training_curves.pdf}  % drawn at COLUMN_W
     \caption{Training curves comparing factorized and CRF-LR denoising.}
     \label{fig:training_curves}
 \end{figure}
@@ -265,13 +273,13 @@ deliberate stated alternative may override — EXCEPT items that Key Rules below
 make hard (vector-PDF output and no-titles-inside-figures are Key Rules: treat
 those two as binding, not overridable):**
 
-- [ ] Font size readable at printed paper size (not too small)
+- [ ] Every glyph in the compiled PDF prints in 7.5–11 pt
 - [ ] Colors distinguishable in grayscale (print-friendly)
 - [ ] **No title inside figures** — titles go only in LaTeX `\caption{}` (from pedrohcgs)
 - [ ] Legend does not overlap data
 - [ ] Axis labels have units where applicable
 - [ ] Axis labels are publication-quality (not variable names like `emp_rate`)
-- [ ] Figure width fits single column (0.48\textwidth) or full width (0.95\textwidth)
+- [ ] Canvas width is the printed width (`COLUMN_W` or `TEXT_W`), included at `width=\linewidth`
 - [ ] PDF output is vector (not rasterized text)
 - [ ] No matplotlib default title (remove `plt.title` for publications)
 - [ ] Serif font matches paper body text (Times / Computer Modern)
@@ -308,14 +316,14 @@ figures/
 
 | Type | When to Use | Typical Size |
 |------|------------|--------------|
-| Line plot | Training curves, scaling trends | 0.48\textwidth |
-| Bar chart | Method comparison, ablation | 0.48\textwidth |
-| Grouped bar | Multi-metric comparison | 0.95\textwidth |
-| Scatter plot | Correlation analysis | 0.48\textwidth |
-| Heatmap | Attention, confusion matrix | 0.48\textwidth |
-| Box/violin | Distribution comparison | 0.48\textwidth |
-| Architecture | System overview | 0.95\textwidth |
-| Multi-panel | Combined results (subfigures) | 0.95\textwidth |
+| Line plot | Training curves, scaling trends | `COLUMN_W` |
+| Bar chart | Method comparison, ablation | `COLUMN_W` |
+| Grouped bar | Multi-metric comparison | `TEXT_W` (`figure*`) |
+| Scatter plot | Correlation analysis | `COLUMN_W` |
+| Heatmap | Attention, confusion matrix | `COLUMN_W` |
+| Box/violin | Distribution comparison | `COLUMN_W` |
+| Architecture | System overview | `TEXT_W` (`figure*`) |
+| Multi-panel | Combined results (subfigures) | `TEXT_W` (`figure*`) |
 | Comparison table | Prior bounds vs. ours (theory) | full width |
 
 ## Acknowledgements
