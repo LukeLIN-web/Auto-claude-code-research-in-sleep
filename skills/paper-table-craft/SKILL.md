@@ -96,7 +96,7 @@ the text. If nothing beyond the aggregate can be named, the float has no
 takeaway of its own, and that goes to the author as a question about whether
 to keep it.
 
-Four ways it stops being that:
+Three ways it stops being that:
 
 - **It restates its own rows.** "Both pruned variants share the same dense backbone at
   the same sparsity and layer schedule" — three rows of the table, in a sentence.
@@ -113,9 +113,6 @@ Four ways it stops being that:
 - **It explains how to read the conclusion**, or what reservations that reading
   carries. That is prose; for an appendix float, the prose of the section it
   sits in.
-- **It points somewhere.** The gate blocks this, and the reason is that a
-  caption is the least-scanned string in the paper: a cross-reference survives
-  the table being renamed, moved, or deleted, and comes back as `??`.
 
 The 1200-char gate is a backstop, not a target. **Aim at ~600**, and treat a
 caption within a few characters of the cap as already broken rather than nearly
@@ -151,19 +148,18 @@ When a table has grown prose, these are the shapes, in descending yield.
 - **Never delete a protocol fact**: a scoring rule (`exact set match, no partial
   credit`), a denominator rule, a train/dev/test separation, a budget that makes
   a comparison fair.
-- **Generated or hand-authored?** `head -2` the `.tex`. An `AUTO-GENERATED`
-  header means edit the generator and rerun the build — a hand edit is
-  overwritten. The project's paper CLAUDE.md lists the hand-authored ones.
 - **Never hardcode a number in a generator.** Numbers come from the paper's SSOT
   (data files or result pages read mechanically).
 
 ## Procedure
 
-1. Decide generated vs hand-authored (`head -2`).
-2. `grep -n "tab:<label>"` in `sections/` and read every hit — that is the list
-   of rows you may not delete.
+1. `head -2` the `.tex`. An `AUTO-GENERATED` header means edit the generator
+   and rerun the build; a hand edit is overwritten. The project's paper
+   CLAUDE.md lists the hand-authored tables.
+2. Run the hard stops' row grep and read every hit: those are the rows you may
+   not delete.
 3. Classify every cell T1–T8. Prefer deleting a clause over rewriting a cell.
-4. Rewrite the caption **whole**, from the four-way test above. Do not edit it
+4. Rewrite the caption **whole**, from the three-way test above. Do not edit it
    in place; that is how it grew.
 5. Compile, and require all four: `rc=0`, **zero** `Overfull \hbox` in
    `main.log`, the project's caption checker clean, and the **printed type size
