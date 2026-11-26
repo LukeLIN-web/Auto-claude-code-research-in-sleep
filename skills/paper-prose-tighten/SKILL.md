@@ -608,7 +608,7 @@ does not change what the paper claims.
 
 **Field note (2026-11-03, the ruling that created this class).** On one
 Main Results section, the author wrote 「这重复也太多了 … 明明可以就说一次
-π0.5 单跑」. Merging three sentences into one showed that the conclusion's list
+<base policy> 单跑」. Merging three sentences into one showed that the conclusion's list
 lacked Bench-3. Bench-3 had become significant on 11-01, and that edit
 reached the intro and Results but not the conclusion. The author's reply was
 「补进结论, 这只是个例子, paper prose tighten 能发现这种错误吗?」. The copy check then found two

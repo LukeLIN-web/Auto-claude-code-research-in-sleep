@@ -1,6 +1,6 @@
 # Case: VQToken, NeurIPS 2025 (Submission 3333) — accepted as poster
 
-Source: https://openreview.net/forum?id=X8oEu4Gs3W (thread saved by the user on 2026-11-09 to `juyi/tmp/demorebuttal.txt`).
+Source: https://openreview.net/forum?id=X8oEu4Gs3W (thread saved by the user on 2026-11-09).
 Paper: *VQToken: Neural Discrete Token Representation Learning for Extreme Token Reduction in Video Large Language Models*.
 Use: worked example for [rhetoric.md](rhetoric.md) and [round2-replies.md](round2-replies.md) and [posting-and-endgame.md](posting-and-endgame.md). It shows moves to copy and moves to avoid; several of its replies break this skill's rules (concessions, apologies, exposed weaknesses) and are quoted here only as warnings.
 
