@@ -203,8 +203,7 @@ python3 "$S/check_runts.py" main.pdf
   never-referenced float counting as cited last. Fix by moving the float's source or reordering the
   sentences, never by citing the earlier float out of context.
 - `check_runts.py` flags a paragraph whose last line is shorter than half its column (one- or
-  two-column layouts). Fix by cutting words until the line is absorbed into the one above, holding
-  every claim; never `\looseness`, `\vspace` or spacing tricks.
+  two-column layouts). How to clear one: `paper-polish` § 5b.
 
 ### Step 6: Page Count Verification
 
