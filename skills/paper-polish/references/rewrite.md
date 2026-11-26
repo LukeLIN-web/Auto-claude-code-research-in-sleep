@@ -42,7 +42,7 @@ Each sentence is correct, but the reader has to work out how it connects to the 
 | A sentence opens with a new term and ends with the known one (`A held-out scaffold family is what the second test uses`) | Known first, new last: `The second test uses a held-out scaffold family.` |
 | A paragraph starts with no link to the question or the previous paragraph | First sentence says the relation: `To test whether …, we …`, `This result also holds for unseen scaffolds: …` |
 | `Moreover, … Furthermore, … Additionally, …` opening consecutive sentences | A connective that names the relation (`therefore`, `since`, `for example`, `first … then`), or none |
-| The same thing called by a new name each time to avoid repetition | One noun throughout; this is `/paper-jargon-pass`'s 同物异名 rule |
+| The same thing called by a new name each time to avoid repetition | One noun throughout; this is `/paper-jargon-pass`'s 同物异名 rule. Comparison verbs are the exception: they may rotate as `manuscript-craft.md` §2, Experiments lists, with `significantly` kept on exactly the comparisons that had it |
 | `This` / `It` with two possible antecedents | Add the noun (`This gap shows`); this is `/paper-jargon-pass`'s 悬空指代 rule |
 
 **Pattern:** read each paragraph as one argument. Its first sentence says what it answers or how it follows the last; each later sentence starts from something the reader already has.
@@ -99,23 +99,3 @@ A paragraph grows by one sentence each time a result arrives, a reviewer asks ab
 - A qualifier keeps its scope (**Hold the scope**, § 3).
 
 **Lines.** The merged sentence goes on the line of the first sentence. Each other merged line becomes exactly `%CUT`, and the change list names the line that took it in.
-
-## 5. Order and limits
-
-1. Run after the term fixes of the second pass: a sentence is rewritten once, with its terms already settled.
-2. One pass. A second rewrite of rewritten text trades one smooth phrasing for another and drifts terms.
-3. Only rewrite; never cut a sentence here. A sentence that looks empty is reported (cutting was step 3, `/paper-prose-tighten`). A merge under § 4 is not a cut: every case it held is still stated.
-4. No new terms, no new claims, no new hedges or caveats.
-5. Report what was rewritten by section (voice / cohesion / clarity / merge), after the term fixes.
-
-## 6. Common misjudgments
-
-| Symptom | Correction |
-|---|---|
-| A sentence is cut while rewriting voice or cohesion | Cutting and rewriting are separate steps (user 2026-11-12「删和改不要放一个」); report it |
-| "We find that" is put before a result to make it active | The result sentence is already active and is the claim; `we` goes where the authors acted |
-| An unknown-actor passive is forced active ("Annotators labelled each image three times" invented from "each image is labelled by three annotators") | Passive stays when the actor is unknown or irrelevant; never invent an actor |
-| A synonym is swapped in so the text does not repeat a noun | One noun per thing; repetition is cohesion. Comparison verbs are the exception: `outperforms` may rotate within the list in `manuscript-craft.md` §2, Experiments (`performs better than`, `achieves a higher success rate than`, …), with `significantly` kept on exactly the comparisons that had it |
-| A transition sentence or recap is added for flow | Cohesion comes from order and first words; no new sentences |
-| A long sentence is split and the paragraph gains a sentence each round; or two sentences with one predicate are left apart because each is short | Split only independent claims; merge the ones that share a subject or predicate (§ 4) |
-| A merge quietly drops one of the cases it joined | That is a cut and a claim change; every case stays, or the edit is reported, not made |

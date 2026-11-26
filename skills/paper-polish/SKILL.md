@@ -26,11 +26,9 @@ This skill only orchestrates. The rules live in the skills it calls:
 
 **Why this order.** Blind read first: it is the only step that cannot be repeated by someone who has seen the evidence. Cut before reword: a term in a sentence that is about to go needs no definition. Rewrite last: a sentence is rewritten once, with its terms settled and its neighbours final. Cutting and rewriting live in different skills and never run as one mixed read.
 
-**Speed** (user 2026-11-16「paper polish skill 实在太慢了」, 「改 skill」). Almost all of a polish's wall time is model output in steps one agent runs alone: one blind reader thinking through the whole ledger in one turn (17–30 minutes on 12–13 KB of in-scope text, once lost entirely at the output cap), the slowest editor (17–57 minutes for a unit of a whole experiments section plus appendix, two to three times the others), and extra rounds (a fresh editor for short last lines, then another acceptance read, about 50 minutes in one run). Hence: the blind reads are split across parallel readers (§ 1), units are small and even (§ 3–4), each editor reads only the rule files its unit can break (§ 0), short last lines go back to the editor that already holds the rules (§ 5b), there is no acceptance read (§ 6), and the owner's mechanical work runs from `scripts/`, not from code written anew each run.
-
 ## Scripts
 
-In `scripts/`, run with `python3`. All only read, except `apply_edits.py --write`.
+In `scripts/`, run with `python3`. The owner's mechanical work runs from these, not from code written anew each run. All only read, except `apply_edits.py --write`.
 
 | Script | Step | What it does |
 |---|---|---|
@@ -43,7 +41,7 @@ Each script's docstring has its options.
 
 ## 0. Inputs
 
-- **Target**: paper sections (`sections/*.tex`, read from the compiled PDF for the blind read) or a reply file. For a paper, the scope is `scripts/polish_scope.py` against the commit the previous polish finished on, with the frozen rows deleted.
+- **Target**: paper sections (`sections/*.tex`, read from the compiled PDF for the blind read) or a reply file. For a paper, the scope is `scripts/polish_scope.py` against the commit the previous polish finished on, with the frozen rows deleted. Text is polished once; after it changes, only what changed is polished again.
 - **Frozen spans** — copied unchanged by every step, listed by the owner before step 3:
   - quoted text: a reviewer's words, another paper's sentence, quoted revised-paper text;
   - every sentence a co-author wrote or edited in a shared draft (never reworded or deleted; mark it instead — `rebuttal/references/collaboration.md` § 4 has the convention);
@@ -63,13 +61,13 @@ Each script's docstring has its options.
 
 ## 1. Blind read
 
-If no ledger was passed: for a paper, the owner runs `/paper-jargon-pass` 第 0 趟 (zero reading), compiles, and runs `scripts/blind_pack.py` on the scope. The pack splits the in-scope sentences across N readers, one per about 4 KB of printed text and at most 4, in contiguous runs cut at headings. Spawn the N readers in one message. Each runs `/paper-jargon-pass` 第一趟 with that skill's isolation. Each gets `pdf_pages.txt` and `figure_canvases.txt` whole, so a term used in one share before its definition in another is still found, plus its own `in_scope-<k>.txt`. Each writes `ledger-<k>.md` to `paper/review-stage/jargon/<UTC timestamp>/` for papers, or to the caller's directory. This is a Tier-2 static fan-out ([`fan-out-pattern.md`](../shared-references/fan-out-pattern.md)): the readers only list stalls, the owner merges them, and without the Agent tool the readers run one after another. The editors of § 3–4 fan out the same way.
+If no ledger was passed: for a paper, the owner runs `/paper-jargon-pass` 第 0 趟 (zero reading), compiles, and runs `scripts/blind_pack.py` on the scope; it splits the scope into shares by that skill's 第一趟 rule for parallel readers. Spawn one reader per share in one message, each running 第一趟 with that skill's isolation on `pdf_pages.txt`, `figure_canvases.txt` and its own `in_scope-<k>.txt`, and writing `ledger-<k>.md` to `review-stage/jargon/<UTC timestamp>/` in the paper directory, or to the caller's directory. This is a Tier-2 static fan-out ([`fan-out-pattern.md`](../shared-references/fan-out-pattern.md)): the readers only list stalls, the owner merges them, and without the Agent tool the readers run one after another. The editors of § 3–4 fan out the same way.
 
 While the readers run, the owner does the work that does not need the ledger: the numbers check of the in-scope sentences (step 2), the step-2 checkers, the unit split and the editor briefs.
 
 ## 2. Reconcile (owner)
 
-Merge the readers' ledgers by id: an entry two readers wrote is one entry. Then follow `/paper-jargon-pass` 第二趟's first part: numbers first against the result files and tables, B 组 (contradictions, number clashes, count mismatches) straight to the user, never smoothed over. Mark each ledger entry: report / C 组 → step 3 / A 组 term → step 4 / no change. A real mismatch stops the polish of that unit until the user rules.
+Merge the readers' ledgers as `/paper-jargon-pass` 第一趟 says, then follow its 第二趟 「改之前先对账」 and B 组 paragraphs. Mark each ledger entry: report / C 组 → step 3 / A 组 term → step 4 / no change. A real mismatch stops the polish of that unit until the user rules.
 
 For a paper, also run the `research-paper-writing` checkers once here, before any edit: `scripts/check_draft.py` on the introduction and experiments `.tex`, `scripts/check_figures.py` on the entry `.tex`. A warning is a pointer, not a finding: read what it points at. One that holds in prose joins the ledger for step 3 or 4; one outside prose goes to § 5. One pass is enough (user 2026-11-15「跑脚本 + polish 感觉一次就行了」): § 5 rejects any edit that adds a warning, so nothing is left for a second round.
 
@@ -77,7 +75,7 @@ For a paper, also run the `research-paper-writing` checkers once here, before an
 
 Spawn one fresh subagent per unit, all in one message. A unit is at most about one printed page of in-scope text, cut at a section, subsection or paragraph heading: the slowest editor sets the step's wall time. Record each editor's agent id; step 5b sends it more work. Its prompt contains:
 
-1. the target text, with paragraph ids (for a paper, a scratch copy of the unit's `.tex`; the editor never edits `paper/` or an Overleaf clone);
+1. the target text, with paragraph ids (for a paper, a scratch copy of the unit's `.tex`; the editor never edits the paper directory or an Overleaf clone);
 2. the frozen-span list;
 3. the overlay section, if any;
 4. the ledger files that hold the unit's ids (`ids.tsv` names the reader of each), with the step-2 dispositions;
@@ -94,12 +92,12 @@ Spawn one fresh subagent per unit, all in one message. A unit is at most about o
 > When an edit needs a fact the text does not state (a scope, a comparator, a training set, a step count), look it up in the files listed under "Evidence" and make the edit if they settle it; name the file and table in the change list. Read those files; never edit them.
 > Keep one line per original line: a line whose whole text you cut becomes exactly `%CUT`, a split sentence stays on its line, sentences merged under `rewrite.md` § 4 go on the first of their lines and each other one becomes `%CUT`, and you add no line.
 > Frozen spans are copied character for character. Never change a number, a citation, an address (table / figure / appendix / §), or the claim of a paragraph. Add no term, no hedge, no caveat, and no sentence that says something the paragraph did not. Three moves are allowed: splitting a sentence in two on its line, merging neighbouring sentences of one paragraph that share a subject or predicate with every case they stated kept (prefer this to a split: a paragraph should not gain sentences), and stating a premise the text left implicit when an evidence file states it (name the file in the change list). Do not push, and do not touch files outside your scratch directory. Compile nothing before step 5b, and then only your scratch copy.
-> Return: the edited text; a change list with one row per edit (paragraph id, before, after, step 3 class / step 4 term / rewrite § 1–4); a list of what you would change but may not (frozen spans, a fact the evidence files do not settle, an edit a writing rule forbids, with the rule).
+> Return: the edited text; a change list with one row per edit (paragraph id, before, after, step 3 class / step 4 term / rewrite § 1–4); a list of what you would change but may not (frozen spans, a fact the evidence files do not settle, an edit a writing rule forbids, with the rule), each with the text you would write.
 > **Step 5b — short last lines, only when the owner sends them.** The owner names a scratch copy of the whole paper with your taken edits applied. Compile it with the command given, run `check_runts.py` on the PDF, and clear each runt in your list by shortening under `/paper-prose-tighten` class 12, in the scratch copy of the paragraph's file: a cut, a shorter word or phrase for a longer one (`the agent` → `one`), or a reorder inside the sentence. Never a longer sentence, `\looseness` or spacing. Recompile until `check_runts.py` lists none of them. A runt in a frozen span, or one that only a claim-changing cut would clear, goes in your list of what you would change but may not. Return the change list as before.
 
 The split and premise moves and the 5b substitutions are user rulings (2026-11-16): 「允许一句话在同一行里拆成两句，也允许把原文隐含的前提写出来」, 「可以替换」. The merge move is a ruling of 2026-11-20: 「尽量合并话语, 不然话语越来越长」.
 
-Paper-only parts of the called skills that need the real repository (paragraph-map script, the build of the real paper, figure generators, two clones) are run by the owner after step 5, not by the editor.
+Paper-only parts of the called skills that need the real repository (paragraph-map script, the build of the real paper, figure generators) are run by the owner after step 5, not by the editor.
 
 ## 5. Check every edit (owner)
 
@@ -123,11 +121,11 @@ Other sessions keep pushing while the polish runs, so the runt list is taken fro
 
 ## 6. No acceptance read
 
-The polish ends after step 5b with the report. It sends no acceptance blind read after the edits, in any round (user 2026-11-16「polish 去掉 acceptance blind read , 一次都不做.」): step 1 is the only blind read, and the § 5 checks gate every edit. `/paper-jargon-pass` 验收 4 does not apply when this skill calls it.
+The polish ends after step 5b with the report. It sends no acceptance blind read after the edits, in any round (user 2026-11-16「polish 去掉 acceptance blind read , 一次都不做.」): step 1 is the only blind read, and the § 5 checks gate every edit.
 
 ## Report
 
-In this order: (1) structural findings and bugs from steps 1–2 (contradictions, number clashes) for the user to rule on; (2) what the editor flagged but could not touch; the writing-rule violations outside prose, each with its rule, place and the fix made; (3) cuts by `/paper-prose-tighten` class, with the kept list; (4) term fixes; (5) rewrites by `rewrite.md` section (voice / cohesion / clarity / merge); (6) rejected edits and why, and runts left for the user; (7) the suggested-experiments table below. No "% shorter" headline.
+In this order: (1) structural findings and bugs from steps 1–2 (contradictions, number clashes) for the user to rule on; (2) what the editor flagged but could not touch; the writing-rule violations outside prose, each with its rule, place and the fix made; (3) cuts by `/paper-prose-tighten` class, with the kept list; (4) term fixes; (5) rewrites by `rewrite.md` section (voice / cohesion / clarity / merge); (6) rejected edits and why, and runts left for the user; (7) the suggested-experiments table below. No "% shorter" headline. Each item of (1) and (2) quotes its sentence and gives the replacement text (one per option when the user must choose), so the user answers with a pick, not with "how would you change it?".
 
 **Suggested experiments** (user 2026-11-15「最后加一个 返回一个建议实验的表」). The report ends with one table. It has one row per finding from (1) or (2) that needs new evidence, not new wording. Typical cases:
 
@@ -140,15 +138,3 @@ In this order: (1) structural findings and bugs from steps 1–2 (contradictions
 | where, in one line | the smallest run that settles it, holding everything else fixed | which sentence stays, changes or goes, under each outcome | GPU-hours and API spend, from a measured per-episode or per-step rate when one exists | already run (point to the result), queued, or new | the rewrite that holds on the evidence already in hand |
 
 A finding that wording alone can fix gets no row. The table only proposes. Nothing is launched; the user picks the rows.
-
-## Never
-
-- The owner cuts, rewords or rewrites itself, or does a blind read.
-- One subagent does the blind read and the editing.
-- Cutting and rewriting in one step, or rewriting before the terms are fixed.
-- Running the polish twice on the same text (both called skills are one-pass); after a rewrite of a section, run it again only on what changed.
-- Taking an edit because it reads better, without the § 5 checks.
-- Editing a frozen span, including a co-author's passive sentence.
-- Checking, reporting or fixing the page count (§ 0).
-- A fresh editor for short last lines while the unit's editor can still be reached.
-- An acceptance blind read after the edits (§ 6).

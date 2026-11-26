@@ -191,7 +191,7 @@ command grep -niE 'preregister|pre-register|frozen before|sanity check|pilot|abl
 | A number is replaced across files by string | Same string can be a different quantity; read each hit |
 | A co-author's sentence is polished, or an outdated co-author fragment is deleted | Never; highlight the phrase and add a note in a third colour, or comment |
 | Only the English reply is changed | Re-sync the translation, the board and the HTML view |
-| The drafter tightens or polishes alone, or the editor's edits are taken unchecked | `/paper-polish`: its editor edits, the drafter only checks (its § 5 and § 5 here); its "Never" list covers the rest |
+| The drafter tightens or polishes alone, or the editor's edits are taken unchecked | `/paper-polish`: its editor edits, the drafter only checks (its § 5 and § 5 here) |
 | "We" is pushed into the verdict sentence ("We find that all four contrasts are significant") | The answer after the thanks stays the bare verdict; "we" goes where the authors acted |
 | A co-author's passive sentence is turned active | Frozen; report it as a note if at all |
 
