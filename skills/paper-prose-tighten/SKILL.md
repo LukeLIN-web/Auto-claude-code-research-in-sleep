@@ -247,7 +247,7 @@ titles ("The resolution, not the dataset, sets…"), and question-form section
 titles ("Is the Lead Bought by What the Pruner Discarded?"). Sweep headers,
 titles, and captions by eye, not only by grep.
 (b) Deleting the "rather than Y" tail is usually scope-safe because the
-surviving X carries the scope itself ("a same-stack anchor", "third-party
+surviving X carries the scope itself ("a same-hardware anchor", "third-party
 reads", "systems as published"). When the negated half is the *only* scope
 carrier, restate it positively ("same-weights, cross-protocol comparison")
 — the hard stops below still forbid dropping the scope.
@@ -261,23 +261,23 @@ rendered `.tex` to confirm the cut landed.
 `although X grows, Y is bounded` — is a class-6 shape even when Y is real
 scope, and it is the highest-yield sub-shape left after the obvious pivots
 are gone. Two examples from one paper: a headline followed by "although
-those numbers come from different serving stacks and are not causal method
-comparisons", and an $\mathcal{O}(1)$-memory claim guarded by "although total
+those numbers come from different hardware setups and are not causal method
+comparisons", and a constant-latency claim guarded by "although total
 compute grows linearly with the number of tiles". Both looked like hard stops. Neither
 was: the passage already carried the same scope **positively** — "the
-informative comparisons are the same-stack anchors" and "that gap is stack
+informative comparisons are the same-hardware anchors" and "that gap is hardware
 difference" two sentences on; "the pipeline costs one encoder forward per
 tile" one subsection back. So the hedge was pure class-4 restatement
 wearing a scope costume.
 
-**The procedure, in order:** grep the scope's own noun (`stack`, `forwards`,
+**The procedure, in order:** grep the scope's own noun (`hardware`, `forwards`,
 `denominator`) across the passage and the neighbouring section. Scope found
 stated positively → delete the concessive, nothing is lost. Scope found
 nowhere else → move it into the sentence that owns it as a plain assertion,
 then delete the concessive. Do not reinstate the concessive as the fix.
 
 **Repo ruling (2026-08-20).** The author's words: 「范围 也删了 … 防止「全都是
-O(1)」的过度主张, 不同 serving stack 这些都要删」. Author-facing framing
+⟨property⟩」的过度主张, 不同 ⟨setup⟩ 这些都要删」. Author-facing framing
 matters here: do not answer this instruction with a defence of the hard stop.
 Run the grep, report where the scope still lands, and cut.
 
@@ -690,7 +690,7 @@ Deleting text must never upgrade a claim.
   the unfavourable half of a comparison under the One Test is cherry-picking.
 - **Never delete a denominator that scopes the claim** (full-denominator rules,
   subset sizes that bound generality).
-- **Never leave a protocol difference stated nowhere** — different stack,
+- **Never leave a protocol difference stated nowhere** — different hardware,
   dropped-failure denominator, different budget. This is a stop on the *fact*,
   not on any particular sentence: the concessive clause carrying it is usually
   deletable, because the passage almost always states the same fact positively a

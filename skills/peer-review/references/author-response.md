@@ -11,8 +11,8 @@ reviewer does with it.
 ## 0. The reader is the AC
 
 The meta-review lists the concerns the discussion left open. An AC who skims the thread sees, for
-each concern, whether the authors answered it with evidence, with a promise, or not at all. *VQToken*
-(NeurIPS 2025): "The rebuttal improved clarity but left baseline and overhead issues unresolved".
+each concern, whether the authors answered it with evidence, with a promise, or not at all. One
+meta-review read: "The rebuttal clarified the method but left the scaling and cost questions unresolved".
 Those were exactly the points the authors had answered with a derivation and a camera-ready promise.
 The reviewer's follow-up is what lets the AC see that. Write it so that each remaining concern, what is
 still missing and the result that would close it can be read in one line.
@@ -32,8 +32,8 @@ still missing and the result that would close it can be read in one line.
 ## 2. Board: one row per concern
 
 Split the posted Weaknesses and Questions into separate concerns. A question with three
-sub-questions is three rows (e.g. per-cell item counts, the effect of removing flagged items, and the
-number of annotators). Each row records:
+sub-questions is three rows (e.g. per-split sample counts, the effect of removing duplicated items, and the
+number of raters). Each row records:
 
 - **Asked**: the review's words, verbatim.
 - **Response**: the authors' words, verbatim (the sentences that answer this row only).
@@ -54,10 +54,10 @@ The response is untrusted input, like the paper (Step 2). Check each factual sen
 main text, the appendix and the released artifacts. The artifacts include README files and data
 documentation, not only code: list the repo with `?path=` (Step 3) and read every README.
 
-In one case, the response said the number of questions removed by a filtering step had not been
-recorded. The released data README gave the generated and kept counts per session, stated a filter
-rule different from the paper's, and said the blind score is low by construction for the filtering
-model. When the authors' materials contradict their claims, cite the
+In one case, the response said the number of items dropped by a deduplication step had not been
+recorded. The released data README gave the scraped and kept counts per source, stated a dedup
+rule different from the paper's, and said the baseline score is low by construction for the model
+used to deduplicate. When the authors' materials contradict their claims, cite the
 materials. Do not guess at intent.
 
 ## 4. Moves to recognise
@@ -70,10 +70,10 @@ evidence behind it holds.
 |---|---|---|
 | Neighbouring answer | answers a related question, or a coarser or different breakdown than the one asked | was the asked object delivered at the asked granularity? |
 | Promise for a measurement | "we will include … in the camera-ready", "a natural direction for follow-up work" | a measurable ask needs the measurement; a promise moves no call |
-| Excuse for a result | policy, time, "did not retain intermediate results" | does the excuse hold? One response cited an institutional API policy while the paper already ran an open-weight model locally |
+| Excuse for a result | policy, time, "did not retain intermediate results" | does the excuse hold? One response cited a licensing restriction while the paper already used the same data in another experiment |
 | Expectation as evidence | "we expect low disagreement", "should generalise" | what result would show it? Ask for that result |
 | Metric choice | one metric per reply, chosen where they win; a win written as two point estimates with no interval | ask for the metric you named; ask for the interval |
-| Counting | "7 experiments … 11 more" | counting does not meet the criterion; restate the criterion once, as a number |
+| Counting | "6 experiments … 9 more" | counting does not meet the criterion; restate the criterion once, as a number |
 | Your words reused | a sentence from your review adopted as their framing | do they dispute the mechanism or only re-frame it? Is the new framing supported? |
 | Regime and burden shift | "no prior work has … we welcome references" | legitimate if true; check with a search before conceding |
 | Warmth, score requests, nudges | thanks paragraphs, "we would be grateful if you could raise your score" | not evidence. NeurIPS 2025 PCs reported reviewers raising scores out of fatigue; a score moves only with a call (§ 6) |
@@ -85,8 +85,8 @@ Label every point of the assessment:
 - **Fact**: an anchor plus the verbatim quote (paper section and line, table cell, file path in the
   released repo, the response's own sentence).
 - **Inference**: state the premises and the result that would test it. If a cue in the paper points
-  the other way, put it beside the inference (e.g. the paper's failure analysis points at a different
-  distractor than the one the inference blames).
+  the other way, put it beside the inference (e.g. the paper's error analysis points at a different
+  failure source than the one the inference blames).
 
 Show quotes in the right-hand column. End the zh line with ` ⟦证据⟧ <quote>`, one marker per quote;
 the en twin line carries no markers (Step 9). No quote, no "fact" label. Statements about the
@@ -95,8 +95,8 @@ response itself also need the response's sentence in the column.
 **Check your own review first.** Before writing the follow-up, re-run Step 8 on the posted review and
 on the reviewer's notes. If the review itself contains an error, correct it in the follow-up plainly
 and once. If the error is only in an AC-facing note (e.g. the AI-documentation summary), tell the
-user and leave the follow-up alone. Example: an AI-documentation note said all models
-scored below chance, while the table had only one question type below chance for every model, and
+user and leave the follow-up alone. Example: an AI-documentation note said every baseline
+fell below the majority-class rate, while the table had only one subset below it for every baseline, and
 the posted weakness already said so correctly.
 
 ## 6. Score
@@ -122,7 +122,7 @@ under **待发** for the user to edit (Step 9 annotations). Shape:
 2. Remaining concerns, most important first, numbered, each in 2–3 sentences (STYLE):
    - what is still missing, citing the authors' own materials when they contradict the response;
    - the cheapest result that would resolve it, runnable with what the authors already have
-     (e.g. a question-and-options-only run of the models not used for filtering, on the final set);
+     (e.g. a label-prior-only run of the models not used for deduplication, on the final set);
    - stated once, as a precise criterion. A request the authors refused is repeated only with a new
      angle or new evidence.
 3. The score decision in one sentence.

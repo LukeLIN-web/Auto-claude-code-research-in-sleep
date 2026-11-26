@@ -117,8 +117,8 @@ has to say"). Ask once which mode, unless `— mode:` was given:
 - **STYLE** — each paragraph ≤ 3 sentences; each point 1–2 sentences (users
   found longer reviews unreadable). **Qualitative first, few numbers.** Lead
   each point with the qualitative judgment — what is wrong and why it matters
-  for the paper's claim (e.g. "the Task IV score mostly rewards scene
-  description, not mechanism explanation"). Then give the anchor (table /
+  for the paper's claim (e.g. "the Level 3 score mostly rewards fluent
+  wording, not correct reasoning"). Then give the anchor (table /
   section) so the authors can find it. Cite **at most one or two numbers per
   point**, only the ones that carry the argument (a below-chance cell, a
   model count of one); never chains of values, recalls, CIs or per-model
@@ -357,17 +357,17 @@ Optional passes: `— adversarial: on` → `/kill-argument` on the extracted tex
   - **Tier B (推断, 可选):** depends on anything else — back-solving numbers
     across tables, assuming class sizes, reading the released code or data,
     the reviewer's own runs, or an interpretation of an ambiguous sentence.
-    Strong evidence still counts as Tier B (e.g. "Table 4's F1 is the
-    anomaly class" inferred from one indirect sentence plus a back-solve).
+    Strong evidence still counts as Tier B (e.g. "Table 3's recall is the
+    minority class" inferred from one indirect sentence plus a back-solve).
   Critical Weaknesses and the top of the candidate list use **Tier A only**.
   Tier B goes in a separate trailing section **"Optional (inference-based)" /
   "可选（推断类）"**, each item stating its premises, and in the review it is
-  phrased as a Question ("please confirm which class F1 in Table 4 uses"),
+  phrased as a Question ("please confirm which class recall in Table 3 uses"),
   never as a lead weakness or a rating driver. If a Tier B point is the
   strongest one, say so to the user and keep it optional anyway; promote it
   only when the paper itself states it (then it is Tier A) or the user asks.
 - **Small-N human studies.** Say which study the N belongs to (e.g. "an
-  agreement study with three annotators on 120 videos", not "only three
+  agreement study with four annotators on 150 items", not "only four
   annotators") — the paper may not state the total. A small rater count is
   common and easy to rebut; the stronger points are rater independence from
   the label/reference authors, agreement with the *released* gold labels
@@ -467,13 +467,13 @@ so it is contaminated: the blind read goes to one fresh subagent per file
 - **Review** — the authors and AC: know the paper, see only the review.
 
 What it most often catches (user complaint 2026-10-12, 「看不懂 blind/oracle
-列，No-context 是啥」):
+列，⟨label⟩ 是啥」):
 
-- **Condition and prompt labels borrowed from the paper's appendix** (`No-context`,
-  `Oracle`, `fully blind floor`, `+Goal+Actions`, `grounded distractor`)
+- **Condition and prompt labels borrowed from the paper's appendix** (`Bare`,
+  `Oracle`, `floor-only`, `+Hint+Steps`, `matched decoy`)
   used as if self-explanatory. Write what the model is given instead —
-  「只给题目和选项、不给视频（附录 C.3.3）」, "question and options only, no
-  video (App. C.3.3)" — and keep the paper's label at most once, in
+  「只给题干和选项、不给配图（附录 D.2.1）」, "question stem and options only, no
+  figure (App. D.2.1)" — and keep the paper's label at most once, in
   parentheses, for the authors to find it.
 - **Columns or rows that do not exist** ("no blind/oracle columns"): say what
   result is missing, not the name of an imaginary column.

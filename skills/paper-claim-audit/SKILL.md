@@ -118,15 +118,15 @@ no external row needs none of these.
 
 **Configuration files, one set per reported configuration** (evidence for
 failure mode 12). A paper that runs on more than one backbone, or under more
-than one protocol (offline / streaming, audio on / off, with / without an
+than one protocol (full / reduced precision, augmentation on / off, with / without an
 auxiliary input), has one deployed configuration per cell. For EACH one pass
-the training config of every adapter it mounts (yaml / argv) and the `meta.json`
+the training config of every module it trains (yaml / argv) and the `meta.json`
 of one product it produced. Passing only the headline backbone's configs is
 how a second backbone's different loss goes unseen: its departures table cell
-reads "overlap-fraction BCE", nothing numeric to mismatch, and the method
+reads "soft-label KL", nothing numeric to mismatch, and the method
 section's CE equation is never set beside it.
 ```
-configs/**/<deployed adapter>.yaml     # per backbone, per adapter
+configs/**/<deployed module>.yaml      # per backbone, per module
 outputs/**/<one product per config>/meta.json
 ```
 
@@ -175,8 +175,8 @@ grep -rn -E '稿面|paper|app:|sec:|tab:|fig:' docs/eval_res --include=*.md \
 
 For each hit, grep the clone for the sentence it names. Still there ⇒ a
 confirmed finding of this round, `stale_erratum`, reported without asking the
-reviewer. (2026-09-25: the loc-objpair75 result page recorded that the two
-arms did NOT share a LoRA init; `app:ranking` still said "from the same
+reviewer. (2026-09-25: the prune-mag50 result page recorded that the two
+arms did NOT share a LoRA init; `app:sparsity` still said "from the same
 initialization".) Do not pass the erratum text to the reviewer: that would
 break zero-context.
 
@@ -267,17 +267,17 @@ mcp__codex__codex:
        the row's numbers came back exact_match.
 
     9. **Arm identity**: Claims about what produced a number rather than
-       what it is — "the same weights", "both arms carry the answer
-       adapter", "with no adapter mounted", "trained on X", "the official
+       what it is — "the same weights", "both arms carry the calibration
+       head", "with no head attached", "trained on X", "the official
        recipe re-run".
-       Rule: resolve these against the arm's own provenance (adapter path,
+       Rule: resolve these against the arm's own provenance (weights path,
        config, checkpoint id in the product's metadata), never against its
        accuracy. Two arms can agree on every printed digit and still have
        been produced by different weights.
 
     10. **Cross-float conflict**: Two floats describe the same underlying
         cell in incompatible ways — a table's caption calls a baseline "an
-        official-style whole-clip run on the bare backbone", a figure's
+        official-style full-resolution run on the bare backbone", a figure's
         caption calls the same cell "the same weights as our method".
         Rule: group the claims you extracted by the evidence file each one
         resolves to, then read every description pointing at one file
@@ -292,18 +292,18 @@ mcp__codex__codex:
         occurrences in the sources, and every \ref against the labels.
 
     12. **Recipe non-uniformity**: The method section states the recipe in
-        general terms ("the selector is trained with cross-entropy against
-        the best-covering window", "the only trained parameters are
-        rank-16 updates to q, k, v, o", "the answer pass reads the
-        transcript outline", "the answer adapter answers the windows"),
+        general terms ("the pruner is trained with cross-entropy against
+        the most salient channel", "the only trained parameters are
+        rank-16 updates to q, k, v, o", "the fine-tuning pass reads the
+        class prior", "the distilled head classifies the crops"),
         but some reported configuration runs something else: a second
         backbone trained with a different loss, LoRA on extra modules, no
-        outline on some benchmarks, base weights instead of the answer
-        adapter under one protocol.
+        class prior on some benchmarks, base weights instead of the distilled
+        head under one protocol.
         Rule: build a matrix. Rows = every general method statement
-        (objective, supervision grid, adapter placement and rank, training
-        hardware and optimizer, checkpoint selection, answer-pass inputs,
-        answer weights, frame budgets). Columns = every configuration the
+        (objective, supervision targets, LoRA placement and rank, training
+        hardware and optimizer, checkpoint selection, fine-tuning-pass inputs,
+        head weights, input resolution). Columns = every configuration the
         paper reports a number for (each backbone x each protocol /
         benchmark group). Fill each cell from that configuration's own
         config files, not from the prose. Report every cell that differs,
@@ -322,17 +322,17 @@ mcp__codex__codex:
         someone sets it beside the method equation.
 
     13. **Disclosure ledger**: Every sentence that hedges, discloses or
-        excepts: "an earlier scan", "retrained", "re-scored copy", "cap
-        widened for these questions", "our approximation", "except",
-        "with the base weights", "no transcript outline", "at most N%".
+        excepts: "an earlier sweep", "retrained", "re-calibrated copy", "cap
+        widened for these images", "our approximation", "except",
+        "with the base weights", "no class prior", "at most N%".
         Rule: list them all, then classify each:
           - provenance mix: an ablation or control not run on the deployed
-            system (older prompt, older enumeration, retrained adapter,
+            system (older prompt, older grid, retrained head,
             different cap) while the prose reads it as a test of the
             deployed system;
           - contradicted: another sentence or caption describes the same
-            arm without the exception ("the same windows redrawn" vs "as
-            many windows, drawn from a re-scored copy");
+            arm without the exception ("the same crops redrawn" vs "as
+            many crops, drawn from a re-calibrated copy");
           - self-undermining: the disclosure says the deployed choice is
             the worse one, or that a component was switched off where it
             did not help (a config chosen per benchmark on its results);
@@ -343,9 +343,9 @@ mcp__codex__codex:
 
     14. **Same fact, different words**: One fact stated in several
         places (abstract, intro, method, results, conclusion, appendix,
-        captions) with different content: "4.5–16.8%" vs "4.5–16.8
-        points", "each of their widths exactly" vs "as many windows",
-        "never stacked" vs "stays mounted for the answer pass".
+        captions) with different content: "3.2–11.7%" vs "3.2–11.7
+        points", "each of their sizes exactly" vs "as many crops",
+        "never combined" vs "stays attached for the second pass".
         Rule: for every headline number, every definition of a control
         arm and every system variant, collect all the places that state it
         and diff them.
@@ -474,7 +474,7 @@ sit in UNCHANGED lines and go wrong because something else changed: a result
 page's erratum, a second backbone's config, a caption elsewhere. Run them
 over the whole paper on every round, even when the number audit is
 delta-only. (Thirteen rounds, all number-centric and eleven of them delta,
-never set the second backbone's "overlap-fraction BCE" cell beside the method
+never set the second backbone's "soft-label KL" cell beside the method
 section's cross-entropy equation.)
 
 ## When to Run

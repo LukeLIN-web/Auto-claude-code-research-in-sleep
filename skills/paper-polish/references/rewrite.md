@@ -12,16 +12,16 @@ The authors trained, compared, measured and report; the draft says *was trained*
 
 | Before | After |
 |-----|-------|
-| `The judge was fine-tuned on the human scores of the training generators.` | `We fine-tuned the judge on the human scores of the training generators.` |
+| `The forecaster was fine-tuned on the station records of the training years.` | `We fine-tuned the forecaster on the station records of the training years.` |
 | `A comparison with X is performed in Table~\ref{tab:x}.` | `Table~\ref{tab:x} compares our method with X.` |
 | `The per-category results are reported in Appendix~H.` | `We report the per-category results in Appendix~H.` |
 | `It can be seen from Table~3 that the gap holds on every benchmark.` | `Table~3 shows that the gap holds on every benchmark.` |
 | `Each filter is scored by the saliency head, and the lowest-scoring half is pruned.` | `The saliency head scores each filter, and we prune the lowest-scoring half.` |
 
-**Pattern:** when the authors are the actor, `we` is the subject and the verb is active. When the actor is a method, a model, a table or a result, that becomes the subject (`Our judge ranks …`, `Table 3 shows …`, `The gap holds …`). `we` is the default actor, not the only one. An impersonal opener (`It should be noted that`, `It is worth noting that`) is filler; `/paper-prose-tighten` class 2 cuts it, and if one is still there, the sentence starts with its subject.
+**Pattern:** when the authors are the actor, `we` is the subject and the verb is active. When the actor is a method, a model, a table or a result, that becomes the subject (`Our forecaster ranks …`, `Table 3 shows …`, `The gap holds …`). `we` is the default actor, not the only one. An impersonal opener (`It should be noted that`, `It is worth noting that`) is filler; `/paper-prose-tighten` class 2 cuts it, and if one is still there, the sentence starts with its subject.
 
 **Keep passive:**
-- the actor is unknown or irrelevant and naming one would mislead or invent a fact (`each video is rated by three annotators`, `prompts are sampled uniformly`). Never invent an actor to avoid a passive;
+- the actor is unknown or irrelevant and naming one would mislead or invent a fact (`each image is labelled by three annotators`, `seeds are sampled uniformly`). Never invent an actor to avoid a passive;
 - quoted text (a reviewer's words, another paper's sentence, a co-author's sentence in a shared draft);
 - a long method list where every clause would get a filler `we`: switch to active at the first sentence where who acted matters.
 
@@ -39,8 +39,8 @@ Each sentence is correct, but the reader has to work out how it connects to the 
 
 | Problem | Write |
 |---------|-------|
-| A sentence opens with a new term and ends with the known one (`A held-out generator family is what the second test uses`) | Known first, new last: `The second test uses a held-out generator family.` |
-| A paragraph starts with no link to the question or the previous paragraph | First sentence says the relation: `To test whether …, we …`, `This result also holds for unseen prompts: …` |
+| A sentence opens with a new term and ends with the known one (`A held-out scaffold family is what the second test uses`) | Known first, new last: `The second test uses a held-out scaffold family.` |
+| A paragraph starts with no link to the question or the previous paragraph | First sentence says the relation: `To test whether …, we …`, `This result also holds for unseen scaffolds: …` |
 | `Moreover, … Furthermore, … Additionally, …` opening consecutive sentences | A connective that names the relation (`therefore`, `since`, `for example`, `first … then`), or none |
 | The same thing called by a new name each time to avoid repetition | One noun throughout; this is `/paper-jargon-pass`'s 同物异名 rule |
 | `This` / `It` with two possible antecedents | Add the noun (`This gap shows`); this is `/paper-jargon-pass`'s 悬空指代 rule |
@@ -65,7 +65,7 @@ command grep -nE '(Moreover|Furthermore|Additionally|In addition),' $FILES
 | A number pair trailing the sentence after a comma or colon (`…, our method significantly lifts the classifier, a\% against b\%.`): it reads like a sports score (user 2026-11-16, from a forwarded review) | The pair goes into the predicate with its metric named: `significantly raises overall accuracy from b\% to a\%` when ours is the compared system plus the method's change; between two separate systems, in parentheses after the comparison (`outperforms X (a\% against b\%)`). The numbers, the significance word and the compared system stay as they were (`manuscript-craft.md` §2, Introduction) |
 | An ablation paragraph, main text or appendix, walks the variants one by one (`ours outperforms variant A on X, and variants B and C on Y and Z`) (user 2026-11-23) | Merge the subjects by question: name the variants that answer one question as a group by what they share, one sentence with the verdict that holds for every member, one decisive pair of numbers and the table pointer. Scope and significance words stay as they were; sentences that read different floats for different questions stay apart (`manuscript-craft.md` §2, Experiments) |
 | A relative clause ending on a stranded preposition (`evaluated on the stations it was trained on`, `tests only on stations it was calibrated on`, `sequences of the seasons it was tuned on`); several in one paragraph ending on the same word read as very awkward (user 2026-11-16, from a forwarded review) | A noun phrase that names the same set: `its training stations`, `seen stations`, `stations used during calibration`, `previously tuned seasons`. The set must not change (the stations a model was calibrated on are not the stations it was evaluated on). If no noun phrase names the same set, at most one such clause stays per paragraph |
-| A section, subsection or `\paragraph` heading longer than seven words (user 2026-11-18「标题太长是不可接受的」, 「标题应该7个词之内」). A heading that carries the paragraph's conditions or two topics joined by `and` (`Training the judge without the episodes where annotators disagree, and fine-tuning on a quarter of the prompts`, 18 words) is a sentence, not a heading | At most seven words, naming the topic the paragraph answers (`Judge training without disputed episodes`); a heading with two topics names what they share (`Two reduced training sets`). Each condition the heading dropped must already be stated in the paragraph's text; if one is not, it moves into the paragraph's first sentence on the same line, with no new sentence. Count words as printed: a hyphenated word, a math span and a `\ref` are one word each. This holds for every heading in scope, edited or not; one in a frozen span goes in the list of what you would change but may not |
+| A section, subsection or `\paragraph` heading longer than seven words (user 2026-11-18「标题太长是不可接受的」, 「标题应该7个词之内」). A heading that carries the paragraph's conditions or two topics joined by `and` (`Training the forecaster without the stations where the gauges disagree, and fine-tuning on a quarter of the years`, 18 words) is a sentence, not a heading | At most seven words, naming the topic the paragraph answers (`Forecaster training without disputed stations`); a heading with two topics names what they share (`Two reduced training sets`). Each condition the heading dropped must already be stated in the paragraph's text; if one is not, it moves into the paragraph's first sentence on the same line, with no new sentence. Count words as printed: a hyphenated word, a math span and a `\ref` are one word each. This holds for every heading in scope, edited or not; one in a frozen span goes in the list of what you would change but may not |
 | Vague scope (`across settings`, `in most cases`) | The concrete scope the evidence has (`on all four benchmarks`, `in three of four`), checked in the text or the evidence files; report it only when they do not settle it |
 
 ```bash
@@ -114,7 +114,7 @@ A paragraph grows by one sentence each time a result arrives, a reviewer asks ab
 |---|---|
 | A sentence is cut while rewriting voice or cohesion | Cutting and rewriting are separate steps (user 2026-11-12「删和改不要放一个」); report it |
 | "We find that" is put before a result to make it active | The result sentence is already active and is the claim; `we` goes where the authors acted |
-| An unknown-actor passive is forced active ("Annotators rated each video three times" invented from "each video is rated by three annotators") | Passive stays when the actor is unknown or irrelevant; never invent an actor |
+| An unknown-actor passive is forced active ("Annotators labelled each image three times" invented from "each image is labelled by three annotators") | Passive stays when the actor is unknown or irrelevant; never invent an actor |
 | A synonym is swapped in so the text does not repeat a noun | One noun per thing; repetition is cohesion. Comparison verbs are the exception: `outperforms` may rotate within the list in `manuscript-craft.md` §2, Experiments (`performs better than`, `achieves a higher success rate than`, …), with `significantly` kept on exactly the comparisons that had it |
 | A transition sentence or recap is added for flow | Cohesion comes from order and first words; no new sentences |
 | A long sentence is split and the paragraph gains a sentence each round; or two sentences with one predicate are left apart because each is short | Split only independent claims; merge the ones that share a subject or predicate (§ 4) |

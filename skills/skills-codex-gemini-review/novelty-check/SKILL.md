@@ -73,8 +73,8 @@ For EACH core claim, search using ALL available sources:
    reported" otherwise, never estimate):
    - **成功率高 / high success** — headline success and setting; margin over
      the simplest strong baseline under the same protocol, or "not compared";
-     a system whose added orchestrator / tools do worse than its own base
-     policy alone fails this axis.
+     a system whose added components do worse than its own base
+     model alone fails this axis.
    - **好用 / easy to use** — what a new task needs: per-task exploration,
      prompt tuning or demos; CAD or a digital twin; privileged simulator
      state (ground-truth poses, segmentation, rendered depth); a closed

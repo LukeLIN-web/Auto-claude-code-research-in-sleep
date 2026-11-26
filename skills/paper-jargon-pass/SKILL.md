@@ -26,8 +26,8 @@ allowed-tools: Bash(*), Read, Write, Edit, Grep, Glob
 caption 和表注是**独立阅读单元**——审稿人翻表格的次数远多于逐行读正文。用了正文才定义的词,算未定义,不算"前文有"。
 
 **图的画布也是阅读单元,而且是最早被撞见的那个**:审稿人先翻图再读正文。方法图/架构图上的符号徽章、边标、轴名
-与 caption 同待遇——`g_m`、`r_{m,k}`、`φ_bc`、`ω`、`K` 画在 §1 的 Fig 1 上而 §3 才定义,就是未定义记号
-(user 裁定 2026-09-21,「gm, rm,k 啥意思」)。修法在图不在文:换成 caption 或前文已经在用的词
+与 caption 同待遇——`s_m`、`q_{m,k}`、`φ_bc`、`ω`、`K` 画在 §1 的 Fig 1 上而 §3 才定义,就是未定义记号
+(user 裁定 2026-09-21,「⟨symbol⟩, ⟨symbol⟩ 啥意思」)。修法在图不在文:换成 caption 或前文已经在用的词
 (`member ranking`、`candidate members`、`bias-correction head`),**不是**在画布上补 gloss,也不是在 caption 里补定义
 (`paper-figure-craft` 同日裁定)。图落在哪一节,画布上就只能用到那一节为止的词。
 
@@ -89,8 +89,8 @@ for f in figures/*.pdf; do echo "== $f"; pdftotext "$f" -; done   # 每张图画
 - **名字晚于数字**——`6-hour lead steps` / `eight candidate members` / `the top $K{=}3$ members` / `spread-cap 12` / `max-lead 168`:配置常数照写没问题(数字是允许的),但**它配置的那个东西必须已经被命名过**。"lead step""member""spread cap"没定义之前,`K{=}3` 只是一个不知道在数什么的数。修法是在名词首次出现处给一句话定义,不是把数字删掉。
 - **内部工作语 / 翻译残留**——组里中文黑话被直译进英文,读起来像正经术语,作者永远看不见:`擂台→ring`、`口径→caliber`、`臂→arm`、`剂量→dose`、`打底→ground`。检验法只有一条:**这个词在本领域公开文献里,是这个意思吗?** 不是就换。`ring` 没有 ⇒ 换。本仓库另有 user 裁定:`臂→arm` 也整稿禁用,按语境换 variant / configuration / condition / setting / 对照自己的名字,不一键替换(2026-09-22)。
 - **一词多义 / 含义漂移**——同一个词在三处指三样东西(`caliber` 一会儿指站点网格、一会儿指权重配置、一会儿指归一化版本)。同一个词第三次出现时你又得重猜 = 记。
-- **同物异名**——`regime` 与 `régime`、`tile` 与 `patch`、`benchmark` 与 `ring`、`bias-correction system` 与 `post-processed system` 与 `correction-only row` 指同一条臂。读者会以为是三个东西。**为避免重复而换的同义词也算**:`the held-out judge` 下一句成了 `this model`、再下一句成了 `the new evaluator`——英文写作课教的「换词避免重复」在论文里是错的,同一个东西全稿只用一个名词(user 2026-11-12「加强下表达和衔接」;衔接的其余部分见 [`/paper-polish` 的 references/rewrite.md](../paper-polish/references/rewrite.md) § 2)。
-- **画布上的记号早于定义**——方法图/架构图上的 `g_m`、`r_{m,k}`、`φ_bc`、`ω`、`1…K`,图落在 p.2 而定义在 p.4。
+- **同物异名**——`regime` 与 `régime`、`tile` 与 `patch`、`benchmark` 与 `ring`、`bias-correction system` 与 `post-processed system` 与 `correction-only row` 指同一条臂。读者会以为是三个东西。**为避免重复而换的同义词也算**:`the held-out forecaster` 下一句成了 `this model`、再下一句成了 `the new predictor`——英文写作课教的「换词避免重复」在论文里是错的,同一个东西全稿只用一个名词(user 2026-11-12「加强下表达和衔接」;衔接的其余部分见 [`/paper-polish` 的 references/rewrite.md](../paper-polish/references/rewrite.md) § 2)。
+- **画布上的记号早于定义**——方法图/架构图上的 `s_m`、`q_{m,k}`、`φ_bc`、`ω`、`1…K`,图落在 p.2 而定义在 p.4。
   修法只有一个:换成 caption 或图之前的正文已经在用的词(`member ranking`、`candidate members`、`retained members`、
   `bias-correction head`);画布上补 gloss 与 caption 里补定义都不算修(user 裁定 2026-09-21)。
 - **宏与上标无图例**——`\newcommand` 定义的东西对读者不存在:`\method`、`$\Tlead$`、`\starred`、`\textsuperscript{\ddag}`、`$\circ$`。查的是每个宏**排版后首次出现**的位置,以及图例是否在那之前。
@@ -180,8 +180,8 @@ A 组逐条处置。**四个动作是有序的,不是并列的**——从上往�
 > 升级成"读者必须记住的负担",名词表越长,稿子越难读。
 
 1. **删掉这个词**(不是删整句)——句子改用已有的词把同一件事说出来。
-   **范例(即本条由来)**:`the gate` 全稿出现 29 次,指的是"按 $g_m$ 给集成成员排序、留 top-$K$"。
-   §3.2 本来就把 $g_m$ 叫作 *a ranking score*,于是全稿 `gate` → `ranking`,一个新名词不留。
+   **范例(即本条由来)**:`the gate` 全稿出现 29 次,指的是"按 $s_m$ 给集成成员排序、留 top-$K$"。
+   §3.2 本来就把 $s_m$ 叫作 *a ranking score*,于是全稿 `gate` → `ranking`,一个新名词不留。
    当时的错误做法是在 Fig 1 caption 里补一句 "that gate being the ranking step that…"——
    **那是给一个不该存在的名词发身份证。**
 2. **换成稿子里已经在用的词 / 领域通行叫法**——先翻自己的稿子有没有同义词,再翻文献。
@@ -244,7 +244,7 @@ grep -rnoiE '\b(re-?calibrated|re-?scaled|re-?struck|re-?run|rerun|re-?fit|earli
 | 边读边 grep 实现"确认一下" | 盲读就作废了;确认放第二趟 |
 | 后文/附录有定义就放过 | 定义晚于使用照记,把定义搬到首次出现处 |
 | caption 里的词"正文定义过了" | caption 是独立阅读单元,算未定义 |
-| 图上的符号"§3 定义过了"就放过 | 画布标签与 caption 同待遇,且图比正文先被看;Fig 1 落在 §1,§3 的 `g_m`/`φ`/`K` 一个都不许画上去,换成 caption 已用的词 |
+| 图上的符号"§3 定义过了"就放过 | 画布标签与 caption 同待遇,且图比正文先被看;Fig 1 落在 §1,§3 的 `s_m`/`φ`/`K` 一个都不许画上去,换成 caption 已用的词 |
 | 每个没见过的名词都记 → 上百条 | 门槛是"必须重读或翻页",不是"不眼熟" |
 | 承重 20+ 还在逐词记 | 那是结构问题,转去写文档级判定(缺记号约定小节) |
 | 把 `LoRA`/`bootstrap`/`prefill` 改成大白话 | 领域读者认得的原样留,进良品名单 |
