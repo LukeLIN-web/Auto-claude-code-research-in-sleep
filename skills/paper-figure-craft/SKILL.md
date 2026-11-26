@@ -19,8 +19,7 @@ they are independent — a figure can pass one and fail the other:
   becomes a text annotation on top of the first, and a reader who is scanning
   never reads it.
 - **A figure that looks right on screen** is included at a fraction of the page
-  and shrinks its type with it. 8 pt drawn at 9.71 in wide, included at
-  `\textwidth`, printed at 4.6 pt. That happened on an earlier paper.
+  and shrinks its type with it.
 
 ## Where the rulings live
 
@@ -117,11 +116,11 @@ The ruling is in the table below; this is how to build one.
 | **No Δ where the figure already draws both compared levels.** A bar-top `Δ +3.1`, or a `net +142` that subtracts two labelled bars, is the table's banned Δ column in figure clothing — delete it, the reader subtracts. Δ stays only when it is a *plotted* quantity with its own axis and error bars: there it is the figure's one significance channel, a case tables cannot have because tables may not print intervals at all. | 2026-08-23 | Bold-if-significant rides on the Δ label, so it dies with it; how the prose then words significance is memory `paper-prose-rules` §1. Keep the Δ computation and its SSOT assertions in the generator: what is deleted is the presentation, not the evidence. Check the paper does not already use Δ for something else. |
 | **An error bar is a quantity; nothing is drawn over it.** A value label that lands on a whisker — above all one wearing a white `bbox` to punch through it — deletes the figure's second quantity. The label clears the *whisker cap*, not the bar top, and needs no white box once it does. Raising the whisker's z-order is **not** the fix: it only redraws the line through the digits. | 2026-09-21 | Found on a latency figure whose stage medians sat at `median + 0.35` behind a white box, cutting a gap in every median→p95 stem. The user read it as the bars covering the whiskers; the label was the occluder. Holds for any interval mark: CI cap, percentile whisker, band edge. |
 | **`n` is never printed on a figure, subset or not.** A subset is named in words (`large-molecule bucket only`, in the caption or a label), never sized. | 2026-09-09 | User: 图的规则不允许标子集. Same day as the table ruling. |
-| **A qualitative example shows a mechanism that has been measured, or it is not drawn.** A paired rollout, a before / after strip or a single case exists to show *how* two systems differ. Before drawing one, name the measured reading, taken over the whole set and tested, that says what the difference is (one system abstains, backs off, attends to the right object more often). The example is then picked, and its frames or traces chosen, to show that quantity happening. A strip whose only message is *ours succeeds, theirs does not* repeats the outcome table with one sample and leaves the reader asking why, with nothing in the paper to answer. No measured mechanism: measure it first from the recorded runs, or leave the figure out. | 2026-11-21 | User: 「应该放确定机制的, 展示机制的图, 而不是展示一个不清楚的机制」, on a paired example strip whose two rows differed only in the final outcome; asked why ours was better, the paper had no measured answer. The caption's takeaway is then the mechanism, in the strength the measurement supports, not the single outcome. |
+| **A qualitative example shows a mechanism that has been measured, or it is not drawn.** A strip whose only message is *ours succeeds, theirs does not* repeats the outcome table with one sample and leaves the reader asking why, with nothing in the paper to answer. How to build one: **A qualitative example shows a measured mechanism** above. | 2026-11-21 | User: 「应该放确定机制的, 展示机制的图, 而不是展示一个不清楚的机制」, on a paired example strip whose two rows differed only in the final outcome; asked why ours was better, the paper had no measured answer. |
 | **Numbers come from an SSOT** — the paper's data files or per-item result artifacts — and a figure is never hand-edited to change a number. | — | Edit the source, rerun the build. |
 | **WYSIWYG width law**: `figsize` width **is** the printed width — the include fraction × the width the float occupies: `\columnwidth` for a column float in a two-column venue, `\textwidth` for `figure*` or in a one-column venue. | — | Otherwise `\includegraphics` scales the type along with the drawing. Take both widths from the compiled document (recipe below), never from memory of another venue. |
-| **Every printed glyph in 7.5–11 pt** (body text is 10). Do not shrink type to fit; change the layout. | — | Declared ≠ printed, and the ratio cannot be computed from `figsize` when `savefig.bbox="tight"` crops the canvas. |
-| **A schematic's labels are structure and symbols only** — config constants and explanations live in the prose, never printed on the drawing, and never relocated into the caption. Scopes the 2026-08-03 rule to data plots. | 2026-09-21 | See **What a caption is**. |
+| **Every printed glyph in 7.5–11 pt** (body text is 10). Do not shrink type to fit; change the layout. | — | Declared ≠ printed: measure it (**Measuring the printed size**). |
+| **A schematic's labels are structure and symbols only.** | 2026-09-21 | **What a caption is**, *On a schematic*. |
 | **A symbol may be drawn on a figure only if the reader has met its definition by the page the figure lands on.** Reading order is the compiled PDF's, not the `.tex` order. A figure that prints in §1 carries none of §3's notation: the label is the word the caption or the preceding prose already uses (`member ranking`, `candidate members`, `bias-correction head`). Neither a gloss on the canvas nor a definition in the caption repairs an early symbol; only the word does. | 2026-09-21 | User: 「⟨symbol⟩, ⟨symbol⟩ 啥意思,你这就不符合 paper-jargon-pass」. The test is `paper-jargon-pass`'s figure reader, who holds this figure, its caption and the pages before it, nothing after. A figure in an appendix may use what the body defined. |
 | **A figure defines its own symbols where they appear; the caption is not the symbol table.** Each symbol is glossed at the mark that draws it (an edge labelled `M members × T h` defines $M$; a badge `head φ_bc` says what φ is). Caption = bold title + one clause per panel side, ~300 chars. | 2026-08-30 | "Self-representative" was the user's word. A symbol left undefined in the figure is fixed *in the figure* — widen the badge, extend the label — never by growing the caption back. For a symbol whose definition comes *after* the figure's page there is no gloss to widen: it is replaced by the word (row above). |
 | **One hue = one meaning within a figure, across panels too.** A data colour may not share hue with the structural accent. A legend chip must be drawn exactly like some mark in the figure; magnification marks (zoom outline + cone) are grey dashed so a solid accent outline reads as selection only. | 2026-08-30 | A panel that draws one series in the hue that means *our method* in the next panel reads as our method. Recolour it in its own role's hue and direct-label it at the curve end. |
@@ -270,17 +269,11 @@ has already met it (rulings table).
 - **Check the prose has a landing spot before deleting.** If it does not, write
   the prose first. Do **not** move it into the caption: the caption is the
   graphic's legend, not a second body text.
-- **Worked case** (2026-09-21): an ensemble-pipeline schematic went from 39 text
-  runs to 24 — member numbers, row names, stage names, the badge and `reserved`
-  stayed; everything cut was already in its appendix section, line for line.
 
 ## Redesign checklist
 
 Reach for these in order; the first two fix most complaints.
 
-0b. **For a qualitative example, name the measured mechanism it shows.** None
-   measured means no example figure yet; how to build one is in **A qualitative
-   example shows a measured mechanism**.
 1. **Count the conclusions.** Two conclusions is two figures, or one figure with
    two rows on a shared axis — not one panel with an annotation layer.
 2. **Count the channels.** One quantity per channel. If a quantity is currently
