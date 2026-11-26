@@ -90,7 +90,7 @@ Step 3 tests **every number inside a kept sentence**, not only whole sentences. 
 
 ## 4. Step 4 — reword, then rewrite (`/paper-jargon-pass`)
 
-Overlay for `/paper-polish` step 4. The editor runs `/paper-jargon-pass`'s **second pass only** (查证 + 改写) on the ledger entries step 2 marked "term" whose sentence is still there. Its pass 0 (LaTeX assembly) does not apply, and its blind read is step 1 here. Also skipped: PDF page order, compile, figures, the two-clone rule, and 「正文不写结果数字」 (a reply carries its numbers; rhetoric C17 decides which go in a table). The skill's ordered moves and its 同物异名 / 悬空指代 rules apply as written; the vocabulary order is § 1's. The rewrite that follows (`/paper-polish`'s `references/rewrite.md`) is in § 4.1.
+Overlay for `/paper-polish` step 4. The editor runs `/paper-jargon-pass`'s **second pass only** (查证 + 改写) on the ledger entries step 2 marked "term" whose sentence is still there. Its pass 0 (LaTeX assembly) does not apply, and its blind read is step 1 here. Also skipped: PDF page order, compile, figures, and the paper rule on how many result numbers prose carries (a reply carries its numbers; rhetoric C17 decides which go in a table). The skill's ordered moves and its 同物异名 / 悬空指代 rules apply as written; the vocabulary order is § 1's. The rewrite that follows (`/paper-polish`'s `references/rewrite.md`) is in § 4.1.
 
 1. **Try these in order — stop at the first that works:**
    1. **Delete the word** and say the same thing with words already in the reply.
