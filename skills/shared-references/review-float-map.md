@@ -184,12 +184,3 @@ A float or passage in the wrong medium: redraw the table as a figure that shows
 the shape, or move the paragraph's values into a table or figure and keep its
 takeaway sentence in the prose. Numbers come from the same data files and the
 claim stays the same.
-
-## Field note
-
-2026-11-03, the first pass of the float map on a conference draft: an appendix table held a negative result no
-claim rested on; a baseline trained without the auxiliary loss held the best cell
-of a table cited for the advantage of adding that loss; the deployed
-variant was not the best row on the training-distribution columns of its own
-ablation, so the case for deploying it rested on the other columns alone; and
-the introduction's motivation rested only on an appendix figure.
