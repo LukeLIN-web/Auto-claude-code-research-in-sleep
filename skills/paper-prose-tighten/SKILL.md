@@ -234,8 +234,10 @@ content.
 **Rewrite pattern:** delete everything from the pivot word on ("rather than
 …", "not … but", "is not reducible to …") and let the positive claim stand
 alone. If the sentence opens with the negation, the rewrite is the positive
-claim, stated directly. No keep cases: you do not know what the reader's
-default reading is, so a pivot never earns its place by "correcting" one.
+claim, stated directly. When the negated half is the only place a protocol or
+scope fact is stated (`a held-out annotator, not the benchmark script, scores
+each answer`), the fact stays: restate it positively (`scores each answer in
+place of the benchmark script`), per (b) below and the protocol hard stop.
 
 **Field notes (first full pass, 2026-08-05, ~90 cuts).**
 (a) The worst pivots are invisible to a "rather than" grep: sentence-lead
@@ -260,15 +262,9 @@ rendered `.tex` to confirm the cut landed.
 (e) **The concessive scope hedge** — `X, although Y`, `X, each a Y`,
 `although X grows, Y is bounded` — is a class-6 shape even when Y is real
 scope, and it is the highest-yield sub-shape left after the obvious pivots
-are gone. Two examples from one paper: a headline followed by "although
-those numbers come from different hardware setups and are not causal method
-comparisons", and a constant-latency claim guarded by "although total
-compute grows linearly with the number of tiles". Both looked like hard stops. Neither
-was: the passage already carried the same scope **positively** — "the
-informative comparisons are the same-hardware anchors" and "that gap is hardware
-difference" two sentences on; "the pipeline costs one encoder forward per
-tile" one subsection back. So the hedge was pure class-4 restatement
-wearing a scope costume.
+are gone. It looks like a hard stop, but the passage usually states the same
+scope **positively** a sentence or a subsection away, and then the hedge is
+class-4 restatement.
 
 **The procedure, in order:** grep the scope's own noun (`hardware`, `forwards`,
 `denominator`) across the passage and the neighbouring section. Scope found
@@ -285,7 +281,7 @@ Run the grep, report where the scope still lands, and cut.
 
 Two paragraphs in different sections carrying the same content at different
 resolutions. Individually each reads fine; the duplication is only visible from
-the paragraph map (procedure step 1), never from reading straight through — by
+the paragraph map (`references/procedure.md` step 1), never from reading straight through — by
 the time the reader reaches the second copy, the first is 8 pages back and the
 author has forgotten writing it.
 
@@ -386,23 +382,13 @@ words: 「preregistered 都删了, 论文里就不该出现这种工程的术语
 instances of the word and eleven of its relatives left one paper in a single
 sweep, and no claim moved.
 
-The same ruling retired an entire *apparatus* of this kind — a training pool's
-structural probe, its permutation null, its label-shuffle negative control and
-its acceptance gate — carried redundantly in three places (a config-table row, a
-method sentence, an appendix paragraph of numbers), i.e. class 7 stacked on
-class 8 stacked on class 9. Deleting all three was safe because **no reported
-number was scored on that pool**: the probes defended *training* data, and every
-result in the paper is benchmark accuracy, which a training-pool shortcut can
-only depress. Run that test before retiring any verification apparatus —
-*does a reported number depend on the thing being verified?* — and if the answer
-is yes, it is scope, not process, and it stays.
+Before retiring a whole verification apparatus (a probe, its null, a negative
+control) under this class, run the file-drawer hard stop's test below.
 
 **Sweep note.** Count each term separately (the per-term counts are what you
 report), and call GNU grep as `command grep`: in Claude Code's Bash, `grep` is a
 function that runs ugrep with `--ignore-files`, so a recursive grep from a
-parent directory silently skips every gitignored file. (The 2026-08 note that a
-compound `-E` alternation returned zero under ugrep did not reproduce on
-2026-10-22; the gitignore skip does.) Then sweep the copies outside `sections/`:
+parent directory silently skips every gitignored file. Then sweep the copies outside `sections/`:
 figure/table generator strings in `paper/scripts/*.py` and `label` fields in
 `paper/data/*.json` render into the PDF too.
 
@@ -529,14 +515,7 @@ Also kept: a qualifier that is the claim or bounds it (`significantly`,
 `new repositories from the same crawl`), a term the paper defines
 (`lint-guided decoding`), and official benchmark and model names.
 
-**Read every sentence; grep only helps with recall.** A stock list (`in order
-to`, `is able to`, `a number of`, `due to the fact`) found nothing in a
-4,800-word draft. All six hits came from reading. The step-3 grep lists the
-phrases that did turn up, for the next draft.
-
-**Captions too.** One hit was in the Figure 1 caption (`fine-tuned on them
-together with The Stack`). If captions are generated, change the source in the build
-script and rebuild; an edit to the generated `.tex` is overwritten.
+**Read every sentence; grep only helps with recall.**
 
 **Re-run the short-last-line gate after the pass.** Cutting words reflows the
 paragraph, and two of the six edits left a last line under half the column. The
@@ -592,8 +571,8 @@ different claim, even when the verb is the same.
 **The inventory doubles as the copy check.** A comparison stated in Results
 usually has copies in the intro, the method's advantages, the conclusion and the
 abstract. A result added later tends to reach one copy and miss the others. For
-each baseline, list every sentence in the paper that compares against it (step 3
-command): section, verb (`significantly outperforms` / `lies above` /
+each baseline, list every sentence in the paper that compares against it
+(`references/procedure.md` step 3): section, verb (`significantly outperforms` / `lies above` /
 `completes significantly more tasks with every line its own`), metric, and
 conditions. The Results sentence owns the claim. Every copy is a derived form
 (SSOT), so a copy that disagrees with Results is a bug in the copy. Fixing it
@@ -707,15 +686,12 @@ Deleting text must never upgrade a claim.
   full read supersedes it"). It parses as class-3 journey narration, but
   deleting it hides a discordant prior analysis — a prose file-drawer that
   upgrades the surviving claim's apparent robustness. Refer it to the author.
-  When the author rules *delete* — and on 2026-08-20 one did, for a sentence
-  disclosing that a training pool's first construction had leaked and was
-  rebuilt — the ruling is theirs, but verify one thing first and say it back:
-  **is any reported number scored on the artifact whose history you are
-  erasing?** Here nothing was (the pool was training data; every reported result
-  was benchmark accuracy, which a training-pool shortcut can only depress), so
-  the deletion retired a discarded *build*, not a discarded *reading*. Had one
-  number come from that pool, the same deletion would have been the file-drawer
-  this stop exists to prevent.
+  When the author rules *delete*, or before retiring a verification apparatus
+  under class 8 or 9, verify one thing first and say it back: **is any reported
+  number scored on the artifact whose history you are erasing?** If none is
+  (say, the artifact is training data and every result is benchmark accuracy),
+  the deletion retires a discarded *build*. If one is, it is scope, not process,
+  and it stays.
 - **Never delete a duplicate before checking it is one.** Two class-7 traps,
   both hit on the first real pass:
   - *The "duplicate" carries a result that exists nowhere else.* A conclusion
@@ -736,125 +712,17 @@ Rule of thumb: cut what proves *diligence*; keep what bounds *scope*.
 
 ## Procedure
 
-1. **Map every paragraph before reading for style.** Classes 1–6, 8–10, 12 and 14
-   are found by grep; class 13 by the per-baseline listing in step 3; classes 7 and 11 and oversized paragraphs are found only here. Emit one row per
-   paragraph — file, line span, word count, and **one line saying what it
-   claims** (add by hand, per row, which claim of the paper that supports):
+A pass over whole sections or a whole paper follows
+[`references/procedure.md`](references/procedure.md): a paragraph map (the only
+place classes 7 and 11 and paragraphs over ~250 words show up), the inventory
+greps, classify, edit, verify the claim set, compile. Read it before such a
+pass. An editor handed a list of lines or a caption applies the classes and hard
+stops to those lines directly.
 
-   ```bash
-   python3 - <<'PY'
-   import glob, re
-   WORD, SPACE = re.compile(r"[A-Za-z][A-Za-z'\-]*"), re.compile(r"\s+")
-   for f in sorted(glob.glob('sections/*.tex')):  # numbered names sort into \input order
-       print('=' * 8, f)
-       lines = open(f, encoding='utf-8').read().split('\n')
-       start = None
-       for i, l in enumerate(lines + [''], 1):
-           if l.strip() and start is None:
-               start = i
-           elif not l.strip() and start is not None:
-               t = SPACE.sub(' ', ' '.join(lines[start - 1:i - 1])).strip()
-               print(f"  L{start}-{i - 1}\t{len(WORD.findall(t)):4d}w\t{t[:70]}")
-               start = None
-   PY
-   ```
-
-   Then read the map, not the paper. Three things fall out that no reading pass
-   gives you:
-   - **A row that supports no claim of the paper** → the One Test at paragraph
-     size. The whole paragraph is a cut candidate, not its sentences one by one.
-   - **Two rows whose one-line summaries are the same claim** → class 7. This is
-     where the largest single cuts are.
-   - **Any row over ~250 words** → it is carrying several findings at once.
-     Cutting it is not enough; **split it** (see step 5). A 350-word paragraph
-     stays unreadable at 250.
-
-   Present the map to the author before editing. It is also the artifact they
-   asked for when they say "每一段都在讲啥" — and their pick of which rows to cut
-   is worth more than your own ranking.
-
-2. **Scope.** Main text first (`\section` bodies), appendix second. Tables,
-   captions and figure code belong to `paper-table-craft` / `paper-figure-craft`;
-   touch them here only to sweep class 5, 6, 8, 9, 12 and 14 leakage, and never to decide
-   what a caption should contain.
-
-3. **Inventory.** Pull every candidate to a scratch list before editing:
-
-   ```bash
-   # numbers-in-prose density, per section
-   command grep -o '\$[0-9][0-9,{}.\\]*\$' sections/*.tex | sort | uniq -c | sort -rn | head -40
-   # bookkeeping shapes: "N of M", "N:M", "N -> M"
-   command grep -nE '[0-9]+ of [0-9]|[0-9]\{?:\}?[0-9]|\\to [0-9]' sections/*.tex
-   # class 10 value series: slash-strung readings, and "x on A, y on B, z on C"
-   command grep -nE '\$[0-9.]+\$ ?/ ?\$[0-9.]+\$' sections/*.tex | command grep -v '&'
-   command grep -nE '(on|at) [A-Z][A-Za-z-]+, \$?[-+0-9]' sections/*.tex | command grep -v '&'
-   # class 12 wordy phrases: recall aid only, read every sentence (class 12)
-   command grep -niE 'carr(y|ies|ied) out|refer(s|red)? to .* as|for the first time|together with|none of them|loosely worded|in order to|(less|more) often|half and half|has been reported to|are what make' sections/*.tex
-   # class 14 exception clauses (captions too: the generator strings, then the rendered tables/*.tex);
-   # high recall: a plain contrastive `but` matches too, keep only claims about every member that then take members back
-   command grep -niE '\bexcept\b|\ball but\b|\b(every|all|each|any)\b[^.]{0,60}\bbut\b|\bbut (on |for )?[A-Z$\\]|save for|apart from|aside from|with the exception|\bexcluding\b|\bbarring\b' sections/*.tex tables/*.tex
-   # class 13: every sentence that compares against one baseline, across all sections
-   # (run once per baseline noun; read the list for split sentences and for copies that disagree)
-   for b in 'alone' 'frozen' 'kNN-style' 'zero-shot' 'greedy'; do
-     echo "== $b"; python3 - "$b" <<'PY'
-   import glob, re, sys
-   for f in sorted(glob.glob('sections/*.tex')):
-       for n, line in enumerate(open(f, encoding='utf-8'), 1):
-           if line.lstrip().startswith('%'): continue
-           for s in re.split(r'(?<=[.;])\s+', line.strip()):
-               if sys.argv[1] in s: print(f"{f}:{n}\t{s[:180]}")
-   PY
-   done
-   # meta-narration stems
-   command grep -niE 'we (report|claim|make|state|note|stress|log) (this|it|none|them)|rather than (claim|letting|running|averag)|net (it|this|that) away|averag\w* away|entitled to know|guard(ing)? against|we count it as such' sections/*.tex
-   # narrated absences: sentences about things that don't exist
-   command grep -niE 'publishes no|has no (row|column|entry)|does not (report|publish|evaluate|include|provide)|no official|not (available|reported) (in|for)' sections/*.tex
-   # false pivots: negated-alternative claims (high recall — classify by hand;
-   # headers, caption titles, and section titles need an eye pass on top)
-   command grep -niE 'rather than|instead of|not reducible|, not |; it is|\bnor is|not by itself|not only|is not|are not' sections/*.tex tables/*.tex
-   # artifact provenance / hygiene assurance (sweep tables/ too: it hides in config cells)
-   command grep -niE 'without reference to|pre-?specified|pre-?registered stopping|(deployed|released) checkpoint|the run.s endpoint|held-out (accuracy|acc) is flat|chosen by (benchmark|evaluation)|frozen (evaluation |)subset|seed' sections/*.tex tables/*.tex
-   # process vocabulary (class 9) -- count each term separately (class 9's sweep note)
-   for t in preregistered pre-registered pre-specified prespecified \
-            "criteria frozen" "frozen before" "frozen margin" \
-            "frozen evaluation" "stopping rule" "kill gate" "acceptance gate"; do
-     n=$(command grep -ric -- "$t" sections/*.tex tables/*.tex 2>/dev/null | awk -F: '{s+=$NF} END{print s+0}')
-     [ "$n" != 0 ] && printf '%4s  %s\n' "$n" "$t"
-   done
-   ```
-
-4. **Classify, don't rewrite yet.** Tag each hit cut / keep / rewrite, and beside
-   every keep write the claim it supports; a keep with no claim beside it is a
-   cut. The
-   temptation is to rewrite a bloated sentence into a slightly less bloated one;
-   most hits should be **whole-clause deletions**. On a paper whose claims are
-   already settled, expect most hits to be keeps — in practice ~80% of
-   absence-pattern hits are load-bearing protocol scope. A low cut count is the
-   test working, not failing.
-
-5. **Edit.** Prefer deleting a clause over restructuring a sentence — the fewer
-   words that move, the smaller the chance of shifting a claim. The one
-   restructuring worth doing is the **paragraph split** step 1 flagged: find the
-   findings inside the over-long paragraph, give each its own paragraph with its
-   own topic sentence, and cut in the process. Splitting without cutting is
-   still a win; the reader can now see where each finding starts.
-
-6. **Verify the claim set is unchanged.** For each edited paragraph, state in
-   one line what it claimed before and after. Any difference is a bug, not a
-   tightening. Re-check every hard stop above. Then re-grep the labels you
-   dropped a `\ref` to — a deleted paragraph can be the only citer of an
-   appendix section.
-
-7. **Compile** and report the size change (words or lines per section), plus a
-   list of anything you deliberately left because cutting it would have
-   loosened a claim.
-
-**Calibrate the estimate.** A per-item cut target set from the map will
-overshoot by roughly 2×: load-bearing paragraphs *compress*, they do not delete,
-and every "delete this section" item tends to turn into "move one sentence and
-delete the rest". A 1,600-word plan landing at ~700 is the normal outcome, not a
-failure to execute — say so plainly instead of padding the cut to hit the
-estimate.
+**Scope.** Main text first (`\section` bodies), appendix second. Tables,
+captions and figure code belong to `paper-table-craft` / `paper-figure-craft`;
+touch them here only to sweep class 5, 6, 8, 9, 12 and 14 leakage, and never to decide
+what a caption should contain.
 
 ## Reporting
 
@@ -864,16 +732,16 @@ Report as: sections touched, what was cut by class (1–14) or by the One Test
 not become overclaiming. Do not report a "% reduction" as the headline; the
 headline is that the argument reads straight through.
 
-## Anti-pattern
+## Re-runs
 
-Do not run this skill twice on the same text expecting further gain. The second
-pass finds nothing safe to cut and starts eating scope qualifiers to justify
-itself. One pass, then stop.
+A second pass over text this skill already tightened can still find cuts the
+first one missed, so re-running is fine. The bar does not move: a pass that
+finds nothing safe to cut says so, and never starts on scope qualifiers to
+justify itself.
 
-The exception is a **class-7 and class-13** pass. Classes 1–6, 8–10, 12 and 14 are sentence-local and
-are genuinely exhausted in one run; classes 7 and 13 are not, because they are created fresh
-every time a section is rewritten or a result changes — tightening §4 to point at a table leaves the
-intro bullet that pre-plays §4 untouched, and a result added to §4 leaves the
-conclusion's copy of the list one item short. After any round of section rewriting,
-re-emit the paragraph map (step 1) and diff the one-line summaries, and re-run the
-class-13 per-baseline listing. Nothing else.
+Classes 7 and 13 need a re-run after any round of section rewriting or a
+changed result, because rewriting creates them fresh: tightening §4 to point at
+a table leaves the intro bullet that pre-plays §4 untouched, and a result added
+to §4 leaves the conclusion's copy of the list one item short. Re-emit the
+paragraph map (`references/procedure.md` step 1), diff the one-line summaries,
+and re-run the class-13 per-baseline listing (step 3).
