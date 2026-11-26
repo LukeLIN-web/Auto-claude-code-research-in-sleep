@@ -301,6 +301,26 @@ User ruling 2026-11-16, from a review the user forwarded:
   benchmark against several combined, the averaged metric, `slightly`, a
   control's matching condition ("at the same parameter count as ours"). After the
   rewrite a fresh reader compares old and new claim by claim.
+- **Merge the subjects by question** (user ruling 2026-11-23: 「都应该按问题合并
+  主语」). An ablation paragraph, in the main text or the appendix, that walks
+  the variants one by one ("ours outperforms variant A on X, and variants B
+  and C on Y and Z") is the same test log with the variants as the list. Find
+  the question the variants answer together (does the training data matter,
+  does the label, does the selector), name them once as a group by what they
+  share ("each variant that follows prior work", "both variants trained
+  without augmentation"), and give the group one verdict that holds for
+  every member, with one decisive pair of numbers and the table pointer:
+  "ours significantly outperforms each variant that follows prior work on at
+  least one held-out benchmark (Table N)". One question, one sentence; a
+  paragraph answers one to three questions. The group sentence is what reads
+  each member's row, so no row is left unread and no per-variant sentence is
+  needed for that. Which member holds in which column is left to the table
+  (user 2026-11-23: 「留给表是合理的」); the sentence keeps only what holds for
+  each ("each on A or in both B columns"). Name a single variant only where it departs from its group
+  or carries the reason. The scope words survive the merge as above ("each on
+  at least one benchmark" is not "on every benchmark"); sentences that read
+  different floats for different questions are separate evidence, not a list,
+  and stay apart.
 - **The reason comes from the paper's own evidence.** A sentence on why a gain
   occurs cites a measurement in the paper (an ablation, a breakdown of failure
   states) or a property the data have by construction. A mechanism a reviewer
@@ -320,9 +340,8 @@ User ruling 2026-11-16, from a review the user forwarded:
   answer for the whole family of variants ("every other augmentation
   scheme falls below ours, each significantly in at least one setting"), keeps
   the one comparison the answer turns on, gives the reason, and points to the
-  table for the rest. A paragraph carries at most four number pairs
-  (`a% against b%`): the per-sentence limit alone lets through a paragraph of
-  seven sentences with one pair each. When every appendix experiment needs a
+  table for the rest. How many numbers a sentence and a paragraph may carry:
+  `../paper-table-craft/SKILL.md`, *Result numbers in the prose*. When every appendix experiment needs a
   main-text mention, the mentions join the answer to the question they belong
   to, one pointer sentence per question, not one sentence per variant.
 - **A measurement that explains a gain is that gain's reason, written as

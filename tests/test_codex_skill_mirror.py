@@ -37,7 +37,8 @@ def has_send_input_block(text: str) -> bool:
 
 
 def test_codex_skill_set_matches_mainline() -> None:
-    # Upstream inventory only. Fork-local skills ship no Codex mirror; they are
+    # Upstream inventory only. Fork-local skills need no Codex mirror (one that a
+    # mirrored shared reference points at carries one); they are
     # declared in tools/fork-local-inventory.txt and excluded from both sides so
     # the constant below keeps tracking upstream's count.
     local = fork_local_skills()

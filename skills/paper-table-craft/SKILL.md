@@ -73,7 +73,7 @@ fact are one row.
 | **No p-values.** Not computed, not reported, not transcribed from an older result page. | 2026-07-30 | Significance reads off the paired interval and nothing else. |
 | **Caption above the tabular** — `\caption`+`\label` before `\begin{tabular}`. | 2026-08-05 | An instruction to move captions below was once withdrawn the same day; if asked again, say this first, then act. |
 | **Caption carries no numbers, no pointer at another float.** Banned: `\ref{}`, `\S`, Appendix, `Table~`, `Figure~`, "the text". 1200 chars hard cap. | — | Enforce it, do not remember it: `paper-compile`'s `scripts/check_tex.py` checks generated and hand-written captions alike for the pointers, the cap and a number in the bold takeaway. A number in a name (`Model-2B`, a version) is not one. The legend after the takeaway is read by eye. |
-| **A fired caption gate means rewrite the caption whole.** Never raise the cap, never patch the tail. | — | Captions bloat by accretion. |
+| **A fired caption gate means rewrite the caption whole**, and so does any trim of a caption. Never raise the cap, never patch the tail, never edit it in place. | — | Captions bloat by accretion. |
 | **`n` is not a column and not a row.** A group size is bookkeeping, not a value a reader compares down; a table whose rows are subsets prints the accuracies alone. The caption says what the groups *are*; the prose says the shape (`a small group`, `the in-domain majority`); the counts stay in the working mirror and the result page. A count column under another name (`Events`, a `(1312)` in a header) is still a count column. | 2026-09-09 | User: 「不要汇报 n」, and the same day for every table: 「也一起撤了」. A subset is named by its row label, not counted. |
 | **Every accuracy, recall, coverage and success cell prints at one decimal, in every table.** Rounded half-up from the *exact ratio*, never from a score already stored at two decimals. | 2026-09-09 | Re-rounding a stored score whose hundredths digit is 5 goes wrong (63.25 is 494/781 = 63.252 → 63.3), so the cell is printed from its count and denominator by the project's one rounding helper. Bold / underline tie on the printed one-decimal value. Non-score quantities (a token ratio, seconds) are outside this rule. |
 | **A small table whose columns another table already has is merged into that table**, as rows (in a block of their own when they share a condition), not printed beside it. Its reprinted rows (the base, our method) are dropped, since the host table prints them already; the prose points at the host table. | 2026-11-20 | User: 「记住 并进去是好的」. Under a frozen float numbering, merge only tables whose numbers nothing frozen cites. |
@@ -85,20 +85,24 @@ fact are one row.
 | **A table's printed type size is measured, never scaled into place.** The floor is the figures' floor, 7.5 pt. | — | `\resizebox{\textwidth}{!}` sets the type size by an accident of the table's own width, magnifying one table past the body text and shrinking the next. Measure with `scripts/check_table_font.py` (step 5). Fix an overflowing table by the gutter (`\tabcolsep`) or by structure; in a two-column venue, by `table*` before squeezing a wide table into a column. |
 | **One owner per mark.** Bold, underline, the zero convention and any difference cell come from one helper the generators share. | — | Reimplemented per generator, the zero convention drifts (`0.00`, `+0.00`, `\pm0.00`) and a reader comparing two tables reads one mark as two. |
 | **An empty result cell prints `--`, and the legend reads `--: not reported`.** Never `not run`, `not evaluated`, or `not run or not reported`. One wording covers both a cell we did not run and a cell a cited paper did not report. | 2026-11-16 | User: 「那个"-"别叫 not run，叫 not reported」. Fix it in the caption generator and sweep every table that uses `--`. A cell that cannot exist in its row (a memory figure for a method that keeps no cache) keeps its own legend, `--: not applicable`. |
-| **Every cell in a comparison table is on the same protocol.** A number borrowed from another paper is marked (`*` or `†`, with its citation) and sits where the project's rule puts it (for example only in a `base` cell, or in its own block ranked per the project's tables CLAUDE.md); a paired difference only between same-protocol measured cells. | — | Memory `no-protocol-switch-to-rescue-arm`. Marks borrowed from another paper's table are transcribed, never glossed (memory `borrowed-table-marks-transcribe-only`). |
+| **Every cell in a comparison table is on the same protocol.** A number borrowed from another paper is marked (`*` or `†`, with its citation) and sits where the project's rule puts it (for example only in a `base` cell, or in its own block ranked per the project's tables CLAUDE.md); a paired difference only between same-protocol measured cells. | — | A collapsed arm is never rescued by reading it under another protocol: fix its generation path; a reading taken another way is a diagnostic and stays out of the table (user 2026-07-20「邪教/作弊」). A mark carried over from another paper's table gets only the gloss that paper prints, found there word for word, and the benchmark's own terms keep its wording. |
 | **A row or column is printed only if a sentence reads it.** Before printing a row or a column, name the sentence (the caption's opening, or the prose that cites the table) it is evidence for. One no sentence reads does not stay as it is. If its numbers favor the method, add the sentence that reads it ("On <benchmark>, it also outperforms <baseline>"), in the strength the test supports (user, same day: 「没有句子读, 对我们有利的, 我们可以加句子」). If they favor neither side (a count, a derived quantity), delete it, together with its caption legend item and any pointer that named it. The cut is a whole row or a whole column: while a row and a column both stay, the cell where they meet stays printed, read or not; never blank a single cell to `--` (user, same day: 「如果列/行在的话, 不要单独删格子」). A setup or protocol table keeps the rows that define the setup a claim is about; a quantity derived from two other rows is not one of them. | 2026-11-21 | User: 「表/图 里的, 不支持论点的也要删」. This is the table form of the prose rule that every reported number supports a stated point; `paper-figure-craft` carries the figure form. Delete in the generator's row selection; a row whose numbers weigh against a claim goes to the author, not to the cut. |
 
 ## What a caption is
 
-**First sentence: the takeaway** (user, 2026-11-01), the table's one conclusion in
-the prose's own words, no number. A takeaway that carries two conclusions may be
+This section is the caption rule for every float, figures included;
+`paper-figure-craft` adds only what a graphic has that a table does not.
+
+**First sentence: the takeaway** (user, 2026-11-01), the float's one conclusion in
+the prose's own words and strength (`significant`, a direction), no number. A takeaway that carries two conclusions may be
 two bold sentences (user 2026-11-16「能拆成两句粗体」). A takeaway never carries an exception
 (`leads on all but Bench-6`, `except Baseline-C`); `paper-prose-tighten` class 14
 says how to restate it. Its subject is the method, as in the paper's result
 sentences: `<Method> trains on fewer samples than Baseline-B`,
 not `Baseline-B trains on more samples than <Method>`
 (user 2026-11-23「还是应该用 <method> 作为主语」). Then the legend for *this* float: what is
-measured, the symbols, the definition of each column. Nothing that defers to
+measured, the symbols, the definition of each column (in a figure, the axes and
+what a panel is). Nothing that defers to
 prose; a takeaway is not a restatement of rows, but a row-by-row recital is.
 
 **The takeaway is what only this float shows**, not the summary result another
@@ -138,9 +142,9 @@ Three ways it stops being that:
 The 1200-char gate is a backstop, not a target. **Aim at ~600**, and treat a
 caption within a few characters of the cap as already broken rather than nearly
 fine: the next wording fix fails the build. The excess is reliably the same thing — the protocol argument for why
-the table is a fair comparison. That argument belongs in the paragraph the float
+the float is a fair comparison. That argument belongs in the paragraph the float
 sits in; the caption keeps only the marks and row terms a reader needs without
-leaving the table.
+leaving the float.
 
 ## Cell-level cut classes
 
@@ -179,8 +183,7 @@ When a table has grown prose, these are the shapes, in descending yield.
 2. Run the hard stops' row grep and read every hit: those are the rows you may
    not delete.
 3. Classify every cell T1–T8. Prefer deleting a clause over rewriting a cell.
-4. Rewrite the caption **whole**, from the three-way test above. Do not edit it
-   in place; that is how it grew.
+4. Rewrite the caption from the three-way test above.
 5. Compile, and require all four: `rc=0`, **zero** `Overfull \hbox` in
    `main.log`, the project's caption checker clean, and the **printed type size
    measured**, every table at the same pt and none under 7.5:
@@ -214,6 +217,8 @@ When a table has grown prose, these are the shapes, in descending yield.
 |---|---|
 | generators, the rounding and mark helpers, which python, build | the project's paper CLAUDE.md |
 | caption rules as an executable predicate | the project's caption checker, if it has one |
-| caption position, `.bib`, co-author macros | memory `paper-layout-and-citation-rules` |
+| caption position | *Rulings* above: caption above the tabular |
+| `.bib` | read-only: skill `citation-audit`, *Bibliography is read-only* |
+| co-author annotation macros | they and their notes stay in the source; whether the final strips them is the author's call |
 | what the prose may say about a table | skill `paper-prose-tighten`; how many numbers it prints: *Result numbers in the prose*, above |
 | where a float lands, two-column placement | skill `paper-float-compact` |
