@@ -166,6 +166,15 @@ mcp__gemini-review__review_start:
          supports no argument and shows a reader where the method stops
          improving. Name it, give its location and its numbers against the
          method's, and say whether any sentence of the main text rests on it.
+    and every printed number a reader cannot trace:
+      8. a number in a table cell, a caption or a sentence whose origin the
+         paper does not give, or whose form is noisier than what it says: a
+         setting solved from another quantity and printed as the solved value
+         ("the top 31.4%", picked so that two sets come out the same size); a
+         threshold or fraction the authors chose, with no reason or citation
+         beside it; a count pair "N of M" in a table cell; more digits than
+         the neighbouring numbers carry. Quote it, give its location and say
+         which kind it is.
     An appendix float or section needs no citation from the main text or from
     another appendix section: one cited only where it sits is fine. Do not flag
     it and do not ask for a pointer to it.

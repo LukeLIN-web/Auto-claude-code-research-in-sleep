@@ -39,6 +39,12 @@ is hidden. It supports no argument, since an unsettled result proves neither
 that one round is enough nor that more would hurt, and it shows a reader where
 the method stops improving. The block reports these as flag 7.
 
+An eighth, 2026-11-27, 「就不知道哪来的这个数」「不要出现这种乱七八糟的数字」: every
+printed number can be traced by the reader. A value solved from another
+quantity is printed as the rule that fixes it, a setting the authors chose
+carries its reason, and a cell holds one number at its neighbours' precision.
+The block reports these as flag 8.
+
 This file owns the first two rules, for writing and for review. The writing skill
 (`research-paper-writing`) applies them when it builds a
 paper's claim–evidence map; a page limit never moves an argument's decisive
@@ -115,6 +121,15 @@ and every reported variant that extends the method and does not improve it:
      supports no argument and shows a reader where the method stops
      improving. Name it, give its location and its numbers against the
      method's, and say whether any sentence of the main text rests on it.
+and every printed number a reader cannot trace:
+  8. a number in a table cell, a caption or a sentence whose origin the
+     paper does not give, or whose form is noisier than what it says: a
+     setting solved from another quantity and printed as the solved value
+     ("the top 31.4%", picked so that two sets come out the same size); a
+     threshold or fraction the authors chose, with no reason or citation
+     beside it; a count pair "N of M" in a table cell; more digits than
+     the neighbouring numbers carry. Quote it, give its location and say
+     which kind it is.
 An appendix float or section needs no citation from the main text or from
 another appendix section: one cited only where it sits is fine. Do not flag
 it and do not ask for a pointer to it.
@@ -179,6 +194,18 @@ hiding when one fails:
 Do not add an explanation of why the variant did not improve in its place: a
 cause the paper has not tested opens a second line of attack (the same author,
 same day: 「如果没啥好处宁可不说」).
+
+A number a reader cannot trace (flag 8), by kind:
+- a solved value (a fraction, a threshold or a step count computed so that
+  two quantities match): print the rule in its place ("as many as the kept
+  frames"), not the value the rule produced.
+- a setting the authors chose (a threshold, a fraction, a cap): keep the
+  value and give its reason or its source in one sentence of the prose next
+  to it. A caption does not carry the reason.
+- a count pair `N of M` in a cell: print the one number the column is about,
+  and drop the column when no sentence reads it (flag 6).
+- more digits than the neighbours carry: round to their precision.
+Numbers change in the float's generator, never in its output.
 
 A float or passage in the wrong medium: redraw the table as a figure that shows
 the shape, or move the paragraph's values into a table or figure and keep its

@@ -192,6 +192,15 @@ spawn_agent:
          supports no argument and shows a reader where the method stops
          improving. Name it, give its location and its numbers against the
          method's, and say whether any sentence of the main text rests on it.
+    and every printed number a reader cannot trace:
+      8. a number in a table cell, a caption or a sentence whose origin the
+         paper does not give, or whose form is noisier than what it says: a
+         setting solved from another quantity and printed as the solved value
+         ("the top 31.4%", picked so that two sets come out the same size); a
+         threshold or fraction the authors chose, with no reason or citation
+         beside it; a count pair "N of M" in a table cell; more digits than
+         the neighbouring numbers carry. Quote it, give its location and say
+         which kind it is.
     An appendix float or section needs no citation from the main text or from
     another appendix section: one cited only where it sits is fine. Do not flag
     it and do not ask for a pointer to it.
@@ -239,6 +248,7 @@ and the structure report has:
 - the float map and argument map, and every float and argument flagged
 - under its own heading, every passage and every row or column of a table that supports no argument (flag 6): the quote or its name, its location, one line on what it is, and the proposal (for a row or column whose numbers favor the method, the sentence to add; otherwise delete it, or put it to the user, with the reason)
 - under its own heading, every variant that extends the method (another round, more steps, more data) and is neither better nor settled (flag 7): its location, its numbers against the method's, whether a main-text sentence rests on it, and the proposal, which is to hide it (`review-float-map.md`, Acting)
+- under its own heading, every printed number a reader cannot trace (flag 8): the quote, its location and its kind (a solved value, a chosen setting with no reason, an `N of M` cell, extra digits).
 - the checker warnings of Step 1 that hold after reading the text they point at, under their own heading, apart from the reviewer's points
 
 Both reports also list the findings dropped (an anchor that does not hold, or a

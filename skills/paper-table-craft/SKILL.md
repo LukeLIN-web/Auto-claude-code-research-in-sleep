@@ -160,6 +160,7 @@ When a table has grown prose, these are the shapes, in descending yield.
 | **T6 Split pair** | `Positive-label share` / `Negative-label share`; `Target` / `Loss masking` | one row |
 | **T7 Deployed-vs-training disclaimer** | `The deployed pruning mask (k channels per layer) is not retrained on` | a protocol fact the method section states in its own voice; keep it there, not in a cell |
 | **T8 Another table's rows** | a results table reproducing the five external-reference rows of the main table verbatim, marks and all | one table owns a comparison; the second points at it. The duplicate is invisible from either table alone — it is `paper-prose-tighten`'s class 7 with floats instead of paragraphs |
+| **T9 Untraceable number** | `Top 31.4% by score`, where 31.4 was solved so that two sets come out the same size; `412 of 1,000` in a cell; `31.40%` beside whole percents | a solved value becomes the rule that fixes it (`as many as the kept frames`); a count pair becomes the one number the column is about; digits follow the neighbours. A setting the authors chose keeps its value, and the prose beside the table says why (user 2026-11-27 「不要出现这种乱七八糟的数字」) |
 
 ## Hard stops
 
