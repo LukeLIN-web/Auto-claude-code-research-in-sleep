@@ -1,6 +1,6 @@
 ---
 name: paper-table-craft
-description: "What belongs in a paper table — a cell is a value, never a sentence; a caption opens with the takeaway, then is the table's own legend, never a glossary or a restatement of its rows. Carries the user's table rulings that hold for every paper (no CIs or p-values, no Δ column beside both compared levels, caption above, no n column), the cut classes for a table that has grown prose, and the rule for how many result numbers the prose may print (one or two per sentence, four pairs per paragraph). Use when the user says 正文写几个数, 数字太多, 表太啰嗦, 删减表格, 这个表怎么写, caption 太长, 表里能不能写 CI, 这行要不要留, 加一列, 表不一致, 乱七八糟, 行名不统一, 'trim this table', 'what goes in the caption', 'the rows are inconsistent', when table cells have turned into sentences, and right after a table is made from a paragraph or a row is added or renamed (step 6's sweep). Not for building the table (the project's paper CLAUDE.md)."
+description: "What belongs in a paper table — a cell is a value, never a sentence; a caption opens with the takeaway, then is the table's own legend, never a glossary or a restatement of its rows. Carries the user's table rulings that hold for every paper (no CIs or p-values, no Δ column beside both compared levels, caption above, no n column, every printed number traceable), the cut classes for a table that has grown prose, and the rule for how many result numbers the prose may print (one or two per sentence, four pairs per paragraph). Use when the user says 正文写几个数, 数字太多, 表太啰嗦, 删减表格, 这个表怎么写, caption 太长, 表里能不能写 CI, 这行要不要留, 加一列, 表不一致, 乱七八糟, 行名不统一, 这个数哪来的, 行名看不懂, 'trim this table', 'what goes in the caption', 'the rows are inconsistent', when table cells have turned into sentences, and right after a table is made from a paragraph or a row is added or renamed (step 6's sweep). Not for building the table (the project's paper CLAUDE.md)."
 argument-hint: "[table-label-or-file]"
 allowed-tools: Bash(*), Read, Write, Edit, Grep, Glob
 ---
@@ -87,6 +87,9 @@ fact are one row.
 | **An empty result cell prints `--`, and the legend reads `--: not reported`.** Never `not run`, `not evaluated`, or `not run or not reported`. One wording covers both a cell we did not run and a cell a cited paper did not report. | 2026-11-16 | User: 「那个"-"别叫 not run，叫 not reported」. Fix it in the caption generator and sweep every table that uses `--`. A cell that cannot exist in its row (a memory figure for a method that keeps no cache) keeps its own legend, `--: not applicable`. |
 | **Every cell in a comparison table is on the same protocol.** A number borrowed from another paper is marked (`*` or `†`, with its citation) and sits where the project's rule puts it (for example only in a `base` cell, or in its own block ranked per the project's tables CLAUDE.md); a paired difference only between same-protocol measured cells. | — | A collapsed arm is never rescued by reading it under another protocol: fix its generation path; a reading taken another way is a diagnostic and stays out of the table (user 2026-07-20「邪教/作弊」). A mark carried over from another paper's table gets only the gloss that paper prints, found there word for word, and the benchmark's own terms keep its wording. |
 | **A row or column is printed only if a sentence reads it.** Before printing a row or a column, name the sentence (the caption's opening, or the prose that cites the table) it is evidence for. One no sentence reads does not stay as it is. If its numbers favor the method, add the sentence that reads it ("On <benchmark>, it also outperforms <baseline>"), in the strength the test supports (user, same day: 「没有句子读, 对我们有利的, 我们可以加句子」). If they favor neither side (a count, a derived quantity), delete it, together with its caption legend item and any pointer that named it. The cut is a whole row or a whole column: while a row and a column both stay, the cell where they meet stays printed, read or not; never blank a single cell to `--` (user, same day: 「如果列/行在的话, 不要单独删格子」). A setup or protocol table keeps the rows that define the setup a claim is about; a quantity derived from two other rows is not one of them. | 2026-11-21 | User: 「表/图 里的, 不支持论点的也要删」. This is the table form of the prose rule that every reported number supports a stated point; `paper-figure-craft` carries the figure form. Delete in the generator's row selection; a row whose numbers weigh against a claim goes to the author, not to the cut. |
+| **Every printed number can be traced by the reader.** A cell, a header or a caption prints no number whose origin the paper does not give. A value solved from another quantity (a fraction, a threshold or a step count computed so that two sets come out the same size) is printed as the rule that fixes it (`as many as the kept frames`), not as the value the rule produced. A setting the authors chose keeps its value, and one sentence of the prose beside the table gives its reason or its source. A cell holds one number: `412 of 1,000` becomes the number the column is about, and the column goes when no sentence reads it. Digits follow the neighbours (`31.4%`, not `31.40%`, beside one-decimal cells). | 2026-11-27 | User: 「就不知道哪来的这个数」「不要出现这种乱七八糟的数字」. Cut class T9; the review side is flag 8 of `../shared-references/review-float-map.md`. Rounding a solved value does not fix it: the reader still cannot tell where it comes from. |
+| **A row label says of each qualifier whether the row has it.** After `without X`, a bare `, Y` reads either way: the row lacks Y too, or it has Y. Write the preposition on every qualifier (`w/o X, w/ Y`), or put the one the row has first (`Y labels, collected w/o X`). | 2026-11-27 | User: 「很奇怪到底是有还是没有」. `w/` and `w/o` are fine in a label and shorter than the words. A label a frozen table already prints stays there; the tables still open take the clear form. |
+| **A row or column is named by the field's usual word for the quantity.** `Training steps`, `Training duration`, `Batch size`, `Learning rate`; not a word the author reached for (`Length` over a cell reading `4 epochs`). When the cells of one row differ in unit (epochs in one column, steps in another), the name is the quantity both measure. | 2026-11-27 | User: 「一般不叫 length 把」. Where a sibling table already names the quantity, use its name. |
 
 ## What a caption is
 
@@ -120,6 +123,23 @@ that cites the float in the same edit, so the caption is never stronger than
 the text. If nothing beyond the aggregate can be named, the float has no
 takeaway of its own, and that goes to the author as a question about whether
 to keep it.
+
+**A table of settings still opens with what the method gains.** A protocol or
+configuration table (how a baseline was matched, what each variant trains on)
+has no result cells, and a takeaway that recites the settings (`with matched
+data, the variants see as many samples as <Method>`) tells the reader nothing
+about why the table is there. Open with the result the settings make fair, in
+the strength the prose gives it: `<Method> significantly outperforms the
+variants on Bench-B even with matched data, where they see as many samples
+and train for more steps` (user 2026-11-27「也没讲出来 <method> 好在哪里」).
+
+**A legend item for a row qualifier says what the row does, not what set the
+word denotes.** `Shared scenes: the scenes with both an A and a B` leaves the
+reader to work out what a row so labelled trains on, and why the word matters.
+Write `Shared scenes: the row trains only on the scenes that yielded both an A
+and a B; the other rows train on every scene that yielded theirs`, and name the
+unit in plain words once if the float is the first place a reader meets it
+(user 2026-11-27「还是看不懂」).
 
 Three ways it stops being that:
 
@@ -183,7 +203,7 @@ When a table has grown prose, these are the shapes, in descending yield.
    CLAUDE.md lists the hand-authored tables.
 2. Run the hard stops' row grep and read every hit: those are the rows you may
    not delete.
-3. Classify every cell T1–T8. Prefer deleting a clause over rewriting a cell.
+3. Classify every cell T1–T9. Prefer deleting a clause over rewriting a cell.
 4. Rewrite the caption from the three-way test above.
 5. Compile, and require all four: `rc=0`, **zero** `Overfull \hbox` in
    `main.log`, the project's caption checker clean, and the **printed type size
@@ -197,7 +217,8 @@ When a table has grown prose, these are the shapes, in descending yield.
    labels included. A float review asks whether each float serves an argument,
    not whether it agrees with itself. Read the compiled page and check:
    - within the table: one label pattern on one axis, compared rows adjacent,
-     shared conditions as blocks; the caption names rows as printed and its
+     shared conditions as blocks; every qualifier in a label says with or
+     without; every number traceable (T9); the caption names rows as printed and its
      takeaway's subject is the method;
    - across tables: one benchmark, one spelling; one label for one system; one
      convention per mark (bold = decided); one number format per quantity; no
