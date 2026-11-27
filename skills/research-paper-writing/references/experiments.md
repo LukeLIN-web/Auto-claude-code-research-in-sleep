@@ -64,6 +64,8 @@ flowchart TB
 > “… we ask: how efficiently does DPO trade off maximizing reward and minimizing KL-divergence with the reference policy …?” (DPO)
 
 **E1 · Setup.** Datasets (size, split, why chosen), metrics (with direction ↑/↓), baselines (why these, how they were run: official code, same data), implementation (base code, iterations, hardware). Run-in headings are normal here (`\paragraph{Datasets.}`), and only here: the results subsections after Setup carry none (Writing Rule 10). The Setup defines what the main text uses and nothing else: a variant or data subset the final method does not use is defined beside its ablation, wherever that ablation sits.
+
+*Statistics: name the test, write no formula for it* (user 2026-11-27: 「不要写莫名奇妙的公式, 如果能用著名的检验名称, 说清楚就好了」). The statistics paragraph names each test by its standard name (McNemar's exact test, the exact sign test, a paired permutation test, the Wilcoxon signed-rank test, Fisher's exact test, a BCa bootstrap interval) and says in words what it runs on: the pairing unit, the compared quantity, which units count. It prints no equation for a p-value or test statistic and introduces no symbols for one (counts $b$, $c$, differences $d_i$, random signs $\epsilon_i$). A test that prior work calls by its own name ("X's sign-flip test") takes the standard name, with the prior work cited if the protocol follows it. An equation stays only for a quantity the paper itself defines and no standard name covers.
 > “We build our method upon the popular open-source 3DGS code base. Following [18], we train our models for 30K iterations across all scenes and use the same loss function …” (Mip-Splatting)
 > “We compare our results with Textual Inversion, the recent concurrent work of Gal et al., using the hyperparameters provided in their work.” (DreamBooth)
 
@@ -207,6 +209,7 @@ Ours & \textbf{\TODO{}} & \textbf{\TODO{}} & \TODO{} \\
 - [ ] Are claims in Abstract/Introduction supported by reported numbers, with at least one or two of them in the main text rather than only in the appendix?
 - [ ] Every claim of the paper has a table or figure; every table supports a claim.
 - [ ] Setup states datasets, metrics (↑/↓), baselines and how they were run, once.
+- [ ] Every statistical test is named by its standard name and described in words (pairing unit, compared quantity); no p-value or test-statistic equation (E1).
 - [ ] Results paragraphs open with the finding and explain the reason from the paper's own evidence; one verdict per group of benchmarks, one answer per ablation question, at most four number pairs per paragraph, no roll call (`check_draft.py` passes).
 - [ ] Setup, then three results subsections of similar length (end-to-end performance and generalization; dissecting the pipeline; behavior and cost); no `\paragraph{}` after Setup, every results paragraph opens with its topic sentence.
 - [ ] Every measurement that explains a gain (failure kinds, which error the model makes first) is in Behavior and Cost, in a paragraph that opens with the gain it explains, not one more comparison with no gain named; "the gain comes from X" only when exclusive failure classes with significant differences add up to the gain, otherwise "significantly fewer X".
