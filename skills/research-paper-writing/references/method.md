@@ -187,7 +187,7 @@ Local cite:
 1. **Every method subsection answers a claim from the introduction**, and every claim made in the introduction is realised by a subsection (extend the claim map: claim → method subsection → experiment → ablation).
 2. **Need before mechanism.** The first sentence of a subsection says what problem it solves; the equation comes after.
 3. **Define each symbol once**, at first use, and keep notation fixed; prefer one notation table in the preliminaries for heavy notation.
-4. **Equations carry the mechanism, prose carries the reason.** After each key equation, one sentence on what it means or why it works (“Intuitively, …”, “This term encourages …”).
+4. **Equations carry the mechanism, prose carries the reason.** After each key equation, one sentence on what it means or why it works (“Intuitively, …”, “This term encourages …”). A standard component (a loss, schedule or estimator the field has a name for) is written by its name, not re-derived as an equation; the equation is for what the paper defines or changes (`../SKILL.md` Rules, "A known name instead of its formula").
 5. **Say what stays the same** as the base method; reviewers need to see the delta.
 6. **Rule out the obvious alternative** with a reason when one exists (“One natural idea is … However …”).
 7. **Implementation details** (layer counts, learning rates, iterations, hardware) go to the experiments setup or the appendix, unless they are the contribution.
@@ -252,6 +252,7 @@ A mechanism that sounds right but nothing tested is `[TODO]` (Rule 9). An ablati
 ## Checklist
 - [ ] The opener states input, output and the components, and points to the overview figure (drawn as in `figures.md`, "Method Overview Figure").
 - [ ] Each subsection opens with the problem it solves; each key equation is followed by its meaning.
+- [ ] No equation restates something the field has a standard name for; each equation is a quantity the paper defines or changes.
 - [ ] Every symbol is defined once; notation matches the figures.
 - [ ] The delta to the base method is explicit; the obvious alternative is ruled out where relevant.
 - [ ] Every introduction claim maps to a subsection and to an experiment.
