@@ -625,7 +625,7 @@ Copilot CLI uses custom agent profiles (declared in `.github/agents/` or equival
 | `aris-reviewer-openai` | the `model:` its file pins | `openai` | `.github/agents/aris-reviewer-openai.agent.md` |
 | `aris-reviewer-claude` | the `model:` its file pins | `anthropic` | `.github/agents/aris-reviewer-claude.agent.md` |
 
-Both profiles must exist and be loadable by the Copilot CLI (`copilot --agent`). If a profile file is missing, emit `REVIEW_UNAVAILABLE` with the missing profile path — the user must create it before the copilot reviewer can function.
+This fork ships neither file (their pinned models were superseded; user 2026-11-27): write them, pinning models your Copilot plan lists, before using this route. Both profiles must exist and be loadable by the Copilot CLI (`copilot --agent`). If a profile file is missing, emit `REVIEW_UNAVAILABLE` with the missing profile path — the user must create it before the copilot reviewer can function.
 
 ### Opposite-Family Routing (MANDATORY — identity assurance is limited)
 

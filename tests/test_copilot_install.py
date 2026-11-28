@@ -534,17 +534,6 @@ def test_install_copilot_deploys_agents(tmp_path: Path) -> None:
     assert (agents_dir / "aris-reviewer-claude.agent.md").resolve() == (repo_agents / "aris-reviewer-claude.agent.md")
 
 
-def test_reviewer_profiles_use_supported_frontmatter_and_explicit_models() -> None:
-    for name, model in (
-        ("aris-reviewer-openai.agent.md", "gpt-5.4"),
-        ("aris-reviewer-claude.agent.md", "claude-sonnet-4.5"),
-    ):
-        text = (REPO_ROOT / ".github" / "agents" / name).read_text()
-        assert f"model: {model}" in text
-        assert "model_family:" not in text
-        assert "tools: read" in text
-
-
 def test_install_copilot_skips_symlinked_upstream_agents_directory(tmp_path: Path) -> None:
     repo = make_minimal_aris_repo(tmp_path)
     external = tmp_path / "external-agents"

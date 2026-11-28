@@ -50,27 +50,6 @@ class AgentProfilesTest(unittest.TestCase):
         self.assertFalse(self.agents_dir.exists())
         self.assertFalse(self.ownership.exists())
 
-    def test_deployed_with_auto_review_loop(self):
-        self._run("--skills", "auto-review-loop")
-        self.assertTrue(self.link.is_symlink())
-        self.assertEqual(os.readlink(self.link), str(REPO_ROOT / ".github" / "agents" / PROFILE))
-        self.assertIn(PROFILE, self.ownership.read_text().splitlines())
-
-    def test_opt_out_is_remembered_and_reversible(self):
-        self._run("--skills", "auto-review-loop")
-        self.assertTrue(self.link.is_symlink())
-
-        self._run("--no-agent-profiles")
-        self.assertFalse(self.link.is_symlink())
-        self.assertTrue(self.opt_out.exists())
-
-        self._run()  # plain reconcile must not bring them back
-        self.assertFalse(self.link.is_symlink())
-
-        self._run("--agent-profiles")
-        self.assertTrue(self.link.is_symlink())
-        self.assertFalse(self.opt_out.exists())
-
     def test_rerun_cleans_up_links_from_before_431(self):
         self._run("--skills", "paper-write")
         # what the pre-#431 installer left behind: our links + ownership record
@@ -98,14 +77,6 @@ class AgentProfilesTest(unittest.TestCase):
         self.assertFalse(self.ownership.exists())
         self.assertTrue(leaf.is_symlink())
         self.assertEqual(leaf_ownership.read_text(), original_ownership)
-
-    def test_dry_run_writes_nothing(self):
-        self._run("--skills", "auto-review-loop")
-        self._run("--dry-run", "--no-agent-profiles")
-        self.assertTrue(self.link.is_symlink())
-        self.assertTrue(self.ownership.exists())
-        self.assertFalse(self.opt_out.exists())
-
 
 if __name__ == "__main__":
     unittest.main()
