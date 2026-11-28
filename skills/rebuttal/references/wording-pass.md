@@ -19,7 +19,7 @@ The pass changes wording only. It does not decide claims: which numbers go in, w
 
 ## 0. What is read, what is touched
 
-- **Read**: each paste target as the reviewer will see it — the reviewer's quoted text plus our answers, markdown stripped. Not the status board, not the notes to the group, not the translation.
+- **Read**: each paste target as the reviewer will see it — the reviewer's quoted text plus our answers, markdown stripped, and its team-language translation when one exists (user 2026-11-27: the blind reader gets it). Not the status board, not the notes to the group.
 - **Touched**: the canonical response text only (Artifacts table). Translations, status boards, HTML views and shared-doc mirrors are derived; regenerate or re-sync them after the canonical text changes.
 - **Never touched**:
   - the reviewer's quoted text;
@@ -31,7 +31,7 @@ The pass changes wording only. It does not decide claims: which numbers go in, w
 
 **Before the read: one version per answer** (user 2026-11-10: 「保留最新的」). In a shared draft, **our own** superseded versions of an answer are deleted first and only the latest is kept. A co-author's older version or fragment is never deleted, even when it is clearly superseded (user 2026-11-10: 「合作者的永远不删」); the blind reader is simply not given it. A reader given three coexisting versions of A1 spends most of its ledger on their disagreements. The older text stays recoverable in the doc history.
 
-One fresh subagent per paste target. Give it exactly: [blind-read.md](blind-read.md), that reviewer's raw review, and the stripped reply text with paragraph ids. Do not give it this file, the issue board, the evidence, or another reviewer's thread. It writes `rebuttal/wording/<UTC timestamp>/ledger-<ReviewerID>.md`.
+One fresh subagent per paste target. Give it exactly: [blind-read.md](blind-read.md), that reviewer's raw review, the stripped reply text with paragraph ids, and the reply's translation when one exists. Do not give it this file, the issue board, the evidence, or another reviewer's thread. It writes `rebuttal/wording/<UTC timestamp>/ledger-<ReviewerID>.md`.
 
 The drafter never does this read, and never "completes" a ledger from memory: after the evidence has been read the drafter cannot tell where a new reader stalls.
 
@@ -171,7 +171,7 @@ command grep -niE 'preregister|pre-register|frozen before|sanity check|pilot|abl
 | Symptom | Correction |
 |---|---|
 | The drafter does the blind read | It is void; a fresh subagent with only the review and the reply |
-| The blind reader is handed this file, the board or the evidence | It gets blind-read.md, the review and the reply — nothing else |
+| The blind reader is handed this file, the board or the evidence | It gets blind-read.md, the review, the reply and its translation — nothing else |
 | A term gets a definition, then its sentence is deleted as filler | Tighten (step 3) before rewording (step 4) |
 | A term is defined two paragraphs later, so it passes | Late definition is recorded; move the definition to first use |
 | Every unknown noun is recorded | The threshold is "had to reread", not "unfamiliar" |
@@ -213,4 +213,4 @@ Each ruling below is the general rule it stands for.
 | L8 | "We ran both released checkpoints", then numbers for only one | 「能给吗? 好吗?」 | A baseline that was run but gets no number: give a number only if one exists on the reply's metric and is favorable. Otherwise say in one clause why the comparison is with the other baseline (its output has no counterpart on our scale). The gap is visible to the reviewer, so this narrated absence stays. |
 | L9 | A new backbone improves less than its siblings | 「也没事? 比 base 低就行?」 | A variant that beats its own untuned base answers "does the supervision transfer"; it need not beat the other variants. No change, and no added comparison to the siblings. |
 | L10 | Two numbers in different answers looked like one quantity (0.77 and 0.89 for "unseen regions") | 「说清楚」 | Give each its table and its unit in the same sentence ("of the same table, also per station-day sample"). |
-| L11 | A count in an abandoned fragment disagreed with the latest version (seven vs eight) | 「改正确」, 「保留最新的」, then 「合作者的永远不删」 | In our own superseded text the wrong number goes with the fragment. In a co-author's fragment nothing is removed or corrected: highlight the number and add a note. |
+| L11 | A count in an abandoned fragment disagreed with the latest version (seven vs eight) | 「改正确」, 「保留最新的」, then 「合作者的永远不删」 | In our own superseded text the wrong number goes with the fragment. In a co-author's fragment nothing is removed; the wrong number itself is fixed directly, changed words in our colour ([collaboration.md](collaboration.md) § 2, user 2026-11-12 and 2026-11-27). |

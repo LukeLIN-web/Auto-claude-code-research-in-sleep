@@ -7,7 +7,7 @@ The editor keeps the line count: a line whose whole text is cut becomes exactly 
 its line, and no line is added. Lines outside --scope are frozen. For each changed paragraph (blank-line separated)
 it reports:
   - a frozen line that changed (the edit is rejected);
-  - numbers, \\cite keys and \\ref labels whose multiset changed (a number may go only with a sentence cut under a
+  - numbers, \\cite keys, \\ref labels and literal addresses (Appendix~H, Table 3, §4.2) whose multiset changed (a number may go only with a sentence cut under a
     named /paper-prose-tighten class, and in a paper only if a table still shows it);
   - each line of TERMS (one term per line: a frozen name, a significance word) whose count changed, matched as a
     whole word;
@@ -52,13 +52,17 @@ def paragraphs(lines):
     return out + [cur] if cur else out
 
 
+ADDRESS = re.compile(r"(Appendi(?:x|ces)|Sections?|Secs?\.|Tables?|Figures?|Figs?\.|Algorithms?|Eqs?\.|Equations?|§)"
+                     r"(?:~|\\,|\s)*([A-Z](?:\.\d+)*(?![A-Za-z])|\d+(?:\.\d+)*)")
+
+
 def tokens(text):
     # A subscript or superscript is part of a name (\ell_{2}), not a number the text states; the terms file counts names.
     bare = re.sub(r"\\(?:ref|eqref|[cC]ref|autoref|cite[tp]?\*?|label)\{[^}]*\}|[_^](?:\{[^{}]*\}|\w)", "", text)
     nums = Counter(re.findall(r"(?<![A-Za-z_\-])\d+(?:[.,]\d+)*", bare))
     cites = Counter(k.strip() for g in re.findall(r"\\cite[tp]?\*?(?:\[[^\]]*\])?\{([^}]*)\}", text) for k in g.split(","))
     refs = Counter(re.findall(r"\\(?:ref|eqref|[cC]ref|autoref)\{([^}]*)\}", text))
-    return nums, cites, refs
+    return nums, cites, refs, Counter(" ".join(m) for m in ADDRESS.findall(bare))
 
 
 def commas(line):
@@ -123,7 +127,7 @@ def main():
         before = " ".join(o[i - 1] for i in para)
         after = " ".join(e[i - 1] for i in para if e[i - 1] != "%CUT")
         issues = [f"frozen line {i} changed" for i in changed if i not in scope]
-        for kind, x, y in zip(("numbers", "cite keys", "ref labels"), tokens(before), tokens(after)):
+        for kind, x, y in zip(("numbers", "cite keys", "ref labels", "addresses"), tokens(before), tokens(after)):
             if x != y:
                 issues.append(f"{kind}: removed {dict(x - y)} added {dict(y - x)}")
         issues += [f"term {t!r}: {count(t, before)} -> {count(t, after)}" for t in terms if count(t, before) != count(t, after)]

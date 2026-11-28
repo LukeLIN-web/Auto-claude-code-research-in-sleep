@@ -3,8 +3,12 @@
 `SKILL.md` § Procedure says when this file applies. The One Test, the cut
 classes and the hard stops it refers to are in `SKILL.md`.
 
-1. **Map every paragraph before reading for style.** Classes 1–6, 8–10, 12 and 14
-   are found by grep; class 13 by the per-baseline listing in step 3; classes 7
+`sections/` and `tables/` in the commands below stand for this paper's own section and table
+directories; read them off the `\input` lines of `main.tex` (some templates use `sec/`) and
+substitute before running, or the globs match nothing.
+
+1. **Map every paragraph before reading for style.** Classes 1–3, 5, 6, 8–10, 12 and 14
+   are found by grep; class 4 by reading the sentences those hits sit in; class 13 by the per-baseline listing in step 3; classes 7
    and 11, and paragraphs over ~250 words, are found only here. Emit one row per
    paragraph — file, line span, word count, and **one line saying what it
    claims** (add by hand, per row, which claim of the paper that supports):

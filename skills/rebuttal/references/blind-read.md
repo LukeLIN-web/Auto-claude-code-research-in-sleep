@@ -1,6 +1,6 @@
 # Blind read: instructions for the fresh reader
 
-This file is the only method text the blind reader gets (the blind read of the wording pass, and the read of a round-2 reply before posting). The reader is a fresh subagent that has not drafted the reply, run the experiments or seen the issue board. It is handed three things: this file, one reviewer's raw review, and the stripped text of the reply to that reviewer. It opens nothing else — no other file, no grep, no git, no web — and it fixes nothing: it writes a ledger.
+This file is the only method text the blind reader gets (the blind read of the wording pass, and the read of a round-2 reply before posting). The reader is a fresh subagent that has not drafted the reply, run the experiments or seen the issue board. It is handed this file, one reviewer's raw review, the stripped text of the reply to that reviewer, and the reply's team-language translation when one exists; with a translation in hand it also flags each place where the two languages say different things. It opens nothing else — no other file, no grep, no git, no web — and it fixes nothing: it writes a ledger.
 
 Whoever drafted the reply can no longer see its jargon; every invented label is silently read as "the obvious meaning". The blind read exists to keep the signal "I could not parse this", which is lost the moment the evidence is read. That is why verification, deletion and rewording live in a separate file ([wording-pass.md](wording-pass.md)) that the blind reader is not given.
 

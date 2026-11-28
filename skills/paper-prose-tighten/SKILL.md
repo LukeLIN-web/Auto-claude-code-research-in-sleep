@@ -261,7 +261,7 @@ The recurring shapes, in descending yield:
 
 | Shape | Fix |
 |-------|-----|
-| An intro **contribution bullet that pre-plays a whole results subsection** — the same sensitivity grid, the same axes, the same per-benchmark ordering | The bullet keeps the *claim* and the two axis names; every reading of the table moves to the subsection. Point at the table, not at the finding. |
+| An intro **contribution bullet that pre-plays a whole results subsection** — the same sensitivity grid, the same axes, the same per-benchmark ordering | Do not edit: the authors write the contribution list (class 13, last row). Report the overlap and what the bullet could drop. |
 | A finding stated in a results **subsection** and again as a **conclusion/analysis bullet** | Keep the results copy; delete the bullet — unless the bullet carries something the subsection does not (see the hard stop below). |
 | The method's governing **principle** stated informally in the intro and formally in the method | Intro keeps the hazard in one sentence and cites `\S`; the formal statement, the decomposition, and the concrete quotas live once, in the method. |
 | A **scaling / cost / budget** argument in the intro and again in a "Bounded X" method subsection | Same rule: the intro asserts the property, the method derives it. |
@@ -493,11 +493,11 @@ it because each sentence is short.
 
 | Cut | Write |
 |-----|-------|
-| `Our method significantly outperforms the drafter alone on Bench-1 and on Bench-2, …` / `On Bench-3 our method also significantly outperforms the drafter alone.` / `Our method also significantly outperforms the drafter alone on Bench-4, and lies clearly above it on Bench-6.` | `Our method significantly outperforms the drafter alone on Bench-1, Bench-2, Bench-3 and Bench-4, and lies clearly above it on Bench-6 (Table~\ref{tab:main}).` |
+| `Our method significantly outperforms the drafter alone on Bench-1 and on Bench-2, …` / `On Bench-3 our method also significantly outperforms the drafter alone.` / `Our method also significantly outperforms the drafter alone on Bench-4, and outperforms it on Bench-6.` | `Our method significantly outperforms the drafter alone on Bench-1, Bench-2, Bench-3 and Bench-4, and outperforms it on Bench-6 (Table~\ref{tab:main}).` |
 | `on Bench-1, on Bench-2, on Bench-4 and on Bench-5` | `on Bench-1, Bench-2, Bench-4 and Bench-5` (the same repetition at word scale) |
 
 **Rewrite pattern:** write one sentence per baseline. The significant conditions
-go in one list. Point-estimate leads (`lies above`) follow as a second clause
+go in one list. Point-estimate leads (`outperforms`, without `significantly`) follow as a second clause
 with `it`, so the baseline is named once. A scope that holds for only some
 conditions (the held-out 40 repositories on two of the benchmarks) becomes its own
 short sentence after the list; do not nest it inside the list. A different table
@@ -513,7 +513,7 @@ different claim, even when the verb is the same.
 usually has copies in the intro, the method's advantages, the conclusion and the
 abstract. A result added later tends to reach one copy and miss the others. For
 each baseline, list every sentence in the paper that compares against it
-(`references/procedure.md` step 3): section, verb (`significantly outperforms` / `lies above` /
+(`references/procedure.md` step 3): section, verb (`significantly outperforms` / `outperforms` /
 `completes significantly more tasks with every line its own`), metric, and
 conditions. The Results sentence owns the claim. Every copy is a derived form
 (SSOT), so a copy that disagrees with Results is a bug in the copy. Fixing it
@@ -523,7 +523,7 @@ does not change what the paper claims.
 |----------|-----|
 | A copy lists fewer conditions than Results (the conclusion omits Bench-3) | Add the missing ones to the copy. A copy that enumerates must enumerate all of them, or use a summary word that is true for all |
 | A copy's verb or metric is stronger than the one in Results (`significantly outperforms` where Results has significance only on every-line-own completions) | Weaken the copy to the Results wording |
-| A copy states a condition Results never states (`lies above it on Bench-7` in the intro and conclusion only) | If the table shows it at the copy's strength (a point-estimate `lies above` only needs the table), add it to Results. A significance claim with no Results owner goes to `/paper-claim-audit`, not into Results |
+| A copy states a condition Results never states (`outperforms it on Bench-7` in the intro and conclusion only) | If the table shows it at the copy's strength (a point-estimate `outperforms` only needs the table), add it to Results. A significance claim with no Results owner goes to `/paper-claim-audit`, not into Results |
 | The mismatch is in the abstract or contribution list | Do not edit: the authors write those. Report it |
 
 **Ruling (user 2026-11-03).** 「这重复也太多了 … 明明可以就说一次 <base policy>

@@ -77,10 +77,11 @@ project notes. It applies to both threads of a manuscript and to every round.
    executor runs them, and their output is never sent to the reviewer.
 5. **Scope check.** When a thread returns, read its trace for any file it
    opened outside the review directory. A finding that rests on such a file is
-   dropped as an anchor that does not hold (case 2), and the trace's `scope`
-   field and the report record what was read. A read-only sandbox does not
+   dropped as an anchor that does not hold (case 2); the report records what was
+   read, and the trace is saved without `--review-scope-complete`. A read-only sandbox does not
    confine reads to the cwd, so this check is what enforces the mode.
-6. **Trace and report.** Record `review_input: pdf` in the trace, and state in
+6. **Trace and report.** `save_trace.sh` has no field for the input mode or the
+   cwd: write both into `--purpose` (`round-1-logic input=pdf cwd=<dir>`), and state in
    each report's first paragraph that the reviewer saw only the PDF.
 
 A finding that the PDF cannot settle (for example, whether two tables share a

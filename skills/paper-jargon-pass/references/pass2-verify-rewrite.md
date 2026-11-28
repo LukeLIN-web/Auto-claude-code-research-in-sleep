@@ -42,10 +42,10 @@ A 组逐条处置。**四个动作是有序的,不是并列的**——从上往�
 ```bash
 c=<clone 目录>
 for w in "the gate" "the ladder" "the map" "regime"; do
-  printf '%3d  %s\n' "$(grep -roiF "$w" $c/sections/*.tex | wc -l)" "$w"
+  printf '%3d  %s\n' "$(command grep -roiF "$w" $c/sections/*.tex | wc -l)" "$w"
 done | sort -n
 # 血统词候选(读感抓不到,只能 grep):每条命中问「它说的输入差别写出来了吗」;表 caption 改生成器
-grep -rnoiE '\b(re-?calibrated|re-?scaled|re-?struck|re-?run|rerun|re-?fit|earlier|a third|stored|cached|booked|copy of the)\b[^.]{0,70}' \
+command grep -rnoiE '\b(re-?calibrated|re-?scaled|re-?struck|re-?run|rerun|re-?fit|earlier|a third|stored|cached|booked|copy of the)\b[^.]{0,70}' \
   $c/sections/*.tex $c/tables/*.tex
 ```
 

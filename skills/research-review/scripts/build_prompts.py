@@ -42,6 +42,8 @@ STRUCTURE_HEAD = (
 FOLLOW_UP_HEAD = (
     "Read the updated review brief at {brief}.\n"
     "Focus on unresolved weaknesses and whether the revision actually fixed them.\n"
+    "Re-check each criticism you raised before against the current files and rule it\n"
+    "SUSTAINED / OVERRULED / PARTIALLY SUSTAINED, naming the place you checked.\n"
 )
 
 
