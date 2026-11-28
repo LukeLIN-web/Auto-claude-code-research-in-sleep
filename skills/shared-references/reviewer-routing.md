@@ -55,9 +55,9 @@ When Codex MCP is the resolved backend (the Claude Code host default outside the
 Resolve the reviewer pair on the **first new Codex session of each tier** in a run, then reuse that resolved pair for later sessions of the same tier. Try the declared pair first (`gpt-6-astra` + `max` for deep-audit; `gpt-6-astra` + `xhigh` for regular). Then:
 
 - Only if the call fails **before returning a usable thread** AND the error **explicitly identifies the requested effort as unsupported** (older codex-cli): retry `gpt-6-astra` + `xhigh`. (This step exists only for the deep tier's `max` — a regular-tier `xhigh` call skips it; `xhigh` predates 0.144.1.)
-- Only if the error **explicitly identifies `gpt-6-astra` as unknown or unavailable** to this account/plan: retry `gpt-6.1-sol` + `xhigh`, then `gpt-5.6-sol` + `xhigh`, then `gpt-5.5` + `xhigh` (skip redundant intermediate steps). When a complete host model list is available, skip every unlisted model in this fallback chain, including `gpt-6.1-sol`; when no complete host model list is available, fall through them only on the same explicit model-capability error.
+- Only if the error **explicitly identifies `gpt-6-astra` as unknown or unavailable** to this account/plan: retry `gpt-6.1-sol` + `xhigh`. When a complete host model list is available, skip `gpt-6.1-sol` if it is unlisted; when no complete host model list is available, fall through to it only on the same explicit model-capability error.
 - **NEVER downgrade on** timeout, rate-limit/capacity, authentication, transport/protocol, server, sandbox/tool, context-length, malformed-request, or response-parse errors — a blind downgrade retry there risks double-running (and double-billing) a review that may have gone through.
-- **Never run a verdict-bearing review below `xhigh`.** `gpt-5.4` is available only as an explicit user override for legacy/repro runs — it is NOT part of the automatic chain.
+- **Never run a verdict-bearing review below `xhigh`.**
 - Replies (`codex-reply`) inherit the successful session's model and effort — pass only the saved `threadId` plus the message.
 - Trace every attempt, the resolved pair, and the fallback reason (see `review-tracing.md`); the trace records the pair that actually ran, not the target pair.
 - If no allowed pair succeeds, emit `REVIEW_UNAVAILABLE` (or, for a mandatory audit gate, `ERROR`) — never a substantive verdict.
@@ -166,7 +166,7 @@ Example Claude Code registration:
 claude mcp add llm-chat -s user \
   --env LLM_API_KEY=<key> \
   --env LLM_BASE_URL=https://example.com/v1 \
-  --env LLM_MODEL=gemini-2.5-pro \
+  --env LLM_MODEL=<model> \
   --env LLM_REVIEW_FALLBACK_ENABLED=true \
   -- python3 /path/to/mcp-servers/llm-chat/server.py
 ```
@@ -186,7 +186,7 @@ available, its call fails, or cross-family identity cannot be verified, emit
 
 MCP servers are spawned per session: after upgrading codex-cli (e.g. to 0.144.1 for `max`), **restart the Claude Code session** so the `codex` MCP server (`mcp-servers/codex-exec/server.py`, which runs `codex exec`) picks up the new binary — an old server process rejects the new effort enums even though the CLI on disk is new.
 
-## Optional: GPT-5.5 Pro via Oracle
+## Optional: a Pro model via Oracle
 
 When the resolved selection is `oracle-pro`, route the review through Oracle
 MCP instead of Codex MCP. This legacy route retains its warning/fallback behavior
@@ -206,7 +206,7 @@ If the resolved backend is `oracle-pro`:
     → Check if mcp__oracle__consult tool is available
     → If available:
         Use mcp__oracle__consult with:
-          model: "gpt-5.5-pro"
+          model: "<the Pro model Oracle currently offers>"
           prompt: [same prompt you would send to Codex]
           files: [file paths for reviewer to read directly]
         Note: Oracle may use API mode (fast, needs OPENAI_API_KEY)
@@ -231,7 +231,7 @@ mcp__oracle__consult:
   prompt: |
     [role + task + output schema]
     Read all listed files directly.
-  model: "gpt-5.5-pro"
+  model: "<the Pro model Oracle currently offers>"
   files:
     - /absolute/path/to/file1
     - /absolute/path/to/file2
@@ -273,7 +273,7 @@ If Oracle is not installed, `— reviewer: oracle-pro` gracefully falls back to 
 
 ### Upstream development & known issues
 
-Oracle MCP is maintained at [`steipete/oracle`](https://github.com/steipete/oracle). When you invoke `— reviewer: oracle-pro` (and especially the `o3-deep-research` / `gpt-5.5-pro` paths), it's worth checking the **[open PRs](https://github.com/steipete/oracle/pulls)** for in-flight fixes that may affect your run — e.g., model routing changes, browser-mode auth fixes, rate-limit handling, or new model alias support. ARIS does not vendor Oracle MCP; you're running the published version from `npm install -g @steipete/oracle`. If a behavior surprises you, the upstream PR queue is the first place to check before opening an issue here.
+Oracle MCP is maintained at [`steipete/oracle`](https://github.com/steipete/oracle). When you invoke `— reviewer: oracle-pro` (and especially the deep-research and Pro paths), it's worth checking the **[open PRs](https://github.com/steipete/oracle/pulls)** for in-flight fixes that may affect your run — e.g., model routing changes, browser-mode auth fixes, rate-limit handling, or new model alias support. ARIS does not vendor Oracle MCP; you're running the published version from `npm install -g @steipete/oracle`. If a behavior surprises you, the upstream PR queue is the first place to check before opening an issue here.
 
 ## Selectable Antigravity, Grok and Claude Code reviewers
 
@@ -622,8 +622,8 @@ Copilot CLI uses custom agent profiles (declared in `.github/agents/` or equival
 
 | Profile name | Pinned model | Model family | File |
 |-------------|-------------|-------------|------|
-| `aris-reviewer-openai` | `gpt-5.4` | `openai` | `.github/agents/aris-reviewer-openai.agent.md` |
-| `aris-reviewer-claude` | `claude-sonnet-4.5` | `anthropic` | `.github/agents/aris-reviewer-claude.agent.md` |
+| `aris-reviewer-openai` | the `model:` its file pins | `openai` | `.github/agents/aris-reviewer-openai.agent.md` |
+| `aris-reviewer-claude` | the `model:` its file pins | `anthropic` | `.github/agents/aris-reviewer-claude.agent.md` |
 
 Both profiles must exist and be loadable by the Copilot CLI (`copilot --agent`). If a profile file is missing, emit `REVIEW_UNAVAILABLE` with the missing profile path — the user must create it before the copilot reviewer can function.
 
@@ -661,11 +661,11 @@ The auto-review-loop SKILL.md MUST accept `--executor-model <model>` as a parame
 
 ```json
 {
-  "executor_model": "claude-sonnet-4-5",
+  "executor_model": "<executor model>",
   "executor_model_source": "caller-declared",
   "executor_family": "anthropic",
   "reviewer_profile": "aris-reviewer-openai",
-  "requested_reviewer_model": "gpt-5.4",
+  "requested_reviewer_model": "<model the profile pins>",
   "reported_reviewer_model": "<model the copilot CLI actually reports using, if available>",
   "reviewer_model_source": "requested",
   "reviewer_family": "openai",

@@ -23,7 +23,7 @@ Prepare and maintain a grounded, venue-compliant rebuttal for: **$ARGUMENTS**
 ## Scope
 
 This skill is optimized for:
-- **text-only rebuttal** under strict character/word limits (e.g. ICML single-document)
+- **text-only rebuttal** under strict character/word limits (e.g. ICLR per-reviewer comments on OpenReview)
 - **per-reviewer thread responses** where each reviewer renders independently (e.g. OpenReview-style)
 - **multiple reviewers** with shared and reviewer-specific concerns
 - **follow-up rounds** after the initial rebuttal
@@ -39,7 +39,7 @@ If the user already has new results, derivations, or approved commitments, the s
 
 ## Constants
 
-- **VENUE = `ICML`** — Default venue. Override if needed.
+- **VENUE = `ICLR`** — Default venue: the platform rules in the references (comment titles and readers, character limits, AC notes, the misconduct channel) are ICLR's on OpenReview. For another venue, re-read its rules before using any of them.
 - **REVIEWER_MODEL = `gpt-6-astra`** — Default model for the Codex backend. Used for internal stress-testing.
 - **REVIEWER_BACKEND = `codex`** — Default: Codex MCP (xhigh). Override with `— reviewer: oracle-pro` for Oracle MCP; other backends, including manual review, per `shared-references/reviewer-routing.md`.
 - **MAX_INTERNAL_DRAFT_ROUNDS = 2** — draft → lint → revise.

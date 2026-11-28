@@ -61,6 +61,8 @@ Each script's docstring has its options.
 
 ## 1. Blind read
 
+The readers are spawned in interactive sessions too (user 2026-11-27).
+
 If no ledger was passed: for a paper, the owner runs `/paper-jargon-pass` 第 0 趟 (zero reading), compiles, and runs `scripts/blind_pack.py` on the scope; it splits the scope into shares by that skill's 第一趟 rule for parallel readers. Spawn one reader per share in one message, each running 第一趟 with that skill's isolation on `pdf_pages.txt`, `figure_canvases.txt` and its own `in_scope-<k>.txt`, and writing `ledger-<k>.md` to `review-stage/jargon/<UTC timestamp>/` in the paper directory, or to the caller's directory. This is a Tier-2 static fan-out ([`fan-out-pattern.md`](../shared-references/fan-out-pattern.md)): the readers only list stalls, the owner merges them, and without the Agent tool the readers run one after another. The editors of § 3–4 fan out the same way.
 
 While the readers run, the owner does the work that does not need the ledger: the numbers check of the in-scope sentences (step 2), the step-2 checkers, the unit split and the editor briefs.
